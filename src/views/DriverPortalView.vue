@@ -230,7 +230,7 @@
           <div class="section-tab" :class="{ active: hwTab === 'B' }" @click="hwTab = 'B'">B · Warning <span style="font-family:'JetBrains Mono'; font-size:9px; opacity:0.6; margin-left:6px;">5</span></div>
           <div class="section-tab" :class="{ active: hwTab === 'C' }" @click="hwTab = 'C'">C · Information <span style="font-family:'JetBrains Mono'; font-size:9px; opacity:0.6; margin-left:6px;">3</span></div>
         </div>
-        <div class="card">
+        <div class="card" v-if="currentHW">
           <div class="card-head"><h3>{{ currentHW.title }}</h3><span class="tag">{{ currentHW.signs.length }} SIGNS</span></div>
           <p style="color: var(--muted); margin: 0 0 6px; font-size: 14px;">{{ currentHW.sub }}</p>
           <div v-for="sign in currentHW.signs" :key="sign.name" class="sign-row">
@@ -280,8 +280,8 @@
               <div class="tl-bulb green" :class="{ on: tlResult.level === 'green' }"></div>
             </div>
             <div class="tl-verdict" :class="tlResult.level">
-              <div class="v-label">{{ VERDICTS[tlResult.level].lbl }}</div>
-              <div class="v-action">{{ VERDICTS[tlResult.level].act }}</div>
+              <div class="v-label">{{ VERDICTS[tlResult.level]?.lbl }}</div>
+              <div class="v-action">{{ VERDICTS[tlResult.level]?.act }}</div>
             </div>
           </div>
         </div>
@@ -472,7 +472,7 @@
             <h1>QUICK REFERENCE.</h1>
             <p>Pin it. Print it. Keep it next to your monitor. Everything that matters, one page.</p>
           </div>
-          <a class="p-btn p-btn-yellow" href="#" @click.prevent="() => window.print()">Print Card</a>
+          <a class="p-btn p-btn-yellow" href="#" @click.prevent="printCard">Print Card</a>
         </div>
         <div class="qref-wrap">
           <div class="qref-head">
@@ -605,6 +605,7 @@ const tlResult = computed(() => {
     const m = t.match(rx)
     if (m?.length) {
       const meta = FLAG_META[key]
+      if (!meta) continue
       flags.push({ key, label: meta.label, level: meta.level, count: m.length })
     }
   }
@@ -701,12 +702,12 @@ const GLOSSARY: GlossaryTerm[] = [
 
 const glosSearch = ref('')
 const glosLetter = ref<string | null>(null)
-const availableLetters = computed(() => new Set(GLOSSARY.map(g => g.term[0].toUpperCase())))
+const availableLetters = computed(() => new Set(GLOSSARY.map(g => g.term.charAt(0).toUpperCase())))
 const filteredGlossary = computed(() => {
   const f = glosSearch.value.toLowerCase().trim()
   return GLOSSARY.filter(g => {
     const blob = (g.term + ' ' + (g.sub || '') + ' ' + g.def).toLowerCase()
-    return (!f || blob.includes(f)) && (!glosLetter.value || g.term[0].toUpperCase() === glosLetter.value)
+    return (!f || blob.includes(f)) && (!glosLetter.value || g.term.charAt(0).toUpperCase() === glosLetter.value)
   })
 })
 function toggleLetter(letter: string) {
@@ -718,6 +719,7 @@ function termTagClass(tags: string[]) {
   if (tags.includes('green')) return 'green'
   return ''
 }
+function printCard() { window.print() }
 </script>
 
 <style>

@@ -262,7 +262,7 @@
               <div class="ledger">
                 <div v-for="(s, i) in scores" :key="i" class="ledger-row" :class="(s||0) >= 18 ? 'full' : (s||0) >= 12 ? 'partial' : 'zero'">
                   <div class="ic">{{ String(i+1).padStart(2,'0') }}</div>
-                  <div class="what"><b>{{ ledgerLabels[i].title }}</b><small>{{ ledgerLabels[i].sub }}</small></div>
+                  <div class="what"><b>{{ ledgerLabels[i]?.title }}</b><small>{{ ledgerLabels[i]?.sub }}</small></div>
                   <div class="pts">{{ s ?? 0 }} / 20</div>
                 </div>
               </div>
@@ -329,8 +329,8 @@
           <div class="scorecard">
             <div v-for="(row, i) in scorecardRows" :key="i" class="sc-row">
               <b>{{ row.label }}</b>
-              <span class="v" :class="scoreClass(scores[i])">{{ scores[i] !== null ? scores[i] + ' /20' : '— /20' }}</span>
-              <span class="pct">{{ scorePct(scores[i]) }}</span>
+              <span class="v" :class="scoreClass(scores[i] ?? null)">{{ scores[i] !== null ? scores[i] + ' /20' : '— /20' }}</span>
+              <span class="pct">{{ scorePct(scores[i] ?? null) }}</span>
             </div>
             <div class="scorecard-total">
               <b>TOTAL</b>
@@ -452,7 +452,7 @@ const stopLabels = ['Sign ID','Traffic Light','PREP','Sanitise','Escalate']
 function stopClass(i: number) {
   if (scenario.value === i) return 'current'
   const s = scores[i-1]
-  if (s !== null) return s >= 12 ? 'done' : 'failed'
+  if (s != null) return s >= 12 ? 'done' : 'failed'
   return ''
 }
 const ledgerLabels = [

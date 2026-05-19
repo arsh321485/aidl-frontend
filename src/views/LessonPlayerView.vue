@@ -109,11 +109,11 @@
               <div class="quiz-opts">
                 <div v-for="(opt, i) in currentSeg.opts" :key="i"
                   class="quiz-opt"
-                  :class="quizOptClass(i)"
-                  @click="selectOpt(i)">
+                  :class="quizOptClass(Number(i))"
+                  @click="selectOpt(Number(i))">
                   <span class="letter">{{ opt.letter }}</span>
                   <span>{{ opt.text }}</span>
-                  <span class="mark">{{ quizMark(i) }}</span>
+                  <span class="mark">{{ quizMark(Number(i)) }}</span>
                 </div>
               </div>
               <div class="quiz-feedback" :class="[{ show: quizAnswered }, quizResult]">
@@ -136,8 +136,8 @@
                     <div class="prep-letter">{{ field.letter }}</div>
                     <b>{{ field.label }}</b>
                     <small>{{ field.hint }}</small>
-                    <div class="check" :class="{ ok: prepValues[field.letter]?.length > 10 }">
-                      {{ prepValues[field.letter]?.length > 10 ? '✓' : '' }}
+                    <div class="check" :class="{ ok: (prepValues[field.letter]?.length ?? 0) > 10 }">
+                      {{ (prepValues[field.letter]?.length ?? 0) > 10 ? '✓' : '' }}
                     </div>
                   </div>
                   <textarea :placeholder="field.placeholder" v-model="prepValues[field.letter]"></textarea>
@@ -701,7 +701,7 @@ function nextSeg() {
     doneSet.add(segIdx.value)
     xp.value += 10
     goTo(segIdx.value + 1)
-    pushMsg('note', `Chapter complete. Moving to: ${lesson.value.chapters[segIdx.value].label}`)
+    pushMsg('note', `Chapter complete. Moving to: ${lesson.value.chapters[segIdx.value]?.label}`)
   }
 }
 function prevSeg() { if (segIdx.value > 0) goTo(segIdx.value - 1) }
