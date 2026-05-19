@@ -9,7 +9,12 @@
         <a href="#verify">Verify</a>
         <a href="#enroll">For Teams</a>
       </div>
-      <div class="nav-cta"><a class="btn btn-yellow" href="#enroll">Enroll Today →</a></div>
+      <div class="nav-cta">
+        <RouterLink class="btn" to="/lesson">Lesson Player</RouterLink>
+        <RouterLink class="btn" to="/portal">Driver Portal</RouterLink>
+        <RouterLink class="btn" to="/road-test">Road Test</RouterLink>
+        <a class="btn btn-yellow" href="#enroll">Enroll Today →</a>
+      </div>
     </div>
   </nav>
 
@@ -599,6 +604,7 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
+import { RouterLink } from 'vue-router'
 
 const activeClass = ref('O')
 
