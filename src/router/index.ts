@@ -39,8 +39,13 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   const isAuthenticated = localStorage.getItem('aidl_auth') === 'true'
+
+  if (to.name === 'signin' && isAuthenticated) {
+    return { name: 'home' }
+  }
+
   if (!to.meta.public && !isAuthenticated) {
-    return { name: 'signin' }
+    return { name: 'signin', query: { redirect: to.fullPath } }
   }
 })
 

@@ -55,9 +55,10 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
 
 const email = ref('')
 const password = ref('')
@@ -70,7 +71,8 @@ function handleSignIn() {
   if (email.value.trim() === VALID_EMAIL && password.value === VALID_PASSWORD) {
     localStorage.setItem('aidl_auth', 'true')
     hasError.value = false
-    router.push('/home')
+    const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/home'
+    router.push(redirect)
   } else {
     hasError.value = true
   }

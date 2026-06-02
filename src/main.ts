@@ -6,8 +6,6 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 
-localStorage.removeItem('aidl_auth')
-
 const app = createApp(App)
 
 app.use(createPinia())

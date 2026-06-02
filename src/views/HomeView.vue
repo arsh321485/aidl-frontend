@@ -906,12 +906,12 @@ section.band { position: relative; padding: 120px 0; border-bottom: 4px solid va
 .lane-line.bot { bottom: 38%; }
 .lane-line.solid { height: 4px; background: var(--sign-yellow); }
 .lane-line.solid.top { top: 18%; }
-.lane-line.solid.bot { bottom: 18%; }
+.lane-line.solid.bot { bottom: 22%; }
 
 .roadmap-signs {
   position: relative; z-index: 3;
   display: flex; justify-content: space-between;
-  padding: 60px 80px; height: 100%; align-items: flex-end;
+  padding: 60px 80px 28px; height: 100%; align-items: flex-end;
 }
 .feature-sign { width: 220px; display: flex; flex-direction: column; align-items: center; color: var(--cream); }
 .feature-sign .badge {
@@ -941,7 +941,7 @@ section.band { position: relative; padding: 120px 0; border-bottom: 4px solid va
 .feature-sign.green .badge { background: var(--signal-green); color: var(--ink); }
 .feature-sign .post { width: 6px; background: #c8c0a8; height: 80px; margin-top: -2px; }
 .feature-sign .post::before { content: ""; display: block; width: 18px; height: 4px; background: #c8c0a8; margin: 8px 0 0 -6px; }
-.feature-sign .desc { margin-top: 30px; color: var(--cream); font-size: 13px; text-align: center; line-height: 1.4; max-width: 180px; }
+.feature-sign .desc { margin-top: 36px; color: var(--cream); font-size: 13px; text-align: center; line-height: 1.4; max-width: 180px; position: relative; top: 22px; }
 .feature-sign .desc strong { color: var(--sign-yellow); font-family: "Bungee", sans-serif; font-size: 12px; display: block; margin-bottom: 4px; letter-spacing: 0.05em; }
 
 /* TRAININGS */
