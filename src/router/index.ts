@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import DriverPortalView from '../views/DriverPortalView.vue'
+import JuniorDriverPortalView from '../views/JuniorDriverPortalView.vue'
 import LessonPlayerView from '../views/LessonPlayerView.vue'
 import RoadTestView from '../views/RoadTestView.vue'
 import SignInView from '../views/SignInView.vue'
@@ -23,6 +24,11 @@ const router = createRouter({
       path: '/portal',
       name: 'driver-portal',
       component: DriverPortalView,
+    },
+    {
+      path: '/junior-portal',
+      name: 'junior-driver-portal',
+      component: JuniorDriverPortalView,
     },
     {
       path: '/lesson',

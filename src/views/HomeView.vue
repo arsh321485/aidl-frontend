@@ -1,22 +1,56 @@
 <template>
   <nav class="nav">
     <div class="wrap nav-inner">
-      <a class="brand" href="#"><span class="brand-mark">AI</span><span>AIDL</span></a>
-      <div class="nav-links">
+      <div class="brand"><span class="brand-mark">AI</span><span class="brand-name">AIDL</span><span class="brand-sub">JUNIORS</span></div>
+      <div class="nav-links nav-adult">
         <a href="#trainings">Trainings</a>
+        <a href="#juniors" class="nav-link-juniors">Ages 8–16</a>
         <a href="#instructors">Instructors</a>
         <a href="#licenses">Licenses</a>
         <a href="#verify">Verify</a>
         <a href="#enroll">For Teams</a>
       </div>
+      <div class="nav-links nav-junior">
+        <a href="#juniors">Junior Programs</a>
+        <a href="#juniors">The Route</a>
+        <a href="#instructors">Instructors</a>
+        <a href="#licenses">Licenses</a>
+        <a href="#enroll">Enroll</a>
+      </div>
       <div class="nav-cta">
-        <RouterLink class="btn" to="/lesson">Lesson Player</RouterLink>
-        <RouterLink class="btn" to="/portal">Driver Portal</RouterLink>
-        <RouterLink class="btn" to="/road-test">Road Test</RouterLink>
-        <a class="btn btn-yellow" href="#enroll">Enroll Today →</a>
+        <button class="switch-path" type="button" @click="resetPath">↺ Switch Path</button>
+        <a class="btn btn-yellow cta-adult" href="#enroll">Enroll Today →</a>
+        <a class="btn btn-green cta-junior" href="#enroll">Enroll Your Learner →</a>
       </div>
     </div>
   </nav>
+
+  <section class="split" id="splitChooser">
+    <div class="split-panel adult">
+      <button class="split-close" type="button" @click="closeSplitPanel('adult')">✕ CLOSE</button>
+      <div class="split-content">
+        <span class="split-eyebrow">▸ FOR ADULTS &amp; TEAMS</span>
+        <h2 class="split-title">DRIVE&nbsp;AI.</h2>
+        <p class="split-sub">Three license classes — Learner, Operator, Specialist. Get behind the wheel, log your hours, and earn a credential employers can verify.</p>
+        <div class="split-actions">
+          <a class="btn btn-yellow" href="#trainings" @click.prevent="choose('adult', '#trainings')">Explore Classes →</a>
+          <a class="btn" href="#enroll" @click.prevent="choose('adult', '#enroll')">Enroll →</a>
+        </div>
+      </div>
+    </div>
+    <div class="split-panel junior">
+      <button class="split-close" type="button" @click="closeSplitPanel('junior')">✕ CLOSE</button>
+      <div class="split-content">
+        <span class="split-eyebrow">▸ JUNIORS · AGES 8–16</span>
+        <h2 class="split-title">LEARN&nbsp;AI.</h2>
+        <p class="split-sub">Two safe, age-tuned tracks — Junior Cadet (8–12) and Road Crew (12–16). Supervised agents, a parent dashboard, and a real junior license.</p>
+        <div class="split-actions">
+          <a class="btn btn-green" href="#juniors" @click.prevent="choose('junior', '#juniors')">Explore Juniors →</a>
+          <a class="btn" href="#enroll" @click.prevent="choose('junior', '#enroll')">Enroll a Learner →</a>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <section class="hero">
     <div class="sun"></div>
@@ -39,12 +73,13 @@
     <div class="road-sign rs-1"><div class="plate diamond"><span>NEXT EXIT<br/>AI 101</span></div><div class="post"></div></div>
     <div class="road-sign rs-2"><div class="plate round green">START</div><div class="post"></div></div>
     <div class="road-sign rs-3"><div class="plate white">LEARN<br/>DRIVE<br/>EARN</div><div class="post"></div></div>
-    <div class="road-sign rs-4"><div class="plate red">NO BS<br/>AHEAD</div><div class="post"></div></div>
+    <div class="road-sign rs-4"><div class="plate red">DRIVE<br/>SAFE</div><div class="post"></div></div>
 
     <div class="hero-headline">
-      <div class="hero-eyebrow"><span class="blink"></span> NOW ENROLLING · COHORT 06</div>
-      <h1 class="hero-title">LICENSE TO<span class="l2">DRIVE&nbsp;AI</span></h1>
-      <p class="hero-sub">The driving school for the AI era. Get behind the wheel, log your hours, and earn a verifiable license that proves you can operate AI — safely, skilfully, at speed.</p>
+      <div class="hero-eyebrow"><span class="blink"></span> <span class="v-adult">NOW ENROLLING · COHORT 06</span><span class="v-junior">NOW ENROLLING · JUNIOR PERMITS</span></div>
+      <h1 class="hero-title">LICENSE TO<span class="l2 v-adult">DRIVE&nbsp;AI</span><span class="l2 v-junior">LEARN&nbsp;AI</span></h1>
+      <p class="hero-sub v-adult">The driving school for the AI era. Get behind the wheel, log your hours, and earn a verifiable license that proves you can operate AI — safely, skilfully, at speed.</p>
+      <p class="hero-sub v-junior">The driving school for young minds in the AI era. Two safe, age-tuned tracks for ages 8–16 — learn, play, and build with AI, then earn a real junior license.</p>
     </div>
 
     <div class="dashboard">
@@ -61,7 +96,7 @@
             <div class="tick" style="transform: rotate(-90deg)"></div>
             <div class="needle"></div>
             <div class="center"></div>
-            <div class="label">PROMPTS/MIN · 87</div>
+            <div class="label"><span class="v-adult">PROMPTS/MIN · 87</span><span class="v-junior">FUN/MIN · 99</span></div>
           </div>
           <div class="gauge lvl">
             <div class="tick" style="transform: rotate(-60deg)"></div>
@@ -71,7 +106,7 @@
             <div class="tick" style="transform: rotate(60deg)"></div>
             <div class="needle"></div>
             <div class="center"></div>
-            <div class="label">SKILL LVL · L2</div>
+            <div class="label"><span class="v-adult">SKILL LVL · L2</span><span class="v-junior">BADGES · 3</span></div>
           </div>
         </div>
 
@@ -81,17 +116,17 @@
 
         <div class="infotainment">
           <div class="row"><span>NOW PLAYING</span><span>● REC</span></div>
-          <div class="big">LESSON 04</div>
-          <div class="row"><span>RAG · Retrieval</span><span>14:22 / 22:00</span></div>
+          <div class="big"><span class="v-adult">LESSON 04</span><span class="v-junior">LESSON 02</span></div>
+          <div class="row"><span><span class="v-adult">RAG · Retrieval</span><span class="v-junior">Meet Your AI Buddy</span></span><span>14:22 / 22:00</span></div>
           <div class="bar"><i></i></div>
-          <div class="row" style="margin-top:14px;"><span>NEXT</span><span>EVALS &amp; SAFETY</span></div>
+          <div class="row" style="margin-top:14px;"><span>NEXT</span><span><span class="v-adult">EVALS &amp; SAFETY</span><span class="v-junior">MAKER LANE</span></span></div>
         </div>
       </div>
     </div>
   </section>
 
   <div class="marquee">
-    <div class="marquee-track">
+    <div class="marquee-track v-adult">
       <span>★ 24,500+ LICENSED OPERATORS</span><i>●</i>
       <span>96% PASS RATE</span><i>●</i>
       <span>EMPLOYER-VERIFIED</span><i>●</i>
@@ -103,9 +138,21 @@
       <span>4 HOURS A WEEK</span><i>●</i>
       <span>INSTRUCTORS ON CALL 24/7</span><i>●</i>
     </div>
+    <div class="marquee-track v-junior">
+      <span>★ KID-SAFE BY DESIGN</span><i>●</i>
+      <span>PARENT DASHBOARD</span><i>●</i>
+      <span>NO ADS · NO DATA SALES</span><i>●</i>
+      <span>SUPERVISED AGENTS</span><i>●</i>
+      <span>SCREEN-TIME FRIENDLY</span><i>●</i>
+      <span>★ KID-SAFE BY DESIGN</span><i>●</i>
+      <span>PARENT DASHBOARD</span><i>●</i>
+      <span>NO ADS · NO DATA SALES</span><i>●</i>
+      <span>SUPERVISED AGENTS</span><i>●</i>
+      <span>SCREEN-TIME FRIENDLY</span><i>●</i>
+    </div>
   </div>
 
-  <section class="band roadmap" id="curriculum">
+  <section class="band roadmap" id="curriculum" data-aud="adult">
     <div class="wrap">
       <span class="section-eyebrow">▼ THE ROUTE</span>
       <h2 class="section-title">YOUR ROAD<br/>FROM 0 TO LICENSED.</h2>
@@ -148,7 +195,7 @@
     </div>
   </section>
 
-  <section class="band trainings" id="trainings">
+  <section class="band trainings" id="trainings" data-aud="adult">
     <div class="wrap">
       <div class="top">
         <div>
@@ -248,6 +295,99 @@
             <li>Practical + oral defense</li>
           </ul>
           <a class="btn btn-yellow" href="#enroll">Apply →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band juniors" id="juniors" data-aud="junior">
+    <div class="wrap">
+      <div class="top">
+        <div>
+          <span class="section-eyebrow">▼ JUNIOR LICENSES</span>
+          <h2 class="section-title">LEARNER PERMITS<br/>FOR AGES 8–16.</h2>
+        </div>
+        <p class="section-sub">Same driving school, two safe age-tuned tracks for younger drivers. Supervised agents, a parent dashboard, and a real, verifiable AIDL Junior license at the finish.</p>
+      </div>
+
+      <div class="jr-grid">
+        <div class="jr-card kid">
+          <div class="jr-top">
+            <div class="jr-age">8–12<small>JUNIOR CADET · CLASS J</small></div>
+            <div class="jr-badge">JR</div>
+          </div>
+          <div class="jr-body">
+            <h3 class="jr-name">JUNIOR CADET</h3>
+            <div class="jr-tag">BEGINNER · WITH A GROWN-UP</div>
+            <p class="jr-desc">A playful first ride. Kids meet a friendly AI buddy, learn what AI is (and isn't), make stories, art, and quizzes — and learn the golden rules of using AI kindly and safely.</p>
+            <div class="jr-meta">
+              <div><b>6 WK</b>length</div>
+              <div><b>45 MIN</b>session</div>
+              <div><b>2×/WK</b>cadence</div>
+              <div><b>J1</b>license</div>
+            </div>
+            <ul class="jr-list">
+              <li>What is AI? Robots, smarts &amp; pretend</li>
+              <li>Ask-it-nicely: your first safe prompts</li>
+              <li>Make a story, a comic, and a quiz</li>
+              <li>Spotting "make-believe" answers</li>
+              <li>Be kind, be private, ask a grown-up</li>
+            </ul>
+            <a class="btn btn-green" href="#enroll">Start Junior Cadet →</a>
+          </div>
+        </div>
+
+        <div class="jr-card teen">
+          <div class="jr-top">
+            <div class="jr-age">12–16<small>ROAD CREW · CLASS T</small></div>
+            <div class="jr-badge">RC</div>
+          </div>
+          <div class="jr-body">
+            <h3 class="jr-name">ROAD CREW</h3>
+            <div class="jr-tag">INTERMEDIATE · MORE INDEPENDENT</div>
+            <p class="jr-desc">For teens ready to take the wheel. Real prompting skills, AI for homework done honestly, building a simple bot, plus a serious look at bias, misinformation, and digital citizenship.</p>
+            <div class="jr-meta">
+              <div><b>8 WK</b>length</div>
+              <div><b>60 MIN</b>session</div>
+              <div><b>2×/WK</b>cadence</div>
+              <div><b>T2</b>license</div>
+            </div>
+            <ul class="jr-list">
+              <li>Prompting like a pro &amp; fact-checking</li>
+              <li>AI for study — the honest way</li>
+              <li>Build your own helper bot</li>
+              <li>Bias, deepfakes &amp; misinformation</li>
+              <li>Digital citizenship &amp; road test project</li>
+            </ul>
+            <a class="btn btn-sky" href="#enroll">Start Road Crew →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="jr-toggle">
+        <button type="button" :class="{ active: jrRoute === 'k', k: jrRoute === 'k' }" @click="jrRoute = 'k'">ROUTE · AGES 8–12</button>
+        <button type="button" :class="{ active: jrRoute === 't', t: jrRoute === 't' }" @click="jrRoute = 't'">ROUTE · AGES 12–16</button>
+      </div>
+
+      <div class="jr-stage">
+        <div class="jr-lane solid top"></div>
+        <div class="jr-lane mid"></div>
+        <div class="jr-lane solid bot"></div>
+
+        <div class="wrap jr-route k" :class="{ hidden: jrRoute !== 'k' }">
+          <div class="jr-stop"><div class="badge">MEET YOUR<br/>AI BUDDY</div><div class="post"></div><div class="desc"><strong>WEEK 01–02</strong>What AI is, what it isn't, and how to say hello.</div></div>
+          <div class="jr-stop"><div class="badge">ASK IT<br/>NICELY</div><div class="post"></div><div class="desc"><strong>WEEK 03</strong>Your first prompts — make a story and a picture.</div></div>
+          <div class="jr-stop"><div class="badge">MAKER<br/>LANE</div><div class="post"></div><div class="desc"><strong>WEEK 04–05</strong>Build a quiz game and a comic with your buddy.</div></div>
+          <div class="jr-stop"><div class="badge">SAFETY<br/>STOP</div><div class="post"></div><div class="desc"><strong>WEEK 06</strong>Make-believe answers, privacy, and asking grown-ups.</div></div>
+          <div class="jr-stop"><div class="badge">SHOW &amp;<br/>TELL</div><div class="post"></div><div class="desc"><strong>FINISH</strong>Share your project and earn your J1 license.</div></div>
+        </div>
+
+        <div class="wrap jr-route t" :class="{ hidden: jrRoute !== 't' }">
+          <div class="jr-stop"><div class="badge">HOW AI<br/>THINKS</div><div class="post"></div><div class="desc"><strong>WEEK 01–02</strong>Models, training, and why AI gets things wrong.</div></div>
+          <div class="jr-stop"><div class="badge">PROMPT<br/>HIGHWAY</div><div class="post"></div><div class="desc"><strong>WEEK 03–04</strong>Prompting like a pro and fact-checking answers.</div></div>
+          <div class="jr-stop"><div class="badge">BUILD A<br/>BOT</div><div class="post"></div><div class="desc"><strong>WEEK 05–06</strong>Make your own helper bot for a real task.</div></div>
+          <div class="jr-stop"><div class="badge">CHECK<br/>YOURSELF</div><div class="post"></div><div class="desc"><strong>WEEK 07</strong>Bias, deepfakes, misinformation &amp; digital citizenship.</div></div>
+          <div class="jr-stop"><div class="badge">ROAD<br/>TEST</div><div class="post"></div><div class="desc"><strong>WEEK 08</strong>Present your project and earn your T2 license.</div></div>
         </div>
       </div>
     </div>
@@ -411,10 +551,12 @@
             </div>
             <div class="field full" style="margin-bottom: 16px;">
               <label>Pick Your Class</label>
-              <div class="choice-group">
+              <div class="choice-group five-cols" id="classChoice">
                 <div class="choice" :class="{ active: activeClass === 'L' }" @click="activeClass = 'L'">CLASS&nbsp;L</div>
                 <div class="choice" :class="{ active: activeClass === 'O' }" @click="activeClass = 'O'">CLASS&nbsp;O</div>
                 <div class="choice" :class="{ active: activeClass === 'S' }" @click="activeClass = 'S'">CLASS&nbsp;S</div>
+                <div class="choice" :class="{ active: activeClass === 'J' }" @click="activeClass = 'J'" style="font-size:10px;">JUNIOR<br/>8–12</div>
+                <div class="choice" :class="{ active: activeClass === 'T' }" @click="activeClass = 'T'" style="font-size:10px;">CREW<br/>12–16</div>
               </div>
             </div>
             <div class="field full">
@@ -564,14 +706,14 @@
       <div class="foot-grid">
         <div>
           <a class="brand" href="#" style="color: var(--cream);"><span class="brand-mark">AI</span><span>AIDL</span></a>
-          <p class="foot-brand-blurb">The AI Driving License. A driving school for the AI era — three classes, real instructors, verifiable credentials. Get licensed, then go build.</p>
+          <p class="foot-brand-blurb">The AI Driving License. A driving school for the AI era — for adults &amp; teams and for young learners aged 8–16. Real instructors, verifiable credentials. Get licensed, then go build.</p>
         </div>
         <div>
-          <h5>LEARN</h5>
+          <h5>PROGRAMS</h5>
           <ul>
-            <li><a href="#">Class L · Learner</a></li>
-            <li><a href="#">Class O · Operator</a></li>
-            <li><a href="#">Class S · Specialist</a></li>
+            <li><a href="#">Class L / O / S · Adults</a></li>
+            <li><a href="#">Junior Cadet · 8–12</a></li>
+            <li><a href="#">Road Crew · 12–16</a></li>
             <li><a href="#">Practice Yard</a></li>
           </ul>
         </div>
@@ -580,7 +722,7 @@
           <ul>
             <li><a href="#">Public Registry</a></li>
             <li><a href="#">Employer Portal</a></li>
-            <li><a href="#">API Access</a></li>
+            <li><a href="#">Parent Dashboard</a></li>
             <li><a href="#">Trust Center</a></li>
           </ul>
         </div>
@@ -595,18 +737,63 @@
         </div>
       </div>
       <div class="foot-bot">
-        <div>© 2026 AIDL · ISSUED UNDER PUBLIC REGISTRY · CLASS L/O/S</div>
-        <div>BUILT FOR OPERATORS · v2.6 — COHORT 06</div>
+        <div>© 2026 AIDL · ISSUED UNDER PUBLIC REGISTRY · CLASS L/O/S + J/T</div>
+        <div>BUILT FOR OPERATORS &amp; YOUNG LEARNERS · v2.6</div>
       </div>
     </div>
   </footer>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue'
-import { RouterLink } from 'vue-router'
+import { ref, reactive, onMounted, onUnmounted } from 'vue'
+import '../styles/home-landing.css'
 
-const activeClass = ref('O')
+const jrRoute = ref<'k' | 't'>('k')
+
+const activeClass = ref<'L' | 'O' | 'S' | 'J' | 'T'>('O')
+
+function syncBodyClasses() {
+  const b = document.body
+  b.classList.remove('pre-choice', 'mode-adult', 'mode-junior', 'focus-adult', 'focus-junior')
+  if (preChoice.value) {
+    b.classList.add('pre-choice')
+  } else if (mode.value === 'adult') {
+    b.classList.add('mode-adult', 'focus-adult')
+  } else if (mode.value === 'junior') {
+    b.classList.add('mode-junior', 'focus-junior')
+  }
+}
+
+const preChoice = ref(true)
+const mode = ref<'adult' | 'junior' | null>(null)
+
+function choose(path: 'adult' | 'junior', hash?: string) {
+  preChoice.value = false
+  mode.value = path
+  syncBodyClasses()
+  window.scrollTo(0, 0)
+  if (hash) {
+    requestAnimationFrame(() => {
+      window.location.hash = hash
+    })
+  }
+}
+
+function closeSplitPanel(panel: 'adult' | 'junior') {
+  choose(panel === 'adult' ? 'junior' : 'adult')
+}
+
+function resetPath() {
+  preChoice.value = true
+  mode.value = null
+  syncBodyClasses()
+  window.scrollTo(0, 0)
+}
+
+onMounted(syncBodyClasses)
+onUnmounted(() => {
+  document.body.classList.remove('pre-choice', 'mode-adult', 'mode-junior', 'focus-adult', 'focus-junior')
+})
 
 const form = reactive({
   firstName: 'Alex',
@@ -704,12 +891,25 @@ body { overflow-x: hidden; }
 /* NAV */
 .nav { position: sticky; top: 0; z-index: 50; background: var(--cream); border-bottom: 3px solid var(--ink); }
 .nav-inner { display: flex; align-items: center; gap: 32px; height: 76px; }
-.brand { display: flex; align-items: center; gap: 12px; font-family: "Bungee", sans-serif; font-size: 20px; text-decoration: none; color: var(--ink); }
+.nav .brand {
+  display: flex; align-items: center; gap: 12px;
+  font-family: "Bungee", sans-serif; font-size: 20px;
+  text-decoration: none; color: var(--ink);
+  border-bottom: none;
+  padding: 0;
+  cursor: default;
+}
 .brand-mark {
   width: 44px; height: 44px; border-radius: 50%;
   background: var(--sign-yellow); border: 3px solid var(--ink);
   display: grid; place-items: center; font-family: "Bungee", sans-serif; font-size: 16px;
   box-shadow: 3px 3px 0 var(--ink);
+  text-decoration: none;
+}
+.brand-name {
+  font-family: "Bungee", sans-serif;
+  text-decoration: none;
+  color: var(--ink);
 }
 .nav-links { display: flex; gap: 28px; margin-left: 24px; }
 .nav-links a { color: var(--ink); text-decoration: none; font-weight: 600; font-size: 15px; }
