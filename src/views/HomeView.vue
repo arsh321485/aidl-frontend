@@ -18,6 +18,8 @@
         <a href="#enroll">Enroll</a>
       </div>
       <div class="nav-cta">
+        <RouterLink class="nav-auth-btn auth-adult" to="/junior-player">SIGN IN / SIGN UP</RouterLink>
+        <RouterLink class="nav-auth-btn auth-junior" to="/senior-player">SIGN IN / SIGN UP</RouterLink>
         <button class="switch-path" type="button" @click="resetPath">↺ Switch Path</button>
         <a class="btn btn-yellow cta-adult" href="#enroll">Enroll Today →</a>
         <a class="btn btn-green cta-junior" href="#enroll">Enroll Your Learner →</a>
@@ -746,6 +748,7 @@
 
 <script setup lang="ts">
 import { ref, reactive, onMounted, onUnmounted } from 'vue'
+import { RouterLink } from 'vue-router'
 import '../styles/home-landing.css'
 
 const jrRoute = ref<'k' | 't'>('k')

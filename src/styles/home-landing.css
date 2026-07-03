@@ -46,13 +46,26 @@ body.mode-junior .brand-sub {
 .nav-cta .cta-junior {
   display: none;
 }
+.nav-cta .auth-junior {
+  display: none;
+}
 body.mode-junior .nav-cta .cta-adult {
+  display: none;
+}
+body.mode-junior .nav-cta .auth-adult {
   display: none;
 }
 body.mode-junior .nav-cta .cta-junior {
   display: inline-flex;
 }
+body:not(.pre-choice).mode-junior .nav-cta .auth-junior {
+  display: inline-flex;
+}
+body:not(.pre-choice).mode-adult .nav-cta .auth-adult {
+  display: inline-flex;
+}
 
+.nav-auth-btn,
 .switch-path {
   display: none;
   align-items: center;
@@ -62,9 +75,12 @@ body.mode-junior .nav-cta .cta-junior {
   border: 3px solid var(--ink);
   font-family: "Bungee", sans-serif;
   font-size: 13px;
+  font-weight: 400;
   padding: 10px 16px;
   cursor: pointer;
+  text-decoration: none;
 }
+.nav-auth-btn:hover,
 .switch-path:hover {
   background: var(--ink);
   color: var(--cream);

@@ -35,7 +35,7 @@ const TIERS = {
     ],
     upnext: [
       { d: '18', m: 'MAY', t: 'My AI Rules', s: 'Read and tick your 6 promises', cta: 'Open', view: 'aup', btn: 'btn-green' },
-      { d: '22', m: 'MAY', t: 'Lesson · Meet Your AI Buddy', s: 'Play the next lesson with Driver Ed', cta: 'Play', href: '/lesson', btn: 'btn-yellow' },
+      { d: '22', m: 'MAY', t: 'Lesson · Meet Your AI Buddy', s: 'Play the next lesson with Driver Ed', cta: 'Play', href: '/junior-player', btn: 'btn-yellow' },
       { d: '06', m: 'JUN', t: 'Show & Tell', s: 'Share the story you made', cta: 'View', view: 'qref', btn: 'btn-green' },
     ],
     route: [
@@ -165,7 +165,7 @@ const TIERS = {
     ],
     upnext: [
       { d: '18', m: 'MAY', t: 'Check Yourself Lab', s: 'Bias, deepfakes & misinformation', cta: 'Open', view: 'highway', btn: 'btn-sky' },
-      { d: '22', m: 'MAY', t: 'Build-a-Bot · part 2', s: 'Continue your helper bot project', cta: 'Resume', href: '/lesson', btn: 'btn-yellow' },
+      { d: '22', m: 'MAY', t: 'Build-a-Bot · part 2', s: 'Continue your helper bot project', cta: 'Resume', href: '/junior-player', btn: 'btn-yellow' },
       { d: '06', m: 'JUN', t: 'Road Test Project', s: 'Present your project & earn T2', cta: 'Start', view: 'qref', btn: 'btn-sky' },
     ],
     route: [
@@ -328,7 +328,7 @@ function renderDashboard() {
       </div>
       <div style="display:flex; gap:10px;">
         <a class="btn btn-ghost" href="#" onclick="goView('qref'); return false;">Quick Card</a>
-        <a class="btn btn-yellow" href="/lesson">Play Next Lesson →</a>
+        <a class="btn btn-yellow" href="/junior-player">Play Next Lesson →</a>
         <a class="btn btn-${t.color === 'green' ? 'green' : 'sky'}" href="#" onclick="goView('traffic'); return false;">Traffic Light →</a>
       </div>
     </div>

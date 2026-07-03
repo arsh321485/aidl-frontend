@@ -2,7 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import DriverPortalView from '../views/DriverPortalView.vue'
 import JuniorDriverPortalView from '../views/JuniorDriverPortalView.vue'
-import LessonPlayerView from '../views/LessonPlayerView.vue'
+import SeniorLessonPlayerView from '../views/SeniorLessonPlayerView.vue'
+import JuniorLessonPlayerView from '../views/JuniorLessonPlayerView.vue'
 import RoadTestView from '../views/RoadTestView.vue'
 import SignInView from '../views/SignInView.vue'
 
@@ -31,9 +32,18 @@ const router = createRouter({
       component: JuniorDriverPortalView,
     },
     {
+      path: '/senior-player',
+      name: 'senior-lesson-player',
+      component: SeniorLessonPlayerView,
+    },
+    {
       path: '/lesson',
-      name: 'lesson-player',
-      component: LessonPlayerView,
+      redirect: '/senior-player',
+    },
+    {
+      path: '/junior-player',
+      name: 'junior-lesson-player',
+      component: JuniorLessonPlayerView,
     },
     {
       path: '/road-test',

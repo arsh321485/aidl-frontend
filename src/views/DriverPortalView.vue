@@ -85,7 +85,7 @@
           </div>
           <div style="display:flex; gap: 10px;">
             <a class="p-btn p-btn-ghost" href="#" @click.prevent="currentView = 'qref'">Quick Reference</a>
-            <a class="p-btn p-btn-yellow" href="#">Resume Lesson 04 →</a>
+            <a class="p-btn p-btn-yellow" href="/senior-player">Resume Lesson 04 →</a>
             <a class="p-btn p-btn-red" href="#">Take Road Test →</a>
           </div>
         </div>
@@ -125,7 +125,7 @@
               <div class="upnext-item">
                 <div class="day"><b>22</b><small>MAY</small></div>
                 <div class="what"><b>Lesson 04 · PREP Framework</b><small>Resume at 14:22 / 26:00 · with Prof. Ragga</small></div>
-                <a class="p-btn p-btn-yellow" href="#">Resume</a>
+                <a class="p-btn p-btn-yellow" href="/senior-player">Resume</a>
               </div>
               <div class="upnext-item">
                 <div class="day"><b>06</b><small>JUN</small></div>
