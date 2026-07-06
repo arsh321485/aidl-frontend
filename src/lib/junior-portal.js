@@ -638,8 +638,8 @@ function renderQref() {
 }
 
 /* ============================================================ TIER + VIEW SWITCHING */
-const VIEWS = ['dashboard', 'highway', 'traffic', 'aup', 'glossary', 'qref'];
-const CRUMB = { dashboard: 'Dashboard', highway: 'Highway Code', traffic: 'Traffic Light Check', aup: 'My AI Rules', glossary: 'Glossary', qref: 'Quick Reference' };
+const VIEWS = ['dashboard', 'highway', 'traffic', 'junior-player', 'aup', 'glossary', 'qref'];
+const CRUMB = { dashboard: 'Dashboard', highway: 'Highway Code', traffic: 'Traffic Light Check', 'junior-player': 'Junior Player', aup: 'My AI Rules', glossary: 'Glossary', qref: 'Quick Reference' };
 
 function goView(v) {
   VIEWS.forEach(x => document.getElementById('view-' + x).classList.toggle('active', x === v));

@@ -2,10 +2,15 @@
   <div class="portal-layout">
     <!-- SIDEBAR -->
     <aside class="sidebar">
-      <a class="brand" href="#">
-        <span class="brand-mark">AI</span>
-        <span>AIDL<small>Driver Portal · v2.6</small></span>
-      </a>
+      <div class="sidebar-brand">
+        <RouterLink class="portal-back" to="/home" aria-label="Back to home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        </RouterLink>
+        <div class="brand">
+          <span class="brand-mark">AI</span>
+          <span>AIDL<small>Driver Portal · v2.6</small></span>
+        </div>
+      </div>
       <div class="nav-group">
         <h6>Drive</h6>
         <div class="nav-item" :class="{ active: currentView === 'dashboard' }" @click="currentView = 'dashboard'">
@@ -24,6 +29,10 @@
         <div class="nav-item" :class="{ active: currentView === 'prep' }" @click="currentView = 'prep'">
           <span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16v6H4z"/><path d="M4 14h10v6H4z"/></svg></span>
           PREP Builder
+        </div>
+        <div class="nav-item" :class="{ active: currentView === 'senior-player' }" @click="currentView = 'senior-player'">
+          <span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5,3 19,12 5,21"/></svg></span>
+          Senior Player
         </div>
       </div>
       <div class="nav-group">
@@ -85,7 +94,7 @@
           </div>
           <div style="display:flex; gap: 10px;">
             <a class="p-btn p-btn-ghost" href="#" @click.prevent="currentView = 'qref'">Quick Reference</a>
-            <a class="p-btn p-btn-yellow" href="/senior-player">Resume Lesson 04 →</a>
+            <a class="p-btn p-btn-yellow" href="#" @click.prevent="currentView = 'senior-player'">Resume Lesson 04 →</a>
             <a class="p-btn p-btn-red" href="#">Take Road Test →</a>
           </div>
         </div>
@@ -125,7 +134,7 @@
               <div class="upnext-item">
                 <div class="day"><b>22</b><small>MAY</small></div>
                 <div class="what"><b>Lesson 04 · PREP Framework</b><small>Resume at 14:22 / 26:00 · with Prof. Ragga</small></div>
-                <a class="p-btn p-btn-yellow" href="/senior-player">Resume</a>
+                <a class="p-btn p-btn-yellow" href="#" @click.prevent="currentView = 'senior-player'">Resume</a>
               </div>
               <div class="upnext-item">
                 <div class="day"><b>06</b><small>JUN</small></div>
@@ -383,6 +392,15 @@
         </div>
       </div>
 
+      <!-- ===== SENIOR PLAYER ===== -->
+      <div class="page page-player" v-show="currentView === 'senior-player'">
+        <iframe
+          src="/senior-lesson-player.html"
+          class="portal-player-frame"
+          title="AIDL · Senior Lesson Player"
+        />
+      </div>
+
       <!-- ===== AUP ===== -->
       <div class="page" v-show="currentView === 'aup'">
         <div class="head">
@@ -517,11 +535,13 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
+import { RouterLink } from 'vue-router'
 
 const currentView = ref('dashboard')
 const crumbNames: Record<string, string> = {
   dashboard: 'Dashboard', highway: 'Highway Code', traffic: 'Traffic Light Check',
-  prep: 'PREP Builder', aup: 'Acceptable Use', glossary: 'Glossary', qref: 'Quick Reference'
+  prep: 'PREP Builder', 'senior-player': 'Senior Player',
+  aup: 'Acceptable Use', glossary: 'Glossary', qref: 'Quick Reference'
 }
 
 // ===== HIGHWAY CODE =====
@@ -739,6 +759,65 @@ aside.sidebar {
   display: flex; flex-direction: column;
   position: sticky; top: 0; height: 100vh;
 }
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 4px 16px;
+  border-bottom: 2px dashed var(--asphalt-3);
+}
+.portal-back {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  background: var(--asphalt-2);
+  border: 2px solid var(--cream-3);
+  color: var(--cream);
+  text-decoration: none;
+  box-shadow: 2px 2px 0 #000;
+  transition: background .12s, color .12s, transform .12s, box-shadow .12s, border-color .12s;
+}
+.portal-back svg { width: 18px; height: 18px; }
+.portal-back:hover {
+  background: var(--sign-yellow);
+  color: var(--ink);
+  border-color: var(--ink);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 var(--ink);
+}
+aside.sidebar .brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: "Bungee", sans-serif;
+  font-size: 18px;
+  color: var(--cream);
+  min-width: 0;
+}
+aside.sidebar .brand-mark {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--sign-yellow);
+  border: 3px solid var(--ink);
+  display: grid;
+  place-items: center;
+  font-family: "Bungee", sans-serif;
+  font-size: 14px;
+  color: var(--ink);
+  box-shadow: 3px 3px 0 var(--asphalt-3);
+  flex-shrink: 0;
+}
+aside.sidebar .brand small {
+  display: block;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 9px;
+  color: var(--cream-3);
+  font-weight: 400;
+  margin-top: 2px;
+}
 .side-card {
   margin-top: auto;
   background: var(--asphalt-2);
@@ -772,7 +851,22 @@ aside.sidebar {
 .nav-item.active .nav-badge { background: var(--ink); color: var(--sign-yellow); }
 
 /* MAIN */
-.p-main { display: flex; flex-direction: column; min-width: 0; }
+.p-main { display: flex; flex-direction: column; min-width: 0; min-height: 100vh; }
+
+.page-player {
+  flex: 1;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.portal-player-frame {
+  flex: 1;
+  width: 100%;
+  border: none;
+  min-height: calc(100vh - 60px);
+  background: #14140f;
+}
 
 /* TOPBAR */
 .topbar {

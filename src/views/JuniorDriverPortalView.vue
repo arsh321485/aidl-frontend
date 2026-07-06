@@ -2,10 +2,15 @@
   <div id="juniorPortalRoot" class="junior-portal-layout tier-cadet">
     <!-- SIDEBAR -->
     <aside class="sidebar" data-screen-label="00a Sidebar">
-      <RouterLink class="brand" to="/home">
-        <span class="brand-mark">AI</span>
-        <span>AIDL<small>Juniors · Driver Portal</small></span>
-      </RouterLink>
+      <div class="sidebar-brand">
+        <RouterLink class="portal-back" to="/home" aria-label="Back to home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+        </RouterLink>
+        <div class="brand">
+          <span class="brand-mark">AI</span>
+          <span>AIDL<small>Juniors · Driver Portal</small></span>
+        </div>
+      </div>
 
       <div class="tier-toggle" id="tierToggle">
         <button type="button" data-tier="cadet">CADET<small>AGES 8–12</small></button>
@@ -25,6 +30,10 @@
         <div class="nav-item" data-view="traffic">
           <span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="8" y="2" width="8" height="20" rx="3" /><circle cx="12" cy="7" r="1.6" /><circle cx="12" cy="12" r="1.6" /><circle cx="12" cy="17" r="1.6" /></svg></span>
           Traffic Light Check
+        </div>
+        <div class="nav-item" data-view="junior-player">
+          <span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="5,3 19,12 5,21" /></svg></span>
+          Junior Player
         </div>
       </div>
 
@@ -109,6 +118,14 @@
           </div>
         </div>
         <div class="tl-rules" id="tlRules"></div>
+      </div>
+
+      <div class="page view" id="view-junior-player" data-screen-label="Junior Player">
+        <iframe
+          src="/junior-lesson-player.html"
+          class="portal-player-frame"
+          title="AIDL Juniors · Lesson Player"
+        />
       </div>
 
       <div class="page view" id="view-aup" data-screen-label="04 My AI Rules">

@@ -363,8 +363,12 @@
 
   /* ============================ SIDEBAR ============================ */
   aside.sidebar { background: var(--asphalt); color: var(--cream); border-right: 3px solid var(--ink); padding: 22px 18px; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; }
-  aside.sidebar .brand { display: flex; align-items: center; gap: 12px; font-family: "Bungee", sans-serif; font-size: 18px; color: var(--cream); text-decoration: none; padding: 0 4px 16px; border-bottom: 2px dashed var(--asphalt-3); }
-  aside.sidebar .brand-mark { width: 40px; height: 40px; border-radius: 50%; background: var(--sign-yellow); border: 3px solid var(--ink); display: grid; place-items: center; font-family: "Bungee", sans-serif; font-size: 14px; color: var(--ink); box-shadow: 3px 3px 0 var(--asphalt-3); }
+  .sidebar-brand { display: flex; align-items: center; gap: 10px; padding: 0 4px 16px; border-bottom: 2px dashed var(--asphalt-3); }
+  .portal-back { width: 36px; height: 36px; flex-shrink: 0; display: grid; place-items: center; background: var(--asphalt-2); border: 2px solid var(--cream-3); color: var(--cream); text-decoration: none; box-shadow: 2px 2px 0 #000; transition: background .12s, color .12s, transform .12s, box-shadow .12s, border-color .12s; }
+  .portal-back svg { width: 18px; height: 18px; }
+  .portal-back:hover { background: var(--sign-yellow); color: var(--ink); border-color: var(--ink); transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--ink); }
+  aside.sidebar .brand { display: flex; align-items: center; gap: 12px; font-family: "Bungee", sans-serif; font-size: 18px; color: var(--cream); min-width: 0; }
+  aside.sidebar .brand-mark { width: 40px; height: 40px; border-radius: 50%; background: var(--sign-yellow); border: 3px solid var(--ink); display: grid; place-items: center; font-family: "Bungee", sans-serif; font-size: 14px; color: var(--ink); box-shadow: 3px 3px 0 var(--asphalt-3); flex-shrink: 0; }
   aside.sidebar .brand small { display:block; font-family: "JetBrains Mono", monospace; font-size: 9px; color: var(--cream-3); font-weight: 400; margin-top: 2px; }
 
   .tier-toggle { display: flex; border: 3px solid var(--ink); margin: 16px 0 6px; box-shadow: 3px 3px 0 var(--asphalt-3); }
@@ -617,5 +621,22 @@
   .qref-box h5 { font-family: "Bungee"; font-size: 14px; margin: 0 0 10px; }
   .qref-box ul, .qref-box ol { margin: 0; padding-left: 18px; font-size: 12px; line-height: 1.6; }
   .qref-foot { margin-top: 24px; padding-top: 16px; border-top: 3px dashed var(--ink); display: flex; justify-content: space-between; align-items: center; font-family: "JetBrains Mono"; font-size: 11px; }
+
+  #view-junior-player {
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+  }
+  #view-junior-player.active {
+    display: flex;
+  }
+  .portal-player-frame {
+    flex: 1;
+    width: 100%;
+    border: none;
+    min-height: calc(100vh - 60px);
+    background: #14140f;
+  }
 
   @media print { aside.sidebar, .topbar { display: none; } .junior-portal-layout { display: block; } }
