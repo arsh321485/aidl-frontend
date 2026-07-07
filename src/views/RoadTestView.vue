@@ -3,7 +3,7 @@
 
     <!-- TOP BAR -->
     <header class="rt-topbar">
-      <RouterLink class="rt-back" to="/portal">
+      <RouterLink class="rt-back" to="/senior-portal">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
         Exit Test
       </RouterLink>
@@ -301,7 +301,7 @@
                 </div>
               </div>
               <div style="margin-top:16px;display:flex;gap:12px;">
-                <RouterLink class="rt-btn green" to="/portal">Back to Portal</RouterLink>
+                <RouterLink class="rt-btn green" to="/senior-portal">Back to Portal</RouterLink>
                 <button class="rt-btn secondary" @click="retake">Take Test Again</button>
               </div>
             </div>

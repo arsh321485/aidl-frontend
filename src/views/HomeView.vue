@@ -19,7 +19,7 @@
       </div>
       <div class="nav-cta">
         <button class="switch-path" type="button" @click="resetPath">↺ Switch Path</button>
-        <RouterLink class="nav-auth-btn auth-adult" to="/portal">SIGN IN</RouterLink>
+        <RouterLink class="nav-auth-btn auth-adult" to="/senior-portal">SIGN IN</RouterLink>
         <RouterLink class="nav-auth-btn auth-junior" to="/junior-portal">SIGN IN</RouterLink>
         <a class="btn btn-yellow cta-adult" href="#enroll">Enroll Today →</a>
         <a class="btn btn-green cta-junior" href="#enroll">Enroll Your Learner →</a>

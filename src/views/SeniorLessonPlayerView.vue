@@ -1,6 +1,6 @@
 <template>
   <iframe
-    src="/senior-lesson-player.html"
+    src="/senior-player.html"
     class="lesson-player-frame"
     title="AIDL · Senior Lesson Player"
   />
