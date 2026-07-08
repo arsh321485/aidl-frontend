@@ -807,19 +807,21 @@ html, body { height: 100%; overflow: hidden !important; }
 .composer input { font-size: 11px; padding: 7px 8px; }
 .composer button { width: 34px; min-width: 34px; }
 
-<<<<<<< HEAD
-/* Hide bottom road timeline footer (Cadet / Crew) */
-footer.road { display: none !important; }
+/* Remove road timeline footer completely (Cadet / Crew) */
+footer.road,
+footer.road[data-screen-label="04 Road Timeline"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  pointer-events: none !important;
+}
 body { grid-template-rows: 8px 66px 1fr !important; }
-=======
-.road { min-height: 76px; padding: 6px 10px; }
-.transport { gap: 10px; }
-.play { width: 38px; height: 38px; }
-.step { width: 26px; height: 26px; }
-.time { font-size: 10px; }
-.time .speed-btn { font-size: 9px; padding: 3px 6px; margin-left: 8px; }
-.road-stage { min-height: 42px; }
->>>>>>> 2555f918400623aad262153226828bfe9673bfa2
 
 .seg-aside { grid-template-columns: minmax(0, 1fr) 180px; gap: 8px; }
 .resource-card { padding: 8px; }
@@ -971,4 +973,125 @@ body { grid-template-rows: 8px 66px 1fr !important; }
 
 
 
-</body></html>
+<style>
+/* Junior player compact layout (cadet + crew) */
+html, body { height: 100%; overflow: hidden !important; }
+
+.topbar { min-height: 50px; padding: 6px 10px; gap: 10px; }
+.lesson-title { font-size: 12px; max-width: 300px; }
+.lesson-title small { font-size: 8px; }
+.level-switch { padding: 2px; }
+.level-switch button { min-width: 102px; font-size: 9px; padding: 5px 8px; }
+.top-progress { min-width: 140px; }
+.pill { font-size: 9px; padding: 5px 7px; }
+.icon-btn { width: 34px; height: 34px; }
+
+.stage {
+  grid-template-columns: 196px minmax(0, 1fr) 236px;
+  min-height: 0;
+}
+.chap-rail {
+  padding: 10px 8px;
+  overflow-y: auto !important;
+  overflow-x: clip !important;
+}
+#chapList { max-width: 100%; overflow-x: hidden !important; }
+.chap-rail * { box-sizing: border-box; max-width: 100%; }
+.chap { padding: 7px 6px 7px 20px; margin-left: 7px; }
+.chap b { font-size: 9px; }
+.chap small, .chap .dur { font-size: 7px; }
+.chap-rail h4 { font-size: 10px; margin-bottom: 10px; }
+.chap-rail .level-tag { font-size: 9px; padding: 3px 6px; margin-bottom: 10px; }
+.chap b, .chap small, .chap .dur {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.windshield { min-width: 0; overflow: hidden; }
+.stage-head { padding: 10px 14px 0; gap: 10px; }
+.seg-eyebrow { font-size: 9px; padding: 2px 7px; margin-bottom: 5px; }
+.seg-title { font-size: 18px; line-height: 1; }
+.seg-meta { font-size: 9px; }
+.seg-meta b { font-size: 11px; }
+.stage-body {
+  padding: 10px 14px 64px;
+  overflow-y: auto !important;
+  overflow-x: clip !important;
+}
+.stage-body > * { min-width: 0; max-width: 100%; }
+.concept { grid-template-columns: 170px minmax(0, 1fr); gap: 14px; }
+.big-sign { width: 138px; height: 138px; font-size: 16px; }
+.big-sign.circle { font-size: 42px; border-width: 8px; }
+.concept-body h3 { font-size: 15px; }
+.concept-body .sub { font-size: 9px; margin-bottom: 8px; }
+.concept-body p { font-size: 10px; line-height: 1.3; margin-bottom: 8px; }
+.examples { padding: 10px; }
+.examples h4 { font-size: 10px; margin-bottom: 6px; }
+.examples ul { font-size: 9px; line-height: 1.3; padding-left: 14px; }
+
+.instructor-rail { min-width: 0; }
+.instructor-head { padding: 8px; }
+.instructor-meta b { font-size: 11px; }
+.instructor-meta small { font-size: 8px; margin-top: 2px; }
+.instructor-meta .status { font-size: 8px; margin-top: 2px; }
+.commentary { padding: 6px; }
+.msg { padding: 7px 8px; font-size: 10px; line-height: 1.35; }
+.msg .ts { font-size: 8px; margin-bottom: 2px; }
+.composer { padding: 6px; gap: 6px; }
+.composer input { font-size: 11px; padding: 7px 8px; }
+.composer button { width: 34px; min-width: 34px; }
+
+/* Remove road timeline footer completely (Cadet / Crew) */
+footer.road,
+footer.road[data-screen-label="04 Road Timeline"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  pointer-events: none !important;
+}
+body { grid-template-rows: 8px 66px 1fr !important; }
+
+.seg-aside { grid-template-columns: minmax(0, 1fr) 180px; gap: 8px; }
+.resource-card { padding: 8px; }
+.resource-card h6 { font-size: 9px; margin-bottom: 6px; }
+.resource-card a { font-size: 9px; padding: 5px 6px; margin-bottom: 4px; }
+.resource-card a b { font-size: 9px; }
+
+/* hard guard against slight horizontal overflow in center+left */
+.stage,
+.windshield,
+.stage-head,
+.stage-body,
+.concept,
+.seg-aside,
+.chap-rail,
+#chapList {
+  min-width: 0 !important;
+  max-width: 100% !important;
+}
+
+/* Explicitly suppress horizontal scrollbar tracks in problematic panes */
+.chap-rail::-webkit-scrollbar:horizontal,
+.stage-body::-webkit-scrollbar:horizontal,
+#chapList::-webkit-scrollbar:horizontal {
+  height: 0 !important;
+}
+
+@media (max-width: 1280px) {
+  .stage { grid-template-columns: 176px minmax(0, 1fr) 214px; }
+  .seg-title { font-size: 16px; }
+  .concept { grid-template-columns: 150px minmax(0, 1fr); }
+  .big-sign { width: 126px; height: 126px; font-size: 14px; }
+  .big-sign.circle { font-size: 38px; }
+  .seg-aside { grid-template-columns: minmax(0, 1fr) 165px; }
+  .chap b { font-size: 8px; }
+  .chap small, .chap .dur { font-size: 6px; }
+}
+</style></body></html>

@@ -1485,19 +1485,21 @@ html, body {
 .composer { padding: 8px; }
 .composer input { font-size: 12px; padding: 9px 10px; }
 
-<<<<<<< HEAD
-/* Hide bottom road timeline footer (Learner / Operator / Specialist) */
-footer.road { display: none !important; }
+/* Remove road timeline footer completely (all tabs) */
+footer.road,
+footer.road[data-screen-label="04 Road Timeline"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  pointer-events: none !important;
+}
 body { grid-template-rows: 6px 64px 1fr !important; }
-=======
-.road { min-height: 86px; padding: 8px 14px; }
-.transport { gap: 10px; }
-.play { width: 42px; height: 42px; }
-.step { width: 30px; height: 30px; }
-.time { font-size: 11px; }
-.road-stage { min-height: 48px; }
-.segments { min-width: 0; }
->>>>>>> 2555f918400623aad262153226828bfe9673bfa2
 
 /* Preserve readability while preventing horizontal overflow */
 .seg-aside { grid-template-columns: minmax(0, 1fr) 240px; gap: 14px; }
@@ -1638,4 +1640,90 @@ body { grid-template-rows: 6px 64px 1fr !important; }
 
 
 
-</body></html>
+<style>
+/* Layout compact + single-scroll overrides for all tiers */
+html, body {
+  height: 100%;
+  overflow: hidden !important;
+}
+
+/* Keep main layout inside viewport without clipping text */
+.topbar { min-height: 50px; padding: 6px 10px; gap: 10px; }
+.lesson-title { font-size: 12px; max-width: 300px; }
+.lesson-title small { font-size: 8px; }
+.level-switch { padding: 2px; }
+.level-switch button { min-width: 112px; font-size: 10px; padding: 6px 10px; }
+.top-progress { min-width: 150px; }
+.pill { font-size: 10px; padding: 6px 8px; }
+.icon-btn { width: 34px; height: 34px; }
+
+.stage {
+  grid-template-columns: 220px minmax(0, 1fr) 280px;
+  min-height: 0;
+}
+.chap-rail {
+  padding: 14px 10px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.chap { padding: 8px 8px 8px 24px; margin-left: 10px; }
+.chap b { font-size: 10px; }
+.chap small, .chap .dur { font-size: 8px; }
+
+.windshield { min-width: 0; }
+.stage-head { padding: 14px 20px 0; gap: 14px; }
+.seg-eyebrow { font-size: 10px; padding: 3px 8px; margin-bottom: 6px; }
+.seg-title { font-size: 24px; line-height: 1; }
+.seg-meta { font-size: 10px; }
+.seg-meta b { font-size: 12px; }
+.stage-body {
+  padding: 14px 20px 70px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.concept { grid-template-columns: 210px minmax(0, 1fr); gap: 20px; }
+.big-sign { width: 170px; height: 170px; font-size: 20px; }
+.big-sign.circle { font-size: 54px; border-width: 10px; }
+.concept-body h3 { font-size: 18px; }
+.concept-body p { font-size: 13px; line-height: 1.45; }
+.examples ul { font-size: 12px; line-height: 1.45; }
+
+.instructor-rail { min-width: 0; }
+.instructor-head { padding: 10px; }
+.commentary { padding: 8px; }
+.msg { padding: 8px 9px; font-size: 11px; }
+.composer { padding: 8px; }
+.composer input { font-size: 12px; padding: 9px 10px; }
+
+/* Remove road timeline footer completely (all tabs) */
+footer.road,
+footer.road[data-screen-label="04 Road Timeline"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  pointer-events: none !important;
+}
+body { grid-template-rows: 6px 64px 1fr !important; }
+
+/* Preserve readability while preventing horizontal overflow */
+.seg-aside { grid-template-columns: minmax(0, 1fr) 240px; gap: 14px; }
+.resource-card { padding: 10px; }
+.resource-card a { font-size: 11px; padding: 6px 8px; }
+
+@media (max-width: 1280px) {
+  .stage {
+    grid-template-columns: 200px minmax(0, 1fr) 250px;
+  }
+  .seg-title { font-size: 20px; }
+  .concept { grid-template-columns: 180px minmax(0, 1fr); }
+  .big-sign { width: 150px; height: 150px; font-size: 18px; }
+  .big-sign.circle { font-size: 46px; }
+  .seg-aside { grid-template-columns: minmax(0, 1fr) 210px; }
+}
+</style></body></html>
