@@ -1,6 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import DriverPortalView from '../views/DriverPortalView.vue'
+import SeniorPortalView from '../views/SeniorPortalView.vue'
 import JuniorDriverPortalView from '../views/JuniorDriverPortalView.vue'
 import SeniorLessonPlayerView from '../views/SeniorLessonPlayerView.vue'
 import JuniorLessonPlayerView from '../views/JuniorLessonPlayerView.vue'
@@ -22,9 +22,13 @@ const router = createRouter({
       component: HomeView,
     },
     {
+      path: '/senior-portal',
+      name: 'senior-portal',
+      component: SeniorPortalView,
+    },
+    {
       path: '/portal',
-      name: 'driver-portal',
-      component: DriverPortalView,
+      redirect: '/senior-portal',
     },
     {
       path: '/junior-portal',

@@ -122,7 +122,7 @@
 
       <div class="page view" id="view-junior-player" data-screen-label="Junior Player">
         <iframe
-          src="/junior-lesson-player.html"
+          src="/junior-player.html"
           class="portal-player-frame"
           title="AIDL Juniors · Lesson Player"
         />

@@ -1,6 +1,6 @@
 <template>
   <iframe
-    src="/junior-lesson-player.html"
+    src="/junior-player.html"
     class="lesson-player-frame"
     title="AIDL Juniors · Lesson Player"
   />
