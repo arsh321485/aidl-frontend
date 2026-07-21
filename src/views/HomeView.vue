@@ -21,8 +21,8 @@
         <button class="switch-path" type="button" @click="resetPath">↺ Switch Path</button>
         <RouterLink class="nav-auth-btn auth-adult" to="/senior-portal">SIGN IN</RouterLink>
         <RouterLink class="nav-auth-btn auth-junior" to="/junior-portal">SIGN IN</RouterLink>
-        <a class="btn btn-yellow cta-adult" href="#enroll">Enroll Today →</a>
-        <a class="btn btn-green cta-junior" href="#enroll">Enroll Your Learner →</a>
+        <a class="btn btn-yellow cta-adult" href="#enroll"><span class="cta-long">Enroll Today →</span><span class="cta-short">Enroll →</span></a>
+        <a class="btn btn-green cta-junior" href="#enroll"><span class="cta-long">Enroll Your Learner →</span><span class="cta-short">Enroll →</span></a>
       </div>
     </div>
   </nav>
@@ -770,6 +770,28 @@ function syncBodyClasses() {
 const preChoice = ref(true)
 const mode = ref<'adult' | 'junior' | null>(null)
 
+function scrollToEnrollForm() {
+  if (window.location.hash !== '#enroll') return
+  requestAnimationFrame(() => {
+    document.querySelector('#enroll .form-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  })
+}
+
+function handleHashNavigation() {
+  const hash = window.location.hash
+  if (!hash || hash === '#') return
+
+  if (preChoice.value) {
+    preChoice.value = false
+    if (!mode.value) {
+      mode.value = hash === '#juniors' ? 'junior' : 'adult'
+    }
+    syncBodyClasses()
+  }
+
+  scrollToEnrollForm()
+}
+
 function choose(path: 'adult' | 'junior', hash?: string) {
   preChoice.value = false
   mode.value = path
@@ -778,6 +800,7 @@ function choose(path: 'adult' | 'junior', hash?: string) {
   if (hash) {
     requestAnimationFrame(() => {
       window.location.hash = hash
+      if (hash === '#enroll') scrollToEnrollForm()
     })
   }
 }
@@ -793,8 +816,13 @@ function resetPath() {
   window.scrollTo(0, 0)
 }
 
-onMounted(syncBodyClasses)
+onMounted(() => {
+  syncBodyClasses()
+  handleHashNavigation()
+  window.addEventListener('hashchange', handleHashNavigation)
+})
 onUnmounted(() => {
+  window.removeEventListener('hashchange', handleHashNavigation)
   document.body.classList.remove('pre-choice', 'mode-adult', 'mode-junior', 'focus-adult', 'focus-junior')
 })
 
@@ -918,6 +946,7 @@ body { overflow-x: hidden; }
 .nav-links a { color: var(--ink); text-decoration: none; font-weight: 600; font-size: 15px; }
 .nav-links a:hover { color: var(--signal-red); }
 .nav-cta { margin-left: auto; display: flex; gap: 12px; align-items: center; }
+.cta-short { display: none; }
 
 .btn {
   display: inline-flex; align-items: center; gap: 10px;
@@ -1149,7 +1178,8 @@ section.band { position: relative; padding: 120px 0; border-bottom: 4px solid va
 
 /* TRAININGS */
 .trainings { background: var(--cream); }
-.trainings .top { display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; }
+.trainings .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 40px; }
+.trainings .top .section-sub { margin: 8px 0 0; flex: 0 1 420px; }
 .training-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 60px; }
 .tr-card {
   background: var(--cream-2); border: 4px solid var(--ink);
@@ -1228,7 +1258,8 @@ section.band { position: relative; padding: 120px 0; border-bottom: 4px solid va
 
 /* ENROLL */
 .enroll { background: var(--sign-yellow); }
-.enroll-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-top: 50px; align-items: start; }
+#enroll { scroll-margin-top: 88px; }
+.enroll-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-top: 50px; align-items: start; min-width: 0; }
 .enroll-left h2 { color: var(--ink); }
 .enroll-steps { display: grid; gap: 14px; margin-top: 28px; }
 .step { display: flex; gap: 18px; align-items: flex-start; background: var(--cream); border: 3px solid var(--ink); padding: 16px 18px; box-shadow: 5px 5px 0 var(--ink); }
@@ -1236,20 +1267,20 @@ section.band { position: relative; padding: 120px 0; border-bottom: 4px solid va
 .step h4 { margin: 0 0 4px; font-family: "Bungee", sans-serif; font-size: 16px; }
 .step p { margin: 0; font-size: 13px; }
 
-.form-card { background: var(--cream); border: 4px solid var(--ink); box-shadow: 12px 12px 0 var(--ink); padding: 0; overflow: hidden; }
-.form-header { background: var(--ink); color: var(--cream); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; font-family: "Bungee", sans-serif; font-size: 16px; }
-.form-header .stamp { background: var(--signal-red); color: var(--cream); padding: 4px 10px; font-size: 12px; transform: rotate(-4deg); border: 2px solid var(--cream); }
-.form-body { padding: 28px; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
-.field { display: flex; flex-direction: column; gap: 6px; }
-.field label { font-family: "JetBrains Mono", monospace; font-size: 10px; text-transform: uppercase; color: var(--ink); display: flex; justify-content: space-between; }
-.field input, .field select { height: 44px; border: 3px solid var(--ink); background: var(--cream-2); padding: 0 14px; font-family: "Space Grotesk", sans-serif; font-size: 15px; font-weight: 600; }
+.form-card { background: var(--cream); border: 4px solid var(--ink); box-shadow: 12px 12px 0 var(--ink); padding: 0; overflow: visible; max-width: 100%; min-width: 0; width: 100%; box-sizing: border-box; }
+.form-header { background: var(--ink); color: var(--cream); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; font-family: "Bungee", sans-serif; font-size: 16px; gap: 10px; flex-wrap: wrap; min-width: 0; }
+.form-header .stamp { background: var(--signal-red); color: var(--cream); padding: 4px 10px; font-size: 12px; transform: rotate(-4deg); border: 2px solid var(--cream); flex-shrink: 0; }
+.form-body { padding: 28px; min-width: 0; overflow-wrap: anywhere; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; min-width: 0; }
+.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.field label { font-family: "JetBrains Mono", monospace; font-size: 10px; text-transform: uppercase; color: var(--ink); display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.field input, .field select { width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; height: 44px; border: 3px solid var(--ink); background: var(--cream-2); padding: 0 14px; font-family: "Space Grotesk", sans-serif; font-size: 15px; font-weight: 600; }
 .field input:focus, .field select:focus { outline: none; background: var(--sign-yellow); }
 .field.full { grid-column: 1 / -1; }
-.choice-group { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 4px; }
-.choice { border: 3px solid var(--ink); background: var(--cream-2); padding: 10px; text-align: center; cursor: pointer; font-family: "Bungee", sans-serif; font-size: 12px; user-select: none; }
+.choice-group { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 4px; min-width: 0; }
+.choice { border: 3px solid var(--ink); background: var(--cream-2); padding: 10px; text-align: center; cursor: pointer; font-family: "Bungee", sans-serif; font-size: 12px; user-select: none; min-width: 0; }
 .choice.active { background: var(--sign-yellow); box-shadow: inset 0 0 0 3px var(--ink); }
-.form-foot { background: var(--cream-2); border-top: 3px dashed var(--ink); padding: 18px 28px; display: flex; justify-content: space-between; align-items: center; }
+.form-foot { background: var(--cream-2); border-top: 3px dashed var(--ink); padding: 18px 28px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; min-width: 0; }
 .form-foot .tiny { font-family: "JetBrains Mono", monospace; font-size: 10px; }
 
 /* LICENSES */
@@ -1327,4 +1358,237 @@ footer.foot { background: var(--ink); color: var(--cream); padding: 70px 0 30px;
 .foot ul li a:hover { color: var(--sign-yellow); }
 .foot-bot { border-top: 1px solid #3a3528; margin-top: 50px; padding-top: 24px; display: flex; justify-content: space-between; font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--cream-2); }
 .foot-brand-blurb { font-size: 14px; line-height: 1.6; color: var(--cream-2); margin: 14px 0 0; }
+
+/* ── Responsive ─────────────────────────────────────────────────────────── */
+@media (max-width: 1100px) {
+  .wrap { padding: 0 28px; }
+  .nav-inner {
+    height: auto;
+    min-height: 68px;
+    flex-wrap: wrap;
+    gap: 10px 16px;
+    padding: 12px 0;
+    align-items: center;
+  }
+  .brand { order: 1; }
+  .nav-links {
+    order: 2;
+    width: 100%;
+    margin-left: 0;
+    gap: 8px 14px;
+    flex-wrap: wrap;
+  }
+  .nav-links a { font-size: 13px; }
+  .nav-cta {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: stretch;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .nav-cta .btn,
+  .nav-auth-btn,
+  .switch-path {
+    flex: 1 1 0;
+    min-width: 0;
+    width: auto;
+    max-width: none;
+    justify-content: center;
+    padding: 8px 10px;
+    font-size: 11px;
+    white-space: nowrap;
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .nav-cta .btn.btn-yellow,
+  .nav-cta .btn.btn-green {
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  .trainings .top,
+  .juniors .top {
+    align-items: flex-start;
+    gap: 24px;
+  }
+  .trainings .top .section-sub,
+  .juniors .top .section-sub {
+    flex: 1 1 260px;
+    max-width: 360px;
+    margin-top: 4px;
+  }
+  .section-title { font-size: clamp(36px, 6vw, 52px); }
+  .hero { height: auto; min-height: 720px; }
+  .hero-title { font-size: clamp(56px, 10vw, 96px); text-shadow: 4px 4px 0 var(--sign-yellow); }
+  .hero-title .l2 { text-shadow: 4px 4px 0 var(--ink); }
+  .hero-headline { padding: 40px 28px 300px; }
+  .training-grid { grid-template-columns: 1fr 1fr; }
+  .ins-grid { grid-template-columns: 1fr 1fr; }
+  .foot-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+  .form-row { grid-template-columns: 1fr; }
+  .choice-group.five-cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .enroll-grid { gap: 40px; }
+}
+
+@media (max-width: 900px) {
+  .nav-inner {
+    gap: 10px 12px;
+  }
+  .nav-links {
+    order: 2;
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .nav-cta {
+    order: 3;
+    width: 100%;
+    margin-left: 0;
+    flex-wrap: nowrap;
+    gap: 6px;
+  }
+  .nav-cta .btn,
+  .nav-auth-btn,
+  .switch-path {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 8px 6px;
+    font-size: 10px;
+    letter-spacing: -0.01em;
+  }
+  .cta-adult .cta-long,
+  .cta-junior .cta-long { display: none; }
+  .cta-adult .cta-short,
+  .cta-junior .cta-short { display: inline; }
+  .hero { min-height: 640px; }
+  .hero-headline { padding: 32px 20px 280px; }
+  .hero-sub { font-size: 16px; }
+  .dashboard { height: 240px; }
+  .dash-inner { padding: 50px 20px 20px; gap: 12px; grid-template-columns: 1fr; justify-items: center; }
+  .gauge-cluster { justify-content: center; flex-wrap: wrap; gap: 16px; }
+  .wheel { transform: scale(0.85); }
+  .trainings .top,
+  .juniors .top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .trainings .top .section-sub,
+  .juniors .top .section-sub {
+    flex: none;
+    max-width: none;
+    width: 100%;
+    margin: 0;
+  }
+  .training-grid,
+  .ins-grid,
+  .enroll-grid,
+  .lic-grid,
+  .verify,
+  .foot-grid,
+  .jr-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .tr-card { min-height: 0; }
+  .tr-card .btn { width: 100%; justify-content: center; align-self: stretch; }
+  .roadmap-stage {
+    height: auto;
+    min-height: 0;
+    margin-top: 40px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    padding: 36px 0;
+  }
+  .roadmap-signs {
+    flex-wrap: nowrap;
+    justify-content: flex-start;
+    height: auto;
+    padding: 0 20px 24px;
+    gap: 20px;
+    min-width: min(100%, 1100px);
+    align-items: flex-end;
+  }
+  .feature-sign {
+    width: min(180px, 38vw);
+    flex: 0 0 auto;
+  }
+  .feature-sign .desc {
+    max-width: none;
+    font-size: 12px;
+  }
+  .enroll-grid { gap: 28px; }
+  .form-card { order: -1; box-shadow: 8px 8px 0 var(--ink); }
+  .enroll-left { order: 1; }
+  .form-row { grid-template-columns: 1fr !important; }
+  .form-body { padding: 20px 16px; }
+  .form-header { padding: 14px 16px; font-size: 14px; }
+  .form-foot {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 16px;
+  }
+  .form-foot .btn { width: 100%; justify-content: center; }
+  .choice-group,
+  .choice-group.five-cols { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .choice-group.five-cols .choice:nth-child(5) { grid-column: 1 / -1; }
+  .verify-result { grid-template-columns: 1fr; }
+  .lic-main { grid-template-columns: 72px minmax(0, 1fr); }
+  .ins-meta { grid-template-columns: 1fr; }
+  .tr-meta { grid-template-columns: 1fr; }
+  .verify-left { border-right: 0; border-bottom: 3px dashed #3a3528; }
+  .verify-form { flex-direction: column; }
+  .verify-form input { border-right: 3px solid var(--cream); }
+  .foot-bot { flex-direction: column; gap: 10px; text-align: center; }
+  section.band { padding: 60px 0; }
+  .section-title { font-size: clamp(32px, 9vw, 48px); }
+}
+
+@media (max-width: 560px) {
+  .wrap { padding: 0 16px; }
+  .hero-title { font-size: clamp(42px, 14vw, 64px); }
+  .hero-eyebrow { font-size: 11px; padding: 6px 12px; }
+  .nav-cta {
+    gap: 5px;
+  }
+  .nav-cta .btn,
+  .nav-auth-btn,
+  .switch-path {
+    padding: 8px 4px;
+    font-size: 9px;
+  }
+  .cta-adult .cta-long,
+  .cta-junior .cta-long { display: none; }
+  .cta-adult .cta-short,
+  .cta-junior .cta-short { display: inline; }
+  .band .btn:not(.nav-cta .btn) {
+    width: 100%;
+    justify-content: center;
+  }
+  .marquee-track span { font-size: 16px; }
+  .lic-info b { font-size: 18px; }
+  .roadmap-signs {
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+    padding: 0 16px 20px;
+    gap: 28px;
+  }
+  .feature-sign {
+    width: 100%;
+    max-width: 280px;
+  }
+  .feature-sign .desc {
+    top: 0;
+    margin-top: 16px;
+  }
+  .ins-card .btn { width: 100%; justify-content: center; }
+}
+
+/* iPad Mini (~768px) — comfortable single-column cards, scrollable roadmaps */
+@media (min-width: 561px) and (max-width: 834px) {
+  .wrap { padding: 0 24px; }
+  .training-grid { grid-template-columns: 1fr !important; }
+  .ins-grid { grid-template-columns: 1fr !important; }
+  .roadmap-signs { min-width: 900px; }
+}
 </style>

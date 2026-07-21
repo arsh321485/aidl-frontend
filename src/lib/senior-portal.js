@@ -510,7 +510,7 @@ function renderDashboard() {
         <h1>${d.hello}</h1>
         <p>${d.intro}</p>
       </div>
-      <div style="display:flex; gap: 10px; flex-wrap: wrap; justify-content:flex-end;">
+      <div class="dash-cta">
         <a class="btn btn-ghost" href="#" onclick="goView('qref'); return false;">Quick Reference</a>
         <a class="btn btn-accent" href="${t.nextLessonHref}">${t.lessonLabel}</a>
         <a class="btn btn-red" href="/road-test">Take Road Test →</a>
@@ -563,7 +563,7 @@ function renderDashboard() {
         <div class="card yellow" style="margin-bottom: 18px;">
           <div class="card-head"><h3>TODAY'S RULE OF THE ROAD</h3><span class="tag">${d.rule.tag}</span></div>
           <p style="margin:0; font-size: 14px; line-height: 1.5;"><b>${d.rule.title}</b> ${d.rule.text}</p>
-          <div style="margin-top: 14px; display: flex; gap: 8px;">
+          <div class="rule-actions" style="margin-top: 14px;">
             <a class="btn" href="#" onclick="goView('highway'); return false;">See the signs</a>
             <a class="btn btn-ghost" href="#" onclick="goView('glossary'); return false;">Glossary</a>
           </div>
@@ -885,7 +885,10 @@ function goView(v) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.view === v));
   document.getElementById('crumbHere').textContent = CRUMB[v];
   window.scrollTo({ top: 0, behavior: 'instant' });
+  const root = document.getElementById('seniorPortalRoot');
+  if (root) root.classList.remove('nav-open');
 }
+window.goView = goView;
 
 function applyTier(key) {
   CURRENT = key;
@@ -917,6 +920,11 @@ function initPortal() {
   document.getElementById('tlInput').addEventListener('input', e => renderTL(e.target.value));
   document.getElementById('glosSearch').addEventListener('input', e => renderGlossaryGrid(e.target.value));
   initPREP();
+  const root = document.getElementById('seniorPortalRoot');
+  const menuBtn = document.getElementById('portalMenuBtn');
+  const backdrop = document.getElementById('portalNavBackdrop');
+  if (menuBtn && root) menuBtn.addEventListener('click', () => root.classList.toggle('nav-open'));
+  if (backdrop && root) backdrop.addEventListener('click', () => root.classList.remove('nav-open'));
 
   let saved = 'operator';
   try { saved = localStorage.getItem('aidl-senior-tier') || 'operator'; } catch (e) {}

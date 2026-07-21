@@ -1,0 +1,28 @@
+/* Global responsive baseline */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  overflow-x: hidden;
+}
+
+img,
+svg,
+video,
+iframe {
+  max-width: 100%;
+}
+
+#app {
+  min-width: 0;
+  overflow-x: hidden;
+}

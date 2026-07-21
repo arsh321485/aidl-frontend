@@ -256,4 +256,15 @@ function handleSignIn() {
   font-size: 10px;
   color: #6a624a;
 }
+
+@media (max-width: 520px) {
+  .signin-page { padding: 24px 14px; }
+  .signin-card { box-shadow: 8px 8px 0 var(--sign-yellow); }
+  .signin-header,
+  .signin-body,
+  .signin-foot { padding-left: 18px; padding-right: 18px; }
+  .signin-title { font-size: 28px; }
+  .signin-foot { flex-direction: column; gap: 6px; text-align: center; }
+  .signin-badge { font-size: 9px; }
+}
 </style>

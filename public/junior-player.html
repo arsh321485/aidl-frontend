@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8">
 <title>AIDL Juniors · Lesson Player</title>
-<meta name="viewport" content="width=1440">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <style>/* devanagari */
@@ -859,6 +859,54 @@ body { grid-template-rows: 8px 66px 1fr !important; }
   .chap b { font-size: 8px; }
   .chap small, .chap .dur { font-size: 6px; }
 }
+
+@media (max-width: 900px) {
+  .stage {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    overflow: auto;
+  }
+  .chap-rail,
+  .instructor-rail,
+  .buddy-rail {
+    position: static;
+    width: 100%;
+    max-height: none;
+    height: auto;
+    border-right: 0;
+    border-left: 0;
+  }
+  .chap-rail {
+    border-bottom: 3px solid var(--ink, #14140f);
+    max-height: 180px;
+    overflow: auto;
+  }
+  .instructor-rail,
+  .buddy-rail {
+    border-top: 3px solid var(--ink, #14140f);
+    max-height: 240px;
+    overflow: auto;
+  }
+  .topbar {
+    flex-wrap: wrap;
+    height: auto;
+    gap: 10px;
+    padding: 10px 12px;
+  }
+  .level-switch {
+    width: 100%;
+    overflow-x: auto;
+  }
+  .concept,
+  .seg-aside {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .seg-title { font-size: 15px; }
+  .big-sign { width: 110px; height: 110px; font-size: 12px; }
+}
 </style></head>
 <body class="level-J" data-screen-label="00 Junior Lesson Player">
 
@@ -1094,4 +1142,49 @@ body { grid-template-rows: 8px 66px 1fr !important; }
   .chap b { font-size: 8px; }
   .chap small, .chap .dur { font-size: 6px; }
 }
-</style></body></html>
+
+@media (max-width: 900px) {
+  .stage {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    overflow: auto;
+  }
+  .chap-rail,
+  .instructor-rail,
+  .buddy-rail {
+    position: static;
+    width: 100%;
+    max-height: none;
+    height: auto;
+    border-right: 0;
+    border-left: 0;
+  }
+  .chap-rail {
+    border-bottom: 3px solid var(--ink, #14140f);
+    max-height: 180px;
+    overflow: auto;
+  }
+  .instructor-rail,
+  .buddy-rail {
+    border-top: 3px solid var(--ink, #14140f);
+    max-height: 240px;
+    overflow: auto;
+  }
+  .topbar {
+    flex-wrap: wrap;
+    height: auto;
+    gap: 10px;
+    padding: 10px 12px;
+  }
+  .level-switch { width: 100%; overflow-x: auto; }
+  .concept,
+  .seg-aside { grid-template-columns: 1fr !important; }
+}
+
+@media (max-width: 560px) {
+  .seg-title { font-size: 15px; }
+  .big-sign { width: 110px; height: 110px; font-size: 12px; }
+}
+</style>
+<link rel="stylesheet" href="/player-mobile.css">
+</body></html>

@@ -466,6 +466,7 @@
   .btn.btn-red { background: var(--signal-red); color: var(--cream); box-shadow: 4px 4px 0 var(--ink); }
   .btn.btn-green { background: var(--signal-green); color: var(--ink); box-shadow: 4px 4px 0 var(--ink); }
   .btn.btn-ghost { background: var(--cream); color: var(--ink); box-shadow: none; }
+  .rule-actions { display: flex; gap: 8px; }
 
   .view { display: none; }
   .view.active { display: block; }

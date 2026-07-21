@@ -64,8 +64,11 @@
 
 <!-- ============================ MAIN ============================ -->
 <main class="main">
-
+  <div class="portal-nav-backdrop" id="portalNavBackdrop" aria-hidden="true"></div>
   <div class="topbar">
+    <button type="button" class="portal-menu-btn" id="portalMenuBtn" aria-label="Open navigation">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
     <div class="crumb"><span>AIDL</span><span>/</span><span class="here" id="crumbHere">Dashboard</span></div>
     <div class="top-search">
       <input placeholder="Search handbook, terms, rules…">
@@ -240,6 +243,7 @@ import { onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { initSeniorPortal } from '../lib/senior-portal.js'
 import '../styles/senior-driver-portal.css'
+import '../styles/portal-responsive.css'
 
 onMounted(() => {
   initSeniorPortal()

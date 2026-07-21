@@ -1,6 +1,12 @@
-@media (max-width: 1240px) { .top-search { min-width: 180px; } .avatar-meta { display: none; } }
-
-/* vietnamese */
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="utf-8">
+<title>AIDL Juniors · Driver Portal</title>
+<meta name="viewport" content="width=1440">
+<style>@media (max-width: 1240px) { .top-search { min-width: 180px; } .avatar-meta { display: none; } }</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<style>/* vietnamese */
 @font-face {
   font-family: 'Bungee';
   font-style: normal;
@@ -333,9 +339,8 @@
   src: url("/junior-portal-assets/222c9fa9-9ed5-43ec-9e10-c25bdf12454d.woff2") format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-
-
-
+</style>
+<style>
   :root {
     --cream: #f5ecd2; --cream-2: #f0e3bd; --cream-3: #e6d8a8;
     --asphalt: #14140f; --asphalt-2: #1f1e16; --asphalt-3: #2a2820;
@@ -343,26 +348,26 @@
     --ink: #14140f; --muted: #6a624a; --line: #d8c98f; --line-white: #f6f1de; --accent: #2ec866;
     --s1: #6fb3e0; --s2: #ff9d00; --s3: #2ec866; --s4: #ffcc00; --s5: #e23a2e;
   }
-  .junior-portal-layout.tier-cadet { --accent: #2ec866; }
-  .junior-portal-layout.tier-crew  { --accent: #6fb3e0; }
+  body.tier-cadet { --accent: #2ec866; }
+  body.tier-crew  { --accent: #6fb3e0; }
   * { box-sizing: border-box; }
-  html, .junior-portal-layout { margin: 0; padding: 0; background: var(--cream); color: var(--ink); font-family: "Space Grotesk", system-ui, sans-serif; }
-  .junior-portal-layout { display: grid; grid-template-columns: 268px 1fr; min-height: 100vh; }
+  html, body { margin: 0; padding: 0; background: var(--cream); color: var(--ink); font-family: "Space Grotesk", system-ui, sans-serif; }
+  body { display: grid; grid-template-columns: 268px 1fr; min-height: 100vh; }
   a { color: inherit; }
   a:hover { color: var(--ink); }
   .display { font-family: "Bungee", sans-serif; }
   .mono { font-family: "JetBrains Mono", monospace; }
 
   aside.sidebar { background: var(--asphalt); color: var(--cream); border-right: 3px solid var(--ink); padding: 22px 18px; display: flex; flex-direction: column; position: sticky; top: 0; height: 100vh; overflow-y: auto; }
-  .brand { display: flex; align-items: center; gap: 12px; font-family: "Bungee", sans-serif; font-size: 18px; color: var(--cream); text-decoration: none; padding: 0 4px; border-bottom: 0; }
+  .brand { display: flex; align-items: center; gap: 12px; font-family: "Bungee", sans-serif; font-size: 18px; color: var(--cream); text-decoration: none; padding: 0 4px 16px; border-bottom: 2px dashed var(--asphalt-3); }
   .brand-mark { width: 40px; height: 40px; border-radius: 50%; background: var(--sign-yellow); border: 3px solid var(--ink); display: grid; place-items: center; font-family: "Bungee", sans-serif; font-size: 14px; color: var(--ink); box-shadow: 3px 3px 0 var(--asphalt-3); }
   .brand small { display: block; font-family: "JetBrains Mono", monospace; font-size: 9px; color: var(--cream-3); font-weight: 400; margin-top: 2px; }
   .tier-toggle { display: flex; border: 3px solid var(--ink); margin: 16px 0 4px; box-shadow: 3px 3px 0 var(--asphalt-3); }
   .tier-toggle button { flex: 1; font-family: "Bungee", sans-serif; font-size: 11px; padding: 11px 6px; border: 0; border-right: 3px solid var(--ink); background: var(--asphalt-2); color: var(--cream-2); cursor: pointer; line-height: 1.1; }
   .tier-toggle button:last-child { border-right: 0; }
   .tier-toggle button small { display: block; font-family: "JetBrains Mono", monospace; font-size: 8px; margin-top: 4px; font-weight: 500; }
-  .junior-portal-layout.tier-cadet .tier-toggle button[data-tier="cadet"] { background: var(--signal-green); color: var(--ink); }
-  .junior-portal-layout.tier-crew  .tier-toggle button[data-tier="crew"]  { background: var(--sky); color: var(--ink); }
+  body.tier-cadet .tier-toggle button[data-tier="cadet"] { background: var(--signal-green); color: var(--ink); }
+  body.tier-crew  .tier-toggle button[data-tier="crew"]  { background: var(--sky); color: var(--ink); }
   .nav-group { margin-top: 14px; }
   .nav-group h6 { font-family: "Bungee", sans-serif; font-size: 10px; color: var(--sign-yellow); margin: 0 0 6px; padding: 0 6px; letter-spacing: 0.1em; }
   .nav-item { display: flex; align-items: center; gap: 12px; padding: 9px 12px; margin-bottom: 2px; cursor: pointer; font-size: 14px; font-weight: 600; color: var(--cream-2); border: 2px solid transparent; transition: background .12s; user-select: none; }
@@ -409,7 +414,6 @@
   .btn.btn-sky:hover { color: var(--ink); }
   .btn.btn-ghost { background: var(--cream); color: var(--ink); box-shadow: none; }
   .btn.btn-ghost:hover { color: var(--ink); }
-  .rule-actions { display: flex; gap: 8px; }
   .view { display: none; }
   .view.active { display: block; }
 
@@ -428,7 +432,7 @@
   .dash-grid > * { min-width: 0; }
   @media (max-width: 1240px) { .dash-grid { grid-template-columns: minmax(0,1fr); } }
   .license-card { background: linear-gradient(135deg, #cdeed8 0%, #7ad99a 55%, #2ec866 100%); color: var(--ink); border: 3px solid var(--ink); box-shadow: 8px 8px 0 var(--ink); padding: 24px; position: relative; overflow: hidden; }
-  .junior-portal-layout.tier-crew .license-card { background: linear-gradient(135deg, #fdf3cf 0%, #ffe27a 55%, #ffcc00 100%); }
+  body.tier-crew .license-card { background: linear-gradient(135deg, #fdf3cf 0%, #ffe27a 55%, #ffcc00 100%); }
   .license-card::before { content: ""; position: absolute; right: -50px; top: -50px; width: 220px; height: 220px; background: radial-gradient(circle, rgba(255,255,255,0.55), transparent 65%); }
   .license-card .lic-head { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--ink); padding-bottom: 10px; margin-bottom: 14px; font-family: "JetBrains Mono"; font-size: 11px; }
   .license-card .lic-head b { font-family: "Bungee"; font-size: 13px; }
@@ -682,4 +686,117 @@
   .qref-box ul, .qref-box ol { margin: 0; padding-left: 18px; font-size: 12px; line-height: 1.6; }
   .qref-foot { margin-top: 24px; padding-top: 16px; border-top: 3px dashed var(--ink); display: flex; justify-content: space-between; align-items: center; font-family: "JetBrains Mono"; font-size: 11px; }
 
-  @media print { aside.sidebar, .topbar { display: none; } .junior-portal-layout { display: block; } }
+  @media print { aside.sidebar, .topbar { display: none; } body { display: block; } }
+</style>
+</head>
+<body class="tier-cadet" data-screen-label="00 Junior Portal v2">
+
+<aside class="sidebar" data-screen-label="00a Sidebar">
+  <a class="brand" href="AI Driving License.html">
+    <span class="brand-mark">AI</span>
+    <span>AIDL<small>Juniors · The Open Road</small></span>
+  </a>
+  <div class="tier-toggle" id="tierToggle">
+    <button data-tier="cadet">JUNIOR CADET<small>AGES 8–12</small></button>
+    <button data-tier="crew">ROAD CREW<small>AGES 12–16</small></button>
+  </div>
+  <div class="nav-group">
+    <h6>Learn</h6>
+    <div class="nav-item active" data-view="dashboard"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 11l9-7 9 7"></path><path d="M5 10v9h14v-9"></path></svg></span>Dashboard</div>
+    <div class="nav-item" data-view="route"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 21l3-18h10l3 18"></path><path d="M9 3v18M15 3v18"></path></svg></span>Route Map</div>
+    <div class="nav-item" data-view="lanes"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 6h18M3 12h18M3 18h18"></path></svg></span>The Five Lanes</div>
+  </div>
+  <div class="nav-group">
+    <h6>Licence</h6>
+    <div class="nav-item" data-view="ladder"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="6" width="18" height="13" rx="2"></rect><path d="M3 10h18M7 15h4"></path></svg></span>Licence Ladder</div>
+    <div class="nav-item" data-view="code"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2h9l4 4v16H6z"></path><path d="M14 2v5h5"></path></svg></span><span id="navCode">The Cadet Code</span></div>
+    <div class="nav-item" data-view="badges"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="9" r="6"></circle><path d="M8 14l-2 8 6-3 6 3-2-8"></path></svg></span>Badges &amp; Portfolio</div>
+  </div>
+  <div class="nav-group">
+    <h6>Toolkit</h6>
+    <div class="nav-item" data-view="traffic"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="8" y="2" width="8" height="20" rx="3"></rect><circle cx="12" cy="7" r="1.6"></circle><circle cx="12" cy="12" r="1.6"></circle><circle cx="12" cy="17" r="1.6"></circle></svg></span>Traffic Light Check</div>
+    <div class="nav-item" data-view="glossary"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h12a4 4 0 014 4v12H8a4 4 0 01-4-4z"></path><path d="M4 4v12a4 4 0 004 4h12"></path></svg></span>Glossary</div>
+    <div class="nav-item" data-view="qref"><span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="4" y="3" width="16" height="18" rx="2"></rect><path d="M9 8h6M9 12h6M9 16h4"></path></svg></span>Quick Reference</div>
+  </div>
+  <div class="side-card">
+    <div>MY LICENCE</div>
+    <div class="lic-name" id="sideName">RILEY LEE</div>
+    <div class="lic-id" id="sideId">AIDL-J-0042-1180</div>
+    <div class="lic-meter"><i id="sideMeter" style="width: 31%;"></i></div>
+    <div class="lic-meter-label"><span id="sideClass">GREEN LICENCE</span><span id="sideProg">in progress</span></div>
+  </div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="crumb"><span>AIDL JUNIORS</span><span>/</span><span class="here" id="crumbHere">Dashboard</span></div>
+    <div class="top-search">
+      <input placeholder="Search modules, signs, words…">
+      <kbd>⌘K</kbd>
+    </div>
+    <div class="top-actions">
+      <div class="icon-btn" title="Notifications">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 8a6 6 0 1112 0c0 7 3 8 3 8H3s3-1 3-8"></path><path d="M10 21a2 2 0 004 0"></path></svg>
+        <span class="dot"></span>
+      </div>
+      <div class="avatar">
+        <div class="avatar-img" id="avInit">RL</div>
+        <div class="avatar-meta"><b id="avName">Riley Lee</b><small id="avRole">JUNIOR CADET</small></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page view active" id="view-dashboard" data-screen-label="01 Dashboard"></div>
+  <div class="page view" id="view-route" data-screen-label="02 Route Map"></div>
+  <div class="page view" id="view-lanes" data-screen-label="03 The Five Lanes"></div>
+  <div class="page view" id="view-ladder" data-screen-label="04 Licence Ladder"></div>
+  <div class="page view" id="view-code" data-screen-label="05 The Code">
+    <div class="head" id="codeHead"></div>
+    <div class="aup-grid">
+      <div id="aupList"></div>
+      <div class="aup-side" id="aupSide"></div>
+    </div>
+  </div>
+  <div class="page view" id="view-badges" data-screen-label="06 Badges"></div>
+  <div class="page view" id="view-traffic" data-screen-label="07 Traffic Light Check">
+    <div class="head" id="tlHead"></div>
+    <div class="tl-grid">
+      <div class="tl-input">
+        <h4>WHAT YOU WANT TO ASK</h4>
+        <textarea id="tlInput" placeholder="Type or paste what you want to send to an AI…"></textarea>
+        <div class="tl-pre" id="tlPre"></div>
+        <div class="tl-flags" id="tlFlags"></div>
+      </div>
+      <div class="tl-light">
+        <div class="tl-housing">
+          <div class="tl-bulb" id="bRed"></div>
+          <div class="tl-bulb" id="bAmber"></div>
+          <div class="tl-bulb" id="bGreen"></div>
+        </div>
+        <div class="tl-verdict idle" id="tlVerdict">
+          <div class="v-label" id="vLabel">CHECK THE LIGHTS</div>
+          <div class="v-action" id="vAction">Type something to begin.</div>
+        </div>
+      </div>
+    </div>
+    <div class="tl-rules" id="tlRules"></div>
+  </div>
+  <div class="page view" id="view-glossary" data-screen-label="08 Glossary">
+    <div class="head" id="glosHead"></div>
+    <div class="glos-bar">
+      <div class="glos-search">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="7"></circle><path d="M21 21l-4-4"></path></svg>
+        <input id="glosSearch" placeholder="Search words…">
+      </div>
+      <div class="glos-az" id="glosAz"></div>
+    </div>
+    <div class="glos-grid" id="glosGrid"></div>
+  </div>
+  <div class="page view" id="view-qref" data-screen-label="09 Quick Reference"></div>
+</main>
+
+<script src="/junior-portal-assets/ac11a153-26c4-4de3-a8e3-b4afd1cb4be9.js"></script>
+
+
+
+</body></html>

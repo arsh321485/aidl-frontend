@@ -1,0 +1,277 @@
+/* Shared lesson player layout — Galaxy S8+ (~360px) & iPad Mini (~768px) */
+
+@media (max-width: 1024px) {
+  html,
+  body {
+    height: 100%;
+    overflow: hidden !important;
+  }
+
+  body {
+    grid-template-rows: auto auto minmax(0, 1fr) !important;
+  }
+
+  .topbar {
+    flex-wrap: wrap;
+    align-items: flex-start;
+    height: auto !important;
+    min-height: 0;
+    padding: 10px 12px !important;
+    gap: 8px !important;
+  }
+
+  .lesson-title {
+    flex: 1 1 100%;
+    max-width: 100% !important;
+    order: 1;
+    font-size: 13px !important;
+    line-height: 1.25;
+  }
+
+  .lesson-title small {
+    white-space: normal;
+    line-height: 1.35;
+  }
+
+  .level-switch {
+    flex: 1 1 100%;
+    order: 2;
+    width: 100% !important;
+    max-width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .level-switch button {
+    min-width: 0 !important;
+    flex: 1 1 auto;
+    font-size: 9px !important;
+    padding: 6px 8px !important;
+  }
+
+  .top-progress {
+    order: 3;
+    flex: 1 1 160px;
+    min-width: 0 !important;
+    max-width: none !important;
+  }
+
+  .top-right {
+    order: 4;
+    margin-left: 0;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .pill {
+    font-size: 9px !important;
+    padding: 5px 8px !important;
+    height: auto;
+    min-height: 32px;
+  }
+
+  /* Horizontal swipe panels: left rail → lesson → instructor */
+  .stage {
+    display: flex !important;
+    flex-direction: row !important;
+    align-items: stretch;
+    overflow-x: auto !important;
+    overflow-y: hidden !important;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    grid-template-columns: unset !important;
+    grid-template-rows: unset !important;
+    min-height: 0 !important;
+    height: 100%;
+  }
+
+  .chap-rail {
+    position: static !important;
+    flex: 0 0 min(300px, 86vw);
+    width: min(300px, 86vw) !important;
+    max-width: none !important;
+    min-width: min(300px, 86vw) !important;
+    min-height: calc(100dvh - 130px);
+    max-height: none !important;
+    height: auto !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    scroll-snap-align: start;
+    border-right: 3px solid var(--ink, #14140f);
+    border-bottom: 0 !important;
+    border-left: 0;
+    padding: 14px 12px !important;
+  }
+
+  .chap-rail h4,
+  .chap-rail .level-tag {
+    white-space: normal;
+  }
+
+  .chap b,
+  .chap small,
+  .chap .dur {
+    white-space: normal !important;
+    overflow: visible !important;
+    text-overflow: unset !important;
+  }
+
+  .windshield {
+    flex: 0 0 100vw;
+    width: 100vw !important;
+    min-width: 100vw !important;
+    max-width: 100vw !important;
+    min-height: calc(100dvh - 130px);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    scroll-snap-align: start;
+  }
+
+  .stage-head {
+    flex-shrink: 0;
+    padding: 12px 14px 0 !important;
+  }
+
+  .stage-body {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    padding: 12px 14px 72px !important;
+  }
+
+  .instructor-rail,
+  .buddy-rail {
+    position: static !important;
+    flex: 0 0 min(280px, 84vw);
+    width: min(280px, 84vw) !important;
+    min-width: min(280px, 84vw) !important;
+    max-width: none !important;
+    min-height: calc(100dvh - 130px);
+    max-height: none !important;
+    height: auto !important;
+    overflow-y: auto !important;
+    border-top: 0 !important;
+    border-left: 3px solid var(--ink, #14140f);
+    scroll-snap-align: start;
+  }
+
+  .concept,
+  .seg-aside,
+  .sig-row,
+  .quiz-grid,
+  .resource-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .seg-title {
+    font-size: clamp(17px, 5vw, 22px) !important;
+  }
+
+  .big-sign {
+    width: min(140px, 40vw) !important;
+    height: min(140px, 40vw) !important;
+  }
+}
+
+/* iPad Mini portrait / small tablet */
+@media (min-width: 561px) and (max-width: 834px) {
+  .chap-rail {
+    flex: 0 0 min(340px, 42vw);
+    width: min(340px, 42vw) !important;
+    min-width: min(340px, 42vw) !important;
+    min-height: calc(100dvh - 150px);
+    padding: 18px 16px !important;
+  }
+
+  .windshield,
+  .instructor-rail,
+  .buddy-rail {
+    min-height: calc(100dvh - 150px);
+  }
+
+  .instructor-rail,
+  .buddy-rail {
+    flex: 0 0 min(320px, 38vw);
+    width: min(320px, 38vw) !important;
+    min-width: min(320px, 38vw) !important;
+  }
+}
+
+@media (max-width: 400px) {
+  .level-switch button {
+    font-size: 8px !important;
+    padding: 5px 6px !important;
+  }
+
+  .seg-title {
+    font-size: 16px !important;
+  }
+
+  .chap-rail {
+    flex: 0 0 88vw;
+    width: 88vw !important;
+    min-width: 88vw !important;
+  }
+}
+
+/* ---- Panels the 1024px breakpoint above doesn't touch ---- */
+@media (max-width: 760px) {
+  .rt-panel {
+    grid-template-columns: 1fr !important;
+    min-height: 0 !important;
+  }
+  .rt-side {
+    border-right: 0 !important;
+    border-bottom: 2px dashed var(--asphalt-4, #3a3528);
+  }
+  .reflect-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .sort-stage {
+    grid-template-columns: 1fr !important;
+  }
+  .sort-bin {
+    min-height: 0 !important;
+  }
+}
+
+/* ---- Risk-register table: scroll instead of squeezing 5 fixed columns ---- */
+@media (max-width: 700px) {
+  .rr-table {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .rr-row {
+    min-width: 620px;
+  }
+}
+
+/* ---- Flex rows that can overflow instead of wrap ---- */
+@media (max-width: 560px) {
+  .rt-tabs {
+    flex-wrap: wrap;
+  }
+  .rt-tab {
+    flex: 1 1 auto;
+    text-align: center;
+  }
+  .rt-status,
+  .rr-validation,
+  .prep-status,
+  .sort-status {
+    flex-wrap: wrap;
+  }
+  .rt-status .objectives {
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  .star-banner {
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  .star-count {
+    text-align: left;
+  }
+}

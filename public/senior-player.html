@@ -2,7 +2,7 @@
 <html lang="en"><head>
 <meta charset="utf-8">
 <title>AIDL · Senior Lesson Player</title>
-<meta name="viewport" content="width=1440">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
 <style>/* vietnamese */
@@ -1516,6 +1516,60 @@ body { grid-template-rows: 6px 64px 1fr !important; }
   .big-sign.circle { font-size: 46px; }
   .seg-aside { grid-template-columns: minmax(0, 1fr) 210px; }
 }
+
+@media (max-width: 900px) {
+  .stage {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    overflow: auto;
+  }
+  .chap-rail,
+  .instructor-rail {
+    position: static;
+    width: 100%;
+    max-height: none;
+    height: auto;
+    border-right: 0;
+    border-left: 0;
+  }
+  .chap-rail {
+    border-bottom: 3px solid var(--ink, #14140f);
+    max-height: 200px;
+    overflow: auto;
+  }
+  .instructor-rail {
+    border-top: 3px solid var(--ink, #14140f);
+    max-height: 260px;
+    overflow: auto;
+  }
+  .topbar {
+    flex-wrap: wrap;
+    height: auto;
+    gap: 10px;
+    padding: 10px 12px;
+  }
+  .level-switch {
+    width: 100%;
+    overflow-x: auto;
+  }
+  .concept,
+  .seg-aside,
+  .sig-row,
+  .quiz-grid,
+  .resource-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .stage-head,
+  .stage-body {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}
+
+@media (max-width: 560px) {
+  .seg-title { font-size: 18px; }
+  .big-sign { width: 120px; height: 120px; font-size: 14px; }
+}
 </style></head>
 <body data-screen-label="00 Lesson Player">
 
@@ -1726,4 +1780,60 @@ body { grid-template-rows: 6px 64px 1fr !important; }
   .big-sign.circle { font-size: 46px; }
   .seg-aside { grid-template-columns: minmax(0, 1fr) 210px; }
 }
-</style></body></html>
+
+@media (max-width: 900px) {
+  .stage {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    overflow: auto;
+  }
+  .chap-rail,
+  .instructor-rail {
+    position: static;
+    width: 100%;
+    max-height: none;
+    height: auto;
+    border-right: 0;
+    border-left: 0;
+  }
+  .chap-rail {
+    border-bottom: 3px solid var(--ink, #14140f);
+    max-height: 240px;
+    overflow: auto;
+  }
+  .instructor-rail {
+    border-top: 3px solid var(--ink, #14140f);
+    max-height: 280px;
+    overflow: auto;
+  }
+  .topbar {
+    flex-wrap: wrap;
+    height: auto;
+    gap: 10px;
+    padding: 10px 12px;
+  }
+  .level-switch {
+    width: 100%;
+    overflow-x: auto;
+  }
+  .concept,
+  .seg-aside,
+  .sig-row,
+  .quiz-grid,
+  .resource-grid {
+    grid-template-columns: 1fr !important;
+  }
+  .stage-head,
+  .stage-body {
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+}
+
+@media (max-width: 560px) {
+  .seg-title { font-size: 18px; }
+  .big-sign { width: 120px; height: 120px; font-size: 14px; }
+}
+</style>
+<link rel="stylesheet" href="/player-mobile.css">
+</body></html>

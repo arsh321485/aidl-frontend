@@ -29,7 +29,7 @@ const TIERS = {
   cadet: {
     key: 'cadet', label: 'Junior Cadet', age: '8–12', cls: 'GREEN LICENCE · CADET', color: 'green',
     learner: 'Riley Lee', initials: 'RL', grownup: 'Jordan Lee', licId: 'AIDL-J-0042-1180', renewal: 'Term 3',
-    nextLessonHref: '/junior-player?lesson=J-05',
+    nextLessonHref: 'Junior Lesson Player.html?lesson=J-05',
     identity: 'EXPLORER & APPRENTICE', coreQ: '"What is AI, and how does it see my world?"',
     licenceIdx: 1, doneThrough: 10, currentModule: 11, totalModules: 32,
     dash: {
@@ -46,7 +46,7 @@ const TIERS = {
       { k: 'AI Notebook Pages', v: '14', d: 'keep drawing!' },
     ],
     upnext: [
-      { d: '18', m: 'MAY', t: 'M11 · My First Real Model', s: 'Green Licence gate — train a classifier', cta: 'Play', href: '/junior-player?lesson=J-05', btn: 'btn-green' },
+      { d: '18', m: 'MAY', t: 'M11 · My First Real Model', s: 'Green Licence gate — train a classifier', cta: 'Play', href: 'Junior Lesson Player.html?lesson=J-05', btn: 'btn-green' },
       { d: '22', m: 'MAY', t: 'M12 · Mistake Museum', s: 'Try to confuse your class model', cta: 'Preview', view: 'route', btn: 'btn-yellow' },
       { d: '06', m: 'JUN', t: 'Community Showcase 2', s: 'Families play "Real or AI?"', cta: 'View', view: 'route', btn: 'btn-green' },
     ],
@@ -186,7 +186,7 @@ const TIERS = {
   crew: {
     key: 'crew', label: 'Road Crew', age: '12–16', cls: 'YELLOW LICENCE · CREW', color: 'sky',
     learner: 'Sam Rivera', initials: 'SR', grownup: 'A. Rivera', licId: 'AIDL-T-0096-3320', renewal: 'Year 1',
-    nextLessonHref: '/junior-player?lesson=T-05',
+    nextLessonHref: 'Junior Lesson Player.html?lesson=T-05',
     identity: 'BUILDER & CITIZEN', coreQ: '"How do I build with AI, judge it, and shape it for my community?"',
     licenceIdx: 2, doneThrough: 8, currentModule: 9, totalModules: 34,
     dash: {
@@ -203,7 +203,7 @@ const TIERS = {
       { k: 'Badges', v: '1', d: 'Fueler earned' },
     ],
     upnext: [
-      { d: '18', m: 'MAY', t: 'M9 · The Bias Hunt', s: 'Audit an image generator for your community', cta: 'Play', href: '/junior-player?lesson=T-05', btn: 'btn-sky' },
+      { d: '18', m: 'MAY', t: 'M9 · The Bias Hunt', s: 'Audit an image generator for your community', cta: 'Play', href: 'Junior Lesson Player.html?lesson=T-05', btn: 'btn-sky' },
       { d: '22', m: 'MAY', t: 'M10 · Whose Data? Whose Language?', s: 'Measure translation quality with bilingual elders', cta: 'Preview', view: 'route', btn: 'btn-yellow' },
       { d: '06', m: 'JUN', t: 'Blue Licence gate check', s: 'Bias audit + integrity charter + consent', cta: 'View', view: 'ladder', btn: 'btn-sky' },
     ],
@@ -375,7 +375,7 @@ function renderDashboard() {
         <h1>${d.hello}</h1>
         <p>${d.intro}</p>
       </div>
-      <div class="dash-cta">
+      <div style="display:flex; gap:10px;">
         <a class="btn btn-ghost" href="#" onclick="goView('qref'); return false;">Quick Card</a>
         <a class="btn btn-yellow" href="${t.nextLessonHref}">Play Next Lesson →</a>
         <a class="btn btn-${t.color === 'green' ? 'green' : 'sky'}" href="#" onclick="goView('route'); return false;">Route Map →</a>
@@ -420,7 +420,7 @@ function renderDashboard() {
         <div class="card yellow" style="margin-bottom: 18px;">
           <div class="card-head"><h3>RULE OF THE ROAD</h3><span class="tag">${d.ruleOfDay.tag}</span></div>
           <p style="margin:0; font-size: 14px; line-height: 1.5;"><b>${d.ruleOfDay.title}</b> ${d.ruleOfDay.text}</p>
-          <div class="rule-actions" style="margin-top: 14px;">
+          <div style="margin-top: 14px; display: flex; gap: 8px;">
             <a class="btn" href="#" onclick="goView('code'); return false;">Read the Code</a>
             <a class="btn btn-ghost" href="#" onclick="goView('glossary'); return false;">Glossary</a>
           </div>
@@ -790,15 +790,12 @@ function goView(v) {
   document.querySelectorAll('.nav-item').forEach(n => n.classList.toggle('active', n.dataset.view === v));
   document.getElementById('crumbHere').textContent = CRUMB[v];
   window.scrollTo({ top: 0, behavior: 'instant' });
-  const root = document.getElementById('juniorPortalRoot');
-  if (root) root.classList.remove('nav-open');
 }
-window.goView = goView;
 
 function applyTier(key) {
   CURRENT = key;
   const t = T();
-  const root = document.getElementById('juniorPortalRoot'); if (root) root.className = 'junior-portal-layout tier-' + key;
+  document.body.className = 'tier-' + key;
   document.querySelectorAll('.tier-toggle button').forEach(b => b.classList.toggle('active', b.dataset.tier === key));
   document.getElementById('sideName').textContent = t.learner.toUpperCase();
   document.getElementById('sideId').textContent = t.licId;
@@ -828,14 +825,10 @@ function initPortal() {
   document.querySelectorAll('.tier-toggle button').forEach(b => b.addEventListener('click', () => { applyTier(b.dataset.tier); goView('dashboard'); }));
   document.getElementById('tlInput').addEventListener('input', e => renderTL(e.target.value));
   document.getElementById('glosSearch').addEventListener('input', e => renderGlossaryGrid(e.target.value));
-  const root = document.getElementById('juniorPortalRoot');
-  const menuBtn = document.getElementById('portalMenuBtn');
-  const backdrop = document.getElementById('portalNavBackdrop');
-  if (menuBtn && root) menuBtn.addEventListener('click', () => root.classList.toggle('nav-open'));
-  if (backdrop && root) backdrop.addEventListener('click', () => root.classList.remove('nav-open'));
   let saved = 'cadet';
   try { saved = localStorage.getItem('aidl-junior-tier') || 'cadet'; } catch (e) {}
   applyTier(saved);
   goView('dashboard');
 }
-export function initJuniorPortal() { initPortal(); }
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initPortal);
+else initPortal();

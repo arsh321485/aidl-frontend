@@ -1,0 +1,321 @@
+/* Shared portal mobile / tablet layout — imported by both portal views */
+
+.portal-menu-btn {
+  display: none;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border: 3px solid var(--ink);
+  background: var(--cream);
+  color: var(--ink);
+  cursor: pointer;
+  place-items: center;
+  padding: 0;
+}
+
+.portal-menu-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+.portal-nav-backdrop {
+  display: none;
+}
+
+/* Desktop: sidebar and main content scroll independently, each capped to
+   the viewport height, so the shorter column never trails blank space
+   while the taller one keeps scrolling. */
+@media (min-width: 1025px) {
+  .junior-portal-layout,
+  .senior-portal-layout {
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  .junior-portal-layout > aside.sidebar,
+  .senior-portal-layout > aside.sidebar {
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+
+  .junior-portal-layout > main.main,
+  .senior-portal-layout > main.main {
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
+}
+
+@media (max-width: 1024px) {
+  .junior-portal-layout,
+  .senior-portal-layout {
+    grid-template-columns: 1fr !important;
+  }
+
+  .junior-portal-layout > aside.sidebar,
+  .senior-portal-layout > aside.sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: min(300px, 88vw);
+    height: 100vh;
+    z-index: 120;
+    transform: translateX(-105%);
+    transition: transform 0.22s ease;
+    box-shadow: none;
+  }
+
+  .junior-portal-layout.nav-open > aside.sidebar,
+  .senior-portal-layout.nav-open > aside.sidebar {
+    transform: translateX(0);
+    box-shadow: 8px 0 24px rgba(0, 0, 0, 0.35);
+  }
+
+  .portal-menu-btn {
+    display: grid;
+  }
+
+  .portal-nav-backdrop {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(20, 20, 15, 0.45);
+    z-index: 110;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease;
+  }
+
+  .junior-portal-layout.nav-open .portal-nav-backdrop,
+  .senior-portal-layout.nav-open .portal-nav-backdrop {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .junior-portal-layout .topbar,
+  .senior-portal-layout .topbar {
+    padding: 12px 16px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .junior-portal-layout .top-search,
+  .senior-portal-layout .top-search {
+    min-width: 0;
+    flex: 1 1 140px;
+    order: 3;
+    width: 100%;
+  }
+
+  .junior-portal-layout .top-search kbd,
+  .senior-portal-layout .top-search kbd {
+    display: none;
+  }
+
+  .junior-portal-layout .page,
+  .senior-portal-layout .page {
+    padding: 22px 16px 40px;
+  }
+
+  .junior-portal-layout .page .head h1,
+  .senior-portal-layout .page .head h1 {
+    font-size: clamp(26px, 7vw, 36px);
+  }
+
+  .junior-portal-layout .dash-grid,
+  .senior-portal-layout .dash-grid,
+  .junior-portal-layout .tl-grid,
+  .senior-portal-layout .tl-grid,
+  .junior-portal-layout .aup-grid,
+  .senior-portal-layout .aup-grid,
+  .senior-portal-layout .prep-grid,
+  .junior-portal-layout .glos-grid,
+  .senior-portal-layout .glos-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .junior-portal-layout .aup-side,
+  .senior-portal-layout .aup-side {
+    position: static !important;
+  }
+
+  .junior-portal-layout .stat-strip,
+  .senior-portal-layout .stat-strip {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .junior-portal-layout .qref-grid,
+  .senior-portal-layout .qref-grid,
+  .senior-portal-layout .tl-rules {
+    grid-template-columns: 1fr !important;
+  }
+
+  .junior-portal-layout .mod-row,
+  .junior-portal-layout .lane-row,
+  .senior-portal-layout .sign-row {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  .junior-portal-layout .avatar-meta,
+  .senior-portal-layout .avatar-meta {
+    display: none;
+  }
+
+  .junior-portal-layout .lic-body,
+  .senior-portal-layout .lic-body {
+    grid-template-columns: 72px minmax(0, 1fr) !important;
+  }
+
+  .junior-portal-layout .lic-qr,
+  .senior-portal-layout .lic-qr {
+    display: none !important;
+  }
+
+  .junior-portal-layout .page .head,
+  .senior-portal-layout .page .head {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .junior-portal-layout .page .head p,
+  .senior-portal-layout .page .head p {
+    max-width: none;
+  }
+
+  .junior-portal-layout .dash-cta,
+  .senior-portal-layout .dash-cta,
+  .junior-portal-layout .hero-actions,
+  .senior-portal-layout .hero-actions,
+  .junior-portal-layout .rule-actions,
+  .senior-portal-layout .rule-actions {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .junior-portal-layout .dash-cta .btn,
+  .senior-portal-layout .dash-cta .btn,
+  .junior-portal-layout .rule-actions .btn,
+  .senior-portal-layout .rule-actions .btn {
+    flex: 1 1 calc(50% - 4px);
+    min-width: 0;
+    justify-content: center;
+    text-align: center;
+  }
+
+  .junior-portal-layout .dash-cta .btn-yellow,
+  .senior-portal-layout .dash-cta .btn-yellow {
+    flex: 1 1 100%;
+  }
+
+  .junior-portal-layout .badge-ladder {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .junior-portal-layout .pf-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .junior-portal-layout .aup-rule,
+  .senior-portal-layout .aup-rule {
+    grid-template-columns: 48px minmax(0, 1fr);
+    gap: 12px;
+    padding: 16px;
+  }
+
+  .junior-portal-layout .aup-num,
+  .senior-portal-layout .aup-num {
+    width: 48px;
+    height: 48px;
+    font-size: 18px;
+  }
+
+  .junior-portal-layout .aup-ack,
+  .senior-portal-layout .aup-ack {
+    grid-column: 1 / -1;
+    width: 100%;
+    align-self: stretch;
+  }
+
+  .junior-portal-layout .upnext-item,
+  .senior-portal-layout .upnext-item {
+    grid-template-columns: 52px minmax(0, 1fr);
+    gap: 10px;
+  }
+
+  .junior-portal-layout .upnext-item .btn,
+  .senior-portal-layout .upnext-item .btn {
+    grid-column: 1 / -1;
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 640px) {
+  .junior-portal-layout .stat-strip,
+  .senior-portal-layout .stat-strip,
+  .junior-portal-layout .badge-ladder,
+  .junior-portal-layout .spiral-steps,
+  .junior-portal-layout .ladder-row,
+  .junior-portal-layout .tl-rules {
+    grid-template-columns: 1fr !important;
+  }
+
+  .junior-portal-layout .crumb span:first-child,
+  .senior-portal-layout .crumb span:first-child,
+  .junior-portal-layout .crumb span:nth-child(2),
+  .senior-portal-layout .crumb span:nth-child(2) {
+    display: none;
+  }
+
+  .junior-portal-layout .hero-actions,
+  .senior-portal-layout .hero-actions,
+  .junior-portal-layout .dash-cta,
+  .senior-portal-layout .dash-cta,
+  .junior-portal-layout .rule-actions,
+  .senior-portal-layout .rule-actions {
+    flex-direction: column;
+    flex-wrap: nowrap;
+  }
+
+  .junior-portal-layout .dash-cta .btn,
+  .senior-portal-layout .dash-cta .btn,
+  .junior-portal-layout .rule-actions .btn,
+  .senior-portal-layout .rule-actions .btn,
+  .junior-portal-layout .btn,
+  .senior-portal-layout .btn {
+    width: 100%;
+    flex: none;
+    justify-content: center;
+  }
+
+  .junior-portal-layout .page .head h1,
+  .senior-portal-layout .page .head h1 {
+    font-size: clamp(24px, 8vw, 32px);
+  }
+
+  .junior-portal-layout .aup-rule {
+    grid-template-columns: 1fr;
+  }
+
+  .junior-portal-layout .aup-num {
+    width: 44px;
+    height: 44px;
+    font-size: 16px;
+  }
+
+  .junior-portal-layout .pf-item {
+    grid-template-columns: 36px minmax(0, 1fr) auto;
+    gap: 10px;
+    padding: 14px;
+  }
+
+  .junior-portal-layout .pf-item .n {
+    font-size: 16px;
+  }
+}
