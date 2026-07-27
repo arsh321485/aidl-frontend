@@ -5,8 +5,8 @@
 // ============================================================
 (function () {
   const params = new URLSearchParams(location.search);
-  const id = params.get('lesson') || 'J-03';
-  const LESSON = window.AIDL_JR_LESSONS[id] || window.AIDL_JR_LESSONS['J-03'];
+  const id = params.get('lesson') || 'J-01';
+  const LESSON = window.AIDL_JR_LESSONS[id] || window.AIDL_JR_LESSONS['J-01'];
   const LVL = window.AIDL_JR_LEVELS[LESSON.level];
   const COMMENTARY = LESSON.commentary;
 
@@ -25,9 +25,36 @@
   tag.innerHTML = 'CLASS ' + LESSON.level + ' · ' + LVL.name.toUpperCase() + '<small>' + LVL.audience + '</small>';
   document.getElementById('chapHeading').textContent = '▼ ' + LESSON.id + ' · ' + LESSON.segments.length + ' STOPS';
 
-  // --- tier switcher ---
+  // --- lesson picker ---
+  (function () {
+    const rail = document.querySelector('.chap-rail');
+    if (!rail) return;
+    const sel = document.createElement('select');
+    sel.className = 'lesson-picker';
+    sel.title = 'Jump to another lesson';
+    Object.values(window.AIDL_JR_LESSONS)
+      .filter(l => l.level === LESSON.level)
+      .sort((a, b) => a.id.localeCompare(b.id))
+      .forEach(l => {
+        const o = document.createElement('option');
+        o.value = l.id;
+        o.textContent = l.title;
+        if (l.id === LESSON.id) o.selected = true;
+        sel.appendChild(o);
+      });
+    sel.addEventListener('change', () => {
+      if (sel.value !== LESSON.id) location.search = '?lesson=' + encodeURIComponent(sel.value);
+    });
+    rail.insertBefore(sel, rail.firstChild);
+  })();
+
+  // --- tier switcher: only show the button for the tier the learner picked on /junior-portal ---
   document.querySelectorAll('#levelSwitch button').forEach(b => {
-    if (b.dataset.level === LESSON.level) b.classList.add('active');
+    if (b.dataset.level !== LESSON.level) {
+      b.style.display = 'none';
+      return;
+    }
+    b.classList.add('active');
     b.addEventListener('click', () => {
       const target = b.dataset.lesson;
       if (target === id) return;
@@ -242,7 +269,14 @@
         J: 'Lesson complete! You earned ' + n + ' of ' + goal + ' stars. High five! 🖐️ Head back to your portal for the next stop.',
         T: 'Lesson complete — you earned ' + n + ' of ' + goal + ' stars. Road-ready! Head back to your portal to keep going.',
       }[LESSON.level] || 'Lesson complete!';
-      alert(msg);
+      const nextLesson = LESSON.next && window.AIDL_JR_LESSONS[LESSON.next];
+      if (nextLesson) {
+        if (confirm(msg + '\n\nPlay the next lesson \u2014 ' + nextLesson.title + '?')) {
+          location.search = '?lesson=' + encodeURIComponent(nextLesson.id);
+        }
+      } else {
+        alert(msg + '\n\nThat was the LAST lesson in your tier \u2014 licence earned! \ud83c\udf93');
+      }
       return;
     }
     jumpTo(next.start);

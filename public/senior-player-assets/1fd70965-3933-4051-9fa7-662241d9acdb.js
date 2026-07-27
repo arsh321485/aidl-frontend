@@ -28,6 +28,29 @@
 
   document.getElementById('chapHeading').textContent = '▼ MODULE ' + LESSON.id + ' · ' + LESSON.segments.length + ' SEGMENTS';
 
+  // --- lesson picker: jump to another module in the same level ---
+  (function () {
+    const rail = document.querySelector('.chap-rail');
+    if (!rail) return;
+    const sel = document.createElement('select');
+    sel.className = 'lesson-picker';
+    sel.title = 'Jump to another module';
+    Object.values(window.AIDL_LESSONS)
+      .filter(l => l.level === LESSON.level)
+      .sort((a, b) => a.id.localeCompare(b.id))
+      .forEach(l => {
+        const o = document.createElement('option');
+        o.value = l.id;
+        o.textContent = l.title;
+        if (l.id === LESSON.id) o.selected = true;
+        sel.appendChild(o);
+      });
+    sel.addEventListener('change', () => {
+      if (sel.value !== LESSON.id) location.search = '?lesson=' + encodeURIComponent(sel.value);
+    });
+    rail.insertBefore(sel, rail.firstChild);
+  })();
+
   // --- level switcher ---
   document.querySelectorAll('#levelSwitch button').forEach(b => {
     if (b.dataset.level === LESSON.level) b.classList.add('active');

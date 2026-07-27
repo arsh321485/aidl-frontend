@@ -122,8 +122,8 @@ const JR_BUILDER_FIELDS = {
 
 window.AIDL_JR_TEMPLATES.jrbuilder = function (b, ctx) {
   const lvl = ctx.lesson.level;
-  const fields = JR_BUILDER_FIELDS[lvl] || JR_BUILDER_FIELDS.J;
-  const goalWords = lvl === 'T' ? 8 : 5;
+  const fields = b.fields || JR_BUILDER_FIELDS[lvl] || JR_BUILDER_FIELDS.J;
+  const goalWords = b.goalWords || (lvl === 'T' ? 8 : 5);
   return `
     <div class="prep-builder">
       <div class="prep-scenario">
@@ -154,10 +154,10 @@ window.AIDL_JR_TEMPLATES.jrbuilderWire = function (body, ctx) {
   const wrap = document.getElementById('prepFields');
   const goal = parseInt(wrap.dataset.goal, 10) || 5;
   const fields = document.querySelectorAll('.prep-field');
-  const safeKey = ctx.lesson.level === 'T' ? 'check' : 'safe';
+  const safeKey = (body && body.safeKey !== undefined) ? body.safeKey : (ctx.lesson.level === 'T' ? 'check' : 'safe');
   function safeCue(s) {
     const lc = s.toLowerCase();
-    const cues = ["don't", 'do not', "don'", 'no ', 'not ', 'never', 'private', 'without', 'check', 'verify', 'source', 'compare', 'trusted', 'double'];
+    const cues = ["don't", 'do not', "don'", 'no ', 'not ', 'never', 'private', 'without', 'check', 'verify', 'source', 'compare', 'trusted', 'double', 'test', 'try', 'ask', 'grown-up', 'adult', 'teach', 'book'];
     return cues.some(c => lc.includes(c));
   }
   function evaluate() {
@@ -227,7 +227,7 @@ const JR_SORT_ITEMS = {
 };
 
 window.AIDL_JR_TEMPLATES.jrsort = function (b, ctx) {
-  const set = JR_SORT_ITEMS[ctx.lesson.level] || JR_SORT_ITEMS.J;
+  const set = b.items ? b : (JR_SORT_ITEMS[ctx.lesson.level] || JR_SORT_ITEMS.J);
   return `
     <div class="sort-wrap">
       <div class="sort-intro">${jrEscape(b.prompt)} <span class="sort-key">${jrEscape(set.intro)}</span></div>
@@ -252,7 +252,7 @@ window.AIDL_JR_TEMPLATES.jrsort = function (b, ctx) {
 };
 
 window.AIDL_JR_TEMPLATES.jrsortWire = function (body, ctx) {
-  const set = JR_SORT_ITEMS[ctx.lesson.level] || JR_SORT_ITEMS.J;
+  const set = body.items ? body : (JR_SORT_ITEMS[ctx.lesson.level] || JR_SORT_ITEMS.J);
   const total = set.items.length;
   let selected = null;
   const pool = document.getElementById('sortPool');
@@ -323,18 +323,21 @@ window.AIDL_JR_TEMPLATES.jrsortWire = function (body, ctx) {
 // ------------------------------------------------------------
 window.AIDL_JR_TEMPLATES.jrreflect = function (b, ctx) {
   const L = ctx.lesson;
-  const learned = {
+  const learnedDefault = {
     J: 'That a <b>prompt</b> is just your ask — and the 3 Magic Words to make it great: <b>CLEAR, KIND, SAFE</b>. You even built your own!',
     T: 'The <b>PRO method</b> (Persona · Request · Output) for sharp prompts — and the pro habit of <b>fact-checking</b> anything that matters.',
   }[L.level];
-  const take = {
+  const takeDefault = {
     J: 'Before every ask, whisper the 3 Magic Words: <b>Clear, Kind, Safe</b>. And if an answer feels weird — tell a grown-up. Always OK to ask!',
     T: 'Treat AI like a smart friend who sometimes guesses. Use it for ideas and drafts — then <b>verify the facts yourself</b> before you trust them.',
   }[L.level];
-  const next = {
+  const nextDefault = {
     J: '<b>J-04 · Maker Lane.</b> Build your own quiz game with Buddy. Bring your best ideas!',
     T: '<b>T-03 · Build Your Own Helper Bot.</b> Design a bot that does one real job well.',
   }[L.level];
+  const learned = b.learned || learnedDefault;
+  const take = b.take || takeDefault;
+  const next = b.next || nextDefault;
   const starsEarned = Object.keys(ctx.state.stars || {}).length;
   const goal = L.starGoal || 3;
   const starRow = Array.from({ length: goal }, (_, i) =>

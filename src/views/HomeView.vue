@@ -551,6 +551,22 @@
                 </select>
               </div>
             </div>
+            <div class="form-row">
+              <div class="field">
+                <label>State</label>
+                <select v-model="form.state">
+                  <option value="" disabled>Select state</option>
+                  <option v-for="s in stateOptions" :key="s" :value="s">{{ s }}</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>City</label>
+                <select v-model="form.city">
+                  <option value="" disabled>Select city</option>
+                  <option v-for="c in cityOptions" :key="c" :value="c">{{ c }}</option>
+                </select>
+              </div>
+            </div>
             <div class="field full" style="margin-bottom: 16px;">
               <label>Pick Your Class</label>
               <div class="choice-group five-cols" id="classChoice">
@@ -574,6 +590,8 @@
       </div>
     </div>
   </section>
+
+  <AvatarPickerModal v-if="showAvatarPicker" @confirm="onAvatarConfirmed" @close="showAvatarPicker = false" />
 
   <section class="band licenses" id="licenses">
     <div class="wrap">
@@ -747,8 +765,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, onMounted, onUnmounted } from 'vue'
+import { ref, reactive, computed, watch, onMounted, onUnmounted } from 'vue'
 import { RouterLink } from 'vue-router'
+import AvatarPickerModal from '../components/AvatarPickerModal.vue'
 import '../styles/home-landing.css'
 
 const jrRoute = ref<'k' | 't'>('k')
@@ -826,16 +845,64 @@ onUnmounted(() => {
   document.body.classList.remove('pre-choice', 'mode-adult', 'mode-junior', 'focus-adult', 'focus-junior')
 })
 
+const LOCATIONS: Record<string, Record<string, string[]>> = {
+  'United States': {
+    California: ['Los Angeles', 'San Francisco', 'San Diego'],
+    'New York': ['New York City', 'Buffalo', 'Albany'],
+    Texas: ['Houston', 'Austin', 'Dallas']
+  },
+  'United Kingdom': {
+    England: ['London', 'Manchester', 'Birmingham'],
+    Scotland: ['Edinburgh', 'Glasgow', 'Aberdeen'],
+    Wales: ['Cardiff', 'Swansea', 'Newport']
+  },
+  India: {
+    Maharashtra: ['Mumbai', 'Pune', 'Nagpur'],
+    Karnataka: ['Bengaluru', 'Mysuru', 'Hubli'],
+    Delhi: ['New Delhi', 'Dwarka', 'Rohini']
+  },
+  Germany: {
+    Bavaria: ['Munich', 'Nuremberg', 'Augsburg'],
+    Berlin: ['Berlin'],
+    Hesse: ['Frankfurt', 'Wiesbaden', 'Kassel']
+  },
+  Canada: {
+    Ontario: ['Toronto', 'Ottawa', 'Hamilton'],
+    Quebec: ['Montreal', 'Quebec City', 'Laval'],
+    'British Columbia': ['Vancouver', 'Victoria', 'Surrey']
+  }
+}
+
 const form = reactive({
   firstName: 'Alex',
   lastName: 'Morgan',
   email: 'alex@company.com',
   dob: '04/12/1994',
   country: 'United States',
+  state: '',
+  city: '',
   why: 'Build agents for my product team.'
 })
 
+const stateOptions = computed(() => Object.keys(LOCATIONS[form.country] || {}))
+const cityOptions = computed(() => LOCATIONS[form.country]?.[form.state] || [])
+
+watch(() => form.country, () => {
+  form.state = ''
+  form.city = ''
+})
+watch(() => form.state, () => {
+  form.city = ''
+})
+
+const showAvatarPicker = ref(false)
+
 function handleSubmit() {
+  showAvatarPicker.value = true
+}
+
+function onAvatarConfirmed() {
+  showAvatarPicker.value = false
   alert('Application received! Check your inbox for a learner’s permit.')
 }
 

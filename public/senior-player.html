@@ -440,6 +440,9 @@
     overflow-y: auto;
     padding: 20px 16px;
   }
+  .lesson-picker { width: 100%; height: 38px; margin: 0 0 14px; background: var(--asphalt); color: var(--cream); border: 2px solid var(--asphalt-4); border-radius: 8px; font-family: "JetBrains Mono", monospace; font-size: 10.5px; padding: 0 8px; cursor: pointer; }
+  .lesson-picker:hover { border-color: var(--cream-3); }
+  .lesson-picker:focus { outline: none; border-color: var(--accent); }
   .chap-rail h4 {
     font-family: "Bungee"; font-size: 11px;
     color: var(--accent);
@@ -1430,147 +1433,7 @@
   .resource-card a:hover { background: var(--accent); }
   .resource-card a b { font-family: "Bungee"; display: block; font-size: 11px; margin-bottom: 2px; }
 </style>
-<style>
-/* Layout compact + single-scroll overrides for all tiers */
-html, body {
-  height: 100%;
-  overflow: hidden !important;
-}
-
-/* Keep main layout inside viewport without clipping text */
-.topbar { min-height: 50px; padding: 6px 10px; gap: 10px; }
-.lesson-title { font-size: 12px; max-width: 300px; }
-.lesson-title small { font-size: 8px; }
-.level-switch { padding: 2px; }
-.level-switch button { min-width: 112px; font-size: 10px; padding: 6px 10px; }
-.top-progress { min-width: 150px; }
-.pill { font-size: 10px; padding: 6px 8px; }
-.icon-btn { width: 34px; height: 34px; }
-
-.stage {
-  grid-template-columns: 220px minmax(0, 1fr) 280px;
-  min-height: 0;
-}
-.chap-rail {
-  padding: 14px 10px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-.chap { padding: 8px 8px 8px 24px; margin-left: 10px; }
-.chap b { font-size: 10px; }
-.chap small, .chap .dur { font-size: 8px; }
-
-.windshield { min-width: 0; }
-.stage-head { padding: 14px 20px 0; gap: 14px; }
-.seg-eyebrow { font-size: 10px; padding: 3px 8px; margin-bottom: 6px; }
-.seg-title { font-size: 24px; line-height: 1; }
-.seg-meta { font-size: 10px; }
-.seg-meta b { font-size: 12px; }
-.stage-body {
-  padding: 14px 20px 70px;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-.concept { grid-template-columns: 210px minmax(0, 1fr); gap: 20px; }
-.big-sign { width: 170px; height: 170px; font-size: 20px; }
-.big-sign.circle { font-size: 54px; border-width: 10px; }
-.concept-body h3 { font-size: 18px; }
-.concept-body p { font-size: 13px; line-height: 1.45; }
-.examples ul { font-size: 12px; line-height: 1.45; }
-
-.instructor-rail { min-width: 0; }
-.instructor-head { padding: 10px; }
-.commentary { padding: 8px; }
-.msg { padding: 8px 9px; font-size: 11px; }
-.composer { padding: 8px; }
-.composer input { font-size: 12px; padding: 9px 10px; }
-
-/* Remove road timeline footer completely (all tabs) */
-footer.road,
-footer.road[data-screen-label="04 Road Timeline"] {
-  display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  min-height: 0 !important;
-  max-height: 0 !important;
-  overflow: hidden !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  border: 0 !important;
-  pointer-events: none !important;
-}
-body { grid-template-rows: 6px 64px 1fr !important; }
-
-/* Preserve readability while preventing horizontal overflow */
-.seg-aside { grid-template-columns: minmax(0, 1fr) 240px; gap: 14px; }
-.resource-card { padding: 10px; }
-.resource-card a { font-size: 11px; padding: 6px 8px; }
-
-@media (max-width: 1280px) {
-  .stage {
-    grid-template-columns: 200px minmax(0, 1fr) 250px;
-  }
-  .seg-title { font-size: 20px; }
-  .concept { grid-template-columns: 180px minmax(0, 1fr); }
-  .big-sign { width: 150px; height: 150px; font-size: 18px; }
-  .big-sign.circle { font-size: 46px; }
-  .seg-aside { grid-template-columns: minmax(0, 1fr) 210px; }
-}
-
-@media (max-width: 900px) {
-  .stage {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(0, 1fr) auto;
-    overflow: auto;
-  }
-  .chap-rail,
-  .instructor-rail {
-    position: static;
-    width: 100%;
-    max-height: none;
-    height: auto;
-    border-right: 0;
-    border-left: 0;
-  }
-  .chap-rail {
-    border-bottom: 3px solid var(--ink, #14140f);
-    max-height: 200px;
-    overflow: auto;
-  }
-  .instructor-rail {
-    border-top: 3px solid var(--ink, #14140f);
-    max-height: 260px;
-    overflow: auto;
-  }
-  .topbar {
-    flex-wrap: wrap;
-    height: auto;
-    gap: 10px;
-    padding: 10px 12px;
-  }
-  .level-switch {
-    width: 100%;
-    overflow-x: auto;
-  }
-  .concept,
-  .seg-aside,
-  .sig-row,
-  .quiz-grid,
-  .resource-grid {
-    grid-template-columns: 1fr !important;
-  }
-  .stage-head,
-  .stage-body {
-    padding-left: 14px;
-    padding-right: 14px;
-  }
-}
-
-@media (max-width: 560px) {
-  .seg-title { font-size: 18px; }
-  .big-sign { width: 120px; height: 120px; font-size: 14px; }
-}
-</style></head>
+</head>
 <body data-screen-label="00 Lesson Player">
 
 <!-- accent strip -->
@@ -1609,6 +1472,7 @@ body { grid-template-rows: 6px 64px 1fr !important; }
 <div class="stage">
 
   <aside class="chap-rail" data-screen-label="01 Chapter Rail">
+    <button class="sheet-close" data-close="1" title="Close">✕</button>
     <div class="level-tag" id="levelTag">
       LEVEL ?
       <small>—</small>
@@ -1639,6 +1503,7 @@ body { grid-template-rows: 6px 64px 1fr !important; }
   </main>
 
   <aside class="instructor-rail" data-screen-label="03 Instructor Rail">
+    <button class="sheet-close" data-close="1" title="Close">✕</button>
     <div class="instructor-head">
       <div class="agent-portrait">
         <div class="agent"><div class="antenna"></div><div class="head"></div><div class="body"></div><div class="a-badge"></div></div>
@@ -1688,9 +1553,29 @@ body { grid-template-rows: 6px 64px 1fr !important; }
   </div>
 </footer>
 
+<div class="mobile-dock">
+  <button class="sheet-btn" id="chapSheetBtn" title="Chapters">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M8 6h13M8 12h13M8 18h13"></path><circle cx="3.5" cy="6" r="1.6" fill="currentColor" stroke="none"></circle><circle cx="3.5" cy="12" r="1.6" fill="currentColor" stroke="none"></circle><circle cx="3.5" cy="18" r="1.6" fill="currentColor" stroke="none"></circle></svg>
+  </button>
+  <button class="sheet-btn" id="instrSheetBtn" title="Instructor">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a8 8 0 01-8 8H4l2.5-3A8 8 0 1121 12z"></path></svg>
+  </button>
+</div>
+<div class="sheet-scrim" id="sheetScrim"></div>
+
 <script src="/senior-player-assets/49a3c2ff-88b4-4eac-a678-fe1d969cfe3c.js"></script>
 <script src="/senior-player-assets/cdeffec1-c220-49ed-bff9-c87c16735bfd.js"></script>
 <script src="/senior-player-assets/1fd70965-3933-4051-9fa7-662241d9acdb.js"></script>
+<script>(function () {
+  var b = document.body;
+  function close() { b.classList.remove('sheet-chap', 'sheet-instr'); }
+  function toggle(c) { var on = b.classList.contains(c); close(); if (!on) b.classList.add(c); }
+  document.getElementById('chapSheetBtn').addEventListener('click', function () { toggle('sheet-chap'); });
+  document.getElementById('instrSheetBtn').addEventListener('click', function () { toggle('sheet-instr'); });
+  document.getElementById('sheetScrim').addEventListener('click', close);
+  Array.prototype.forEach.call(document.querySelectorAll('.sheet-close'), function (x) { x.addEventListener('click', close); });
+  document.getElementById('chapList').addEventListener('click', function (e) { if (e.target.closest('.chap')) close(); });
+})();</script>
 
 
 
@@ -1770,52 +1655,89 @@ body { grid-template-rows: 6px 64px 1fr !important; }
 .resource-card { padding: 10px; }
 .resource-card a { font-size: 11px; padding: 6px 8px; }
 
-@media (max-width: 1280px) {
-  .stage {
-    grid-template-columns: 200px minmax(0, 1fr) 250px;
+/* ===== MOBILE FOCUS MODE — active segment fills the screen; rails become bottom sheets ===== */
+.mobile-dock, .sheet-btn, .sheet-scrim, .sheet-close { display: none; }
+@media (max-width: 980px) {
+  html, body { height: 100dvh; overflow: hidden; }
+  body { grid-template-rows: 6px auto minmax(0, 1fr) !important; }
+  .topbar { padding: 8px 12px; gap: 10px; height: auto; min-height: 54px; }
+  .lesson-title { flex: 1; min-width: 0; max-width: none; }
+  .top-progress, .top-right { display: none; }
+  .level-switch button { min-width: 0; font-size: 0; gap: 0; padding: 0 9px; }
+  .level-switch button .badge { font-size: 10px; }
+  .stage { grid-template-columns: minmax(0, 1fr); }
+  .stage-head { padding: 14px 16px 0; gap: 12px; }
+  .seg-title { font-size: 18px; }
+  .seg-meta { display: none; }
+  .stage-body { padding: 16px 16px 84px; }
+  .footer-actions {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding: 10px 16px;
+    background: var(--cream-2);
+    border-top: 2px solid var(--ink);
+    z-index: 56;
   }
-  .seg-title { font-size: 20px; }
-  .concept { grid-template-columns: 180px minmax(0, 1fr); }
-  .big-sign { width: 150px; height: 150px; font-size: 18px; }
-  .big-sign.circle { font-size: 46px; }
-  .seg-aside { grid-template-columns: minmax(0, 1fr) 210px; }
-}
-
-@media (max-width: 900px) {
-  .stage {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto minmax(0, 1fr) auto;
-    overflow: auto;
-  }
+  .btn-primary, .btn-secondary { padding: 11px 18px; font-size: 11px; }
   .chap-rail,
   .instructor-rail {
-    position: static;
-    width: 100%;
-    max-height: none;
-    height: auto;
-    border-right: 0;
-    border-left: 0;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
+    width: auto;
+    z-index: 60;
+    border: 0;
+    border-top: 4px solid var(--accent);
+    box-shadow: 0 -14px 44px rgba(0, 0, 0, 0.55);
+    transform: translateY(103%);
+    transition: transform .28s cubic-bezier(.2, .8, .2, 1);
   }
-  .chap-rail {
-    border-bottom: 3px solid var(--ink, #14140f);
-    max-height: 240px;
-    overflow: auto;
+  .chap-rail { max-height: 72dvh; overflow-y: auto; }
+  .instructor-rail { height: 72dvh; max-height: 72dvh; }
+  body.sheet-chap .chap-rail,
+  body.sheet-instr .instructor-rail {
+    transform: none;
   }
-  .instructor-rail {
-    border-top: 3px solid var(--ink, #14140f);
-    max-height: 280px;
-    overflow: auto;
+  .sheet-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 10, 7, 0.55);
+    z-index: 55;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .2s;
   }
-  .topbar {
-    flex-wrap: wrap;
-    height: auto;
-    gap: 10px;
-    padding: 10px 12px;
+  body.sheet-chap .sheet-scrim,
+  body.sheet-instr .sheet-scrim {
+    opacity: 1;
+    pointer-events: auto;
   }
-  .level-switch {
-    width: 100%;
-    overflow-x: auto;
+  .sheet-close {
+    display: grid;
+    place-items: center;
+    position: sticky;
+    top: 0;
+    float: right;
+    width: 34px;
+    height: 34px;
+    background: var(--asphalt);
+    color: var(--cream);
+    border: 2px solid var(--asphalt-4);
+    border-radius: 8px;
+    font-family: "Bungee";
+    font-size: 12px;
+    cursor: pointer;
+    z-index: 3;
   }
+  .instructor-rail .sheet-close { position: absolute; top: 12px; right: 12px; float: none; }
   .concept,
   .seg-aside,
   .sig-row,
@@ -1823,16 +1745,40 @@ body { grid-template-rows: 6px 64px 1fr !important; }
   .resource-grid {
     grid-template-columns: 1fr !important;
   }
-  .stage-head,
-  .stage-body {
-    padding-left: 14px;
-    padding-right: 14px;
+  .mobile-dock {
+    display: flex;
+    gap: 8px;
+    position: fixed;
+    left: 12px;
+    bottom: 10px;
+    z-index: 61;
+  }
+  body.sheet-chap .mobile-dock,
+  body.sheet-instr .mobile-dock {
+    display: none;
+  }
+  .sheet-btn {
+    display: grid;
+    place-items: center;
+    width: 46px;
+    height: 46px;
+    background: var(--asphalt);
+    color: var(--cream);
+    border: 2px solid var(--asphalt-4);
+    border-radius: 10px;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+  }
+  body.sheet-chap #chapSheetBtn,
+  body.sheet-instr #instrSheetBtn {
+    background: var(--accent);
+    color: var(--accent-ink);
+    border-color: var(--ink);
   }
 }
-
 @media (max-width: 560px) {
-  .seg-title { font-size: 18px; }
-  .big-sign { width: 120px; height: 120px; font-size: 14px; }
+  .seg-title { font-size: 16px; }
+  .big-sign { width: 130px; height: 130px; font-size: 13px; }
 }
 </style>
 <link rel="stylesheet" href="/player-mobile.css">
