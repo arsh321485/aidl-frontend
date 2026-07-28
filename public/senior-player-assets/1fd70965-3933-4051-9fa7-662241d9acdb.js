@@ -51,8 +51,21 @@
     rail.insertBefore(sel, rail.firstChild);
   })();
 
-  // --- level switcher ---
+  // --- level switcher: only show levels unlocked by the class picked at sign-up ---
+  function getAllowedLevels() {
+    let cls = null;
+    try { cls = localStorage.getItem('aidl-selected-class'); } catch (e) {}
+    if (cls === 'L') return ['L'];
+    if (cls === 'O') return ['L', 'C'];
+    if (cls === 'S') return ['L', 'C', 'A'];
+    return ['L', 'C', 'A'];
+  }
+  const allowedLevels = getAllowedLevels();
   document.querySelectorAll('#levelSwitch button').forEach(b => {
+    if (!allowedLevels.includes(b.dataset.level)) {
+      b.style.display = 'none';
+      return;
+    }
     if (b.dataset.level === LESSON.level) b.classList.add('active');
     b.addEventListener('click', () => {
       const target = b.dataset.lesson;

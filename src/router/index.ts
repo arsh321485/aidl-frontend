@@ -20,11 +20,13 @@ const router = createRouter({
       path: '/home',
       name: 'home',
       component: HomeView,
+      meta: { public: true },
     },
     {
       path: '/senior-portal',
       name: 'senior-portal',
       component: SeniorPortalView,
+      meta: { requiresPermit: true },
     },
     {
       path: '/portal',
@@ -34,11 +36,13 @@ const router = createRouter({
       path: '/junior-portal',
       name: 'junior-driver-portal',
       component: JuniorDriverPortalView,
+      meta: { requiresPermit: true },
     },
     {
       path: '/senior-player',
       name: 'senior-lesson-player',
       component: SeniorLessonPlayerView,
+      meta: { requiresPermit: true },
     },
     {
       path: '/lesson',
@@ -48,23 +52,39 @@ const router = createRouter({
       path: '/junior-player',
       name: 'junior-lesson-player',
       component: JuniorLessonPlayerView,
+      meta: { requiresPermit: true },
     },
     {
       path: '/road-test',
       name: 'road-test',
       component: RoadTestView,
+      meta: { requiresPermit: true },
     },
   ],
 })
 
 router.beforeEach((to) => {
   const isAuthenticated = localStorage.getItem('aidl_auth') === 'true'
+  const hasPermit = localStorage.getItem('aidl_permit') === 'true'
 
   if (to.name === 'signin' && isAuthenticated) {
     return { name: 'home' }
   }
 
-  if (!to.meta.public && !isAuthenticated) {
+  if (to.meta.public) {
+    return
+  }
+
+  // Dashboards and lessons are only reachable after finishing the
+  // enroll-form -> avatar-picker -> "Confirm & Get Permit" flow.
+  if (to.meta.requiresPermit) {
+    if (!hasPermit) {
+      return { path: '/home', hash: '#enroll' }
+    }
+    return
+  }
+
+  if (!isAuthenticated) {
     return { name: 'signin', query: { redirect: to.fullPath } }
   }
 })

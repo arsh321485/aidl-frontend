@@ -6,98 +6,223 @@
         <button type="button" class="ap-close" @click="$emit('close')" aria-label="Close">✕</button>
       </div>
 
-      <template v-if="mode === 'presets'">
-        <p class="ap-sub">Choose a face for your licence — no real photos needed.</p>
-        <div class="ap-grid">
-          <button
-            v-for="preset in presets"
-            :key="preset.color"
-            type="button"
-            class="ap-option"
-            :class="{ active: selected?.color === preset.color }"
-            @click="selected = preset"
-          >
-            <span class="ap-bot" :style="{ '--ap-color': preset.color }">
-              <span class="ap-bot-antenna"></span>
-              <span class="ap-bot-head"></span>
-              <span class="ap-bot-body"></span>
-            </span>
-            <small>{{ preset.name }}</small>
-          </button>
-          <button type="button" class="ap-option ap-custom" @click="mode = 'custom'">
-            <span class="ap-plus">+</span>
-            <small>Create Your Own</small>
-          </button>
+      <div class="ap-body">
+        <div v-if="mode === 'presets'" class="ap-scroll">
+          <p class="ap-sub">Choose a ready-made face for your licence, or build your own.</p>
+          <div class="ap-grid">
+            <button
+              v-for="preset in PRESETS"
+              :key="preset.name"
+              type="button"
+              class="ap-option"
+              :class="{ active: selected?.name === preset.name }"
+              @click="selected = preset"
+            >
+              <span class="ap-thumb"><AvatarBuilder :config="preset" /></span>
+            </button>
+            <button type="button" class="ap-option ap-custom" @click="openCustom">
+              <span class="ap-plus">+</span>
+              <small>Create Your Own</small>
+            </button>
+          </div>
         </div>
-      </template>
 
-      <template v-else>
-        <p class="ap-sub">Pick a colour for your avatar.</p>
-        <div class="ap-preview">
-          <span class="ap-bot ap-bot-lg" :style="{ '--ap-color': customColor }">
-            <span class="ap-bot-antenna"></span>
-            <span class="ap-bot-head"></span>
-            <span class="ap-bot-body"></span>
-          </span>
+        <div v-else class="ap-custom-layout">
+          <div class="ap-preview-col">
+            <span class="ap-thumb ap-thumb-lg"><AvatarBuilder :config="config" /></span>
+            <div class="ap-gender-toggle">
+              <button type="button" :class="{ active: config.gender === 'girl' }" @click="setGender('girl')">Girl</button>
+              <button type="button" :class="{ active: config.gender === 'boy' }" @click="setGender('boy')">Boy</button>
+            </div>
+            <button type="button" class="ap-back" @click="mode = 'presets'">← Back to presets</button>
+          </div>
+
+          <div class="ap-options-col">
+            <section class="ap-section">
+              <h4>Face Shape</h4>
+              <div class="ap-thumb-grid">
+                <button
+                  v-for="fs in FACE_SHAPES" :key="fs.key" type="button" class="ap-thumb-btn"
+                  :class="{ active: config.faceShape === fs.key }" @click="config.faceShape = fs.key"
+                >
+                  <span class="ap-thumb"><AvatarBuilder :config="{ ...config, faceShape: fs.key }" /></span>
+                  <small>{{ fs.label }}</small>
+                </button>
+              </div>
+            </section>
+
+            <section class="ap-section">
+              <h4>Skin Tone</h4>
+              <div class="ap-swatch-row">
+                <button
+                  v-for="s in SKIN_TONES" :key="s.key" type="button" class="ap-swatch"
+                  :class="{ active: config.skin === s.value }" :style="{ background: s.value }"
+                  :title="s.label" @click="config.skin = s.value"
+                ></button>
+              </div>
+            </section>
+
+            <section class="ap-section">
+              <h4>Hairstyle</h4>
+              <div class="ap-thumb-grid">
+                <button
+                  v-for="h in visibleHairstyles" :key="h.key" type="button" class="ap-thumb-btn"
+                  :class="{ active: config.hairStyle === h.key }" @click="config.hairStyle = h.key"
+                >
+                  <span class="ap-thumb"><AvatarBuilder :config="{ ...config, hairStyle: h.key }" /></span>
+                  <small>{{ h.label }}</small>
+                </button>
+              </div>
+            </section>
+
+            <section class="ap-section">
+              <h4>{{ config.hairStyle === 'hijab' ? 'Hijab Colour' : 'Hair Colour' }}</h4>
+              <div class="ap-swatch-row">
+                <button
+                  v-for="c in HAIR_COLORS" :key="c.key" type="button" class="ap-swatch"
+                  :class="{ active: config.hairColor === c.value }" :style="{ background: c.value }"
+                  :title="c.label" @click="config.hairColor = c.value"
+                ></button>
+              </div>
+            </section>
+
+            <section class="ap-section">
+              <h4>Eyes</h4>
+              <div class="ap-thumb-grid">
+                <button
+                  v-for="e in EYE_STYLES" :key="e.key" type="button" class="ap-thumb-btn"
+                  :class="{ active: config.eyes === e.key }" @click="config.eyes = e.key"
+                >
+                  <span class="ap-thumb"><AvatarBuilder :config="{ ...config, eyes: e.key }" /></span>
+                  <small>{{ e.label }}</small>
+                </button>
+              </div>
+            </section>
+
+            <section class="ap-section">
+              <h4>Eye Colour</h4>
+              <div class="ap-swatch-row">
+                <button
+                  v-for="c in EYE_COLORS" :key="c.key" type="button" class="ap-swatch"
+                  :class="{ active: config.eyeColor === c.value }" :style="{ background: c.value }"
+                  :title="c.label" @click="config.eyeColor = c.value"
+                ></button>
+              </div>
+            </section>
+
+            <section class="ap-section">
+              <h4>Eyewear</h4>
+              <div class="ap-thumb-grid">
+                <button
+                  v-for="w in EYEWEAR_STYLES" :key="w.key" type="button" class="ap-thumb-btn"
+                  :class="{ active: config.eyewear === w.key }" @click="config.eyewear = w.key"
+                >
+                  <span class="ap-thumb"><AvatarBuilder :config="{ ...config, eyewear: w.key }" /></span>
+                  <small>{{ w.label }}</small>
+                </button>
+              </div>
+            </section>
+
+            <section class="ap-section" v-if="config.gender === 'boy'">
+              <h4>Facial Hair</h4>
+              <div class="ap-thumb-grid">
+                <button
+                  v-for="f in FACIAL_HAIR_STYLES" :key="f.key" type="button" class="ap-thumb-btn"
+                  :class="{ active: config.facialHair === f.key }" @click="config.facialHair = f.key"
+                >
+                  <span class="ap-thumb"><AvatarBuilder :config="{ ...config, facialHair: f.key }" /></span>
+                  <small>{{ f.label }}</small>
+                </button>
+              </div>
+            </section>
+
+            <section class="ap-section">
+              <h4>Outfit</h4>
+              <div class="ap-thumb-grid">
+                <button
+                  v-for="o in visibleOutfits" :key="o.key" type="button" class="ap-thumb-btn"
+                  :class="{ active: config.outfit === o.key }" @click="config.outfit = o.key"
+                >
+                  <span class="ap-thumb"><AvatarBuilder :config="{ ...config, outfit: o.key }" /></span>
+                  <small>{{ o.label }}</small>
+                </button>
+              </div>
+            </section>
+
+            <section class="ap-section">
+              <h4>Outfit Colour</h4>
+              <div class="ap-swatch-row">
+                <button
+                  v-for="c in OUTFIT_COLORS" :key="c.key" type="button" class="ap-swatch"
+                  :class="{ active: config.outfitColor === c.value }" :style="{ background: c.value }"
+                  :title="c.label" @click="config.outfitColor = c.value"
+                ></button>
+              </div>
+            </section>
+
+            <section class="ap-section">
+              <h4>Background</h4>
+              <div class="ap-swatch-row">
+                <button
+                  v-for="c in BG_COLORS" :key="c.key" type="button" class="ap-swatch"
+                  :class="{ active: config.bg === c.value }" :style="{ background: c.value }"
+                  :title="c.label" @click="config.bg = c.value"
+                ></button>
+              </div>
+            </section>
+          </div>
         </div>
-        <div class="ap-swatches">
-          <button
-            v-for="c in customColors"
-            :key="c"
-            type="button"
-            class="ap-swatch"
-            :class="{ active: customColor === c }"
-            :style="{ background: c }"
-            :aria-label="'Choose colour ' + c"
-            @click="pickCustom(c)"
-          ></button>
-        </div>
-        <button type="button" class="ap-back" @click="mode = 'presets'">← Back to presets</button>
-      </template>
+      </div>
 
       <div class="ap-foot">
         <button type="button" class="ap-btn ap-btn-ghost" @click="$emit('close')">Cancel</button>
-        <button type="button" class="ap-btn ap-btn-red" :disabled="!selected" @click="confirm">Confirm &amp; Get Permit →</button>
+        <button type="button" class="ap-btn ap-btn-red" :disabled="!canConfirm" @click="confirm">Confirm &amp; Get Permit →</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-
-interface AvatarChoice {
-  color: string
-  name: string
-}
+import { computed, reactive, ref } from 'vue'
+import AvatarBuilder from './AvatarBuilder.vue'
+import {
+  SKIN_TONES, HAIR_COLORS, EYE_COLORS, OUTFIT_COLORS, BG_COLORS, FACE_SHAPES,
+  HAIRSTYLES, EYE_STYLES, EYEWEAR_STYLES, OUTFIT_STYLES, FACIAL_HAIR_STYLES,
+  DEFAULT_AVATAR, PRESETS, type AvatarConfig
+} from '../lib/avatar-parts'
 
 const emit = defineEmits<{
-  confirm: [avatar: AvatarChoice]
+  confirm: [avatar: AvatarConfig & { name?: string }]
   close: []
 }>()
 
-const presets: AvatarChoice[] = [
-  { color: '#2ec866', name: 'Green' },
-  { color: '#6fb3e0', name: 'Sky' },
-  { color: '#ffcc00', name: 'Yellow' },
-  { color: '#e23a2e', name: 'Red' },
-  { color: '#a06fe0', name: 'Violet' }
-]
-
-const customColors = ['#2ec866', '#6fb3e0', '#ffcc00', '#e23a2e', '#a06fe0', '#ff9d00', '#14140f', '#f5ecd2']
-
 const mode = ref<'presets' | 'custom'>('presets')
-const selected = ref<AvatarChoice | null>(null)
-const customColor = ref(customColors[0])
+const selected = ref<(AvatarConfig & { name: string }) | null>(null)
+const config = reactive<AvatarConfig>({ ...DEFAULT_AVATAR })
 
-function pickCustom(c: string) {
-  customColor.value = c
-  selected.value = { color: c, name: 'Custom' }
+const visibleHairstyles = computed(() => HAIRSTYLES.filter(h => h.gender === 'unisex' || h.gender === config.gender))
+const visibleOutfits = computed(() => OUTFIT_STYLES.filter(o => o.gender === 'unisex' || o.gender === config.gender))
+
+const canConfirm = computed(() => mode.value === 'custom' || !!selected.value)
+
+function setGender(g: 'boy' | 'girl') {
+  config.gender = g
+  if (g === 'girl') config.facialHair = 'none'
+  if (!visibleHairstyles.value.some(h => h.key === config.hairStyle)) config.hairStyle = g === 'boy' ? 'crew-cut' : 'long-wavy'
+  if (!visibleOutfits.value.some(o => o.key === config.outfit)) config.outfit = 'tshirt'
+}
+
+function openCustom() {
+  if (selected.value) Object.assign(config, selected.value)
+  mode.value = 'custom'
 }
 
 function confirm() {
-  if (!selected.value) return
-  emit('confirm', selected.value)
+  if (mode.value === 'custom') {
+    emit('confirm', { ...config })
+  } else if (selected.value) {
+    emit('confirm', { ...selected.value })
+  }
 }
 </script>
 
@@ -112,9 +237,10 @@ function confirm() {
   padding: 20px;
 }
 .ap-modal {
-  width: min(480px, 100%);
-  max-height: 90vh;
-  overflow-y: auto;
+  width: min(720px, 100%);
+  height: min(640px, 92vh);
+  display: flex;
+  flex-direction: column;
   background: var(--cream, #f5ecd2);
   color: var(--ink, #14140f);
   border: 3px solid var(--ink, #14140f);
@@ -130,6 +256,7 @@ function confirm() {
   font-size: 13px;
   letter-spacing: 0.04em;
   margin-bottom: 8px;
+  flex-shrink: 0;
 }
 .ap-close {
   width: 30px;
@@ -140,6 +267,17 @@ function confirm() {
   cursor: pointer;
   font-size: 13px;
 }
+.ap-body {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.ap-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+}
 .ap-sub {
   font-size: 13px;
   opacity: 0.8;
@@ -147,7 +285,7 @@ function confirm() {
 }
 .ap-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 10px;
   margin-bottom: 18px;
 }
@@ -156,7 +294,7 @@ function confirm() {
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  padding: 12px 6px;
+  padding: 10px 6px;
   background: var(--cream-2, #f0e3bd);
   border: 2px solid var(--ink, #14140f);
   border-radius: 10px;
@@ -175,114 +313,116 @@ function confirm() {
   font-size: 24px;
   line-height: 1;
 }
-.ap-bot {
-  --ap-color: #2ec866;
-  position: relative;
-  width: 46px;
-  height: 54px;
-}
-.ap-bot-lg {
-  width: 90px;
-  height: 106px;
-}
-.ap-bot-head {
-  position: absolute;
-  left: 50%;
-  top: 0;
-  transform: translateX(-50%);
-  width: 60%;
-  height: 52%;
-  background: var(--ink, #14140f);
-  border: 2px solid var(--ink, #14140f);
-  border-radius: 30% 30% 20% 20%;
-}
-.ap-bot-head::before,
-.ap-bot-head::after {
-  content: "";
-  position: absolute;
-  top: 34%;
-  width: 16%;
-  height: 16%;
-  background: var(--ap-color);
+.ap-thumb {
+  display: block;
+  width: 56px;
+  height: 56px;
   border-radius: 50%;
-}
-.ap-bot-head::before { left: 16%; }
-.ap-bot-head::after { right: 16%; }
-.ap-bot-antenna {
-  position: absolute;
-  left: 50%;
-  top: -14%;
-  width: 3px;
-  height: 16%;
-  background: var(--ink, #14140f);
-  transform: translateX(-50%);
-}
-.ap-bot-antenna::before {
-  content: "";
-  position: absolute;
-  left: 50%;
-  top: -6px;
-  width: 8px;
-  height: 8px;
-  background: var(--ap-color);
+  overflow: hidden;
   border: 2px solid var(--ink, #14140f);
-  border-radius: 50%;
-  transform: translateX(-50%);
+  background: #eee;
+  flex-shrink: 0;
 }
-.ap-bot-body {
-  position: absolute;
-  left: 50%;
-  bottom: 0;
-  transform: translateX(-50%);
-  width: 90%;
-  height: 44%;
+.ap-thumb-lg {
+  width: 140px;
+  height: 140px;
+  margin: 0 auto;
+}
+.ap-custom-layout {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 18px;
+}
+.ap-preview-col {
+  flex: 0 0 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding-top: 4px;
+}
+.ap-gender-toggle {
+  display: flex;
+  border: 2px solid var(--ink, #14140f);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.ap-gender-toggle button {
+  border: 0;
   background: var(--cream-2, #f0e3bd);
-  border: 2px solid var(--ink, #14140f);
-  border-radius: 22% 22% 10% 10%;
+  padding: 8px 12px;
+  font-family: "Bungee", sans-serif;
+  font-size: 10px;
+  cursor: pointer;
 }
-.ap-bot-body::after {
-  content: "";
-  position: absolute;
-  left: 50%;
-  bottom: 18%;
-  transform: translateX(-50%);
-  width: 26%;
-  height: 26%;
-  background: var(--ap-color);
-  border: 2px solid var(--ink, #14140f);
-  border-radius: 50%;
+.ap-gender-toggle button.active {
+  background: var(--sign-yellow, #ffcc00);
 }
-.ap-preview {
-  display: grid;
-  place-items: center;
-  padding: 16px 0;
+.ap-options-col {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  padding-right: 6px;
 }
-.ap-swatches {
+.ap-section {
+  margin-bottom: 16px;
+}
+.ap-section h4 {
+  font-family: "Bungee", sans-serif;
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin: 0 0 8px;
+  opacity: 0.75;
+}
+.ap-swatch-row {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
-  justify-content: center;
-  margin-bottom: 14px;
 }
 .ap-swatch {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
   border: 2px solid var(--ink, #14140f);
   cursor: pointer;
+  padding: 0;
 }
 .ap-swatch.active {
   box-shadow: 0 0 0 3px var(--cream, #f5ecd2), 0 0 0 5px var(--ink, #14140f);
 }
+.ap-thumb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(64px, 1fr));
+  gap: 8px;
+}
+.ap-thumb-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 2px;
+  background: var(--cream-2, #f0e3bd);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 8.5px;
+  font-family: "JetBrains Mono", monospace;
+  text-align: center;
+}
+.ap-thumb-btn.active {
+  border-color: var(--ink, #14140f);
+  background: var(--sign-yellow, #ffcc00);
+}
 .ap-back {
-  display: block;
-  margin: 0 auto 16px;
   background: none;
   border: 0;
   text-decoration: underline;
-  font-size: 12px;
+  font-size: 11px;
   cursor: pointer;
   color: inherit;
+  padding: 0;
 }
 .ap-foot {
   display: flex;
@@ -290,6 +430,8 @@ function confirm() {
   gap: 10px;
   border-top: 2px dashed var(--asphalt-3, #b8ac86);
   padding-top: 16px;
+  margin-top: 12px;
+  flex-shrink: 0;
 }
 .ap-btn {
   font-family: "Bungee", sans-serif;
@@ -310,5 +452,30 @@ function confirm() {
 .ap-btn-red:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+
+@media (max-width: 560px) {
+  .ap-modal {
+    height: min(680px, 94vh);
+  }
+  .ap-custom-layout {
+    flex-direction: column;
+    overflow-y: auto;
+  }
+  .ap-preview-col {
+    flex: 0 0 auto;
+    flex-direction: row;
+    justify-content: center;
+  }
+  .ap-thumb-lg {
+    width: 90px;
+    height: 90px;
+  }
+  .ap-options-col {
+    overflow-y: visible;
+  }
+  .ap-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 </style>

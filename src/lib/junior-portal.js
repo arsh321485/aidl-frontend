@@ -822,6 +822,15 @@ function applyTier(key) {
   renderQref();
 }
 
+/* ================================================= CLASS-GATED TIERS */
+function getAllowedTiers() {
+  let cls = null;
+  try { cls = localStorage.getItem('aidl-selected-class'); } catch (e) {}
+  if (cls === 'J') return ['cadet'];
+  if (cls === 'T') return ['crew'];
+  return ['cadet', 'crew'];
+}
+
 /* ================================================= INIT */
 function initPortal() {
   document.querySelectorAll('.nav-item').forEach(n => n.addEventListener('click', () => goView(n.dataset.view)));
@@ -833,8 +842,15 @@ function initPortal() {
   const backdrop = document.getElementById('portalNavBackdrop');
   if (menuBtn && root) menuBtn.addEventListener('click', () => root.classList.toggle('nav-open'));
   if (backdrop && root) backdrop.addEventListener('click', () => root.classList.remove('nav-open'));
+
+  const allowed = getAllowedTiers();
+  document.querySelectorAll('.tier-toggle button').forEach(b => {
+    b.style.display = allowed.includes(b.dataset.tier) ? '' : 'none';
+  });
+
   let saved = 'cadet';
   try { saved = localStorage.getItem('aidl-junior-tier') || 'cadet'; } catch (e) {}
+  if (!allowed.includes(saved)) saved = allowed[0];
   applyTier(saved);
   goView('dashboard');
 }

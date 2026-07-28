@@ -19,10 +19,10 @@
       </div>
       <div class="nav-cta">
         <button class="switch-path" type="button" @click="resetPath">↺ Switch Path</button>
-        <RouterLink class="nav-auth-btn auth-adult" to="/senior-portal">SIGN IN</RouterLink>
-        <RouterLink class="nav-auth-btn auth-junior" to="/junior-portal">SIGN IN</RouterLink>
-        <a class="btn btn-yellow cta-adult" href="#enroll"><span class="cta-long">Enroll Today →</span><span class="cta-short">Enroll →</span></a>
-        <a class="btn btn-green cta-junior" href="#enroll"><span class="cta-long">Enroll Your Learner →</span><span class="cta-short">Enroll →</span></a>
+        <a class="nav-auth-btn auth-adult" href="#enroll" @click.prevent="choose('adult', '#enroll')">SIGN IN</a>
+        <a class="nav-auth-btn auth-junior" href="#enroll" @click.prevent="choose('junior', '#enroll')">SIGN IN</a>
+        <a class="btn btn-yellow cta-adult" href="#enroll" @click.prevent="choose('adult', '#enroll')"><span class="cta-long">Enroll Today →</span><span class="cta-short">Enroll →</span></a>
+        <a class="btn btn-green cta-junior" href="#enroll" @click.prevent="choose('junior', '#enroll')"><span class="cta-long">Enroll Your Learner →</span><span class="cta-short">Enroll →</span></a>
       </div>
     </div>
   </nav>
@@ -766,9 +766,11 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch, onMounted, onUnmounted } from 'vue'
-import { RouterLink } from 'vue-router'
+import { useRouter } from 'vue-router'
 import AvatarPickerModal from '../components/AvatarPickerModal.vue'
 import '../styles/home-landing.css'
+
+const router = useRouter()
 
 const jrRoute = ref<'k' | 't'>('k')
 
@@ -898,12 +900,17 @@ watch(() => form.state, () => {
 const showAvatarPicker = ref(false)
 
 function handleSubmit() {
+  try { localStorage.setItem('aidl-selected-class', activeClass.value) } catch (e) {}
   showAvatarPicker.value = true
 }
 
-function onAvatarConfirmed() {
+function onAvatarConfirmed(avatar: unknown) {
   showAvatarPicker.value = false
+  try { localStorage.setItem('aidl-avatar', JSON.stringify(avatar)) } catch (e) {}
+  try { localStorage.setItem('aidl_permit', 'true') } catch (e) {}
   alert('Application received! Check your inbox for a learner’s permit.')
+  const isJunior = activeClass.value === 'J' || activeClass.value === 'T'
+  router.push(isJunior ? '/junior-portal' : '/senior-portal')
 }
 
 const licInput = ref('AIDL-O-1182-4421')

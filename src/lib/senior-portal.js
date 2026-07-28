@@ -913,6 +913,16 @@ function applyTier(key) {
   renderQref();
 }
 
+/* ============================================================ CLASS-GATED TIERS */
+function getAllowedTiers() {
+  let cls = null;
+  try { cls = localStorage.getItem('aidl-selected-class'); } catch (e) {}
+  if (cls === 'L') return ['learner'];
+  if (cls === 'O') return ['learner', 'operator'];
+  if (cls === 'S') return ['learner', 'operator', 'specialist'];
+  return ['learner', 'operator', 'specialist'];
+}
+
 /* ============================================================ INIT */
 function initPortal() {
   document.querySelectorAll('.nav-item').forEach(n => n.addEventListener('click', () => goView(n.dataset.view)));
@@ -926,9 +936,16 @@ function initPortal() {
   if (menuBtn && root) menuBtn.addEventListener('click', () => root.classList.toggle('nav-open'));
   if (backdrop && root) backdrop.addEventListener('click', () => root.classList.remove('nav-open'));
 
+  const allowed = getAllowedTiers();
+  document.querySelectorAll('.tier-toggle button').forEach(b => {
+    b.style.display = allowed.includes(b.dataset.tier) ? '' : 'none';
+  });
+
   let saved = 'operator';
   try { saved = localStorage.getItem('aidl-senior-tier') || 'operator'; } catch (e) {}
-  if (!PORTALS[saved]) saved = 'operator';
+  if (!PORTALS[saved] || !allowed.includes(saved)) {
+    saved = allowed.includes('operator') ? 'operator' : allowed[0];
+  }
   applyTier(saved);
   goView('dashboard');
 }
