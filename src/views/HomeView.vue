@@ -19,10 +19,42 @@
       </div>
       <div class="nav-cta">
         <button class="switch-path" type="button" @click="resetPath">↺ Switch Path</button>
-        <a class="nav-auth-btn auth-adult" href="#enroll" @click.prevent="choose('adult', '#enroll')">SIGN IN</a>
-        <a class="nav-auth-btn auth-junior" href="#enroll" @click.prevent="choose('junior', '#enroll')">SIGN IN</a>
         <a class="btn btn-yellow cta-adult" href="#enroll" @click.prevent="choose('adult', '#enroll')"><span class="cta-long">Enroll Today →</span><span class="cta-short">Enroll →</span></a>
+        <div class="signin-wrap auth-adult">
+          <button type="button" class="nav-auth-btn" @click.stop="toggleSignIn('senior')">SIGN IN</button>
+          <div v-if="signInOpen === 'senior'" class="signin-drop signin-drop-senior" @click.stop>
+            <div class="signin-drop-head">SIGN IN · SENIOR</div>
+            <p class="signin-drop-sub">Enter your license ID to open your dashboard.</p>
+            <input
+              type="text"
+              v-model="signInId"
+              placeholder="AIDL-O-1182-4421"
+              autocomplete="off"
+              @keyup.enter="submitSignIn('senior')"
+            />
+            <button type="button" class="btn btn-yellow signin-drop-btn" @click="submitSignIn('senior')">Sign In →</button>
+            <p v-if="signInError" class="signin-drop-error">{{ signInError }}</p>
+            <p class="signin-drop-foot">Don't have one? <a href="#enroll" @click.prevent="closeSignInAndEnroll('adult')">Enroll here →</a></p>
+          </div>
+        </div>
         <a class="btn btn-green cta-junior" href="#enroll" @click.prevent="choose('junior', '#enroll')"><span class="cta-long">Enroll Your Learner →</span><span class="cta-short">Enroll →</span></a>
+        <div class="signin-wrap auth-junior">
+          <button type="button" class="nav-auth-btn" @click.stop="toggleSignIn('junior')">SIGN IN</button>
+          <div v-if="signInOpen === 'junior'" class="signin-drop signin-drop-junior" @click.stop>
+            <div class="signin-drop-head">SIGN IN · JUNIOR</div>
+            <p class="signin-drop-sub">Enter your license ID to open your dashboard.</p>
+            <input
+              type="text"
+              v-model="signInId"
+              placeholder="AIDL-J-3301-7742"
+              autocomplete="off"
+              @keyup.enter="submitSignIn('junior')"
+            />
+            <button type="button" class="btn btn-green signin-drop-btn" @click="submitSignIn('junior')">Sign In →</button>
+            <p v-if="signInError" class="signin-drop-error">{{ signInError }}</p>
+            <p class="signin-drop-foot">Don't have one? <a href="#enroll" @click.prevent="closeSignInAndEnroll('junior')">Enroll here →</a></p>
+          </div>
+        </div>
       </div>
     </div>
   </nav>
@@ -569,12 +601,16 @@
             </div>
             <div class="field full" style="margin-bottom: 16px;">
               <label>Pick Your Class</label>
-              <div class="choice-group five-cols" id="classChoice">
-                <div class="choice" :class="{ active: activeClass === 'L' }" @click="activeClass = 'L'">CLASS&nbsp;L</div>
-                <div class="choice" :class="{ active: activeClass === 'O' }" @click="activeClass = 'O'">CLASS&nbsp;O</div>
-                <div class="choice" :class="{ active: activeClass === 'S' }" @click="activeClass = 'S'">CLASS&nbsp;S</div>
-                <div class="choice" :class="{ active: activeClass === 'J' }" @click="activeClass = 'J'" style="font-size:10px;">JUNIOR<br/>8–12</div>
-                <div class="choice" :class="{ active: activeClass === 'T' }" @click="activeClass = 'T'" style="font-size:10px;">CREW<br/>12–16</div>
+              <div class="choice-group" :class="{ 'two-cols': mode === 'junior' }" id="classChoice">
+                <template v-if="mode === 'junior'">
+                  <div class="choice" :class="{ active: activeClass === 'J' }" @click="activeClass = 'J'" style="font-size:10px;">JUNIOR<br/>8–12</div>
+                  <div class="choice" :class="{ active: activeClass === 'T' }" @click="activeClass = 'T'" style="font-size:10px;">CREW<br/>12–16</div>
+                </template>
+                <template v-else>
+                  <div class="choice" :class="{ active: activeClass === 'L' }" @click="activeClass = 'L'">CLASS&nbsp;L</div>
+                  <div class="choice" :class="{ active: activeClass === 'O' }" @click="activeClass = 'O'">CLASS&nbsp;O</div>
+                  <div class="choice" :class="{ active: activeClass === 'S' }" @click="activeClass = 'S'">CLASS&nbsp;S</div>
+                </template>
               </div>
             </div>
             <div class="field full">
@@ -791,6 +827,15 @@ function syncBodyClasses() {
 const preChoice = ref(true)
 const mode = ref<'adult' | 'junior' | null>(null)
 
+watch(mode, (m) => {
+  const isJuniorClass = activeClass.value === 'J' || activeClass.value === 'T'
+  if (m === 'junior' && !isJuniorClass) {
+    activeClass.value = 'J'
+  } else if (m === 'adult' && isJuniorClass) {
+    activeClass.value = 'O'
+  }
+})
+
 function scrollToEnrollForm() {
   if (window.location.hash !== '#enroll') return
   requestAnimationFrame(() => {
@@ -837,13 +882,37 @@ function resetPath() {
   window.scrollTo(0, 0)
 }
 
+const signInOpen = ref<'senior' | 'junior' | null>(null)
+const signInId = ref('')
+const signInError = ref('')
+
+function toggleSignIn(which: 'senior' | 'junior') {
+  signInOpen.value = signInOpen.value === which ? null : which
+  signInId.value = ''
+  signInError.value = ''
+}
+
+function closeSignInAndEnroll(path: 'adult' | 'junior') {
+  signInOpen.value = null
+  choose(path, '#enroll')
+}
+
+function handleDocClick(e: MouseEvent) {
+  if (!signInOpen.value) return
+  if (!(e.target as HTMLElement).closest('.signin-wrap')) {
+    signInOpen.value = null
+  }
+}
+
 onMounted(() => {
   syncBodyClasses()
   handleHashNavigation()
   window.addEventListener('hashchange', handleHashNavigation)
+  document.addEventListener('click', handleDocClick)
 })
 onUnmounted(() => {
   window.removeEventListener('hashchange', handleHashNavigation)
+  document.removeEventListener('click', handleDocClick)
   document.body.classList.remove('pre-choice', 'mode-adult', 'mode-junior', 'focus-adult', 'focus-junior')
 })
 
@@ -899,6 +968,70 @@ watch(() => form.state, () => {
 
 const showAvatarPicker = ref(false)
 
+type ClassCode = 'L' | 'O' | 'S' | 'J' | 'T'
+
+interface RegistryEntry {
+  holder: string
+  cls: string
+  classCode: ClassCode | null
+  iss: string
+  exp: string
+  hrs: string
+  end: string
+}
+
+const SENIOR_CLASSES: ClassCode[] = ['L', 'O', 'S']
+const JUNIOR_CLASSES: ClassCode[] = ['J', 'T']
+
+const CLASS_LABELS: Record<ClassCode, string> = {
+  L: 'CLASS L · LEARNER',
+  O: 'CLASS O · OPERATOR',
+  S: 'CLASS S · SPECIALIST',
+  J: 'JUNIOR CADET · CLASS J',
+  T: 'ROAD CREW · CLASS T'
+}
+
+const REGISTRY: Record<string, RegistryEntry> = {
+  'AIDL-O-1182-4421': { holder: 'Jamie Okafor', cls: 'CLASS O · OPERATOR',    classCode: 'O', iss: '04/29/2026', exp: '04/29/2028', hrs: '87 hrs · road test ✓', end: '+ Safety, + RAG' },
+  'AIDL-L-0042-9381': { holder: 'Alex Morgan',  cls: 'CLASS L · LEARNER',     classCode: 'L', iss: '03/14/2026', exp: '03/14/2027', hrs: '14 hrs · in progress',    end: '—' },
+  'AIDL-S-HC-2204':   { holder: 'Priya Reddy',  cls: 'CLASS S · HEALTHCARE',  classCode: 'S', iss: '05/04/2026', exp: 'Never',      hrs: '212 hrs · capstone ✓', end: '+ Compliance' },
+  'AIDL-X-SAFE-0918': { holder: 'Sam Chen',     cls: 'SAFETY ENDORSEMENT',    classCode: null, iss: '04/01/2026', exp: '04/01/2027', hrs: '32 red-team hrs',               end: '—' },
+  'AIDL-J-3301-7742': { holder: 'Riya Sharma',  cls: 'JUNIOR CADET · CLASS J', classCode: 'J', iss: '02/10/2026', exp: '02/10/2027', hrs: '9 hrs · in progress',  end: '—' },
+  'AIDL-T-5560-2213': { holder: 'Kabir Anand',  cls: 'ROAD CREW · CLASS T',    classCode: 'T', iss: '01/22/2026', exp: '01/22/2027', hrs: '22 hrs · sim solo ✓',  end: '+ Safety' }
+}
+
+function loadDynamicRegistry(): Record<string, RegistryEntry> {
+  try {
+    return JSON.parse(localStorage.getItem('aidl-registry') || '{}')
+  } catch (e) {
+    return {}
+  }
+}
+
+function saveDynamicEntry(id: string, entry: RegistryEntry) {
+  const reg = loadDynamicRegistry()
+  reg[id] = entry
+  try { localStorage.setItem('aidl-registry', JSON.stringify(reg)) } catch (e) {}
+}
+
+function lookupLicense(id: string): RegistryEntry | undefined {
+  const key = id.trim().toUpperCase()
+  return REGISTRY[key] || loadDynamicRegistry()[key]
+}
+
+function generateLicenseId(cls: ClassCode): string {
+  const seg1 = Math.floor(1000 + Math.random() * 9000)
+  const seg2 = Math.floor(1000 + Math.random() * 9000)
+  return `AIDL-${cls}-${seg1}-${seg2}`
+}
+
+function startSession(licenseId: string, entry: RegistryEntry) {
+  try {
+    localStorage.setItem('aidl-session', JSON.stringify({ licenseId, classCode: entry.classCode, holder: entry.holder }))
+    if (entry.classCode) localStorage.setItem('aidl-selected-class', entry.classCode)
+  } catch (e) {}
+}
+
 function handleSubmit() {
   try { localStorage.setItem('aidl-selected-class', activeClass.value) } catch (e) {}
   showAvatarPicker.value = true
@@ -907,29 +1040,56 @@ function handleSubmit() {
 function onAvatarConfirmed(avatar: unknown) {
   showAvatarPicker.value = false
   try { localStorage.setItem('aidl-avatar', JSON.stringify(avatar)) } catch (e) {}
-  try { localStorage.setItem('aidl_permit', 'true') } catch (e) {}
-  alert('Application received! Check your inbox for a learner’s permit.')
-  const isJunior = activeClass.value === 'J' || activeClass.value === 'T'
+
+  const cls = activeClass.value
+  const licenseId = generateLicenseId(cls)
+  const holder = `${form.firstName} ${form.lastName}`.trim() || 'AIDL Member'
+  const entry: RegistryEntry = {
+    holder,
+    cls: CLASS_LABELS[cls],
+    classCode: cls,
+    iss: new Date().toLocaleDateString('en-US'),
+    exp: '—',
+    hrs: '0 hrs · just enrolled',
+    end: '—'
+  }
+  saveDynamicEntry(licenseId, entry)
+  startSession(licenseId, entry)
+
+  alert(`Application received! Your license ID is ${licenseId} — check your inbox to get started.`)
+  const isJunior = cls === 'J' || cls === 'T'
   router.push(isJunior ? '/junior-portal' : '/senior-portal')
 }
 
+function submitSignIn(track: 'senior' | 'junior') {
+  signInError.value = ''
+  const id = signInId.value.trim()
+  if (!id) {
+    signInError.value = 'Enter your license ID.'
+    return
+  }
+  const entry = lookupLicense(id)
+  if (!entry || !entry.classCode) {
+    signInError.value = 'No permit found with that ID.'
+    return
+  }
+  const wantSenior = track === 'senior'
+  const isSeniorClass = SENIOR_CLASSES.includes(entry.classCode)
+  const isJuniorClass = JUNIOR_CLASSES.includes(entry.classCode)
+  if (wantSenior && !isSeniorClass) {
+    signInError.value = `That's a Junior license (${entry.cls}) — try Sign In on the Junior side.`
+    return
+  }
+  if (!wantSenior && !isJuniorClass) {
+    signInError.value = `That's a Senior license (${entry.cls}) — try Sign In on the Senior side.`
+    return
+  }
+  startSession(id.trim().toUpperCase(), entry)
+  signInOpen.value = null
+  router.push(wantSenior ? '/senior-portal' : '/junior-portal')
+}
+
 const licInput = ref('AIDL-O-1182-4421')
-
-interface RegistryEntry {
-  holder: string
-  cls: string
-  iss: string
-  exp: string
-  hrs: string
-  end: string
-}
-
-const REGISTRY: Record<string, RegistryEntry> = {
-  'AIDL-O-1182-4421': { holder: 'Jamie Okafor', cls: 'CLASS O · OPERATOR',    iss: '04/29/2026', exp: '04/29/2028', hrs: '87 hrs · road test ✓', end: '+ Safety, + RAG' },
-  'AIDL-L-0042-9381': { holder: 'Alex Morgan',  cls: 'CLASS L · LEARNER',     iss: '03/14/2026', exp: '03/14/2027', hrs: '14 hrs · in progress',    end: '—' },
-  'AIDL-S-HC-2204':   { holder: 'Priya Reddy',  cls: 'CLASS S · HEALTHCARE',  iss: '05/04/2026', exp: 'Never',      hrs: '212 hrs · capstone ✓', end: '+ Compliance' },
-  'AIDL-X-SAFE-0918': { holder: 'Sam Chen',     cls: 'SAFETY ENDORSEMENT',         iss: '04/01/2026', exp: '04/01/2027', hrs: '32 red-team hrs',               end: '—' }
-}
 
 const verifyResult = reactive({
   status: 'VERIFIED · ACTIVE',
@@ -944,8 +1104,7 @@ const verifyResult = reactive({
 })
 
 function verify() {
-  const k = licInput.value.trim().toUpperCase()
-  const r = REGISTRY[k]
+  const r = lookupLicense(licInput.value)
   if (r) {
     verifyResult.status = 'VERIFIED · ACTIVE'
     verifyResult.statusColor = '#2ec866'
@@ -1021,6 +1180,55 @@ body { overflow-x: hidden; }
 .nav-links a:hover { color: var(--signal-red); }
 .nav-cta { margin-left: auto; display: flex; gap: 12px; align-items: center; }
 .cta-short { display: none; }
+
+.signin-wrap { position: relative; }
+body:not(.pre-choice) .signin-wrap .nav-auth-btn { display: inline-flex; width: 100%; }
+.signin-drop {
+  position: absolute;
+  top: calc(100% + 12px);
+  right: 0;
+  width: 300px;
+  background: var(--cream);
+  border: 3px solid var(--ink);
+  box-shadow: 8px 8px 0 var(--ink);
+  padding: 18px;
+  z-index: 60;
+  text-align: left;
+}
+.signin-drop-head {
+  font-family: "Bungee", sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  margin-bottom: 6px;
+}
+.signin-drop-senior .signin-drop-head { color: var(--signal-red); }
+.signin-drop-junior .signin-drop-head { color: var(--signal-green); }
+.signin-drop-sub { font-size: 12px; color: #6a624a; margin: 0 0 12px; line-height: 1.4; }
+.signin-drop input {
+  width: 100%;
+  height: 42px;
+  border: 3px solid var(--ink);
+  background: var(--cream-2);
+  padding: 0 12px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 13px;
+  color: var(--ink);
+  outline: none;
+  box-sizing: border-box;
+}
+.signin-drop input:focus { background: var(--sign-yellow); }
+.signin-drop-btn { width: 100%; justify-content: center; margin-top: 10px; }
+.signin-drop-error {
+  margin: 10px 0 0;
+  padding: 8px 10px;
+  background: var(--signal-red);
+  color: var(--cream);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  border: 2px solid var(--ink);
+}
+.signin-drop-foot { margin: 12px 0 0; font-size: 11px; color: #6a624a; }
+.signin-drop-foot a { color: var(--ink); font-weight: 700; }
 
 .btn {
   display: inline-flex; align-items: center; gap: 10px;
@@ -1332,12 +1540,15 @@ section.band { position: relative; padding: 120px 0; border-bottom: 4px solid va
 
 /* ENROLL */
 .enroll { background: var(--sign-yellow); }
+body.mode-junior .enroll { background: rgb(46, 199, 99); }
+body.mode-junior .enroll .section-eyebrow { background: var(--ink); color: rgb(46, 199, 99); }
 #enroll { scroll-margin-top: 88px; }
 .enroll-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-top: 50px; align-items: start; min-width: 0; }
 .enroll-left h2 { color: var(--ink); }
 .enroll-steps { display: grid; gap: 14px; margin-top: 28px; }
 .step { display: flex; gap: 18px; align-items: flex-start; background: var(--cream); border: 3px solid var(--ink); padding: 16px 18px; box-shadow: 5px 5px 0 var(--ink); }
 .step-num { flex: 0 0 48px; height: 48px; background: var(--ink); color: var(--sign-yellow); font-family: "Bungee", sans-serif; font-size: 22px; display: grid; place-items: center; }
+body.mode-junior .step-num { color: rgb(46, 199, 99); }
 .step h4 { margin: 0 0 4px; font-family: "Bungee", sans-serif; font-size: 16px; }
 .step p { margin: 0; font-size: 13px; }
 
@@ -1350,10 +1561,13 @@ section.band { position: relative; padding: 120px 0; border-bottom: 4px solid va
 .field label { font-family: "JetBrains Mono", monospace; font-size: 10px; text-transform: uppercase; color: var(--ink); display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
 .field input, .field select { width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; height: 44px; border: 3px solid var(--ink); background: var(--cream-2); padding: 0 14px; font-family: "Space Grotesk", sans-serif; font-size: 15px; font-weight: 600; }
 .field input:focus, .field select:focus { outline: none; background: var(--sign-yellow); }
+body.mode-junior .field input:focus, body.mode-junior .field select:focus { background: rgb(46, 199, 99); }
 .field.full { grid-column: 1 / -1; }
 .choice-group { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 4px; min-width: 0; }
+.choice-group.two-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .choice { border: 3px solid var(--ink); background: var(--cream-2); padding: 10px; text-align: center; cursor: pointer; font-family: "Bungee", sans-serif; font-size: 12px; user-select: none; min-width: 0; }
 .choice.active { background: var(--sign-yellow); box-shadow: inset 0 0 0 3px var(--ink); }
+body.mode-junior .choice.active { background: rgb(46, 199, 99); }
 .form-foot { background: var(--cream-2); border-top: 3px dashed var(--ink); padding: 18px 28px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; min-width: 0; }
 .form-foot .tiny { font-family: "JetBrains Mono", monospace; font-size: 10px; }
 
@@ -1500,7 +1714,6 @@ footer.foot { background: var(--ink); color: var(--cream); padding: 70px 0 30px;
   .ins-grid { grid-template-columns: 1fr 1fr; }
   .foot-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
   .form-row { grid-template-columns: 1fr; }
-  .choice-group.five-cols { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .enroll-grid { gap: 40px; }
 }
 
@@ -1602,9 +1815,7 @@ footer.foot { background: var(--ink); color: var(--cream); padding: 70px 0 30px;
     padding: 16px;
   }
   .form-foot .btn { width: 100%; justify-content: center; }
-  .choice-group,
-  .choice-group.five-cols { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
-  .choice-group.five-cols .choice:nth-child(5) { grid-column: 1 / -1; }
+  .choice-group { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
   .verify-result { grid-template-columns: 1fr; }
   .lic-main { grid-template-columns: 72px minmax(0, 1fr); }
   .ins-meta { grid-template-columns: 1fr; }

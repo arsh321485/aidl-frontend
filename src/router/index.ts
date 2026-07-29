@@ -26,7 +26,7 @@ const router = createRouter({
       path: '/senior-portal',
       name: 'senior-portal',
       component: SeniorPortalView,
-      meta: { requiresPermit: true },
+      meta: { requiresPermit: true, track: 'senior' },
     },
     {
       path: '/portal',
@@ -36,13 +36,13 @@ const router = createRouter({
       path: '/junior-portal',
       name: 'junior-driver-portal',
       component: JuniorDriverPortalView,
-      meta: { requiresPermit: true },
+      meta: { requiresPermit: true, track: 'junior' },
     },
     {
       path: '/senior-player',
       name: 'senior-lesson-player',
       component: SeniorLessonPlayerView,
-      meta: { requiresPermit: true },
+      meta: { requiresPermit: true, track: 'senior' },
     },
     {
       path: '/lesson',
@@ -52,7 +52,7 @@ const router = createRouter({
       path: '/junior-player',
       name: 'junior-lesson-player',
       component: JuniorLessonPlayerView,
-      meta: { requiresPermit: true },
+      meta: { requiresPermit: true, track: 'junior' },
     },
     {
       path: '/road-test',
@@ -63,9 +63,11 @@ const router = createRouter({
   ],
 })
 
+const SENIOR_CLASSES = ['L', 'O', 'S']
+const JUNIOR_CLASSES = ['J', 'T']
+
 router.beforeEach((to) => {
   const isAuthenticated = localStorage.getItem('aidl_auth') === 'true'
-  const hasPermit = localStorage.getItem('aidl_permit') === 'true'
 
   if (to.name === 'signin' && isAuthenticated) {
     return { name: 'home' }
@@ -76,10 +78,21 @@ router.beforeEach((to) => {
   }
 
   // Dashboards and lessons are only reachable after finishing the
-  // enroll-form -> avatar-picker -> "Confirm & Get Permit" flow.
+  // enroll-form -> avatar-picker flow, or signing in with a valid license ID —
+  // and only for the track (senior/junior) that license was actually issued for.
   if (to.meta.requiresPermit) {
-    if (!hasPermit) {
-      return { path: '/home', hash: '#enroll' }
+    let session: { classCode?: string } | null = null
+    try { session = JSON.parse(localStorage.getItem('aidl-session') || 'null') } catch (e) {}
+
+    if (!session?.classCode) {
+      return { path: '/home' }
+    }
+    const track = to.meta.track as 'senior' | 'junior' | undefined
+    if (track === 'senior' && !SENIOR_CLASSES.includes(session.classCode)) {
+      return { path: '/home' }
+    }
+    if (track === 'junior' && !JUNIOR_CLASSES.includes(session.classCode)) {
+      return { path: '/home' }
     }
     return
   }
