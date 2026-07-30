@@ -24,8 +24,8 @@ const PORTALS = {
     expires: '02/14/2027',
     renewal: '7 mo left',
     meter: 42,
-    nextLessonHref: '/senior-player?lesson=M-1-01',
-    lessonLabel: 'Play Lesson M-1-01 →',
+    nextLessonHref: '/senior-player?lesson=M-1-03',
+    lessonLabel: 'Play Lesson M-1-03 →',
 
     dash: {
       eyebrow: '▼ MILE 34 · PERMIT ACTIVE',

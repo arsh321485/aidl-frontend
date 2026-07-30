@@ -5,21 +5,26 @@
       <div class="nav-links nav-adult">
         <a href="#trainings">Trainings</a>
         <a href="#juniors" class="nav-link-juniors">Ages 8–16</a>
-        <a href="#instructors">Instructors</a>
         <a href="#licenses">Licenses</a>
         <a href="#verify">Verify</a>
-        <a href="#enroll">For Teams</a>
+        <a href="#enroll" @click.stop.prevent="openEnroll()">For Teams</a>
       </div>
       <div class="nav-links nav-junior">
         <a href="#juniors">Junior Programs</a>
         <a href="#juniors">The Route</a>
-        <a href="#instructors">Instructors</a>
         <a href="#licenses">Licenses</a>
-        <a href="#enroll">Enroll</a>
+        <a href="#enroll" @click.stop.prevent="openEnroll()">Enroll</a>
       </div>
       <div class="nav-cta">
+        <div class="nav-chooser">
+          <select id="pathSelectNav" class="nav-select" aria-label="Choose your path" v-model="chooserPath" @change="onChooserSelect">
+            <option value="" disabled>Choose your path…</option>
+            <option value="adult">Adult / Team — Drive AI</option>
+            <option value="junior">Junior (Ages 8–16) — Learn AI</option>
+          </select>
+        </div>
         <button class="switch-path" type="button" @click="resetPath">↺ Switch Path</button>
-        <a class="btn btn-yellow cta-adult" href="#enroll" @click.prevent="choose('adult', '#enroll')"><span class="cta-long">Enroll Today →</span><span class="cta-short">Enroll →</span></a>
+        <a class="btn btn-yellow cta-adult" href="#enroll" @click.stop.prevent="openEnroll('adult')"><span class="cta-long">Enroll Today →</span><span class="cta-short">Enroll →</span></a>
         <div class="signin-wrap auth-adult">
           <button type="button" class="nav-auth-btn" @click.stop="toggleSignIn('senior')">SIGN IN</button>
           <div v-if="signInOpen === 'senior'" class="signin-drop signin-drop-senior" @click.stop>
@@ -37,7 +42,7 @@
             <p class="signin-drop-foot">Don't have one? <a href="#enroll" @click.prevent="closeSignInAndEnroll('adult')">Enroll here →</a></p>
           </div>
         </div>
-        <a class="btn btn-green cta-junior" href="#enroll" @click.prevent="choose('junior', '#enroll')"><span class="cta-long">Enroll Your Learner →</span><span class="cta-short">Enroll →</span></a>
+        <a class="btn btn-green cta-junior" href="#enroll" @click.stop.prevent="openEnroll('junior')"><span class="cta-long">Enroll Your Learner →</span><span class="cta-short">Enroll →</span></a>
         <div class="signin-wrap auth-junior">
           <button type="button" class="nav-auth-btn" @click.stop="toggleSignIn('junior')">SIGN IN</button>
           <div v-if="signInOpen === 'junior'" class="signin-drop signin-drop-junior" @click.stop>
@@ -61,27 +66,17 @@
 
   <section class="split" id="splitChooser">
     <div class="split-panel adult">
-      <button class="split-close" type="button" @click="closeSplitPanel('adult')">✕ CLOSE</button>
       <div class="split-content">
         <span class="split-eyebrow">▸ FOR ADULTS &amp; TEAMS</span>
         <h2 class="split-title">DRIVE&nbsp;AI.</h2>
         <p class="split-sub">Three license classes — Learner, Operator, Specialist. Get behind the wheel, log your hours, and earn a credential employers can verify.</p>
-        <div class="split-actions">
-          <a class="btn btn-yellow" href="#trainings" @click.prevent="choose('adult', '#trainings')">Explore Classes →</a>
-          <a class="btn" href="#enroll" @click.prevent="choose('adult', '#enroll')">Enroll →</a>
-        </div>
       </div>
     </div>
     <div class="split-panel junior">
-      <button class="split-close" type="button" @click="closeSplitPanel('junior')">✕ CLOSE</button>
       <div class="split-content">
         <span class="split-eyebrow">▸ JUNIORS · AGES 8–16</span>
         <h2 class="split-title">LEARN&nbsp;AI.</h2>
         <p class="split-sub">Two safe, age-tuned tracks — Junior Cadet (8–12) and Road Crew (12–16). Supervised agents, a parent dashboard, and a real junior license.</p>
-        <div class="split-actions">
-          <a class="btn btn-green" href="#juniors" @click.prevent="choose('junior', '#juniors')">Explore Juniors →</a>
-          <a class="btn" href="#enroll" @click.prevent="choose('junior', '#enroll')">Enroll a Learner →</a>
-        </div>
       </div>
     </div>
   </section>
@@ -268,7 +263,7 @@
             <li>Safe-use basics</li>
             <li>Written road-rules exam</li>
           </ul>
-          <a class="btn" href="#enroll">Start Free</a>
+          <a class="btn" href="#enroll" @click.stop.prevent="openEnroll()">Start Now</a>
         </div>
 
         <div class="tr-card featured">
@@ -276,15 +271,21 @@
             <span class="tr-level">CLASS O · CORE</span>
             <span class="tr-stamp">★ MOST POPULAR</span>
           </div>
-          <div class="tr-icon">
-            <svg viewBox="0 0 60 60" fill="none">
-              <rect x="4" y="22" width="52" height="30" rx="3" fill="#e23a2e" stroke="#14140f" stroke-width="3"></rect>
-              <rect x="14" y="14" width="32" height="14" rx="2" fill="#fff" stroke="#14140f" stroke-width="3"></rect>
-              <circle cx="30" cy="21" r="3" fill="#14140f"></circle>
-              <circle cx="16" cy="50" r="6" fill="#14140f"></circle>
-              <circle cx="44" cy="50" r="6" fill="#14140f"></circle>
-              <path d="M30 28 V40" stroke="#14140f" stroke-width="3" stroke-linecap="round"></path>
-            </svg>
+          <div class="tr-icon-row">
+            <div class="tr-icon">
+              <svg viewBox="0 0 60 60" fill="none">
+                <rect x="4" y="22" width="52" height="30" rx="3" fill="#e23a2e" stroke="#14140f" stroke-width="3"></rect>
+                <rect x="14" y="14" width="32" height="14" rx="2" fill="#fff" stroke="#14140f" stroke-width="3"></rect>
+                <circle cx="30" cy="21" r="3" fill="#14140f"></circle>
+                <circle cx="16" cy="50" r="6" fill="#14140f"></circle>
+                <circle cx="44" cy="50" r="6" fill="#14140f"></circle>
+                <path d="M30 28 V40" stroke="#14140f" stroke-width="3" stroke-linecap="round"></path>
+              </svg>
+            </div>
+            <div class="tr-qual">
+              <span class="tr-qual-label">QUALIFICATION CRITERIA</span>
+              <span class="tr-qual-value">Learner's Permit</span>
+            </div>
           </div>
           <h3 class="tr-name">OPERATOR'S<br/>LICENSE</h3>
           <p class="tr-desc">For the everyday driver. Ship real work with AI — from research to writing to building agents you'd actually trust.</p>
@@ -300,7 +301,7 @@
             <li>1:1 instructor reviews</li>
             <li>Practical road test</li>
           </ul>
-          <a class="btn btn-red" href="#enroll">Get In Queue →</a>
+          <button type="button" class="btn btn-red" disabled>Coming Soon</button>
         </div>
 
         <div class="tr-card adv">
@@ -308,11 +309,17 @@
             <span class="tr-level">CLASS S · PRO</span>
             <span class="tr-stamp">COHORT-BASED</span>
           </div>
-          <div class="tr-icon">
-            <svg viewBox="0 0 60 60" fill="none">
-              <path d="M30 6 L52 16 V32 C52 44 42 52 30 56 C18 52 8 44 8 32 V16 Z" fill="#ffcc00" stroke="#14140f" stroke-width="3"></path>
-              <text x="30" y="36" text-anchor="middle" font-family="Bungee" font-size="14" fill="#14140f">S</text>
-            </svg>
+          <div class="tr-icon-row">
+            <div class="tr-icon">
+              <svg viewBox="0 0 60 60" fill="none">
+                <path d="M30 6 L52 16 V32 C52 44 42 52 30 56 C18 52 8 44 8 32 V16 Z" fill="#ffcc00" stroke="#14140f" stroke-width="3"></path>
+                <text x="30" y="36" text-anchor="middle" font-family="Bungee" font-size="14" fill="#14140f">S</text>
+              </svg>
+            </div>
+            <div class="tr-qual">
+              <span class="tr-qual-label">QUALIFICATION CRITERIA</span>
+              <span class="tr-qual-value">Operator's License</span>
+            </div>
           </div>
           <h3 class="tr-name">SPECIALIST<br/>ENDORSEMENT</h3>
           <p class="tr-desc">For the pro driver. Domain-deep tracks in healthcare, legal, security, and engineering — taught by industry instructors.</p>
@@ -328,7 +335,7 @@
             <li>Compliance &amp; governance</li>
             <li>Practical + oral defense</li>
           </ul>
-          <a class="btn btn-yellow" href="#enroll">Apply →</a>
+          <button type="button" class="btn btn-yellow" disabled>Coming Soon</button>
         </div>
       </div>
     </div>
@@ -367,7 +374,7 @@
               <li>Spotting "make-believe" answers</li>
               <li>Be kind, be private, ask a grown-up</li>
             </ul>
-            <a class="btn btn-green" href="#enroll">Start Junior Cadet →</a>
+            <a class="btn btn-green" href="#enroll" @click.stop.prevent="openEnroll()">Start Junior Cadet →</a>
           </div>
         </div>
 
@@ -393,7 +400,7 @@
               <li>Bias, deepfakes &amp; misinformation</li>
               <li>Digital citizenship &amp; road test project</li>
             </ul>
-            <a class="btn btn-sky" href="#enroll">Start Road Crew →</a>
+            <a class="btn btn-sky" href="#enroll" @click.stop.prevent="openEnroll()">Start Road Crew →</a>
           </div>
         </div>
       </div>
@@ -427,205 +434,85 @@
     </div>
   </section>
 
-  <section class="band instructors" id="instructors">
-    <div class="wrap">
-      <span class="section-eyebrow" style="background:var(--sign-yellow); color:var(--ink);">▼ MEET THE INSTRUCTORS</span>
-      <h2 class="section-title">YOUR INSTRUCTORS<br/>ARE AGENTS.</h2>
-      <p class="section-sub">Each instructor is a specialised AI agent with a permanent memory of your progress. They ride shotgun while you practice, grade your road tests, and never lose patience after the 14th attempt.</p>
-
-      <div class="ins-grid">
-        <div class="ins-card">
-          <div class="ins-photo">
-            <div class="agent"><div class="antenna"></div><div class="head"></div><div class="body"></div><div class="a-badge"></div></div>
-          </div>
-          <div class="ins-body">
-            <h4 class="ins-name">DRIVER ED</h4>
-            <div class="ins-role">INSTRUCTOR · CLASS L</div>
-            <p class="ins-bio">Your first instructor. Patient, structured, never ironic. Walks you through fundamentals with diagrams and pop quizzes.</p>
-            <div class="ins-tags"><span>FUNDAMENTALS</span><span>SOCRATIC</span><span>FRIENDLY</span></div>
-            <div class="ins-meta">
-              <div><b>1,240</b>lessons given</div>
-              <div><b>4.9★</b>rating</div>
-              <div><b>24/7</b>availability</div>
-            </div>
-          </div>
+  <div v-if="showEnrollModal" class="enroll-drop" @click.stop>
+    <button type="button" class="enroll-drop-close" @click="showEnrollModal = false" aria-label="Close">✕</button>
+    <form class="form-card" @submit.prevent="handleSubmit">
+        <div class="form-header">
+          <span>AIDL · FRONT DESK</span>
+          <span class="stamp">APPLICATION</span>
         </div>
-
-        <div class="ins-card">
-          <div class="ins-photo">
-            <div class="agent"><div class="antenna"></div><div class="head"></div><div class="body"></div><div class="a-badge"></div></div>
-          </div>
-          <div class="ins-body">
-            <h4 class="ins-name">SGT. MERIDIAN</h4>
-            <div class="ins-role">EXAMINER · ROAD TESTS</div>
-            <p class="ins-bio">Hands on the clipboard. Runs your practical exams, simulates edge cases, and writes a brutally honest report.</p>
-            <div class="ins-tags"><span>EXAMS</span><span>STRICT</span><span>FAIR</span></div>
-            <div class="ins-meta">
-              <div><b>8,910</b>exams scored</div>
-              <div><b>4.7★</b>rating</div>
-              <div><b>96%</b>pass rate</div>
+        <div class="form-body">
+          <div class="form-row">
+            <div class="field">
+              <label>First Name <span>*</span></label>
+              <input type="text" v-model="form.firstName" />
+            </div>
+            <div class="field">
+              <label>Last Name <span>*</span></label>
+              <input type="text" v-model="form.lastName" />
             </div>
           </div>
-        </div>
-
-        <div class="ins-card">
-          <div class="ins-photo">
-            <div class="agent"><div class="antenna"></div><div class="head"></div><div class="body"></div><div class="a-badge"></div></div>
-          </div>
-          <div class="ins-body">
-            <h4 class="ins-name">PROF. RAGGA</h4>
-            <div class="ins-role">SPECIALIST · AGENTS &amp; RAG</div>
-            <p class="ins-bio">Your guide through the tricky junctions — retrieval, tools, agent loops. Will whiteboard for as long as you'll let her.</p>
-            <div class="ins-tags"><span>AGENTS</span><span>RAG</span><span>EVALS</span></div>
-            <div class="ins-meta">
-              <div><b>612</b>projects coached</div>
-              <div><b>4.9★</b>rating</div>
-              <div><b>L3</b>specialist</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="ins-card">
-          <div class="ins-photo">
-            <div class="agent"><div class="antenna"></div><div class="head"></div><div class="body"></div><div class="a-badge"></div></div>
-          </div>
-          <div class="ins-body">
-            <h4 class="ins-name">UNIT 0X-SAFE</h4>
-            <div class="ins-role">SAFETY OFFICER</div>
-            <p class="ins-bio">Red-teams every project you ship. Pulls you over for hallucinations, prompt injection, and shoddy evals.</p>
-            <div class="ins-tags"><span>SAFETY</span><span>RED TEAM</span><span>EVALS</span></div>
-            <div class="ins-meta">
-              <div><b>3,402</b>audits run</div>
-              <div><b>4.8★</b>rating</div>
-              <div><b>0</b>incidents</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="band enroll" id="enroll">
-    <div class="wrap">
-      <span class="section-eyebrow">▼ ENROLLMENT</span>
-      <h2 class="section-title">SIGN UP AT<br/>THE FRONT DESK.</h2>
-      <p class="section-sub" style="color:var(--ink);">Walk in like a real driving school. Hand over your details, pick your class, get a learner's permit in your inbox within 5 minutes.</p>
-
-      <div class="enroll-grid">
-        <div class="enroll-left">
-          <div class="enroll-steps">
-            <div class="step">
-              <div class="step-num">1</div>
-              <div>
-                <h4>FILL IN THE FORM</h4>
-                <p>Name, email, your goal, your starting class. No GMAT, no resume, no nonsense.</p>
-              </div>
-            </div>
-            <div class="step">
-              <div class="step-num">2</div>
-              <div>
-                <h4>GET YOUR LEARNER'S PERMIT</h4>
-                <p>An ID card lands in your inbox. Use it to access lessons, agents, and the practice yard.</p>
-              </div>
-            </div>
-            <div class="step">
-              <div class="step-num">3</div>
-              <div>
-                <h4>BOOK YOUR FIRST LESSON</h4>
-                <p>Pick a slot with an instructor agent. They'll meet you in the simulator and you're driving.</p>
-              </div>
-            </div>
-            <div class="step">
-              <div class="step-num">4</div>
-              <div>
-                <h4>PASS, GET LICENSED</h4>
-                <p>Take the road test. Get a verifiable, shareable license that employers can check against our registry.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <form class="form-card" @submit.prevent="handleSubmit">
-          <div class="form-header">
-            <span>AIDL · FRONT DESK</span>
-            <span class="stamp">APPLICATION</span>
-          </div>
-          <div class="form-body">
-            <div class="form-row">
-              <div class="field">
-                <label>First Name <span>*</span></label>
-                <input type="text" v-model="form.firstName" />
-              </div>
-              <div class="field">
-                <label>Last Name <span>*</span></label>
-                <input type="text" v-model="form.lastName" />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="field full">
-                <label>Email <span>*</span></label>
-                <input type="email" placeholder="you@company.com" v-model="form.email" />
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="field">
-                <label>Date of Birth</label>
-                <input type="text" placeholder="MM/DD/YYYY" v-model="form.dob" />
-              </div>
-              <div class="field">
-                <label>Country</label>
-                <select v-model="form.country">
-                  <option>United States</option>
-                  <option>United Kingdom</option>
-                  <option>India</option>
-                  <option>Germany</option>
-                  <option>Canada</option>
-                </select>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="field">
-                <label>State</label>
-                <select v-model="form.state">
-                  <option value="" disabled>Select state</option>
-                  <option v-for="s in stateOptions" :key="s" :value="s">{{ s }}</option>
-                </select>
-              </div>
-              <div class="field">
-                <label>City</label>
-                <select v-model="form.city">
-                  <option value="" disabled>Select city</option>
-                  <option v-for="c in cityOptions" :key="c" :value="c">{{ c }}</option>
-                </select>
-              </div>
-            </div>
-            <div class="field full" style="margin-bottom: 16px;">
-              <label>Pick Your Class</label>
-              <div class="choice-group" :class="{ 'two-cols': mode === 'junior' }" id="classChoice">
-                <template v-if="mode === 'junior'">
-                  <div class="choice" :class="{ active: activeClass === 'J' }" @click="activeClass = 'J'" style="font-size:10px;">JUNIOR<br/>8–12</div>
-                  <div class="choice" :class="{ active: activeClass === 'T' }" @click="activeClass = 'T'" style="font-size:10px;">CREW<br/>12–16</div>
-                </template>
-                <template v-else>
-                  <div class="choice" :class="{ active: activeClass === 'L' }" @click="activeClass = 'L'">CLASS&nbsp;L</div>
-                  <div class="choice" :class="{ active: activeClass === 'O' }" @click="activeClass = 'O'">CLASS&nbsp;O</div>
-                  <div class="choice" :class="{ active: activeClass === 'S' }" @click="activeClass = 'S'">CLASS&nbsp;S</div>
-                </template>
-              </div>
-            </div>
+          <div class="form-row">
             <div class="field full">
-              <label>Why are you learning to drive AI? <span>OPTIONAL</span></label>
-              <input type="text" placeholder="One line is fine — we'll calibrate your route." v-model="form.why" />
+              <label>Email <span>*</span></label>
+              <input type="email" placeholder="you@company.com" v-model="form.email" />
             </div>
           </div>
-          <div class="form-foot">
-            <div class="tiny">EST. ARRIVAL · 5&nbsp;MIN</div>
-            <button type="submit" class="btn btn-red">GET MY PERMIT →</button>
+          <div class="form-row">
+            <div class="field">
+              <label>Date of Birth</label>
+              <input type="text" placeholder="MM/DD/YYYY" v-model="form.dob" />
+            </div>
+            <div class="field">
+              <label>Country</label>
+              <select v-model="form.country">
+                <option>United States</option>
+                <option>United Kingdom</option>
+                <option>India</option>
+                <option>Germany</option>
+                <option>Canada</option>
+              </select>
+            </div>
           </div>
-        </form>
-      </div>
-    </div>
-  </section>
+          <div class="form-row">
+            <div class="field">
+              <label>State</label>
+              <select v-model="form.state">
+                <option value="" disabled>Select state</option>
+                <option v-for="s in stateOptions" :key="s" :value="s">{{ s }}</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>City</label>
+              <select v-model="form.city">
+                <option value="" disabled>Select city</option>
+                <option v-for="c in cityOptions" :key="c" :value="c">{{ c }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="field full" style="margin-bottom: 16px;">
+            <label>{{ mode === 'junior' ? 'Pick Your Class' : 'Your License Class' }}</label>
+            <div class="choice-group" :class="{ 'two-cols': mode === 'junior', 'one-col': mode !== 'junior' }" id="classChoice">
+              <template v-if="mode === 'junior'">
+                <div class="choice" :class="{ active: activeClass === 'J' }" @click="activeClass = 'J'" style="font-size:10px;">JUNIOR<br/>8–12</div>
+                <div class="choice" :class="{ active: activeClass === 'T' }" @click="activeClass = 'T'" style="font-size:10px;">CREW<br/>12–16</div>
+              </template>
+              <template v-else>
+                <div class="choice active">CLASS&nbsp;L · LEARNER'S PERMIT</div>
+              </template>
+            </div>
+          </div>
+          <div class="field full">
+            <label>Why are you learning to drive AI? <span>OPTIONAL</span></label>
+            <input type="text" placeholder="One line is fine — we'll calibrate your route." v-model="form.why" />
+          </div>
+        </div>
+        <div class="form-foot">
+          <div class="tiny">EST. ARRIVAL · 5&nbsp;MIN</div>
+          <button type="submit" class="btn btn-red">GET MY PERMIT →</button>
+        </div>
+      </form>
+  </div>
 
   <AvatarPickerModal v-if="showAvatarPicker" @confirm="onAvatarConfirmed" @close="showAvatarPicker = false" />
 
@@ -810,7 +697,7 @@ const router = useRouter()
 
 const jrRoute = ref<'k' | 't'>('k')
 
-const activeClass = ref<'L' | 'O' | 'S' | 'J' | 'T'>('O')
+const activeClass = ref<'L' | 'O' | 'S' | 'J' | 'T'>('L')
 
 function syncBodyClasses() {
   const b = document.body
@@ -832,15 +719,25 @@ watch(mode, (m) => {
   if (m === 'junior' && !isJuniorClass) {
     activeClass.value = 'J'
   } else if (m === 'adult' && isJuniorClass) {
-    activeClass.value = 'O'
+    activeClass.value = 'L'
   }
 })
 
+const showEnrollModal = ref(false)
+
+function openEnroll(path?: 'adult' | 'junior') {
+  if (path) {
+    preChoice.value = false
+    mode.value = path
+    syncBodyClasses()
+  }
+  signInOpen.value = null
+  showEnrollModal.value = true
+}
+
 function scrollToEnrollForm() {
   if (window.location.hash !== '#enroll') return
-  requestAnimationFrame(() => {
-    document.querySelector('#enroll .form-card')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-  })
+  showEnrollModal.value = true
 }
 
 function handleHashNavigation() {
@@ -866,18 +763,22 @@ function choose(path: 'adult' | 'junior', hash?: string) {
   if (hash) {
     requestAnimationFrame(() => {
       window.location.hash = hash
-      if (hash === '#enroll') scrollToEnrollForm()
     })
   }
 }
 
-function closeSplitPanel(panel: 'adult' | 'junior') {
-  choose(panel === 'adult' ? 'junior' : 'adult')
+const chooserPath = ref<'adult' | 'junior' | ''>('')
+
+function onChooserSelect() {
+  if (chooserPath.value === 'adult' || chooserPath.value === 'junior') {
+    choose(chooserPath.value)
+  }
 }
 
 function resetPath() {
   preChoice.value = true
   mode.value = null
+  chooserPath.value = ''
   syncBodyClasses()
   window.scrollTo(0, 0)
 }
@@ -890,17 +791,21 @@ function toggleSignIn(which: 'senior' | 'junior') {
   signInOpen.value = signInOpen.value === which ? null : which
   signInId.value = ''
   signInError.value = ''
+  showEnrollModal.value = false
 }
 
 function closeSignInAndEnroll(path: 'adult' | 'junior') {
   signInOpen.value = null
-  choose(path, '#enroll')
+  openEnroll(path)
 }
 
 function handleDocClick(e: MouseEvent) {
-  if (!signInOpen.value) return
-  if (!(e.target as HTMLElement).closest('.signin-wrap')) {
+  const target = e.target as HTMLElement
+  if (signInOpen.value && !target.closest('.signin-wrap')) {
     signInOpen.value = null
+  }
+  if (showEnrollModal.value && !target.closest('.enroll-drop')) {
+    showEnrollModal.value = false
   }
 }
 
@@ -1034,6 +939,7 @@ function startSession(licenseId: string, entry: RegistryEntry) {
 
 function handleSubmit() {
   try { localStorage.setItem('aidl-selected-class', activeClass.value) } catch (e) {}
+  showEnrollModal.value = false
   showAvatarPicker.value = true
 }
 
@@ -1242,6 +1148,7 @@ body:not(.pre-choice) .signin-wrap .nav-auth-btn { display: inline-flex; width: 
 .btn.btn-yellow:hover { box-shadow: 6px 6px 0 var(--ink); }
 .btn.btn-red { background: var(--signal-red); color: var(--cream); box-shadow: 4px 4px 0 var(--ink); }
 .btn.btn-red:hover { box-shadow: 6px 6px 0 var(--ink); }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
 
 /* HERO */
 .hero {
@@ -1486,6 +1393,11 @@ section.band { position: relative; padding: 120px 0; border-bottom: 4px solid va
 }
 .tr-card.adv .tr-icon { background: var(--sign-yellow); border-color: var(--sign-yellow); box-shadow: 5px 5px 0 var(--signal-red); }
 .tr-icon svg { width: 60px; height: 60px; }
+.tr-icon-row { display: flex; align-items: center; gap: 16px; margin: 8px 0 22px; }
+.tr-icon-row .tr-icon { margin: 0; flex-shrink: 0; }
+.tr-qual { font-family: "JetBrains Mono", monospace; font-size: 11px; line-height: 1.5; }
+.tr-qual-label { display: block; opacity: 0.7; letter-spacing: 0.04em; }
+.tr-qual-value { display: block; font-family: "Bungee", sans-serif; font-size: 13px; margin-top: 4px; }
 .tr-name { font-family: "Bungee", sans-serif; font-size: 30px; line-height: 0.95; margin: 0 0 10px; }
 .tr-desc { font-size: 15px; line-height: 1.45; margin-bottom: 22px; }
 .tr-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; font-family: "JetBrains Mono", monospace; font-size: 11px; margin-bottom: 22px; padding: 14px 0; border-top: 2px dashed currentColor; border-bottom: 2px dashed currentColor; }
@@ -1499,26 +1411,6 @@ section.band { position: relative; padding: 120px 0; border-bottom: 4px solid va
 
 .tr-card .btn { margin-top: auto; align-self: flex-start; }
 
-/* INSTRUCTORS */
-.instructors { background: var(--asphalt); color: var(--cream); }
-.instructors .section-title { color: var(--cream); }
-.instructors .section-sub { color: var(--cream-2); }
-.ins-grid { margin-top: 60px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-.ins-card { background: var(--cream); color: var(--ink); border: 4px solid var(--ink); box-shadow: 8px 8px 0 var(--sign-yellow); overflow: hidden; }
-.ins-card:nth-child(2) { box-shadow: 8px 8px 0 var(--signal-red); }
-.ins-card:nth-child(3) { box-shadow: 8px 8px 0 var(--signal-green); }
-.ins-card:nth-child(4) { box-shadow: 8px 8px 0 var(--sky); }
-
-.ins-photo {
-  height: 180px; position: relative;
-  background: repeating-linear-gradient(45deg, transparent 0 10px, rgba(0,0,0,0.06) 10px 12px), var(--sign-yellow);
-  border-bottom: 4px solid var(--ink);
-  display: grid; place-items: center; overflow: hidden;
-}
-.ins-card:nth-child(2) .ins-photo { background: repeating-linear-gradient(45deg, transparent 0 10px, rgba(0,0,0,0.08) 10px 12px), var(--signal-red); }
-.ins-card:nth-child(3) .ins-photo { background: repeating-linear-gradient(45deg, transparent 0 10px, rgba(0,0,0,0.06) 10px 12px), var(--signal-green); }
-.ins-card:nth-child(4) .ins-photo { background: repeating-linear-gradient(45deg, transparent 0 10px, rgba(0,0,0,0.06) 10px 12px), var(--sky); }
-
 .agent { width: 110px; height: 130px; position: relative; filter: drop-shadow(3px 3px 0 var(--ink)); }
 .agent .head { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 80px; height: 70px; background: var(--ink); border: 3px solid var(--ink); border-radius: 16px 16px 12px 12px; }
 .agent .head::before, .agent .head::after { content: ""; position: absolute; top: 22px; width: 14px; height: 14px; background: var(--sign-yellow); border-radius: 50%; }
@@ -1529,28 +1421,42 @@ section.band { position: relative; padding: 120px 0; border-bottom: 4px solid va
 .agent .body { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 100px; height: 56px; background: var(--cream-2); border: 3px solid var(--ink); border-radius: 14px 14px 6px 6px; }
 .agent .a-badge { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); width: 28px; height: 28px; background: var(--sign-yellow); border: 2px solid var(--ink); border-radius: 50%; }
 
-.ins-body { padding: 22px; }
-.ins-name { font-family: "Bungee", sans-serif; font-size: 22px; margin: 0 0 4px; }
-.ins-role { font-family: "JetBrains Mono", monospace; font-size: 11px; color: #6a624a; margin-bottom: 14px; }
-.ins-bio { font-size: 13px; line-height: 1.45; margin-bottom: 14px; }
-.ins-tags { display: flex; flex-wrap: wrap; gap: 6px; }
-.ins-tags span { font-family: "JetBrains Mono", monospace; font-size: 10px; padding: 3px 8px; background: var(--ink); color: var(--cream); }
-.ins-meta { margin-top: 14px; padding-top: 12px; border-top: 2px dashed var(--ink); display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; font-family: "JetBrains Mono", monospace; font-size: 10px; }
-.ins-meta div b { display: block; font-family: "Bungee", sans-serif; font-size: 14px; }
-
-/* ENROLL */
-.enroll { background: var(--sign-yellow); }
-body.mode-junior .enroll { background: rgb(46, 199, 99); }
-body.mode-junior .enroll .section-eyebrow { background: var(--ink); color: rgb(46, 199, 99); }
-#enroll { scroll-margin-top: 88px; }
-.enroll-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; margin-top: 50px; align-items: start; min-width: 0; }
-.enroll-left h2 { color: var(--ink); }
-.enroll-steps { display: grid; gap: 14px; margin-top: 28px; }
-.step { display: flex; gap: 18px; align-items: flex-start; background: var(--cream); border: 3px solid var(--ink); padding: 16px 18px; box-shadow: 5px 5px 0 var(--ink); }
-.step-num { flex: 0 0 48px; height: 48px; background: var(--ink); color: var(--sign-yellow); font-family: "Bungee", sans-serif; font-size: 22px; display: grid; place-items: center; }
-body.mode-junior .step-num { color: rgb(46, 199, 99); }
-.step h4 { margin: 0 0 4px; font-family: "Bungee", sans-serif; font-size: 16px; }
-.step p { margin: 0; font-size: 13px; }
+/* ENROLL DROPDOWN — styled like the nav SIGN IN dropdown */
+.enroll-drop {
+  position: fixed;
+  top: 90px;
+  right: 24px;
+  z-index: 120;
+  width: min(460px, calc(100vw - 32px));
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
+}
+.enroll-drop-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--cream);
+  background: transparent;
+  color: var(--cream);
+  border-radius: 50%;
+  cursor: pointer;
+  font-family: "Bungee", sans-serif;
+  font-size: 12px;
+  z-index: 3;
+}
+.enroll-drop-close:hover { background: var(--signal-red); border-color: var(--signal-red); }
+@media (max-width: 640px) {
+  .enroll-drop {
+    top: auto;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-height: calc(100vh - 90px);
+  }
+}
 
 .form-card { background: var(--cream); border: 4px solid var(--ink); box-shadow: 12px 12px 0 var(--ink); padding: 0; overflow: visible; max-width: 100%; min-width: 0; width: 100%; box-sizing: border-box; }
 .form-header { background: var(--ink); color: var(--cream); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; font-family: "Bungee", sans-serif; font-size: 16px; gap: 10px; flex-wrap: wrap; min-width: 0; }
@@ -1565,6 +1471,8 @@ body.mode-junior .field input:focus, body.mode-junior .field select:focus { back
 .field.full { grid-column: 1 / -1; }
 .choice-group { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 4px; min-width: 0; }
 .choice-group.two-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.choice-group.one-col { grid-template-columns: 1fr; }
+.choice-group.one-col .choice { cursor: default; }
 .choice { border: 3px solid var(--ink); background: var(--cream-2); padding: 10px; text-align: center; cursor: pointer; font-family: "Bungee", sans-serif; font-size: 12px; user-select: none; min-width: 0; }
 .choice.active { background: var(--sign-yellow); box-shadow: inset 0 0 0 3px var(--ink); }
 body.mode-junior .choice.active { background: rgb(46, 199, 99); }
@@ -1694,6 +1602,16 @@ footer.foot { background: var(--ink); color: var(--cream); padding: 70px 0 30px;
   .nav-cta .btn.btn-green {
     box-shadow: 3px 3px 0 var(--ink);
   }
+  .nav-chooser {
+    flex: 1 1 0;
+    width: auto;
+  }
+  .nav-select {
+    width: 100%;
+    max-width: none;
+    padding: 8px 10px;
+    font-size: 11px;
+  }
   .trainings .top,
   .juniors .top {
     align-items: flex-start;
@@ -1711,10 +1629,8 @@ footer.foot { background: var(--ink); color: var(--cream); padding: 70px 0 30px;
   .hero-title .l2 { text-shadow: 4px 4px 0 var(--ink); }
   .hero-headline { padding: 40px 28px 300px; }
   .training-grid { grid-template-columns: 1fr 1fr; }
-  .ins-grid { grid-template-columns: 1fr 1fr; }
   .foot-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
   .form-row { grid-template-columns: 1fr; }
-  .enroll-grid { gap: 40px; }
 }
 
 @media (max-width: 900px) {
@@ -1738,6 +1654,11 @@ footer.foot { background: var(--ink); color: var(--cream); padding: 70px 0 30px;
   .switch-path {
     flex: 1 1 0;
     min-width: 0;
+    padding: 8px 6px;
+    font-size: 10px;
+    letter-spacing: -0.01em;
+  }
+  .nav-select {
     padding: 8px 6px;
     font-size: 10px;
     letter-spacing: -0.01em;
@@ -1767,8 +1688,6 @@ footer.foot { background: var(--ink); color: var(--cream); padding: 70px 0 30px;
     margin: 0;
   }
   .training-grid,
-  .ins-grid,
-  .enroll-grid,
   .lic-grid,
   .verify,
   .foot-grid,
@@ -1802,9 +1721,7 @@ footer.foot { background: var(--ink); color: var(--cream); padding: 70px 0 30px;
     max-width: none;
     font-size: 12px;
   }
-  .enroll-grid { gap: 28px; }
-  .form-card { order: -1; box-shadow: 8px 8px 0 var(--ink); }
-  .enroll-left { order: 1; }
+  .form-card { box-shadow: 8px 8px 0 var(--ink); }
   .form-row { grid-template-columns: 1fr !important; }
   .form-body { padding: 20px 16px; }
   .form-header { padding: 14px 16px; font-size: 14px; }
@@ -1815,10 +1732,9 @@ footer.foot { background: var(--ink); color: var(--cream); padding: 70px 0 30px;
     padding: 16px;
   }
   .form-foot .btn { width: 100%; justify-content: center; }
-  .choice-group { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
+  .choice-group:not(.one-col) { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
   .verify-result { grid-template-columns: 1fr; }
   .lic-main { grid-template-columns: 72px minmax(0, 1fr); }
-  .ins-meta { grid-template-columns: 1fr; }
   .tr-meta { grid-template-columns: 1fr; }
   .verify-left { border-right: 0; border-bottom: 3px dashed #3a3528; }
   .verify-form { flex-direction: column; }
@@ -1838,6 +1754,10 @@ footer.foot { background: var(--ink); color: var(--cream); padding: 70px 0 30px;
   .nav-cta .btn,
   .nav-auth-btn,
   .switch-path {
+    padding: 8px 4px;
+    font-size: 9px;
+  }
+  .nav-select {
     padding: 8px 4px;
     font-size: 9px;
   }
@@ -1866,14 +1786,12 @@ footer.foot { background: var(--ink); color: var(--cream); padding: 70px 0 30px;
     top: 0;
     margin-top: 16px;
   }
-  .ins-card .btn { width: 100%; justify-content: center; }
 }
 
 /* iPad Mini (~768px) — comfortable single-column cards, scrollable roadmaps */
 @media (min-width: 561px) and (max-width: 834px) {
   .wrap { padding: 0 24px; }
   .training-grid { grid-template-columns: 1fr !important; }
-  .ins-grid { grid-template-columns: 1fr !important; }
   .roadmap-signs { min-width: 900px; }
 }
 </style>

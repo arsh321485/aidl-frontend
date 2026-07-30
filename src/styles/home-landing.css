@@ -156,9 +156,6 @@ body:not(.pre-choice) .switch-path {
   border-radius: 40px;
   pointer-events: none;
 }
-.split-panel.solo .split-content {
-  max-width: 760px;
-}
 .split-eyebrow {
   display: inline-block;
   font-family: "Bungee", sans-serif;
@@ -200,31 +197,27 @@ body:not(.pre-choice) .switch-path {
 .split-panel.adult .split-sub {
   color: var(--cream-2);
 }
-.split-actions {
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
+
+/* Path-select dropdown, top-right of nav next to the logo — replaces the old close buttons + CTA buttons */
+.nav-chooser {
+  display: none;
 }
-.split-close {
-  position: absolute;
-  top: 24px;
-  right: 24px;
-  z-index: 5;
+body.pre-choice .nav-chooser {
   display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: transparent;
-  border: 3px solid currentColor;
-  color: inherit;
-  font-family: "Bungee", sans-serif;
-  font-size: 12px;
-  padding: 8px 13px;
-  cursor: pointer;
 }
-.split-close:hover {
-  background: var(--signal-red);
-  color: var(--cream);
-  border-color: var(--signal-red);
+.nav-select {
+  font-family: "Bungee", sans-serif;
+  font-size: 13px;
+  padding: 10px 14px;
+  border: 3px solid var(--ink);
+  background: var(--cream);
+  color: var(--ink);
+  cursor: pointer;
+  max-width: 240px;
+}
+.nav-select:focus {
+  outline: 3px solid var(--sign-yellow);
+  outline-offset: 2px;
 }
 
 /* Two-step: chooser first */
@@ -607,13 +600,6 @@ body.mode-junior .nav-cta .cta-junior {
   }
   .split-title {
     font-size: clamp(48px, 16vw, 84px);
-  }
-  .split-actions {
-    flex-wrap: wrap;
-  }
-  .split-actions .btn {
-    width: 100%;
-    justify-content: center;
   }
   .jr-tracks {
     grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
