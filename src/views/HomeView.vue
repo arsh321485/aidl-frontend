@@ -16,13 +16,6 @@
         <a href="#enroll" @click.stop.prevent="openEnroll()">Enroll</a>
       </div>
       <div class="nav-cta">
-        <div class="nav-chooser">
-          <select id="pathSelectNav" class="nav-select" aria-label="Choose your path" v-model="chooserPath" @change="onChooserSelect">
-            <option value="" disabled>Choose your path…</option>
-            <option value="adult">Adult / Team — Drive AI</option>
-            <option value="junior">Junior (Ages 8–16) — Learn AI</option>
-          </select>
-        </div>
         <button class="switch-path" type="button" @click="resetPath">↺ Switch Path</button>
         <a class="btn btn-yellow cta-adult" href="#enroll" @click.stop.prevent="openEnroll('adult')"><span class="cta-long">Enroll Today →</span><span class="cta-short">Enroll →</span></a>
         <div class="signin-wrap auth-adult">
@@ -33,7 +26,7 @@
             <input
               type="text"
               v-model="signInId"
-              placeholder="AIDL-O-1182-4421"
+              placeholder="AIDL-L-1182-4421"
               autocomplete="off"
               @keyup.enter="submitSignIn('senior')"
             />
@@ -65,11 +58,18 @@
   </nav>
 
   <section class="split" id="splitChooser">
+    <div class="split-chooser">
+      <select id="pathSelectNav" class="nav-select" aria-label="Choose your path" v-model="chooserPath" @change="onChooserSelect">
+        <option value="" disabled>Choose your path…</option>
+        <option value="adult">Adult / Team — Drive AI</option>
+        <option value="junior">Junior (Ages 8–16) — Learn AI</option>
+      </select>
+    </div>
     <div class="split-panel adult">
       <div class="split-content">
         <span class="split-eyebrow">▸ FOR ADULTS &amp; TEAMS</span>
         <h2 class="split-title">DRIVE&nbsp;AI.</h2>
-        <p class="split-sub">Three license classes — Learner, Operator, Specialist. Get behind the wheel, log your hours, and earn a credential employers can verify.</p>
+        <p class="split-sub">Three license classes — Learner, Operator (coming soon), Specialist (coming soon). Get behind the wheel, log your hours, and earn a credential employers can verify.</p>
       </div>
     </div>
     <div class="split-panel junior">
@@ -231,7 +231,7 @@
           <span class="section-eyebrow">▼ THREE CLASSES</span>
           <h2 class="section-title">PICK YOUR<br/>CLASS OF LICENSE.</h2>
         </div>
-        <p class="section-sub">Just like a real DMV — three tiers, three exam standards, three certifications. Start with a learner's permit. Stack up to specialist.</p>
+        <p class="section-sub">Just like a real DMV — three tiers, three exam standards, three certifications. Start with a learner's permit — Operator and Specialist tracks coming soon.</p>
       </div>
 
       <div class="training-grid">
@@ -545,9 +545,9 @@
           </div>
         </div>
 
-        <div class="lic-card gold">
+        <div class="lic-card">
           <div class="lic-top">
-            <span><b>OPERATOR'S LICENSE</b> · CLASS O</span>
+            <span><b>LEARNER'S PERMIT</b> · CLASS L</span>
             <span>ISSUED 04/29/2026</span>
           </div>
           <div class="lic-main">
@@ -555,22 +555,21 @@
             <div class="lic-info">
               <b>JAMIE OKAFOR</b>
               DOB 08/02/1991<br/>
-              EXPIRES 04/29/2028<br/>
-              HOURS LOGGED · 87 / 80
-              <div class="lic-num">AIDL-O-1182-4421</div>
+              EXPIRES 04/29/2027<br/>
+              HOURS LOGGED · 11 / 20
+              <div class="lic-num">AIDL-L-1182-4421</div>
             </div>
           </div>
           <div class="lic-stamps">
-            <span class="lic-stamp">Prompt ✓</span>
-            <span class="lic-stamp">RAG ✓</span>
-            <span class="lic-stamp">Agents ✓</span>
-            <span class="lic-stamp">Road Test ✓</span>
+            <span class="lic-stamp">Fundamentals ✓</span>
+            <span class="lic-stamp">Written Exam ✓</span>
+            <span class="lic-stamp">Safe-Use ✓</span>
           </div>
         </div>
 
-        <div class="lic-card red">
+        <div class="lic-card">
           <div class="lic-top">
-            <span><b>SPECIALIST ENDORSEMENT</b> · CLASS S</span>
+            <span><b>LEARNER'S PERMIT</b> · CLASS L</span>
             <span>ISSUED 05/04/2026</span>
           </div>
           <div class="lic-main">
@@ -578,15 +577,15 @@
             <div class="lic-info">
               <b>PRIYA REDDY</b>
               DOB 11/19/1988<br/>
-              EXPIRES NEVER<br/>
-              DOMAIN · HEALTHCARE
-              <div class="lic-num">AIDL-S-HC-2204</div>
+              EXPIRES 05/04/2027<br/>
+              HOURS LOGGED · 17 / 20
+              <div class="lic-num">AIDL-L-HC-2204</div>
             </div>
           </div>
           <div class="lic-stamps">
-            <span class="lic-stamp">Compliance ✓</span>
-            <span class="lic-stamp">Capstone ✓</span>
-            <span class="lic-stamp">Oral Defense ✓</span>
+            <span class="lic-stamp">Fundamentals ✓</span>
+            <span class="lic-stamp">Written Exam ✓</span>
+            <span class="lic-stamp">Safe-Use ✓</span>
           </div>
         </div>
 
@@ -654,7 +653,7 @@
         <div>
           <h5>PROGRAMS</h5>
           <ul>
-            <li><a href="#">Class L / O / S · Adults</a></li>
+            <li><a href="#">Class L · Adults</a></li>
             <li><a href="#">Junior Cadet · 8–12</a></li>
             <li><a href="#">Road Crew · 12–16</a></li>
             <li><a href="#">Practice Yard</a></li>
@@ -680,8 +679,8 @@
         </div>
       </div>
       <div class="foot-bot">
-        <div>© 2026 AIDL · ISSUED UNDER PUBLIC REGISTRY · CLASS L/O/S + J/T</div>
-        <div>BUILT FOR OPERATORS &amp; YOUNG LEARNERS · v2.6</div>
+        <div>© 2026 AIDL · ISSUED UNDER PUBLIC REGISTRY · CLASS L + J/T</div>
+        <div>BUILT FOR ADULTS &amp; YOUNG LEARNERS · v2.6</div>
       </div>
     </div>
   </footer>
@@ -897,9 +896,9 @@ const CLASS_LABELS: Record<ClassCode, string> = {
 }
 
 const REGISTRY: Record<string, RegistryEntry> = {
-  'AIDL-O-1182-4421': { holder: 'Jamie Okafor', cls: 'CLASS O · OPERATOR',    classCode: 'O', iss: '04/29/2026', exp: '04/29/2028', hrs: '87 hrs · road test ✓', end: '+ Safety, + RAG' },
+  'AIDL-L-1182-4421': { holder: 'Jamie Okafor', cls: 'CLASS L · LEARNER',     classCode: 'L', iss: '04/29/2026', exp: '04/29/2027', hrs: '11 hrs · in progress', end: '—' },
   'AIDL-L-0042-9381': { holder: 'Alex Morgan',  cls: 'CLASS L · LEARNER',     classCode: 'L', iss: '03/14/2026', exp: '03/14/2027', hrs: '14 hrs · in progress',    end: '—' },
-  'AIDL-S-HC-2204':   { holder: 'Priya Reddy',  cls: 'CLASS S · HEALTHCARE',  classCode: 'S', iss: '05/04/2026', exp: 'Never',      hrs: '212 hrs · capstone ✓', end: '+ Compliance' },
+  'AIDL-L-HC-2204':   { holder: 'Priya Reddy',  cls: 'CLASS L · LEARNER',     classCode: 'L', iss: '05/04/2026', exp: '05/04/2027', hrs: '17 hrs · in progress', end: '—' },
   'AIDL-X-SAFE-0918': { holder: 'Sam Chen',     cls: 'SAFETY ENDORSEMENT',    classCode: null, iss: '04/01/2026', exp: '04/01/2027', hrs: '32 red-team hrs',               end: '—' },
   'AIDL-J-3301-7742': { holder: 'Riya Sharma',  cls: 'JUNIOR CADET · CLASS J', classCode: 'J', iss: '02/10/2026', exp: '02/10/2027', hrs: '9 hrs · in progress',  end: '—' },
   'AIDL-T-5560-2213': { holder: 'Kabir Anand',  cls: 'ROAD CREW · CLASS T',    classCode: 'T', iss: '01/22/2026', exp: '01/22/2027', hrs: '22 hrs · sim solo ✓',  end: '+ Safety' }
@@ -995,18 +994,18 @@ function submitSignIn(track: 'senior' | 'junior') {
   router.push(wantSenior ? '/senior-portal' : '/junior-portal')
 }
 
-const licInput = ref('AIDL-O-1182-4421')
+const licInput = ref('AIDL-L-1182-4421')
 
 const verifyResult = reactive({
   status: 'VERIFIED · ACTIVE',
   statusColor: '#2ec866',
   time: 'Checked just now · Registry block #4,221,098',
   holder: 'Jamie Okafor',
-  cls: 'CLASS O · OPERATOR',
+  cls: 'CLASS L · LEARNER',
   issued: '04/29/2026',
-  expires: '04/29/2028',
-  hours: '87 hrs · road test ✓',
-  end: '+ Safety, + RAG'
+  expires: '04/29/2027',
+  hours: '11 hrs · in progress',
+  end: '—'
 })
 
 function verify() {
@@ -1602,16 +1601,6 @@ footer.foot { background: var(--ink); color: var(--cream); padding: 70px 0 30px;
   .nav-cta .btn.btn-green {
     box-shadow: 3px 3px 0 var(--ink);
   }
-  .nav-chooser {
-    flex: 1 1 0;
-    width: auto;
-  }
-  .nav-select {
-    width: 100%;
-    max-width: none;
-    padding: 8px 10px;
-    font-size: 11px;
-  }
   .trainings .top,
   .juniors .top {
     align-items: flex-start;
@@ -1654,11 +1643,6 @@ footer.foot { background: var(--ink); color: var(--cream); padding: 70px 0 30px;
   .switch-path {
     flex: 1 1 0;
     min-width: 0;
-    padding: 8px 6px;
-    font-size: 10px;
-    letter-spacing: -0.01em;
-  }
-  .nav-select {
     padding: 8px 6px;
     font-size: 10px;
     letter-spacing: -0.01em;
@@ -1754,10 +1738,6 @@ footer.foot { background: var(--ink); color: var(--cream); padding: 70px 0 30px;
   .nav-cta .btn,
   .nav-auth-btn,
   .switch-path {
-    padding: 8px 4px;
-    font-size: 9px;
-  }
-  .nav-select {
     padding: 8px 4px;
     font-size: 9px;
   }
