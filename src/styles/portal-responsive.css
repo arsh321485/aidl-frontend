@@ -109,6 +109,11 @@
     width: 100%;
   }
 
+  .junior-portal-layout .top-actions,
+  .senior-portal-layout .top-actions {
+    margin-left: auto;
+  }
+
   .junior-portal-layout .top-search kbd,
   .senior-portal-layout .top-search kbd {
     display: none;

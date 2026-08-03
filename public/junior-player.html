@@ -515,7 +515,7 @@
   .stage { display: grid; grid-template-columns: 258px 1fr 330px; overflow: hidden; min-height: 0; }
 
   /* LEFT — STOPS */
-  .chap-rail { background: var(--asphalt-2); border-right: 3px solid var(--ink); overflow-y: auto; padding: 20px 16px; }
+  .chap-rail { background: var(--asphalt-2); border-right: 3px solid var(--ink); overflow-y: auto; overflow-x: hidden; padding: 20px 16px; }
   .lesson-picker { width: 100%; height: 38px; margin: 0 0 14px; background: var(--asphalt); color: var(--cream); border: 2px solid var(--asphalt-4); border-radius: 8px; font-family: "JetBrains Mono", monospace; font-size: 10.5px; padding: 0 8px; cursor: pointer; }
   .lesson-picker:hover { border-color: var(--cream-3); }
   .lesson-picker:focus { outline: none; border-color: var(--accent); }
@@ -531,7 +531,7 @@
   .chap.jrquiz::before { background: var(--signal-red); border-color: var(--signal-red); border-radius: 0; clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%); }
   .chap.jrbuilder::before, .chap.jrsort::before { background: var(--accent); border-color: var(--accent); border-radius: 0; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
   .chap.current { background: var(--asphalt-3); color: var(--cream); }
-  .chap b { font-family: "Bungee"; font-size: 12px; display: block; line-height: 1.1; margin-bottom: 3px; }
+  .chap b { font-family: "Bungee"; font-size: 12px; display: block; line-height: 1.1; margin-bottom: 3px; word-break: break-word; }
   .chap small { font-family: "JetBrains Mono"; font-size: 9px; color: var(--cream-3); }
   .chap .dur { float: right; font-family: "JetBrains Mono"; font-size: 9px; color: var(--muted); }
 
@@ -549,8 +549,8 @@
   .seg-meta b { font-family: "Bungee"; font-size: 14px; color: var(--ink); display: block; }
   .stage-body { flex: 1; padding: 22px 40px 84px; position: relative; z-index: 2; overflow-y: auto; min-height: 0; }
 
-  /* CONCEPT */
-  .concept { display: grid; grid-template-columns: 250px 1fr; gap: 34px; align-items: start; }
+  /* CONCEPT — image stacked above the text, not side-by-side */
+  .concept { display: flex; flex-direction: column; gap: 20px; }
   .big-sign-wrap { display: flex; flex-direction: column; align-items: center; padding: 16px 0 0; }
   .big-sign { width: 210px; height: 210px; background: var(--signal-red); color: var(--cream); border: 6px solid var(--ink); display: grid; place-items: center; font-family: "Bungee"; font-size: 22px; text-align: center; box-shadow: 10px 10px 0 var(--ink); line-height: 1.05; position: relative; padding: 14px; }
   .big-sign.octagon { clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%); }
@@ -561,6 +561,7 @@
   .big-sign.triangle { clip-path: polygon(50% 0, 100% 100%, 0 100%); background: var(--sign-yellow); color: var(--ink); padding-top: 78px; align-items: end; box-shadow: 10px 10px 0 var(--ink); font-size: 17px; }
   .sign-post { width: 12px; height: 70px; background: linear-gradient(180deg, #c8c0a8 0%, #8a8268 100%); border-radius: 0 0 4px 4px; margin-top: -2px; }
 
+  .concept-body { max-width: 760px; }
   .concept-body h3 { font-family: "Baloo 2", "Bungee", sans-serif; font-weight: 800; font-size: 30px; margin: 0 0 6px; line-height: 1.05; }
   .concept-body .sub { font-family: "JetBrains Mono"; font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 14px; }
   .concept-body p { font-size: 16px; line-height: 1.6; margin: 0 0 14px; }
@@ -740,6 +741,20 @@
   #starBurst { position: fixed; top: 14px; left: 50%; transform: translateX(-50%); font-family: "Bungee"; font-size: 20px; color: var(--sign-yellow); background: var(--ink); border: 3px solid var(--sign-yellow); padding: 8px 18px; border-radius: 30px; z-index: 100; opacity: 0; pointer-events: none; }
   #starBurst.go { animation: burst 1.4s ease; }
   @keyframes burst { 0% { opacity: 0; transform: translateX(-50%) scale(0.6) translateY(-10px); } 15% { opacity: 1; transform: translateX(-50%) scale(1.1) translateY(0); } 70% { opacity: 1; } 100% { opacity: 0; transform: translateX(-50%) scale(1) translateY(-6px); } }
+
+  /* Laptop view: wider side rails, narrower center column, slightly larger reading type */
+  @media (min-width: 981px) and (max-width: 1500px) {
+    .stage { grid-template-columns: 300px minmax(0, 1fr) 380px; }
+    .concept-body h3 { font-size: 32px; }
+    .concept-body p { font-size: 17px; }
+    .examples ul { font-size: 15px; }
+    .examples h5 { font-size: 14px; }
+    .seg-title { font-size: 34px; }
+    .quiz-q { font-size: 24px; }
+    .msg { font-size: 13.5px; }
+    .lesson-title { font-size: 15px; }
+    .chap b { font-size: 13px; }
+  }
 </style>
 </head>
 <body class="level-J" data-screen-label="00 Junior Lesson Player">
@@ -750,14 +765,18 @@
 
 <!-- ============ TOP BAR ============ -->
 <header class="topbar">
-    <div class="lesson-title" id="lessonTitle">
+    <a class="back" id="backToPortal" href="/junior-portal" target="_top">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+    Portal
+  </a>
+  <div class="lesson-title" id="lessonTitle">
     LESSON
     <small id="lessonSub">PICK A TIER</small>
   </div>
 
   <div class="level-switch" id="levelSwitch" title="Switch tier">
-    <button data-level="J" data-lesson="J-03"><span class="badge">J</span> CADET · 8–12</button>
-    <button data-level="T" data-lesson="T-02"><span class="badge">T</span> CREW · 12–16</button>
+    <button data-level="J" data-lesson="JM-01"><span class="badge">J</span> CADET · 8–12</button>
+    <button data-level="T" data-lesson="TM-01"><span class="badge">T</span> CREW · 12–16</button>
   </div>
 
   <div class="top-progress">
@@ -862,8 +881,8 @@
 <div class="sheet-scrim" id="sheetScrim"></div>
 
 <script src="/junior-player-assets/e3b8c3dc-ee02-4573-a46e-d67d7ab3b928.js"></script>
-<script src="/junior-player-assets/junior-lessons-cadet.js"></script>
-<script src="/junior-player-assets/junior-lessons-crew.js"></script>
+<script src="/junior-player-assets/junior-lessons-modules.js"></script>
+<script src="/junior-player-assets/junior-lessons-modules-crew.js"></script>
 <script src="/junior-player-assets/dac782ad-22a4-472e-b10a-e21807c09578.js"></script>
 <script src="/junior-player-assets/b65203d6-304b-4a5c-94b4-4b5ad7d23df9.js"></script>
 <script>(function () {
@@ -880,7 +899,27 @@
 
 
 <style>
-/* Junior player compact layout (cadet + crew) */
+/* Remove road timeline footer completely (Cadet / Crew) — permanent, all viewports */
+footer.road,
+footer.road[data-screen-label="04 Road Timeline"] {
+  display: none !important;
+  visibility: hidden !important;
+  height: 0 !important;
+  min-height: 0 !important;
+  max-height: 0 !important;
+  overflow: hidden !important;
+  padding: 0 !important;
+  margin: 0 !important;
+  border: 0 !important;
+  pointer-events: none !important;
+}
+body { grid-template-rows: 8px 66px 1fr !important; }
+
+/* Junior player compact layout (cadet + crew) — tablet/mobile only.
+   This used to apply unconditionally and was shrinking fonts + the
+   3-column stage grid on laptop/desktop too; scoped it to the same
+   980px breakpoint as the mobile-focus-mode block right below. */
+@media (max-width: 980px) {
 html, body { height: 100%; overflow: hidden !important; }
 
 .topbar { min-height: 50px; padding: 6px 10px; gap: 10px; }
@@ -926,7 +965,7 @@ html, body { height: 100%; overflow: hidden !important; }
   overflow-x: clip !important;
 }
 .stage-body > * { min-width: 0; max-width: 100%; }
-.concept { grid-template-columns: 170px minmax(0, 1fr); gap: 14px; }
+.concept { gap: 14px; }
 .big-sign { width: 138px; height: 138px; font-size: 16px; }
 .big-sign.circle { font-size: 42px; border-width: 8px; }
 .concept-body h3 { font-size: 15px; }
@@ -947,22 +986,6 @@ html, body { height: 100%; overflow: hidden !important; }
 .composer { padding: 6px; gap: 6px; }
 .composer input { font-size: 11px; padding: 7px 8px; }
 .composer button { width: 34px; min-width: 34px; }
-
-/* Remove road timeline footer completely (Cadet / Crew) */
-footer.road,
-footer.road[data-screen-label="04 Road Timeline"] {
-  display: none !important;
-  visibility: hidden !important;
-  height: 0 !important;
-  min-height: 0 !important;
-  max-height: 0 !important;
-  overflow: hidden !important;
-  padding: 0 !important;
-  margin: 0 !important;
-  border: 0 !important;
-  pointer-events: none !important;
-}
-body { grid-template-rows: 8px 66px 1fr !important; }
 
 .seg-aside { grid-template-columns: minmax(0, 1fr) 180px; gap: 8px; }
 .resource-card { padding: 8px; }
@@ -989,6 +1012,7 @@ body { grid-template-rows: 8px 66px 1fr !important; }
 #chapList::-webkit-scrollbar:horizontal {
   height: 0 !important;
 }
+} /* end 980px compact-layout scope */
 
 /* ===== MOBILE FOCUS MODE — active stop fills the screen; rails become bottom sheets ===== */
 .mobile-dock, .sheet-btn, .sheet-scrim, .sheet-close { display: none; }

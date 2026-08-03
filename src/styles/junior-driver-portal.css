@@ -382,7 +382,7 @@
   .crumb { display: flex; align-items: center; gap: 10px; font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--muted); text-transform: uppercase; }
   .crumb .here { color: var(--ink); }
   .top-search { margin-left: auto; display: flex; align-items: center; border: 3px solid var(--ink); background: #fff; height: 40px; padding: 0 12px; min-width: 260px; gap: 8px; }
-  .top-search input { border: 0; outline: 0; background: transparent; flex: 1; height: 100%; font-family: "Space Grotesk"; font-size: 14px; font-weight: 600; }
+  .top-search input { border: 0; outline: 0; background: transparent; flex: 1; min-width: 0; height: 100%; font-family: "Space Grotesk"; font-size: 14px; font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .top-search kbd { font-family: "JetBrains Mono", monospace; font-size: 10px; background: var(--ink); color: var(--cream); padding: 2px 6px; }
   .top-actions { display: flex; align-items: center; gap: 10px; }
   .icon-btn { width: 40px; height: 40px; border: 3px solid var(--ink); background: var(--cream); display: grid; place-items: center; cursor: pointer; position: relative; }
@@ -507,7 +507,7 @@
   .section-tab small { display: block; font-family: "JetBrains Mono"; font-size: 8px; font-weight: 500; margin-top: 3px; }
   .section-tab.active { background: var(--ink); color: var(--sign-yellow); box-shadow: 4px 4px 0 var(--sign-yellow); }
   .section-tab.done { border-color: var(--signal-green); }
-  .mod-row { display: grid; grid-template-columns: 64px 1.1fr 1.3fr 1fr; gap: 20px; padding: 18px 0; border-bottom: 2px dashed var(--line); align-items: start; }
+  .mod-row { display: grid; grid-template-columns: 64px 1.3fr 1.4fr; gap: 20px; padding: 18px 0; border-bottom: 2px dashed var(--line); align-items: start; }
   .mod-row:last-child { border-bottom: 0; }
   .mod-num { width: 56px; height: 56px; border: 3px solid var(--ink); display: grid; place-items: center; font-family: "Bungee"; font-size: 16px; background: var(--cream); box-shadow: 3px 3px 0 var(--ink); position: relative; }
   .mod-row.done .mod-num { background: var(--signal-green); }
@@ -518,9 +518,10 @@
   .mod-name .status { font-family: "JetBrains Mono"; font-size: 9px; text-transform: uppercase; color: var(--muted); }
   .mod-row.current .mod-name .status { color: var(--ink); background: var(--sign-yellow); padding: 1px 5px; }
   .mod-act { font-size: 13px; line-height: 1.55; }
-  .mod-hook { font-size: 12px; line-height: 1.5; background: var(--cream); border: 2px dashed var(--ink); padding: 10px 12px; }
-  .mod-hook .hk { font-family: "JetBrains Mono"; font-size: 9px; text-transform: uppercase; color: var(--muted); display: block; margin-bottom: 4px; }
-  .mod-hook .swap { background: var(--sign-yellow); padding: 0 3px; font-weight: 600; }
+  .mod-status-row { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 6px; }
+  .mod-action-btn { display: inline-flex; align-items: center; gap: 6px; font-family: "Bungee"; font-size: 10px; letter-spacing: 0.02em; padding: 7px 12px; border: 2px solid var(--ink); background: var(--cream); color: var(--ink); text-decoration: none; cursor: pointer; box-shadow: 3px 3px 0 var(--ink); transition: transform .12s, box-shadow .12s; }
+  .mod-action-btn:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink); }
+  .mod-row.current .mod-action-btn { background: var(--sign-yellow); }
   .gate-banner { background: var(--asphalt); color: var(--cream); border: 3px solid var(--ink); padding: 14px 18px; margin: 14px 0; display: flex; gap: 14px; align-items: center; font-size: 13px; }
   .gate-banner .g-ico { width: 40px; height: 40px; flex: 0 0 40px; clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%); background: var(--signal-red); display: grid; place-items: center; font-family: "Bungee"; font-size: 8px; color: var(--cream); }
   .gate-banner b { font-family: "Bungee"; font-size: 12px; color: var(--sign-yellow); display: block; margin-bottom: 2px; }

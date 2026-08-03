@@ -58,18 +58,12 @@
   </nav>
 
   <section class="split" id="splitChooser">
-    <div class="split-chooser">
-      <select id="pathSelectNav" class="nav-select" aria-label="Choose your path" v-model="chooserPath" @change="onChooserSelect">
-        <option value="" disabled>Choose your path…</option>
-        <option value="adult">Adult / Team — Drive AI</option>
-        <option value="junior">Junior (Ages 8–16) — Learn AI</option>
-      </select>
-    </div>
     <div class="split-panel adult">
       <div class="split-content">
         <span class="split-eyebrow">▸ FOR ADULTS &amp; TEAMS</span>
         <h2 class="split-title">DRIVE&nbsp;AI.</h2>
         <p class="split-sub">Three license classes — Learner, Operator (coming soon), Specialist (coming soon). Get behind the wheel, log your hours, and earn a credential employers can verify.</p>
+        <button type="button" class="btn btn-yellow split-select-btn" @click="choose('adult')">Select Adult / Team →</button>
       </div>
     </div>
     <div class="split-panel junior">
@@ -77,6 +71,7 @@
         <span class="split-eyebrow">▸ JUNIORS · AGES 8–16</span>
         <h2 class="split-title">LEARN&nbsp;AI.</h2>
         <p class="split-sub">Two safe, age-tuned tracks — Junior Cadet (8–12) and Road Crew (12–16). Supervised agents, a parent dashboard, and a real junior license.</p>
+        <button type="button" class="btn btn-green split-select-btn" @click="choose('junior')">Select Junior →</button>
       </div>
     </div>
   </section>
@@ -766,18 +761,9 @@ function choose(path: 'adult' | 'junior', hash?: string) {
   }
 }
 
-const chooserPath = ref<'adult' | 'junior' | ''>('')
-
-function onChooserSelect() {
-  if (chooserPath.value === 'adult' || chooserPath.value === 'junior') {
-    choose(chooserPath.value)
-  }
-}
-
 function resetPath() {
   preChoice.value = true
   mode.value = null
-  chooserPath.value = ''
   syncBodyClasses()
   window.scrollTo(0, 0)
 }

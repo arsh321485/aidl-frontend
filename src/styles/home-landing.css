@@ -198,31 +198,9 @@ body:not(.pre-choice) .switch-path {
   color: var(--cream-2);
 }
 
-/* Path-select dropdown, top-right of the split section — lands on the junior panel side-by-side, top of the adult panel when stacked on mobile */
-.split-chooser {
-  display: none;
-  position: absolute;
-  top: 24px;
-  right: 24px;
-  z-index: 5;
-}
-body.pre-choice .split-chooser {
-  display: inline-flex;
-}
-.nav-select {
-  font-family: "Bungee", sans-serif;
-  font-size: 13px;
-  padding: 10px 14px;
-  border: 3px solid var(--ink);
-  background: var(--cream);
-  color: var(--ink);
-  cursor: pointer;
-  width: 100%;
-  max-width: 240px;
-}
-.nav-select:focus {
-  outline: 3px solid var(--sign-yellow);
-  outline-offset: 2px;
+/* Per-panel select button, sits below the panel copy */
+.split-select-btn {
+  margin-top: 4px;
 }
 
 /* Two-step: chooser first */
@@ -603,18 +581,6 @@ body.mode-junior .nav-cta .cta-junior {
   .split-panel.junior {
     border-bottom: 0;
   }
-  .split-panel.adult {
-    padding-top: 76px;
-  }
-  .split-chooser {
-    top: 20px;
-    right: 16px;
-  }
-  .nav-select {
-    padding: 8px 10px;
-    font-size: 11px;
-    max-width: 200px;
-  }
   .split-title {
     font-size: clamp(48px, 16vw, 84px);
   }
@@ -685,18 +651,6 @@ body.mode-junior .nav-cta .cta-junior {
   .split-panel {
     padding: 36px 18px;
     min-height: 360px;
-  }
-  .split-panel.adult {
-    padding-top: 64px;
-  }
-  .split-chooser {
-    top: 14px;
-    right: 12px;
-  }
-  .nav-select {
-    padding: 7px 8px;
-    font-size: 10px;
-    max-width: 150px;
   }
   .jr-top {
     padding: 18px 16px;

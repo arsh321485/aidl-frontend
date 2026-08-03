@@ -29,7 +29,7 @@ const TIERS = {
   cadet: {
     key: 'cadet', label: 'Junior Cadet', age: '8–12', cls: 'GREEN LICENCE · CADET', color: 'green',
     learner: 'Riley Lee', initials: 'RL', grownup: 'Jordan Lee', licId: 'AIDL-J-0042-1180', renewal: 'Term 3',
-    nextLessonHref: '/junior-player?lesson=J-05',
+    nextLessonHref: '/junior-player?lesson=JM-11',
     identity: 'EXPLORER & APPRENTICE', coreQ: '"What is AI, and how does it see my world?"',
     licenceIdx: 1, doneThrough: 10, currentModule: 11, totalModules: 32,
     dash: {
@@ -46,8 +46,8 @@ const TIERS = {
       { k: 'AI Notebook Pages', v: '14', d: 'keep drawing!' },
     ],
     upnext: [
-      { d: '18', m: 'MAY', t: 'M11 · My First Real Model', s: 'Green Licence gate — train a classifier', cta: 'Play', href: '/junior-player?lesson=J-05', btn: 'btn-green' },
-      { d: '22', m: 'MAY', t: 'M12 · Mistake Museum', s: 'Try to confuse your class model', cta: 'Preview', view: 'route', btn: 'btn-yellow' },
+      { d: '18', m: 'MAY', t: 'M11 · My First Real Model', s: 'Green Licence gate — train a classifier', cta: 'Play', href: '/junior-player?lesson=JM-11', btn: 'btn-green' },
+      { d: '22', m: 'MAY', t: 'M12 · Mistake Museum', s: 'Try to confuse your class model', cta: 'Play', href: '/junior-player?lesson=JM-12', btn: 'btn-yellow' },
       { d: '06', m: 'JUN', t: 'Community Showcase 2', s: 'Families play "Real or AI?"', cta: 'View', view: 'route', btn: 'btn-green' },
     ],
     route: [
@@ -186,7 +186,7 @@ const TIERS = {
   crew: {
     key: 'crew', label: 'Road Crew', age: '12–16', cls: 'YELLOW LICENCE · CREW', color: 'sky',
     learner: 'Sam Rivera', initials: 'SR', grownup: 'A. Rivera', licId: 'AIDL-T-0096-3320', renewal: 'Year 1',
-    nextLessonHref: '/junior-player?lesson=T-05',
+    nextLessonHref: '/junior-player?lesson=TM-09',
     identity: 'BUILDER & CITIZEN', coreQ: '"How do I build with AI, judge it, and shape it for my community?"',
     licenceIdx: 2, doneThrough: 8, currentModule: 9, totalModules: 34,
     dash: {
@@ -203,8 +203,8 @@ const TIERS = {
       { k: 'Badges', v: '1', d: 'Fueler earned' },
     ],
     upnext: [
-      { d: '18', m: 'MAY', t: 'M9 · The Bias Hunt', s: 'Audit an image generator for your community', cta: 'Play', href: '/junior-player?lesson=T-05', btn: 'btn-sky' },
-      { d: '22', m: 'MAY', t: 'M10 · Whose Data? Whose Language?', s: 'Measure translation quality with bilingual elders', cta: 'Preview', view: 'route', btn: 'btn-yellow' },
+      { d: '18', m: 'MAY', t: 'M9 · The Bias Hunt', s: 'Audit an image generator for your community', cta: 'Play', href: '/junior-player?lesson=TM-09', btn: 'btn-sky' },
+      { d: '22', m: 'MAY', t: 'M10 · Whose Data? Whose Language?', s: 'Measure translation quality with bilingual elders', cta: 'Play', href: '/junior-player?lesson=TM-10', btn: 'btn-yellow' },
       { d: '06', m: 'JUN', t: 'Blue Licence gate check', s: 'Bias audit + integrity charter + consent', cta: 'View', view: 'ladder', btn: 'btn-sky' },
     ],
     route: [
@@ -346,6 +346,12 @@ const TIERS = {
 let CURRENT = 'cadet';
 function T() { return TIERS[CURRENT]; }
 function chip(s) { return `<span class="strand-chip ${s}">${s}</span>`; }
+/* Route-map module -> lesson id in the Junior Lesson Player (JM-xx / TM-xx packs) */
+function moduleLessonId(n, tierKey) {
+  const first = parseInt(String(n).match(/\d+/)[0], 10);
+  return ((tierKey || CURRENT) === 'cadet' ? 'JM-' : 'TM-') + String(first).padStart(2, '0');
+}
+function moduleLessonHref(n, tierKey) { return '/junior-player?lesson=' + moduleLessonId(n, tierKey); }
 
 /* ================================================= DASHBOARD */
 function renderDashboard() {
@@ -458,12 +464,20 @@ function renderRoute() {
     const state = first < t.currentModule ? 'done' : first === t.currentModule ? 'current' : 'locked';
     const gateHtml = (sem.gate && modNum(m) === sem.gate.after + 1) ? `
       <div class="gate-banner"><div class="g-ico">GATE</div><div><b>${sem.gate.name}</b>${sem.gate.text}</div></div>` : '';
+    const label = state === 'done' ? 'Replay' : state === 'current' ? 'Play' : 'Preview';
+    const actionBtn = `<a class="mod-action-btn ${state}" href="${moduleLessonHref(m.n)}&view=route&sem=${semIdx}">${label} →</a>`;
     return gateHtml + `
       <div class="mod-row ${state}">
         <div class="mod-num">${m.n}</div>
-        <div class="mod-name"><div class="chips">${m.strands.map(chip).join('')}</div><b>${m.name}</b><span class="status">${state === 'done' ? '✓ Complete' : state === 'current' ? '▶ You are here' : 'Up ahead'}</span></div>
+        <div class="mod-name">
+          <div class="chips">${m.strands.map(chip).join('')}</div>
+          <b>${m.name}</b>
+          <div class="mod-status-row">
+            <span class="status">${state === 'done' ? '✓ Complete' : state === 'current' ? '▶ You are here' : 'Up ahead'}</span>
+            ${actionBtn}
+          </div>
+        </div>
         <div class="mod-act">${m.act}</div>
-        <div class="mod-hook"><span class="hk">⟨ ⟩ Localization swap point</span>${m.hook}</div>
       </div>`;
   }).join('');
   document.getElementById('view-route').innerHTML = `
@@ -471,9 +485,9 @@ function renderRoute() {
       <div>
         <span class="eyebrow">▼ ${t.label.toUpperCase()} · 4 SEMESTERS · ${t.totalModules} MODULES</span>
         <h1>THE ROUTE MAP.</h1>
-        <p>Your full journey, ${t.identity.toLowerCase()}. Every module has fixed parts — the concept, the outcome, the safety rule — and <b>⟨swap points⟩</b> that get repainted for your town. ~70% chassis, ~30% local.</p>
+        <p>Your full journey, ${t.identity.toLowerCase()}. Replay what you've finished, play what you're on, or preview what's ahead.</p>
       </div>
-      <a class="btn btn-yellow" href="${t.nextLessonHref}">Play Current Module →</a>
+      <a class="btn btn-yellow" href="${t.nextLessonHref}&view=route&sem=${semIdx}">Play Current Module →</a>
     </div>
     <div class="section-tabs" id="semTabs">${tabs}</div>
     <div class="card">
@@ -848,10 +862,24 @@ function initPortal() {
     b.style.display = allowed.includes(b.dataset.tier) ? '' : 'none';
   });
 
-  let saved = 'cadet';
-  try { saved = localStorage.getItem('aidl-junior-tier') || 'cadet'; } catch (e) {}
+  const params = new URLSearchParams(window.location.search);
+  const tierParam = params.get('tier') === 'crew' ? 'crew' : params.get('tier') === 'cadet' ? 'cadet' : null;
+
+  let saved = tierParam || 'cadet';
+  if (!tierParam) { try { saved = localStorage.getItem('aidl-junior-tier') || 'cadet'; } catch (e) {} }
   if (!allowed.includes(saved)) saved = allowed[0];
   applyTier(saved);
-  goView('dashboard');
+
+  const viewParam = params.get('view');
+  if (viewParam && VIEWS.includes(viewParam)) {
+    const semParam = parseInt(params.get('sem'), 10);
+    if (!Number.isNaN(semParam)) {
+      semIdx = Math.max(0, semParam);
+      renderRoute();
+    }
+    goView(viewParam);
+  } else {
+    goView('dashboard');
+  }
 }
 export function initJuniorPortal() { initPortal(); }

@@ -5,8 +5,13 @@
 // ============================================================
 (function () {
   const params = new URLSearchParams(location.search);
-  const id = params.get('lesson') || 'J-01';
-  const LESSON = window.AIDL_JR_LESSONS[id] || window.AIDL_JR_LESSONS['J-01'];
+  let id = params.get('lesson') || 'JM-01';
+  // Legacy ids (J-05, T-03…) from older links remap onto the route-map packs
+  if (!window.AIDL_JR_LESSONS[id]) {
+    const lm = id.match(/^([JT])-?(\d+)$/);
+    if (lm) id = (lm[1] === 'J' ? 'JM-' : 'TM-') + lm[2].padStart(2, '0');
+  }
+  const LESSON = window.AIDL_JR_LESSONS[id] || window.AIDL_JR_LESSONS['JM-01'];
   const LVL = window.AIDL_JR_LEVELS[LESSON.level];
   const COMMENTARY = LESSON.commentary;
 
@@ -24,6 +29,16 @@
   const tag = document.getElementById('levelTag');
   tag.innerHTML = 'CLASS ' + LESSON.level + ' · ' + LVL.name.toUpperCase() + '<small>' + LVL.audience + '</small>';
   document.getElementById('chapHeading').textContent = '▼ ' + LESSON.id + ' · ' + LESSON.segments.length + ' STOPS';
+
+  // --- back to portal: return to the route-map semester this lesson was opened from ---
+  const backBtn = document.getElementById('backToPortal');
+  if (backBtn) {
+    const tierKey = LESSON.level === 'J' ? 'cadet' : 'crew';
+    let backHref = '/junior-portal?tier=' + tierKey;
+    if (params.get('view')) backHref += '&view=' + encodeURIComponent(params.get('view'));
+    if (params.get('sem')) backHref += '&sem=' + encodeURIComponent(params.get('sem'));
+    backBtn.href = backHref;
+  }
 
   // --- lesson picker ---
   (function () {
