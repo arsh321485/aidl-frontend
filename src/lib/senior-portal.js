@@ -876,9 +876,78 @@ function initPREP() {
   renderPREP();
 }
 
+/* ============================================================ YOUR ROUTE */
+const ROUTE_MODULES = {
+  learner: [
+    { id: 'M-1-01', type: 'CONCEPT', title: 'Meet AI', desc: 'What AI actually is, what it’s good at, and why it sounds confident even when it’s wrong. Your first drive around the block.', dur: '25 MIN · 4 SEGMENTS', s: 'done', score: 'PASSED · 92%', cta: 'Review', href: '/senior-player?lesson=M-1-01' },
+    { id: 'M-1-02', type: 'CONCEPT', title: 'Prompt Basics', desc: 'Why vague questions get vague answers. Learn to say who, what, and how — the difference between a shrug and a useful draft.', dur: '30 MIN · 5 SEGMENTS', s: 'done', score: 'PASSED · 88%', cta: 'Review', href: '/senior-player?lesson=M-1-02' },
+    { id: 'M-1-03', type: 'CONCEPT + PRACTICE', title: 'The PREP Prompting Framework', desc: 'Persona, Requirement, Expectation, Parameters — the four-part recipe behind every good prompt. Build one live in the PREP Builder.', dur: '35 MIN · 5 SEGMENTS', s: 'current', score: 'IN PROGRESS · 60%', cta: 'Resume', href: '/senior-player?lesson=M-1-03' },
+    { id: 'M-1-04', type: 'CONCEPT', title: 'Verify the Facts', desc: 'Hallucinations, made-up sources, and confident nonsense. How to check dates, numbers, and claims before you rely on them.', dur: '25 MIN · 4 SEGMENTS', s: 'todo', score: 'UP NEXT', cta: 'Preview', href: '/senior-player?lesson=M-1-04' },
+    { id: 'M-1-05', type: 'CONCEPT + TOOL', title: 'The Traffic Light Data Check', desc: 'Green go, amber caution, red stop — the 3-second habit that keeps your private data out of AI tools. Practise on the live checker.', dur: '30 MIN · 5 SEGMENTS', s: 'todo', score: 'LOCKED · AFTER M-1-04', cta: 'Play', href: '/senior-player?lesson=M-1-05' },
+    { id: 'M-1-06', type: 'CONCEPT + SIGN-OFF', title: 'Safe & Fair Use', desc: 'Six promises for everyday AI: protect privacy, verify, stay the decision-maker, respect others, credit honestly, ask when unsure.', dur: '20 MIN · 3 SEGMENTS', s: 'todo', score: 'LOCKED · AFTER M-1-05', cta: 'Preview', href: '/senior-player?lesson=M-1-06' },
+    { id: 'M-1-07', type: 'ASSESSMENT', title: 'Permit Test', desc: 'Five real-life scenarios, pass mark 75%. Pass and your AI Learner’s Permit is issued — valid 12 months, renewable.', dur: '40 MIN · 5 SCENARIOS', s: 'todo', score: 'LOCKED · FINAL STOP', cta: 'View Test', href: '/road-test' },
+  ],
+};
+
+function renderRoute() {
+  const t = P();
+  const mods = ROUTE_MODULES[CURRENT] || [];
+  const done = mods.filter(m => m.s === 'done').length;
+  const cur = mods.find(m => m.s === 'current');
+  const statusPill = { done: '<span class="pill done">✓ COMPLETE</span>', current: '<span class="pill current">▶ YOU ARE HERE</span>', todo: '<span class="pill">AHEAD</span>' };
+  const routeView = document.getElementById('view-route');
+  if (!routeView) return;
+  if (!mods.length) {
+    routeView.innerHTML = `
+    <div class="head">
+      <div>
+        <span class="eyebrow">▼ YOUR ROUTE</span>
+        <h1>YOUR ROUTE.</h1>
+        <p>This tier's route map is coming soon.</p>
+      </div>
+    </div>`;
+    return;
+  }
+  routeView.innerHTML = `
+    <div class="head">
+      <div>
+        <span class="eyebrow">▼ ${t.dash.routeTitle}</span>
+        <h1>YOUR ROUTE.</h1>
+        <p>${t.dash.routeSub} Seven stops from ignition to licence — here’s the full map.</p>
+      </div>
+      ${cur ? `<a class="btn btn-accent" href="${cur.href || '#'}" ${cur.view ? `data-goview="${cur.view}"` : ''}>Resume Stop ${mods.indexOf(cur) + 1} →</a>` : ''}
+    </div>
+    <div class="rt-strip">
+      <div class="stat accent"><div class="k">Modules Complete</div><div class="v">${done} / ${mods.length}</div><div class="delta">${t.dash.routeTag}</div></div>
+      <div class="stat"><div class="k">Current Stop</div><div class="v" style="font-size:22px;">${cur ? cur.title.toUpperCase() : '—'}</div><div class="delta">${cur ? cur.dur : ''}</div></div>
+      <div class="stat dark"><div class="k">Licence Progress</div><div class="v">${t.meter}%</div><div class="delta">${t.renewal} to renewal</div></div>
+    </div>
+    <div class="rt-list">
+      ${mods.map((m, i) => `
+      <div class="rt-item ${m.s}">
+        <div class="rt-stop-marker">${String(i + 1).padStart(2, '0')}</div>
+        <div class="rt-card">
+          <div>
+            <div class="rt-mod-id"><span>${m.id} · ${m.type}</span>${statusPill[m.s]}</div>
+            <b class="rt-title">${m.title}</b>
+            <p class="rt-desc">${m.desc}</p>
+          </div>
+          <div class="rt-cta">
+            <div class="rt-meta">${m.dur}<br/>${m.score}</div>
+            <a class="btn ${m.s === 'current' ? 'btn-accent' : m.s === 'done' ? 'btn-ghost' : ''}" style="${m.s === 'todo' ? 'opacity:0.75;' : ''}" href="${m.href || '#'}" ${m.view ? `data-goview="${m.view}"` : ''}>${m.cta} →</a>
+          </div>
+        </div>
+      </div>`).join('')}
+    </div>`;
+  document.querySelectorAll('#view-route [data-goview]').forEach(el => el.addEventListener('click', (e) => {
+    e.preventDefault();
+    goView(el.dataset.goview);
+  }));
+}
+
 /* ============================================================ VIEW + TIER SWITCHING */
-const VIEWS = ['dashboard', 'highway', 'traffic', 'prep', 'aup', 'glossary', 'qref'];
-const CRUMB = { dashboard: 'Dashboard', highway: 'Highway Code', traffic: 'Traffic Light Check', prep: 'PREP Builder', aup: 'Acceptable Use', glossary: 'Glossary', qref: 'Quick Reference' };
+const VIEWS = ['dashboard', 'route', 'highway', 'traffic', 'prep', 'aup', 'glossary', 'qref'];
+const CRUMB = { dashboard: 'Dashboard', route: 'Your Route', highway: 'Highway Code', traffic: 'Traffic Light Check', prep: 'PREP Builder', aup: 'Acceptable Use', glossary: 'Glossary', qref: 'Quick Reference' };
 
 function goView(v) {
   VIEWS.forEach(x => document.getElementById('view-' + x).classList.toggle('active', x === v));
@@ -888,7 +957,6 @@ function goView(v) {
   const root = document.getElementById('seniorPortalRoot');
   if (root) root.classList.remove('nav-open');
 }
-window.goView = goView;
 
 function applyTier(key) {
   CURRENT = key;
@@ -906,6 +974,7 @@ function applyTier(key) {
   try { localStorage.setItem('aidl-senior-tier', key); } catch (e) {}
   hwSection = 0;
   renderDashboard();
+  renderRoute();
   renderHighway();
   renderTrafficShell();
   renderAUP();
@@ -925,6 +994,14 @@ function getAllowedTiers() {
 
 /* ============================================================ INIT */
 function initPortal() {
+  // Junior and senior portals both define a module-level goView() and are
+  // bundled together (Vue Router imports every view eagerly), so whichever
+  // one's module evaluated last would otherwise permanently own
+  // window.goView. Claim it on mount instead, so it always matches whichever
+  // portal is actually on screen — needed for the dashboard's inline
+  // onclick="goView(...)" buttons (sidebar nav-items don't need this, they
+  // close over the local goView directly).
+  window.goView = goView;
   document.querySelectorAll('.nav-item').forEach(n => n.addEventListener('click', () => goView(n.dataset.view)));
   document.querySelectorAll('.tier-toggle button').forEach(b => b.addEventListener('click', () => { applyTier(b.dataset.tier); goView('dashboard'); }));
   document.getElementById('tlInput').addEventListener('input', e => renderTL(e.target.value));

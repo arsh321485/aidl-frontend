@@ -23,6 +23,11 @@
       <span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M3 11l9-7 9 7"></path><path d="M5 10v9h14v-9"></path></svg></span>
       Dashboard
     </div>
+    <div class="nav-item" data-view="route">
+      <span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="6" cy="5" r="2.5"></circle><circle cx="18" cy="19" r="2.5"></circle><path d="M6 7.5v5A3.5 3.5 0 009.5 16h5a3.5 3.5 0 013.5 3.5" stroke-dasharray="3 3"></path></svg></span>
+      Your Route
+      <span class="nav-badge">7</span>
+    </div>
     <div class="nav-item" data-view="highway">
       <span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 21l3-18h10l3 18"></path><path d="M9 3v18M15 3v18"></path></svg></span>
       Highway Code
@@ -91,6 +96,9 @@
 
   <!-- DASHBOARD (rendered by portal.js) -->
   <div class="page view active" id="view-dashboard" data-screen-label="01 Dashboard"></div>
+
+  <!-- YOUR ROUTE (rendered by portal.js) -->
+  <div class="page view" id="view-route" data-screen-label="08 Your Route"></div>
 
   <!-- HIGHWAY CODE -->
   <div class="page view" id="view-highway" data-screen-label="02 Highway Code">

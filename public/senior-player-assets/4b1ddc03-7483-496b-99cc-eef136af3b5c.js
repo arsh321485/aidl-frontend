@@ -28,13 +28,13 @@
 
   document.getElementById('chapHeading').textContent = '▼ MODULE ' + LESSON.id + ' · ' + LESSON.segments.length + ' SEGMENTS';
 
-  // --- lesson picker: jump to another module in the same level ---
+  // --- lesson picker (jump between modules in this level) ---
   (function () {
     const rail = document.querySelector('.chap-rail');
     if (!rail) return;
     const sel = document.createElement('select');
     sel.className = 'lesson-picker';
-    sel.title = 'Jump to another module';
+    sel.title = 'Jump to another module in this level';
     Object.values(window.AIDL_LESSONS)
       .filter(l => l.level === LESSON.level)
       .sort((a, b) => a.id.localeCompare(b.id))
@@ -51,21 +51,8 @@
     rail.insertBefore(sel, rail.firstChild);
   })();
 
-  // --- level switcher: only show levels unlocked by the class picked at sign-up ---
-  function getAllowedLevels() {
-    let cls = null;
-    try { cls = localStorage.getItem('aidl-selected-class'); } catch (e) {}
-    if (cls === 'L') return ['L'];
-    if (cls === 'O') return ['L', 'C'];
-    if (cls === 'S') return ['L', 'C', 'A'];
-    return ['L', 'C', 'A'];
-  }
-  const allowedLevels = getAllowedLevels();
+  // --- level switcher ---
   document.querySelectorAll('#levelSwitch button').forEach(b => {
-    if (!allowedLevels.includes(b.dataset.level)) {
-      b.style.display = 'none';
-      return;
-    }
     if (b.dataset.level === LESSON.level) b.classList.add('active');
     b.addEventListener('click', () => {
       const target = b.dataset.lesson;
@@ -318,11 +305,18 @@
     const next = LESSON.segments[Math.min(LESSON.segments.length - 1, seg.idx)];
     if (next.idx === seg.idx) {
       const msg = {
-        L: "M-1-03 complete. Learner's Permit progress saved — return to portal to continue.",
-        C: "M-2-04 complete. AUP attestation written to compliance ledger. Operator's Licence path unlocked.",
-        A: "M-3-03 complete. Risk register + red-team transcript saved to Licence Portfolio for M-3-CAP re-use.",
+        L: LESSON.id + " complete. Learner's Permit progress saved.",
+        C: LESSON.id + " complete. Operator's Licence progress saved to the compliance ledger.",
+        A: LESSON.id + " complete. Work saved to your Licence Portfolio for capstone re-use.",
       }[LESSON.level] || 'Lesson complete.';
-      alert(msg);
+      const nextLesson = LESSON.next && window.AIDL_LESSONS[LESSON.next];
+      if (nextLesson) {
+        if (confirm(msg + '\n\nContinue to the next module \u2014 ' + nextLesson.title + '?')) {
+          location.search = '?lesson=' + encodeURIComponent(nextLesson.id);
+        }
+      } else {
+        alert(msg + '\n\nThat was the final module in this level \u2014 licence track complete. \ud83c\udf93');
+      }
       return;
     }
     jumpTo(next.start);

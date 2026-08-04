@@ -807,7 +807,6 @@ function goView(v) {
   const root = document.getElementById('juniorPortalRoot');
   if (root) root.classList.remove('nav-open');
 }
-window.goView = goView;
 
 function applyTier(key) {
   CURRENT = key;
@@ -847,6 +846,12 @@ function getAllowedTiers() {
 
 /* ================================================= INIT */
 function initPortal() {
+  // Junior and senior portals both define a module-level goView() and are
+  // bundled together (Vue Router imports every view eagerly), so whichever
+  // one's module evaluated last would otherwise permanently own
+  // window.goView. Claim it on mount instead, so it always matches whichever
+  // portal is actually on screen.
+  window.goView = goView;
   document.querySelectorAll('.nav-item').forEach(n => n.addEventListener('click', () => goView(n.dataset.view)));
   document.querySelectorAll('.tier-toggle button').forEach(b => b.addEventListener('click', () => { applyTier(b.dataset.tier); goView('dashboard'); }));
   document.getElementById('tlInput').addEventListener('input', e => renderTL(e.target.value));

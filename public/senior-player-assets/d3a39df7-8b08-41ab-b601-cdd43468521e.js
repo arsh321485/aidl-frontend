@@ -23,7 +23,7 @@ window.AIDL_LEVELS = {
     accentColor: '#e23a2e',
     passMark: 75,
     duration: '8–10 hrs total',
-    moduleCount: 9,
+    moduleCount: 7,
   },
   A: {
     code: 'A',
@@ -33,7 +33,7 @@ window.AIDL_LEVELS = {
     accentColor: '#ffcc00',
     passMark: 80,
     duration: '12–15 hrs total',
-    moduleCount: 8,
+    moduleCount: 7,
   }
 };
 
@@ -44,6 +44,7 @@ window.AIDL_LEVELS = {
 window.AIDL_LESSONS['M-1-03'] = {
   id: 'M-1-03',
   level: 'L',
+  next: 'M-1-04',
   title: 'M-1-03 · The PREP Prompting Framework',
   titleTop: 'M-1-03 · THE PREP PROMPTING FRAMEWORK',
   sub: 'LEVEL 1 · LEARNER\'S PERMIT · MODULE 3 OF 7 · 50 MIN · PASS MARK 70%',
@@ -238,9 +239,10 @@ window.AIDL_LESSONS['M-1-03'] = {
 window.AIDL_LESSONS['M-2-04'] = {
   id: 'M-2-04',
   level: 'C',
+  next: 'M-2-05',
   title: 'M-2-04 · AI Acceptable Use Policy (AUP)',
   titleTop: 'M-2-04 · AI ACCEPTABLE USE POLICY',
-  sub: 'LEVEL 2 · OPERATOR · MODULE 4 OF 9 · 45 MIN · ATTESTATION-GATED · 100%',
+  sub: 'LEVEL 2 · OPERATOR · MODULE 4 OF 7 · 45 MIN · ATTESTATION-GATED · 100%',
   duration: 45 * 60, // 2700s
   instructor: 'SGT. MERIDIAN',
   instructorRole: 'EXAMINER · COMPLIANCE & ROAD TESTS',
@@ -416,9 +418,10 @@ window.AIDL_LESSONS['M-2-04'] = {
 window.AIDL_LESSONS['M-3-03'] = {
   id: 'M-3-03',
   level: 'A',
+  next: 'M-3-04',
   title: 'M-3-03 · AI Risk Assessment & Red-Teaming',
   titleTop: 'M-3-03 · AI RISK ASSESSMENT & RED-TEAMING',
-  sub: 'LEVEL 3 · SPECIALIST · MODULE 3 OF 8 · 65 MIN · PASS MARK 80%',
+  sub: 'LEVEL 3 · SPECIALIST · MODULE 3 OF 7 · 65 MIN · PASS MARK 80%',
   duration: 65 * 60, // 3900s
   instructor: 'UNIT 0X-SAFE',
   instructorRole: 'SAFETY OFFICER · RED-TEAM SPECIALIST',
