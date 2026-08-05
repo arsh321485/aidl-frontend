@@ -437,6 +437,34 @@
           <span class="stamp">APPLICATION</span>
         </div>
         <div class="form-body">
+          <div class="field full" style="margin-bottom: 16px;">
+            <div class="choice-group two-cols">
+              <div class="choice choice-auth" @click="authComingSoon('slack')">
+                <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect x="9" y="1" width="6" height="15" rx="3" fill="#36C5F0" />
+                  <rect x="1" y="9" width="15" height="6" rx="3" fill="#2EB67D" />
+                  <rect x="17" y="8" width="6" height="15" rx="3" fill="#ECB22E" />
+                  <rect x="8" y="17" width="15" height="6" rx="3" fill="#E01E5A" />
+                </svg>
+                SLACK
+              </div>
+              <div class="choice choice-auth" @click="authComingSoon('teams')">
+                <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                  <rect width="24" height="24" rx="4" fill="#5059C9" />
+                  <text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#fff">T</text>
+                </svg>
+                TEAMS
+              </div>
+            </div>
+          </div>
+          <div class="form-divider">OR FILL IT IN YOURSELF</div>
+          <div class="field full" style="margin-bottom: 16px;">
+            <label>Enrolling As</label>
+            <div class="choice-group two-cols">
+              <div class="choice" :class="{ active: form.enrollAs === 'individual' }" @click="form.enrollAs = 'individual'">INDIVIDUAL</div>
+              <div class="choice" :class="{ active: form.enrollAs === 'organization' }" @click="form.enrollAs = 'organization'">ORGANIZATION</div>
+            </div>
+          </div>
           <div class="form-row">
             <div class="field">
               <label>First Name <span>*</span></label>
@@ -453,11 +481,23 @@
               <input type="email" placeholder="you@company.com" v-model="form.email" />
             </div>
           </div>
-          <div class="form-row">
+          <div class="form-row" v-if="form.enrollAs === 'organization'">
             <div class="field">
-              <label>Date of Birth</label>
-              <input type="text" placeholder="MM/DD/YYYY" v-model="form.dob" />
+              <label>Designation <span>*</span></label>
+              <input type="text" placeholder="e.g. L&D Manager" v-model="form.designation" />
             </div>
+            <div class="field">
+              <label>Name of Organization <span>*</span></label>
+              <input type="text" placeholder="e.g. Acme Corp" v-model="form.orgName" />
+            </div>
+          </div>
+          <div class="form-row" v-if="form.enrollAs === 'organization'">
+            <div class="field full">
+              <label>Total Number of Users <span>*</span></label>
+              <input type="text" placeholder="e.g. 50" v-model="form.totalUsers" />
+            </div>
+          </div>
+          <div class="form-row">
             <div class="field">
               <label>Country</label>
               <select v-model="form.country">
@@ -468,8 +508,6 @@
                 <option>Canada</option>
               </select>
             </div>
-          </div>
-          <div class="form-row">
             <div class="field">
               <label>State</label>
               <select v-model="form.state">
@@ -477,7 +515,9 @@
                 <option v-for="s in stateOptions" :key="s" :value="s">{{ s }}</option>
               </select>
             </div>
-            <div class="field">
+          </div>
+          <div class="form-row">
+            <div class="field full">
               <label>City</label>
               <select v-model="form.city">
                 <option value="" disabled>Select city</option>
@@ -835,10 +875,13 @@ const LOCATIONS: Record<string, Record<string, string[]>> = {
 }
 
 const form = reactive({
+  enrollAs: 'individual' as 'individual' | 'organization',
   firstName: 'Alex',
   lastName: 'Morgan',
   email: 'alex@company.com',
-  dob: '04/12/1994',
+  designation: '',
+  orgName: '',
+  totalUsers: '',
   country: 'United States',
   state: '',
   city: '',
@@ -920,6 +963,10 @@ function startSession(licenseId: string, entry: RegistryEntry) {
     localStorage.setItem('aidl-session', JSON.stringify({ licenseId, classCode: entry.classCode, holder: entry.holder }))
     if (entry.classCode) localStorage.setItem('aidl-selected-class', entry.classCode)
   } catch (e) {}
+}
+
+function authComingSoon(provider: 'slack' | 'teams') {
+  alert(`Sign in with ${provider === 'slack' ? 'Slack' : 'Microsoft Teams'} is coming soon!`)
 }
 
 function handleSubmit() {
@@ -1461,6 +1508,10 @@ body.mode-junior .field input:focus, body.mode-junior .field select:focus { back
 .choice { border: 3px solid var(--ink); background: var(--cream-2); padding: 10px; text-align: center; cursor: pointer; font-family: "Bungee", sans-serif; font-size: 12px; user-select: none; min-width: 0; }
 .choice.active { background: var(--sign-yellow); box-shadow: inset 0 0 0 3px var(--ink); }
 body.mode-junior .choice.active { background: rgb(46, 199, 99); }
+.choice-auth { display: flex; align-items: center; justify-content: center; gap: 8px; }
+.choice-auth svg { flex-shrink: 0; }
+.form-divider { display: flex; align-items: center; gap: 10px; margin: 4px 0 16px; font-family: "JetBrains Mono", monospace; font-size: 10px; text-transform: uppercase; color: var(--ink); opacity: 0.7; }
+.form-divider::before, .form-divider::after { content: ''; flex: 1; border-top: 2px dashed var(--ink); opacity: 0.4; }
 .form-foot { background: var(--cream-2); border-top: 3px dashed var(--ink); padding: 18px 28px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; min-width: 0; }
 .form-foot .tiny { font-family: "JetBrains Mono", monospace; font-size: 10px; }
 
