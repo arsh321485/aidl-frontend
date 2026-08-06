@@ -376,6 +376,7 @@
     position: sticky; top: 0; height: 100vh;
   }
   .brand { display: flex; align-items: center; gap: 12px; font-family: "Bungee", sans-serif; font-size: 18px; color: var(--cream); text-decoration: none; min-width: 0; }
+  .brand:hover { color: var(--cream); }
   .brand-mark { width: 40px; height: 40px; border-radius: 50%; background: var(--sign-yellow); border: 3px solid var(--ink); display: grid; place-items: center; font-family: "Bungee", sans-serif; font-size: 14px; color: var(--ink); box-shadow: 3px 3px 0 var(--asphalt-3); }
   .brand small { display:block; font-family: "JetBrains Mono", monospace; font-size: 9px; color: var(--cream-3); font-weight: 400; margin-top: 2px; }
 

@@ -6,6 +6,8 @@ import SeniorLessonPlayerView from '../views/SeniorLessonPlayerView.vue'
 import JuniorLessonPlayerView from '../views/JuniorLessonPlayerView.vue'
 import RoadTestView from '../views/RoadTestView.vue'
 import SignInView from '../views/SignInView.vue'
+import SignUpView from '../views/SignUpView.vue'
+import FleetOfficeView from '../views/FleetOfficeView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -14,7 +16,25 @@ const router = createRouter({
       path: '/',
       name: 'signin',
       component: SignInView,
-      meta: { public: true },
+      meta: { public: true, authRole: 'admin' },
+    },
+    {
+      path: '/signin',
+      name: 'user-signin',
+      component: SignInView,
+      meta: { public: true, authRole: 'user' },
+    },
+    {
+      path: '/signup',
+      name: 'user-signup',
+      component: SignUpView,
+      meta: { public: true, authRole: 'user' },
+    },
+    {
+      path: '/admin/signup',
+      name: 'admin-signup',
+      component: SignUpView,
+      meta: { public: true, authRole: 'admin' },
     },
     {
       path: '/home',
@@ -60,6 +80,22 @@ const router = createRouter({
       component: RoadTestView,
       meta: { requiresPermit: true },
     },
+    {
+      path: '/jobs',
+      name: 'jobs',
+      // Renders HomeView itself (not a redirect) — Vue Router reuses the same
+      // component instance across /home <-> /jobs since it's the identical
+      // import, so the nav/enroll-modal/sign-in state and DOM never remount.
+      // HomeView swaps only the section below the nav based on route.path.
+      component: HomeView,
+      meta: { public: true },
+    },
+    {
+      path: '/fleet-office',
+      name: 'fleet-office',
+      component: FleetOfficeView,
+      meta: { requiresAdmin: true },
+    },
   ],
 })
 
@@ -67,13 +103,29 @@ const SENIOR_CLASSES = ['L', 'O', 'S']
 const JUNIOR_CLASSES = ['J', 'T']
 
 router.beforeEach((to) => {
-  const isAuthenticated = localStorage.getItem('aidl_auth') === 'true'
+  // aidl_auth is the org-admin login (see SignInView). It is a separate
+  // identity from aidl-session below, which is the driver/user identity —
+  // an admin is also a user, and signs into their own driver dashboard the
+  // same way any driver does (license ID or the enroll flow on /home).
+  const isAdmin = localStorage.getItem('aidl_auth') === 'true'
+  const isUserAuth = localStorage.getItem('aidl_user_auth') === 'true'
 
-  if (to.name === 'signin' && isAuthenticated) {
-    return { name: 'home' }
+  if ((to.name === 'signin' || to.name === 'admin-signup') && isAdmin) {
+    return { name: 'fleet-office' }
+  }
+
+  if ((to.name === 'user-signin' || to.name === 'user-signup') && isUserAuth) {
+    return { path: '/home' }
   }
 
   if (to.meta.public) {
+    return
+  }
+
+  if (to.meta.requiresAdmin) {
+    if (!isAdmin) {
+      return { name: 'signin', query: { redirect: to.fullPath } }
+    }
     return
   }
 
@@ -95,10 +147,6 @@ router.beforeEach((to) => {
       return { path: '/home' }
     }
     return
-  }
-
-  if (!isAuthenticated) {
-    return { name: 'signin', query: { redirect: to.fullPath } }
   }
 })
 

@@ -11,15 +11,15 @@
 
       <div class="signin-body">
         <template v-if="mode === 'admin'">
-          <h2 class="signin-title">SIGN IN TO<br/>FLEET OFFICE</h2>
-          <p class="signin-sub">Admin credentials for the org dashboard — seats, dispatch keys, policy, approved apps.</p>
+          <h2 class="signin-title">CREATE AN<br/>ADMIN ACCOUNT</h2>
+          <p class="signin-sub">Set up org-admin access for the Fleet Office dashboard.</p>
         </template>
         <template v-else>
-          <h2 class="signin-title">SIGN IN AS<br/>A USER</h2>
-          <p class="signin-sub">Use your user account to reach the AIDL home dashboard.</p>
+          <h2 class="signin-title">CREATE A<br/>USER ACCOUNT</h2>
+          <p class="signin-sub">Set up your user account to reach the AIDL home dashboard.</p>
         </template>
 
-        <form @submit.prevent="handleSignIn">
+        <form @submit.prevent="handleSignUp">
           <div class="field">
             <label>Email Address <span>*</span></label>
             <input
@@ -37,7 +37,7 @@
                 :type="showPassword ? 'text' : 'password'"
                 v-model="password"
                 placeholder="••••••••••"
-                autocomplete="current-password"
+                autocomplete="new-password"
                 :class="{ error: hasError }"
               />
               <button
@@ -57,22 +57,49 @@
               </button>
             </div>
           </div>
+          <div class="field" style="margin-top: 16px;">
+            <label>Confirm Password <span>*</span></label>
+            <div class="password-wrap">
+              <input
+                :type="showConfirmPassword ? 'text' : 'password'"
+                v-model="confirmPassword"
+                placeholder="••••••••••"
+                autocomplete="new-password"
+                :class="{ error: hasError }"
+              />
+              <button
+                type="button"
+                class="password-toggle"
+                @click="showConfirmPassword = !showConfirmPassword"
+                :aria-label="showConfirmPassword ? 'Hide password' : 'Show password'"
+              >
+                <svg v-if="showConfirmPassword" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M17.94 17.94A10.94 10.94 0 0 1 12 20c-7 0-11-8-11-8a18.6 18.6 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+                  <line x1="1" y1="1" x2="23" y2="23" />
+                </svg>
+                <svg v-else viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8Z" />
+                  <circle cx="12" cy="12" r="3" />
+                </svg>
+              </button>
+            </div>
+          </div>
 
-          <div v-if="hasError" class="error-msg">
-            Invalid email or password. Please try again.
+          <div v-if="errorMsg" class="error-msg">
+            {{ errorMsg }}
           </div>
 
           <button type="submit" class="btn btn-red signin-btn">
-            SIGN IN →
+            SIGN UP →
           </button>
         </form>
 
-        <p v-if="mode === 'admin'" class="signin-alt">Not an admin? <router-link :to="{ name: 'user-signin' }">Continue as a user →</router-link></p>
-        <p v-else class="signin-alt">Not a user? <router-link :to="{ name: 'signin' }">← Back to admin sign in</router-link></p>
+        <p v-if="mode === 'admin'" class="signin-alt">Not an admin? <router-link :to="{ name: 'user-signup' }">Continue as a user →</router-link></p>
+        <p v-else class="signin-alt">Not a user? <router-link :to="{ name: 'admin-signup' }">← Back to admin sign up</router-link></p>
 
         <p class="signin-alt signin-alt-secondary">
-          Don't have an account?
-          <router-link :to="{ name: mode === 'admin' ? 'admin-signup' : 'user-signup' }">Sign up →</router-link>
+          Already have an account?
+          <router-link :to="{ name: mode === 'admin' ? 'signin' : 'user-signin' }">Sign in →</router-link>
         </p>
       </div>
 
@@ -87,38 +114,61 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { verifyCredentials } from '../lib/authAccounts'
+import { accountExists, createAccount } from '../lib/authAccounts'
 
 const router = useRouter()
 const route = useRoute()
 
 const email = ref('')
 const password = ref('')
+const confirmPassword = ref('')
 const hasError = ref(false)
+const errorMsg = ref('')
 const showPassword = ref(false)
+const showConfirmPassword = ref(false)
 
-// The path picks the mode ('/' = admin, '/signin' = user) so admin vs.
-// user sign-in are distinct, linkable/bookmarkable URLs rather than
-// component-local state — see router/index.ts.
-const mode = computed<'admin' | 'user'>(() => (route.meta.authRole === 'user' ? 'user' : 'admin'))
+// The path picks the mode ('/admin/signup' = admin, '/signup' = user) —
+// see router/index.ts and SignInView, which follow the same convention.
+const mode = computed<'admin' | 'user'>(() => (route.meta.authRole === 'admin' ? 'admin' : 'user'))
 
 watch(mode, () => {
   hasError.value = false
+  errorMsg.value = ''
 })
 
-function handleSignIn() {
-  if (verifyCredentials(mode.value, email.value, password.value)) {
-    hasError.value = false
-    if (mode.value === 'admin') {
-      localStorage.setItem('aidl_auth', 'true')
-      const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/fleet-office'
-      router.push(redirect)
-    } else {
-      localStorage.setItem('aidl_user_auth', 'true')
-      router.push('/home')
-    }
-  } else {
+function handleSignUp() {
+  errorMsg.value = ''
+
+  const trimmedEmail = email.value.trim()
+
+  if (!trimmedEmail || !password.value || !confirmPassword.value) {
     hasError.value = true
+    errorMsg.value = 'Fill in every field to create your account.'
+    return
+  }
+
+  if (password.value !== confirmPassword.value) {
+    hasError.value = true
+    errorMsg.value = 'Passwords do not match.'
+    return
+  }
+
+  if (accountExists(mode.value, trimmedEmail)) {
+    hasError.value = true
+    errorMsg.value = 'An account with that email already exists — sign in instead.'
+    return
+  }
+
+  createAccount(mode.value, trimmedEmail, password.value)
+
+  hasError.value = false
+  if (mode.value === 'admin') {
+    localStorage.setItem('aidl_auth', 'true')
+    const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/fleet-office'
+    router.push(redirect)
+  } else {
+    localStorage.setItem('aidl_user_auth', 'true')
+    router.push('/home')
   }
 }
 </script>

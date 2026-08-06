@@ -3,11 +3,12 @@
     <div class="wrap nav-inner">
       <div class="brand"><span class="brand-mark">AI</span><span class="brand-name">AIDL</span><span class="brand-sub">JUNIORS</span></div>
       <div class="nav-links nav-adult">
-        <a href="#trainings">Trainings</a>
-        <a href="#juniors" class="nav-link-juniors">Ages 8–16</a>
-        <a href="#licenses">Licenses</a>
-        <a href="#verify">Verify</a>
+        <a href="#trainings" @click="goToHomeSection($event, 'trainings')">Trainings</a>
+        <a href="#juniors" class="nav-link-juniors" @click="goToHomeSection($event, 'juniors')">Ages 8–16</a>
+        <a href="#licenses" @click="goToHomeSection($event, 'licenses')">Licenses</a>
+        <a href="#verify" @click="goToHomeSection($event, 'verify')">Verify</a>
         <a href="#enroll" @click.stop.prevent="openEnroll()">For Teams</a>
+        <router-link to="/jobs" :class="{ on: isJobsPage }">Jobs</router-link>
       </div>
       <div class="nav-links nav-junior">
         <a href="#juniors">Junior Programs</a>
@@ -57,6 +58,7 @@
     </div>
   </nav>
 
+  <template v-if="!isJobsPage">
   <section class="split" id="splitChooser">
     <div class="split-panel adult">
       <div class="split-content">
@@ -102,7 +104,7 @@
     <div class="hero-headline">
       <div class="hero-eyebrow"><span class="blink"></span> <span class="v-adult">NOW ENROLLING · COHORT 06</span><span class="v-junior">NOW ENROLLING · JUNIOR PERMITS</span></div>
       <h1 class="hero-title">LICENSE TO<span class="l2 v-adult">DRIVE&nbsp;AI</span><span class="l2 v-junior">LEARN&nbsp;AI</span></h1>
-      <p class="hero-sub v-adult">The driving school for the AI era. Get behind the wheel, log your hours, and earn a verifiable license that proves you can operate AI — safely, skilfully, at speed.</p>
+      <p class="hero-sub v-adult">Get a license to drive — and a job — in the AI era. Get better at the job you already have, or train your people to work with AI. Log your hours, pass the road test, and earn a verifiable license that proves you can operate AI safely, skilfully, at speed.</p>
       <p class="hero-sub v-junior">The driving school for young minds in the AI era. Two safe, age-tuned tracks for ages 8–16 — learn, play, and build with AI, then earn a real junior license.</p>
     </div>
 
@@ -677,6 +679,56 @@
       </div>
     </div>
   </section>
+  </template>
+
+  <template v-if="isJobsPage">
+    <div class="jobs-page-content">
+      <header class="jh">
+        <div class="wrap">
+          <span class="tag mono">ADULT LEARNERS · 18+ · REMOTE &amp; PROJECT WORK</span>
+          <h1>Get a license to drive — and a <em>job</em> in the AI era.</h1>
+          <p>Whether you're entering the AI economy, getting better at the job you already have, or training your people to work with AI — it starts with a license. These are the seven job families our adult licensees get hired into. No coding background required for most of them.</p>
+          <div class="jh-meta">
+            <span class="chip">7 JOB FAMILIES</span>
+            <span class="chip">CLASS L / O / S HOLDERS PRIORITISED</span>
+            <span class="chip">PAID PER TASK OR HOURLY</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="jobs">
+        <div class="wrap">
+          <div class="sec-head">
+            <h2>Open Roles</h2>
+            <span class="mono">ROLE / TASK / SKILL REQUIRED</span>
+          </div>
+          <div class="grid">
+            <article class="job" v-for="job in jobs" :key="job.no">
+              <div class="job-top"><div class="job-no">{{ job.no }}</div><h3>{{ job.title }}</h3></div>
+              <div class="job-body">
+                <div class="row"><div class="lab mono">TASK</div><p>{{ job.task }}</p></div>
+                <div class="row"><div class="lab skill mono">SKILL</div><p>{{ job.skill }}</p></div>
+              </div>
+              <div class="job-foot"><span>{{ job.tag }}</span><a href="#enroll" @click.stop.prevent="openEnroll()">APPLY →</a></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="cta">
+        <div class="wrap cta-in">
+          <div>
+            <h2>Not licensed yet? Start there.</h2>
+            <p>Most of these roles hire straight from the AIDL registry. Finish a class, get your license verified, and your profile goes into the hiring pool.</p>
+          </div>
+          <div class="cta-actions">
+            <a class="btn" href="#enroll" @click.stop.prevent="openEnroll()">GET LICENSED</a>
+            <a class="btn btn-yellow" href="#verify" @click.stop="goToHomeSection($event, 'verify')" style="box-shadow:4px 4px 0 var(--signal-red)">VERIFY A LICENSE</a>
+          </div>
+        </div>
+      </section>
+    </div>
+  </template>
 
   <footer class="foot">
     <div class="wrap">
@@ -723,11 +775,16 @@
 
 <script setup lang="ts">
 import { ref, reactive, computed, watch, onMounted, onUnmounted } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import AvatarPickerModal from '../components/AvatarPickerModal.vue'
 import '../styles/home-landing.css'
 
 const router = useRouter()
+const route = useRoute()
+
+// /jobs renders this same component (see router/index.ts) so the nav, enroll
+// modal and sign-in state stay mounted — only the section below the nav swaps.
+const isJobsPage = computed(() => route.path === '/jobs')
 
 const jrRoute = ref<'k' | 't'>('k')
 
@@ -757,6 +814,26 @@ watch(mode, (m) => {
   }
 })
 
+// The Jobs page is adult-only and has no split-chooser of its own, so landing
+// on /jobs (fresh load or nav click) always locks the header into adult mode.
+watch(isJobsPage, (jobsActive) => {
+  if (jobsActive) {
+    preChoice.value = false
+    mode.value = 'adult'
+    syncBodyClasses()
+    window.scrollTo(0, 0)
+  }
+}, { immediate: true })
+
+function goToHomeSection(e: MouseEvent, hash: string) {
+  if (!isJobsPage.value) return
+  e.preventDefault()
+  router.push('/home')
+  requestAnimationFrame(() => {
+    document.getElementById(hash)?.scrollIntoView()
+  })
+}
+
 const showEnrollModal = ref(false)
 
 function openEnroll(path?: 'adult' | 'junior') {
@@ -766,6 +843,9 @@ function openEnroll(path?: 'adult' | 'junior') {
     syncBodyClasses()
   }
   signInOpen.value = null
+  if (isJobsPage.value) {
+    router.push('/home')
+  }
   showEnrollModal.value = true
 }
 
@@ -806,6 +886,9 @@ function resetPath() {
   mode.value = null
   syncBodyClasses()
   window.scrollTo(0, 0)
+  if (isJobsPage.value) {
+    router.push('/home')
+  }
 }
 
 const signInOpen = ref<'senior' | 'junior' | null>(null)
@@ -845,6 +928,66 @@ onUnmounted(() => {
   document.removeEventListener('click', handleDocClick)
   document.body.classList.remove('pre-choice', 'mode-adult', 'mode-junior', 'focus-adult', 'focus-junior')
 })
+
+interface JobFamily {
+  no: string
+  title: string
+  task: string
+  skill: string
+  tag: string
+}
+
+const jobs: JobFamily[] = [
+  {
+    no: '01',
+    title: 'Preference Ranking & Pairwise Scoring (RLHF / DPO)',
+    task: 'Comparing two or more AI-generated responses (Response A vs. Response B) based on helpfulness, accuracy, brevity, tone, and formatting.',
+    skill: 'Critical thinking, baseline literacy, structured evaluation.',
+    tag: 'ENTRY FRIENDLY',
+  },
+  {
+    no: '02',
+    title: 'Supervised Fine-Tuning (SFT) & Prompt Authoring',
+    task: 'Writing synthetic prompts and drafting gold-standard responses from scratch to teach models how to respond in specific domains, tones, or languages.',
+    skill: 'Creative writing, domain knowledge, clear language expression.',
+    tag: 'WRITING HEAVY',
+  },
+  {
+    no: '03',
+    title: 'Multilingual Localization & Dialect Calibration',
+    task: 'Rewriting English-centric prompt outputs into localized dialects, evaluating machine translation quality, transcribing audio accents, and auditing cultural sensitivity and nuance.',
+    skill: 'Native/bilingual proficiency, regional context awareness.',
+    tag: 'LANGUAGE PAIRS OPEN',
+  },
+  {
+    no: '04',
+    title: 'Red Teaming & Safety Testing (Adversarial Prompting)',
+    task: 'Attempting to trick, "jailbreak," or prompt the model into violating safety guidelines — e.g. generating harmful code, hate speech, medical misinformation, or proprietary leakages.',
+    skill: 'Adversarial mindset, security awareness, policy compliance.',
+    tag: 'VETTED ACCESS',
+  },
+  {
+    no: '05',
+    title: 'Factuality Verification & Citation Auditing',
+    task: 'Fact-checking AI outputs against external sources, verifying whether citations exist and accurately support the claims made.',
+    skill: 'Research ability, attention to detail.',
+    tag: 'ENTRY FRIENDLY',
+  },
+  {
+    no: '06',
+    title: 'Tool-Use & Agentic Trajectory Labeling',
+    task: 'Demonstrating or correcting multi-step user workflows — clicking web buttons, filling out forms, querying databases — so AI agents can learn web and software navigation.',
+    skill: 'Technical usability, methodical step-by-step execution.',
+    tag: 'SCREEN RECORDING',
+  },
+  {
+    no: '07',
+    title: 'Domain-Specific Expert Feedback (STEM, Code, Legal, Finance)',
+    task: 'Reviewing complex code snippets, solving math proofs step-by-step, or evaluating legal and medical outputs for correctness.',
+    skill: 'Advanced academic or professional qualifications.',
+    tag: 'CREDENTIALS REQUIRED',
+  },
+]
 
 const LOCATIONS: Record<string, Record<string, string[]>> = {
   'United States': {
@@ -1116,6 +1259,7 @@ body { overflow-x: hidden; }
 .nav-links { display: flex; gap: 28px; margin-left: 24px; }
 .nav-links a { color: var(--ink); text-decoration: none; font-weight: 600; font-size: 15px; }
 .nav-links a:hover { color: var(--signal-red); }
+.nav-links a.on { color: var(--signal-red); text-decoration: underline; text-underline-offset: 5px; }
 .nav-cta { margin-left: auto; display: flex; gap: 12px; align-items: center; }
 .cta-short { display: none; }
 
@@ -1262,7 +1406,7 @@ body:not(.pre-choice) .signin-wrap .nav-auth-btn { display: inline-flex; width: 
 
 .hero-title {
   font-family: "Bungee", sans-serif;
-  font-size: 132px; line-height: 0.92; color: var(--ink);
+  font-size: 115px; line-height: 0.92; color: var(--ink);
   text-shadow: 6px 6px 0 var(--sign-yellow); margin: 0;
 }
 .hero-title .l2 { display: block; color: var(--signal-red); text-shadow: 6px 6px 0 var(--ink); }
@@ -1272,6 +1416,7 @@ body:not(.pre-choice) .signin-wrap .nav-auth-btn { display: inline-flex; width: 
   background: rgba(245, 236, 210, 0.7);
   padding: 10px 18px; border: 2px solid var(--ink); display: inline-block;
 }
+.hero-sub.v-adult { font-size: 18px; }
 
 .dashboard { position: absolute; left: 0; right: 0; bottom: 0; height: 280px; z-index: 8; }
 .dash-bg {
@@ -1479,6 +1624,54 @@ section.band { position: relative; padding: 120px 0; border-bottom: 4px solid va
   z-index: 3;
 }
 .enroll-drop-close:hover { background: var(--signal-red); border-color: var(--signal-red); }
+
+/* ===== JOBS PAGE (/jobs) ===== */
+.jobs-page-content .mono { font-family: "JetBrains Mono", monospace; }
+.jobs-page-content .jh { background: var(--asphalt); color: var(--cream); border-bottom: 6px solid var(--ink); padding: 76px 0 68px; position: relative; overflow: hidden; }
+.jobs-page-content .jh:after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 14px; background: repeating-linear-gradient(90deg, var(--sign-yellow) 0 60px, transparent 60px 120px); }
+.jobs-page-content .tag { display: inline-flex; align-items: center; gap: 9px; font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .14em; background: var(--sign-yellow); color: var(--ink); border: 3px solid var(--ink); padding: 6px 12px; }
+.jobs-page-content .jh h1 { font-family: "Bungee", sans-serif; font-size: clamp(38px, 6.4vw, 86px); line-height: .98; margin: 22px 0 0; max-width: 16ch; color: var(--cream); }
+.jobs-page-content .jh h1 em { font-style: normal; color: var(--sign-yellow); }
+.jobs-page-content .jh p { max-width: 60ch; font-size: 19px; line-height: 1.55; color: #e6dcc0; margin: 22px 0 0; text-wrap: pretty; }
+.jobs-page-content .jh-meta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
+.jobs-page-content .chip { font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .08em; border: 2px solid var(--cream); padding: 8px 12px; color: var(--cream); }
+
+.jobs-page-content .jobs { padding: 80px 0 90px; }
+.jobs-page-content .sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; border-bottom: 4px solid var(--ink); padding-bottom: 18px; margin-bottom: 44px; }
+.jobs-page-content .sec-head h2 { font-family: "Bungee", sans-serif; font-size: clamp(26px, 3.4vw, 42px); margin: 0; }
+.jobs-page-content .sec-head span { font-family: "JetBrains Mono", monospace; font-size: 13px; letter-spacing: .1em; }
+.jobs-page-content .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
+.jobs-page-content .job { background: var(--cream-2); border: 3px solid var(--ink); box-shadow: 8px 8px 0 var(--ink); padding: 0; display: flex; flex-direction: column; transition: transform .14s, box-shadow .14s; }
+.jobs-page-content .job:hover { transform: translate(-3px, -3px); box-shadow: 11px 11px 0 var(--ink); }
+.jobs-page-content .job-top { display: flex; align-items: center; gap: 16px; padding: 20px 24px; border-bottom: 3px solid var(--ink); background: var(--sign-yellow); }
+.jobs-page-content .job-no { width: 46px; height: 46px; flex: none; border-radius: 50%; border: 3px solid var(--ink); background: var(--cream); display: grid; place-items: center; font-family: "Bungee", sans-serif; font-size: 17px; }
+.jobs-page-content .job-top h3 { font-family: "Bungee", sans-serif; font-size: 19px; line-height: 1.25; margin: 0; }
+.jobs-page-content .job-body { padding: 24px; display: flex; flex-direction: column; gap: 18px; flex: 1; }
+.jobs-page-content .job-body .row { display: grid; grid-template-columns: 78px 1fr; gap: 14px; align-items: start; }
+.jobs-page-content .lab { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: .12em; background: var(--ink); color: var(--cream); padding: 5px 7px; text-align: center; }
+.jobs-page-content .lab.skill { background: var(--signal-green); color: var(--ink); }
+.jobs-page-content .job-body .row p { margin: 0; font-size: 16px; line-height: 1.55; text-wrap: pretty; }
+.jobs-page-content .job-foot { border-top: 2px dashed var(--ink); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; gap: 14px; font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .08em; }
+.jobs-page-content .job-foot a { font-family: "Bungee", sans-serif; font-size: 12px; letter-spacing: .04em; text-decoration: none; color: var(--ink); border-bottom: 3px solid var(--signal-red); }
+.jobs-page-content .job-foot a:hover { color: var(--signal-red); }
+
+.jobs-page-content .cta { background: var(--sign-yellow); border-top: 4px solid var(--ink); border-bottom: 4px solid var(--ink); padding: 64px 0; }
+.jobs-page-content .cta-in { display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
+.jobs-page-content .cta h2 { font-family: "Bungee", sans-serif; font-size: clamp(26px, 3.6vw, 44px); margin: 0; max-width: 18ch; line-height: 1.05; }
+.jobs-page-content .cta p { margin: 14px 0 0; max-width: 52ch; font-size: 17px; line-height: 1.55; }
+.jobs-page-content .cta-actions { display: flex; gap: 14px; flex-wrap: wrap; }
+
+@media (max-width: 1100px) { .jobs-page-content .grid { gap: 22px; } }
+@media (max-width: 900px) {
+  .jobs-page-content .grid { grid-template-columns: 1fr; }
+  .jobs-page-content .jobs { padding: 56px 0 64px; }
+}
+@media (max-width: 600px) {
+  .jobs-page-content .jh { padding: 52px 0 48px; }
+  .jobs-page-content .job-body .row { grid-template-columns: 1fr; gap: 8px; }
+  .jobs-page-content .lab { justify-self: start; padding: 5px 10px; }
+}
+
 @media (max-width: 640px) {
   .enroll-drop {
     top: auto;
