@@ -1843,10 +1843,14 @@ footer.foot { background: var(--ink); color: var(--cream); padding: 70px 0 30px;
     margin-top: 4px;
   }
   .section-title { font-size: clamp(36px, 6vw, 52px); }
-  .hero { height: auto; min-height: 720px; }
+  .hero { height: auto; min-height: 720px; padding-bottom: 24px; }
   .hero-title { font-size: clamp(56px, 10vw, 96px); text-shadow: 4px 4px 0 var(--sign-yellow); }
   .hero-title .l2 { text-shadow: 4px 4px 0 var(--ink); }
-  .hero-headline { padding: 40px 28px 300px; }
+  /* Stack headline text above the steering-wheel dashboard in normal flow
+     instead of absolute-overlapping it, so the wheel always lands below
+     the text no matter how many lines the copy wraps to. */
+  .hero-headline { position: relative; left: auto; top: auto; transform: none; margin: 100px auto 0; padding: 0 28px; }
+  .dashboard { position: relative; left: auto; right: auto; bottom: auto; width: 100%; margin-top: 30px; }
   .training-grid { grid-template-columns: 1fr 1fr; }
   .foot-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
   .form-row { grid-template-columns: 1fr; }
@@ -1882,9 +1886,9 @@ footer.foot { background: var(--ink); color: var(--cream); padding: 70px 0 30px;
   .cta-adult .cta-short,
   .cta-junior .cta-short { display: inline; }
   .hero { min-height: 640px; }
-  .hero-headline { padding: 32px 20px 280px; }
+  .hero-headline { margin-top: 60px; padding: 0 20px; }
   .hero-sub { font-size: 16px; }
-  .dashboard { height: 240px; }
+  .dashboard { height: 240px; margin-top: 24px; }
   .dash-inner { padding: 50px 20px 20px; gap: 12px; grid-template-columns: 1fr; justify-items: center; }
   .gauge-cluster { justify-content: center; flex-wrap: wrap; gap: 16px; }
   .wheel { transform: scale(0.85); }
@@ -1962,6 +1966,9 @@ footer.foot { background: var(--ink); color: var(--cream); padding: 70px 0 30px;
   .wrap { padding: 0 16px; }
   .hero-title { font-size: clamp(42px, 14vw, 64px); }
   .hero-eyebrow { font-size: 11px; padding: 6px 12px; }
+  .hero-headline { margin-top: 44px; }
+  .dashboard { height: 220px; margin-top: 20px; }
+  .wheel { transform: scale(0.75); margin-top: -100px; }
   .nav-cta {
     gap: 5px;
   }
