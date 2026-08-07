@@ -1,10 +1,13 @@
 <template>
   <div class="fleet-office" :class="{ 'nav-open': navOpen }">
     <aside class="sidebar">
-      <router-link class="brand" to="/home"><span class="brand-mark">AI</span><span>AIDL<small>Fleet Office · Org Admin</small></span></router-link>
+      <div class="sidebar-head">
+        <router-link class="brand" to="/home"><img class="brand-mark" :src="aidlLogo" alt="AIDL" /><span>AIDL<small>Fleet Office · Org Admin</small></span></router-link>
+        <button type="button" class="sidebar-close" aria-label="Close menu" @click="navOpen = false">✕</button>
+      </div>
       <div class="org-chip">
         <div class="oc-label">FLEET ACCOUNT</div>
-        <div class="oc-name">NORTHWIND<br />LOGISTICS</div>
+        <div class="oc-name">{{ orgNameLines.first }}<br v-if="orgNameLines.last" />{{ orgNameLines.last }}</div>
         <div class="seat-meter"><i :style="{ width: seatPct + '%' }"></i></div>
         <div class="seat-label"><span>{{ seatUsed }} / {{ seatTotal }} SEATS</span><span>PLAN: FLEET</span></div>
       </div>
@@ -32,13 +35,18 @@
           <span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect><path d="M14 17.5h7M17.5 14v7"></path></svg></span>Approved Apps
         </div>
       </div>
+      <div class="nav-group">
+        <h6>Administration</h6>
+        <div class="nav-item" :class="{ active: view === 'settings' }" @click="go('settings')">
+          <span class="nav-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="3.2"></circle><path d="M12 2.5v2.6M12 18.9v2.6M4.2 4.2l1.9 1.9M17.9 17.9l1.9 1.9M2.5 12h2.6M18.9 12h2.6M4.2 19.8l1.9-1.9M17.9 6.1l1.9-1.9"></path></svg></span>Settings
+        </div>
+      </div>
       <div class="side-card">
         <div>SIGNED IN AS</div>
         <b>PRIYA RAMAN</b>
         <div class="role">ORG ADMIN &middot; L&amp;D DIRECTOR</div>
         <div style="margin-top:8px">ADMIN-NW-0041</div>
         <div class="side-links">
-          <router-link to="/home">&rarr; Continue as user</router-link>
           <a href="#" @click.prevent="signOut">&rarr; Sign out</a>
         </div>
       </div>
@@ -49,11 +57,18 @@
     <main class="main">
       <div class="topbar">
         <button class="nav-toggle" type="button" aria-label="Menu" @click="navOpen = !navOpen"><span></span><span></span><span></span></button>
-        <div class="crumb"><span>AIDL</span><span>/</span><span>FLEET OFFICE</span><span>/</span><span class="here">{{ titles[view] }}</span></div>
+        <div class="crumb"><span>AIDL</span><span>/</span><span>{{ crumbOrgLabel }}</span><span>/</span><span class="here">{{ titles[view] }}</span></div>
         <div class="top-search"><input placeholder="Search drivers, keys, apps…" /><kbd>&#8984;K</kbd></div>
         <div class="top-actions">
           <div class="icon-btn" title="Notifications"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 8a6 6 0 1112 0c0 7 3 8 3 8H3s3-1 3-8"></path><path d="M10 21a2 2 0 004 0"></path></svg><span class="dot"></span></div>
-          <div class="avatar"><div class="avatar-img">PR</div><div class="avatar-meta"><b>Priya Raman</b><small>ORG ADMIN</small></div></div>
+          <div class="avatar">
+            <div class="org-badge" v-if="hasCustomOrgBranding">
+              <img v-if="appliedOrgLogo" class="org-logo" :src="appliedOrgLogo" :alt="appliedOrgName + ' logo'" />
+              <span v-else class="org-name">{{ appliedOrgName }}</span>
+            </div>
+            <div class="avatar-img">PR</div>
+            <div class="avatar-meta"><b>Priya Raman</b><small>ORG ADMIN</small></div>
+          </div>
         </div>
       </div>
 
@@ -454,6 +469,198 @@
         </div>
         <p class="hint" style="margin-top:16px">Prohibited entries appear in the Mistake Museum as worked examples, so drivers learn <em>why</em> a tool is off-limits rather than just seeing a blocked page.</p>
       </div>
+
+      <!-- ============ SETTINGS ============ -->
+      <div class="page view" :class="{ active: view === 'settings' }">
+        <div class="head">
+          <div><span class="eyebrow">ADMINISTRATION</span><h1>Fleet<br />Settings</h1><p>Everything that applies to the whole depot — how your fleet is branded for drivers, who can get behind the wheel, and how your own admin account is secured.</p></div>
+        </div>
+
+        <div class="set-grid">
+          <!-- BRANDING -->
+          <div class="card span2">
+            <div class="card-head"><h3>Fleet Identity</h3><span class="tag">SHOWN TO ALL DRIVERS</span></div>
+            <p class="hint" style="margin-bottom:16px">Your name and logo replace the AIDL mark across every driver's portal, lesson player, road test certificate and Slack/Teams card.</p>
+            <div class="form-grid">
+              <div class="field"><label>Display Name <span>*</span></label><input v-model="setOrgName" maxlength="34" /></div>
+              <div class="field"><label>Short Name (badges &amp; avatars)</label><input v-model="setOrgShort" maxlength="4" /></div>
+              <div class="field full"><label>Tagline under the logo</label><input v-model="setOrgTag" maxlength="52" /></div>
+              <div class="field">
+                <label>Logo</label>
+                <div class="drop sm" @click="logoInput?.click()" @dragenter.prevent @dragover.prevent @drop.prevent="onLogoDrop">
+                  <div class="di"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#14140f" stroke-width="2.5"><path d="M12 16V4"></path><path d="M7 9l5-5 5 5"></path><path d="M4 20h16"></path></svg></div>
+                  <b>DROP LOGO</b><small>PNG or SVG · square · max 1 MB</small>
+                </div>
+                <input ref="logoInput" type="file" accept="image/*" hidden @change="onLogoChange" />
+              </div>
+              <div class="field">
+                <label>Accent Colour</label>
+                <div class="swatches">
+                  <div class="sw" v-for="c in swatchColors" :key="c" :class="{ on: accent === c }" :style="{ background: c }" @click="accent = c"></div>
+                </div>
+                <p class="hint" style="margin-top:10px">Used for highlights only — road signs stay yellow so safety cues never change meaning.</p>
+              </div>
+              <div class="field full">
+                <div class="switch-row"><div class="switch" :class="{ on: swCoBrand }" @click="swCoBrand = !swCoBrand"><i></i></div><div class="sw-text"><b>Co-brand with AIDL</b><small>Keep the AIDL mark alongside yours so licenses stay recognisably AIDL-issued. Turning this off is not permitted on certificates.</small></div></div>
+              </div>
+            </div>
+            <div class="brand-lab">
+              <div class="bl-mark" :style="{ background: logoData ? '#fff' : accent }">
+                <img v-if="logoData" :src="logoData" alt="logo" />
+                <template v-else>{{ (setOrgShort || 'NW').toUpperCase() }}</template>
+              </div>
+              <div><div class="bl-name">{{ (setOrgName || 'Untitled Fleet').toUpperCase() }}</div><div class="bl-sub">{{ (setOrgTag || '—').toUpperCase() }}</div></div>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px"><button class="btn btn-yellow" @click="applyBrand">APPLY TO DASHBOARD</button><button class="btn btn-ghost" @click="resetBrand">RESET</button></div>
+          </div>
+
+          <!-- PASSWORD -->
+          <div class="card">
+            <div class="card-head"><h3>Change Password</h3><span class="tag">ADMIN-NW-0041</span></div>
+            <div class="form-grid">
+              <div class="field full"><label>Current Password <span>*</span></label><input type="password" v-model="pwOld" placeholder="••••••••••" /></div>
+              <div class="field full">
+                <label>New Password <span>*</span></label>
+                <input type="password" v-model="pwNew" placeholder="At least 12 characters" />
+                <div class="meter"><i :style="{ width: (pwScore * 25) + '%', background: pwBarColor }"></i></div>
+                <ul class="rules">
+                  <li :class="{ ok: pwRules.len }">12 characters or more</li>
+                  <li :class="{ ok: pwRules.up }">One uppercase letter</li>
+                  <li :class="{ ok: pwRules.num }">One number</li>
+                  <li :class="{ ok: pwRules.sym }">One symbol</li>
+                </ul>
+              </div>
+              <div class="field full">
+                <label>Confirm New Password <span>*</span></label>
+                <input type="password" v-model="pwConf" placeholder="Repeat it" />
+                <small class="hint" :style="{ color: pwMatchColor }">{{ pwMatchText }}</small>
+              </div>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px"><button class="btn" @click="savePassword">UPDATE PASSWORD</button></div>
+            <div style="margin-top:20px;border-top:2px dashed var(--cream-3);padding-top:16px">
+              <div class="switch-row"><div class="switch" :class="{ on: sw2fa }" @click="sw2fa = !sw2fa"><i></i></div><div class="sw-text"><b>Two-factor authentication</b><small>Authenticator app · required for all org admins</small></div></div>
+              <div class="switch-row" style="margin-top:10px"><div class="switch" :class="{ on: swSso }" @click="swSso = !swSso"><i></i></div><div class="sw-text"><b>Force SSO for drivers</b><small>Drivers sign in with the workspace they were dispatched from</small></div></div>
+            </div>
+          </div>
+
+          <!-- SESSIONS -->
+          <div class="card">
+            <div class="card-head"><h3>Active Sessions</h3><span class="tag live">{{ sessions.length }} DEVICES</span></div>
+            <div class="sess" v-for="(s, i) in sessions" :key="s.device">
+              <div><b>{{ s.device }}</b><small>{{ s.location }}</small></div>
+              <span v-if="s.current" class="pill green">CURRENT</span>
+              <button v-else class="mini danger" @click="sessions.splice(i, 1); toast('SESSION ENDED')">SIGN OUT</button>
+            </div>
+            <div style="margin-top:16px"><button class="btn btn-ghost" @click="killAllOtherSessions">SIGN OUT EVERYWHERE ELSE</button></div>
+            <p class="req-note">Session activity is written to the depot activity log and is visible to any other org admin.</p>
+          </div>
+
+          <!-- SEATS -->
+          <div class="card tinted span2">
+            <div class="card-head"><h3>Seats &amp; Licenses</h3><span class="tag">PLAN: FLEET · $5 / USER / YEAR</span></div>
+            <div class="stat-strip" style="margin-bottom:20px">
+              <div class="stat"><div class="k">SEATS PURCHASED</div><div class="v">{{ seatTotal }}</div><div class="d">RENEWS 04/29/2027</div></div>
+              <div class="stat hi"><div class="k">ASSIGNED</div><div class="v">{{ activeAssignedSeats }}</div><div class="d">{{ seatTotal - activeAssignedSeats }} AVAILABLE</div></div>
+              <div class="stat"><div class="k">DISABLED</div><div class="v">{{ disabledSeatCount }}</div><div class="d">SEAT RETURNED TO POOL</div></div>
+              <div class="stat"><div class="k">PENDING REQUEST</div><div class="v">{{ pendingRequest ? '+' + pendingRequest.n : '—' }}</div><div class="d">{{ pendingRequest ? pendingRequest.when.toUpperCase() : 'NONE OPEN' }}</div></div>
+            </div>
+            <div class="form-grid">
+              <div class="field"><label>Additional Seats Requested</label><input type="number" v-model.number="reqSeats" min="1" max="500" /></div>
+              <div class="field"><label>Needed By</label>
+                <select v-model="reqWhen">
+                  <option>Within 7 days</option><option>Next billing cycle</option><option>Next quarter</option>
+                </select>
+              </div>
+              <div class="field full"><label>Reason (goes to your account manager)</label><textarea v-model="reqWhy" rows="2" placeholder="e.g. Ops intake of 10 dispatchers starting September."></textarea></div>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:16px"><button class="btn btn-yellow" @click="requestSeats">REQUEST ADDITIONAL USERS</button><button class="btn btn-ghost" @click="cancelSeatRequest">CANCEL REQUEST</button></div>
+            <p class="req-note">{{ reqStatusText }}</p>
+          </div>
+
+          <!-- USER MANAGEMENT -->
+          <div class="card span2">
+            <div class="card-head"><h3>User Access</h3><span class="tag">DISABLE · RE-ENABLE · REMOVE</span></div>
+            <p class="hint" style="margin-bottom:16px">Disabling a driver revokes their sign-in immediately and returns the seat to the pool. Their license record, logged hours and AUP acknowledgement are preserved.</p>
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th>Driver</th><th>Role</th><th>License</th><th>Last Seen</th><th>Status</th><th></th></tr></thead>
+                <tbody>
+                  <tr v-for="(u, i) in settingsUsers" :key="u.email">
+                    <td>{{ u.name }}<span class="sub">{{ u.email }}</span></td>
+                    <td>{{ u.role }}</td>
+                    <td class="mono-cell">{{ u.license }}</td>
+                    <td class="mono-cell">{{ u.lastSeen }}</td>
+                    <td><span class="pill" :class="u.on ? 'green' : 'grey'">{{ u.on ? 'ACTIVE' : 'DISABLED' }}</span></td>
+                    <td>
+                      <div class="row-act">
+                        <button class="mini" :class="{ danger: u.on }" @click="toggleUser(i)">{{ u.on ? 'DISABLE' : 'RE-ENABLE' }}</button>
+                        <button class="mini danger" @click="removeUser(i)">REMOVE</button>
+                      </div>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ADMINS -->
+          <div class="card">
+            <div class="card-head"><h3>Admin Team</h3><span class="tag">{{ admins.length }} OF 3 ADMIN SEATS</span></div>
+            <div class="sess" v-for="(a, i) in admins" :key="a.name">
+              <div><b>{{ a.name }}</b><small>{{ a.role }}</small></div>
+              <span v-if="a.pill" class="pill yellow">{{ a.pill }}</span>
+              <button v-else class="mini danger" @click="revokeAdmin(i)">REVOKE</button>
+            </div>
+            <div class="form-grid" style="margin-top:16px">
+              <div class="field full"><label>Invite an Admin</label><input v-model="invEmail" placeholder="name@northwind.co" /></div>
+              <div class="field full">
+                <label>Permission Level</label>
+                <div class="choice-group perm-choices">
+                  <div class="choice" :class="{ active: invRole === 'full' }" @click="invRole = 'full'">FULL ADMIN<small>ALL SETTINGS</small></div>
+                  <div class="choice" :class="{ active: invRole === 'keys' }" @click="invRole = 'keys'">DISPATCH ONLY<small>KEYS &amp; ROSTER</small></div>
+                  <div class="choice" :class="{ active: invRole === 'view' }" @click="invRole = 'view'">READ ONLY<small>REPORTS</small></div>
+                  <div class="choice" :class="{ active: invRole === 'apps' }" @click="invRole = 'apps'">APPROVED APPS<small>GOVERNANCE</small></div>
+                </div>
+              </div>
+            </div>
+            <div style="margin-top:16px"><button class="btn" @click="inviteAdmin">SEND ADMIN INVITE</button></div>
+          </div>
+
+          <!-- NOTIFICATIONS -->
+          <div class="card">
+            <div class="card-head"><h3>Notifications &amp; Defaults</h3><span class="tag">SLACK CONNECTED</span></div>
+            <div class="form-grid">
+              <div class="field"><label>Default Workspace</label>
+                <select v-model="wk">
+                  <option value="slack">Slack · northwind.slack.com</option>
+                  <option value="teams">Microsoft Teams · Northwind</option>
+                </select>
+              </div>
+              <div class="field"><label>Time Zone</label>
+                <select v-model="orgTimeZone">
+                  <option>Europe/London (GMT+1)</option><option>America/New_York</option><option>Asia/Singapore</option>
+                </select>
+              </div>
+            </div>
+            <div style="display:grid;gap:10px;margin-top:16px">
+              <div class="switch-row"><div class="switch" :class="{ on: notifDefaults.weeklyDigest }" @click="notifDefaults.weeklyDigest = !notifDefaults.weeklyDigest"><i></i></div><div class="sw-text"><b>Weekly depot digest</b><small>Monday 09:00 · seats, pass rates, AUP gaps</small></div></div>
+              <div class="switch-row"><div class="switch" :class="{ on: notifDefaults.failedRoadTest }" @click="notifDefaults.failedRoadTest = !notifDefaults.failedRoadTest"><i></i></div><div class="sw-text"><b>Alert on failed road tests</b><small>Sent to admins when a driver fails twice</small></div></div>
+              <div class="switch-row"><div class="switch" :class="{ on: notifDefaults.unapprovedApp }" @click="notifDefaults.unapprovedApp = !notifDefaults.unapprovedApp"><i></i></div><div class="sw-text"><b>Alert on unapproved app use</b><small>Flagged from the Traffic Light Check</small></div></div>
+              <div class="switch-row"><div class="switch" :class="{ on: notifDefaults.seatThreshold }" @click="notifDefaults.seatThreshold = !notifDefaults.seatThreshold"><i></i></div><div class="sw-text"><b>Seat threshold warning</b><small>When 90% of seats are assigned</small></div></div>
+            </div>
+          </div>
+
+          <!-- DANGER -->
+          <div class="danger span2">
+            <h3>Depot Controls</h3>
+            <p class="hint">Irreversible or fleet-wide. Two admins must confirm each of these.</p>
+            <div class="danger-row"><div><b style="font-family:'Bungee';font-size:13px">Export fleet data</b><div class="hint">Roster, licenses, AUP acknowledgements and activity log as CSV.</div></div><button class="btn btn-ghost" @click="toast('EXPORT QUEUED · EMAILED IN ~5 MIN')">EXPORT CSV</button></div>
+            <div class="danger-row"><div><b style="font-family:'Bungee';font-size:13px">Suspend all driver access</b><div class="hint">Freezes every seat. Used during an incident review.</div></div><button class="btn btn-ghost" @click="toast('NEEDS A SECOND ADMIN TO CONFIRM')">SUSPEND FLEET</button></div>
+            <div class="danger-row"><div><b style="font-family:'Bungee';font-size:13px">Transfer ownership</b><div class="hint">Hands the owner role to another full admin.</div></div><button class="btn btn-ghost" @click="toast('NEEDS A SECOND ADMIN TO CONFIRM')">TRANSFER</button></div>
+            <div class="danger-row"><div><b style="font-family:'Bungee';font-size:13px">Close fleet account</b><div class="hint">Licenses stay valid to their expiry; the depot is archived.</div></div><button class="btn btn-ghost" style="border-color:var(--signal-red);color:var(--signal-red)" @click="toast('NEEDS A SECOND ADMIN TO CONFIRM')">CLOSE ACCOUNT</button></div>
+          </div>
+        </div>
+      </div>
     </main>
 
     <div class="toast" :class="{ show: toastShow }">{{ toastMsg }}</div>
@@ -463,6 +670,8 @@
 <script setup lang="ts">
 import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
+import { getCurrentAdminEmail, getAdminOrgBranding } from '../lib/authAccounts'
+import aidlLogo from '../assets/images/aidl-logo.png'
 
 /*
  * Fleet Office — Org Admin dashboard.
@@ -502,11 +711,11 @@ interface AppEntry { n: string; c: string; d: string; s: 'Approved' | 'Condition
 interface CardDef { id: string; ico: string; t: string; k: string; d: string }
 interface SchedEntry { cards: string; group: string; dest: string; cad: string; next: string; on: boolean }
 
-const view = ref<'dash' | 'keys' | 'drivers' | 'aup' | 'send' | 'apps'>('dash')
+const view = ref<'dash' | 'keys' | 'drivers' | 'aup' | 'send' | 'apps' | 'settings'>('dash')
 const navOpen = ref(false)
 const titles: Record<string, string> = {
   dash: 'Depot Overview', keys: 'Dispatch Keys', drivers: 'Drivers',
-  aup: 'Acceptable Use', send: 'Send Cards', apps: 'Approved Apps',
+  aup: 'Acceptable Use', send: 'Send Cards', apps: 'Approved Apps', settings: 'Settings',
 }
 function go(v: typeof view.value) {
   view.value = v
@@ -711,6 +920,191 @@ function sendCards() {
   })
   toast('SCHEDULE CREATED')
 }
+
+/* ===== SETTINGS: fleet identity / branding ===== */
+const setOrgName = ref('Northwind Logistics')
+const setOrgShort = ref('NW')
+const setOrgTag = ref('Licensed to drive AI · Fleet 0041')
+const logoData = ref<string | null>(null)
+const accent = ref('#ffcc00')
+const swatchColors = ['#ffcc00', '#2ec866', '#6fb3e0', '#e23a2e']
+const swCoBrand = ref(true)
+const logoInput = ref<HTMLInputElement | null>(null)
+
+const appliedOrgName = ref('Northwind Logistics')
+const appliedOrgLogo = ref<string | null>(null)
+const crumbOrgLabel = ref('FLEET OFFICE')
+// True once the org has real branding (from admin sign-up or an explicit
+// "Apply to Dashboard") — gates the topbar org badge so it doesn't show
+// the "Northwind Logistics" placeholder as if it were a real org.
+const hasCustomOrgBranding = ref(false)
+const orgNameLines = computed(() => {
+  const words = appliedOrgName.value.toUpperCase().split(/\s+/)
+  return words.length > 1
+    ? { first: words.slice(0, -1).join(' '), last: words[words.length - 1]! }
+    : { first: words[0] || '', last: '' }
+})
+
+// The org name/logo shown here come from what the admin set at sign-up
+// (see SignUpView's admin flow) — not from the Settings tab's branding
+// preview, which is a separate manual override an admin can apply later.
+const signedInAdminEmail = getCurrentAdminEmail()
+const savedOrgBranding = signedInAdminEmail ? getAdminOrgBranding(signedInAdminEmail) : null
+if (savedOrgBranding?.orgName) {
+  setOrgName.value = savedOrgBranding.orgName
+  appliedOrgName.value = savedOrgBranding.orgName
+  crumbOrgLabel.value = savedOrgBranding.orgName.toUpperCase() + ' FLEET'
+  hasCustomOrgBranding.value = true
+}
+if (savedOrgBranding?.orgLogo) {
+  logoData.value = savedOrgBranding.orgLogo
+  appliedOrgLogo.value = savedOrgBranding.orgLogo
+  hasCustomOrgBranding.value = true
+}
+
+function readLogoFile(f: File | undefined) {
+  if (!f) return
+  if (!/^image\//.test(f.type)) { toast('IMAGE FILES ONLY'); return }
+  if (f.size > 1048576) { toast('MAX 1 MB'); return }
+  const reader = new FileReader()
+  reader.onload = () => {
+    logoData.value = typeof reader.result === 'string' ? reader.result : null
+    toast('LOGO LOADED')
+  }
+  reader.readAsDataURL(f)
+}
+function onLogoChange(e: Event) {
+  readLogoFile((e.target as HTMLInputElement).files?.[0])
+}
+function onLogoDrop(e: DragEvent) {
+  readLogoFile(e.dataTransfer?.files?.[0])
+}
+function applyBrand() {
+  const n = setOrgName.value.trim()
+  if (!n) { toast('DISPLAY NAME REQUIRED'); return }
+  appliedOrgName.value = n
+  appliedOrgLogo.value = logoData.value
+  crumbOrgLabel.value = n.toUpperCase() + ' FLEET'
+  hasCustomOrgBranding.value = true
+  toast('APPLIED TO ALL DRIVERS')
+}
+function resetBrand() {
+  logoData.value = null
+  accent.value = '#ffcc00'
+  setOrgName.value = 'Northwind Logistics'
+  setOrgShort.value = 'NW'
+  setOrgTag.value = 'Licensed to drive AI · Fleet 0041'
+  toast('RESET')
+}
+
+/* ===== SETTINGS: change password ===== */
+const pwOld = ref('')
+const pwNew = ref('')
+const pwConf = ref('')
+const sw2fa = ref(true)
+const swSso = ref(true)
+const pwRules = computed(() => ({
+  len: pwNew.value.length >= 12,
+  up: /[A-Z]/.test(pwNew.value),
+  num: /[0-9]/.test(pwNew.value),
+  sym: /[^A-Za-z0-9]/.test(pwNew.value),
+}))
+const pwScore = computed(() => Object.values(pwRules.value).filter(Boolean).length)
+const pwBarColor = computed(() => (pwScore.value <= 1 ? '#e23a2e' : pwScore.value <= 2 ? '#ff9d00' : pwScore.value === 3 ? '#ffcc00' : '#2ec866'))
+const pwMatchText = computed(() => (!pwConf.value ? '' : pwConf.value === pwNew.value ? '✓ PASSWORDS MATCH' : '✕ PASSWORDS DO NOT MATCH'))
+const pwMatchColor = computed(() => (!pwConf.value ? 'inherit' : pwConf.value === pwNew.value ? '#1c8a45' : '#e23a2e'))
+function savePassword() {
+  if (!pwOld.value) { toast('ENTER CURRENT PASSWORD'); return }
+  if (pwScore.value < 4) { toast('NEW PASSWORD TOO WEAK'); return }
+  if (pwNew.value !== pwConf.value) { toast('PASSWORDS DO NOT MATCH'); return }
+  pwOld.value = ''
+  pwNew.value = ''
+  pwConf.value = ''
+  toast('PASSWORD UPDATED · ALL OTHER SESSIONS SIGNED OUT')
+}
+
+/* ===== SETTINGS: active sessions ===== */
+interface SessionEntry { device: string; location: string; current: boolean }
+const sessions = reactive<SessionEntry[]>([
+  { device: 'MacBook Pro · Chrome', location: 'MANCHESTER, UK · THIS DEVICE · NOW', current: true },
+  { device: 'iPhone 15 · Safari', location: 'MANCHESTER, UK · 2 HOURS AGO', current: false },
+  { device: 'Windows 11 · Edge', location: 'LEEDS, UK · 3 DAYS AGO', current: false },
+])
+function killAllOtherSessions() {
+  for (let i = sessions.length - 1; i >= 0; i--) {
+    if (!sessions[i]!.current) sessions.splice(i, 1)
+  }
+  toast('SIGNED OUT EVERYWHERE ELSE')
+}
+
+/* ===== SETTINGS: seats & user access ===== */
+interface SettingsUser { name: string; email: string; role: string; license: string; lastSeen: string; on: boolean }
+const settingsUsers = reactive<SettingsUser[]>([
+  { name: 'Jamie Okafor', email: 'j.okafor@northwind.co', role: 'Dispatcher', license: 'CLASS L · ACTIVE', lastSeen: '2h ago', on: true },
+  { name: 'Alex Morgan', email: 'a.morgan@northwind.co', role: 'Ops Analyst', license: 'CLASS L · IN PROGRESS', lastSeen: 'Yesterday', on: true },
+  { name: 'Priya Reddy', email: 'p.reddy@northwind.co', role: 'Compliance', license: 'CLASS L · ACTIVE', lastSeen: '4h ago', on: true },
+  { name: 'Sam Chen', email: 's.chen@northwind.co', role: 'Warehouse Lead', license: 'NOT STARTED', lastSeen: '12 days ago', on: true },
+  { name: 'Dana Wu', email: 'd.wu@northwind.co', role: 'Contractor', license: 'CLASS L · ACTIVE', lastSeen: '31 days ago', on: true },
+])
+const disabledSeatCount = computed(() => settingsUsers.filter((u) => !u.on).length)
+const activeAssignedSeats = computed(() => seatUsed.value - disabledSeatCount.value)
+function toggleUser(i: number) {
+  const u = settingsUsers[i]!
+  u.on = !u.on
+  toast(u.on ? u.name.toUpperCase() + ' RE-ENABLED' : u.name.toUpperCase() + ' DISABLED · SEAT RETURNED')
+}
+function removeUser(i: number) {
+  const u = settingsUsers[i]!
+  if (u.on) { toast('DISABLE BEFORE REMOVING'); return }
+  settingsUsers.splice(i, 1)
+  seatUsed.value = Math.max(0, seatUsed.value - 1)
+  toast('REMOVED FROM FLEET')
+}
+
+const reqSeats = ref(10)
+const reqWhen = ref('Next billing cycle')
+const reqWhy = ref('New dispatch team onboarding in September.')
+const pendingRequest = ref<{ n: number; when: string } | null>(null)
+const reqStatusText = computed(() => {
+  if (!pendingRequest.value) return 'No open request. Additional seats are billed pro-rata to your renewal date, at $5 per user per year.'
+  return `Request open: +${pendingRequest.value.n} seats (${pendingRequest.value.when.toLowerCase()}). Estimated $${pendingRequest.value.n * 5} per year, pro-rata to 04/29/2027. Sent to your account manager — you will get a Slack DM when approved.`
+})
+function requestSeats() {
+  if (!reqSeats.value || reqSeats.value < 1) { toast('ENTER A SEAT COUNT'); return }
+  pendingRequest.value = { n: reqSeats.value, when: reqWhen.value }
+  toast('REQUEST SENT · +' + reqSeats.value + ' SEATS')
+}
+function cancelSeatRequest() {
+  pendingRequest.value = null
+  toast('REQUEST CANCELLED')
+}
+
+/* ===== SETTINGS: admin team =====
+ * Permission Level started with three tiers (Full Admin / Dispatch Only /
+ * Read Only) — "Approved Apps" was added as a fourth so a governance-only
+ * admin can manage the AI/IT registry without full settings access. */
+interface AdminEntry { name: string; role: string; pill: string | null }
+const admins = reactive<AdminEntry[]>([
+  { name: 'Priya Raman', role: 'ORG ADMIN · L&D DIRECTOR · YOU', pill: 'OWNER' },
+  { name: 'Tom Whitfield', role: 'ADMIN · IT SECURITY', pill: null },
+])
+const invEmail = ref('')
+const invRole = ref<'full' | 'keys' | 'view' | 'apps'>('full')
+const invRoleLabels: Record<string, string> = { full: 'FULL ADMIN', keys: 'DISPATCH ONLY', view: 'READ ONLY', apps: 'APPROVED APPS' }
+function inviteAdmin() {
+  const v = invEmail.value.trim()
+  if (!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) { toast('ENTER A VALID EMAIL'); return }
+  invEmail.value = ''
+  toast('INVITE SENT · ' + invRoleLabels[invRole.value])
+}
+function revokeAdmin(i: number) {
+  admins.splice(i, 1)
+  toast('ADMIN ACCESS REVOKED')
+}
+
+/* ===== SETTINGS: notifications & defaults ===== */
+const orgTimeZone = ref('Europe/London (GMT+1)')
+const notifDefaults = reactive({ weeklyDigest: true, failedRoadTest: true, unapprovedApp: false, seatThreshold: true })
 </script>
 
 <style scoped>
@@ -745,10 +1139,26 @@ function sendCards() {
    never gets pushed up near the bottom of a page taller than 100vh,
    which used to leave blank page background exposed beneath it. */
 aside.sidebar { background: var(--asphalt); color: var(--cream); border-right: 3px solid var(--ink); padding: 22px 18px; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; bottom: 0; width: 268px; overflow-y: auto; z-index: 100; }
-.brand { display: flex; align-items: center; gap: 12px; font-family: "Bungee"; font-size: 18px; color: var(--cream); text-decoration: none; padding: 0 4px 16px; border-bottom: 2px dashed var(--asphalt-3); }
+.sidebar-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 0 4px 16px; border-bottom: 2px dashed var(--asphalt-3); }
+.brand { display: flex; align-items: center; gap: 12px; font-family: "Bungee"; font-size: 18px; color: var(--cream); text-decoration: none; min-width: 0; flex: 1 1 auto; }
+.brand > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sidebar-close {
+  display: none;
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border: 2px solid var(--cream-3);
+  background: transparent;
+  color: var(--cream);
+  font-family: "Bungee";
+  font-size: 13px;
+  cursor: pointer;
+  place-items: center;
+}
+.sidebar-close:hover { background: var(--signal-red); border-color: var(--signal-red); }
 .brand:hover { color: var(--cream); }
-.brand-mark { width: 40px; height: 40px; border-radius: 50%; background: var(--sign-yellow); border: 3px solid var(--ink); display: grid; place-items: center; font-family: "Bungee"; font-size: 14px; color: var(--ink); box-shadow: 3px 3px 0 var(--asphalt-3); }
-.brand small { display: block; font-family: "JetBrains Mono", monospace; font-size: 9px; color: var(--cream-3); font-weight: 400; margin-top: 2px; }
+.brand-mark { flex: none; width: 40px; height: 40px; border-radius: 50%; object-fit: cover; box-shadow: 3px 3px 0 var(--asphalt-3); }
+.brand small { display: block; font-family: "JetBrains Mono", monospace; font-size: 9px; color: var(--cream-3); font-weight: 400; margin-top: 2px; overflow: hidden; text-overflow: ellipsis; }
 .org-chip { margin: 16px 0 4px; border: 3px solid var(--ink); background: var(--asphalt-2); box-shadow: 3px 3px 0 var(--asphalt-3); padding: 12px; }
 .org-chip .oc-label { font-family: "JetBrains Mono", monospace; font-size: 9px; color: var(--sign-yellow); letter-spacing: .1em; }
 .org-chip .oc-name { font-family: "Bungee"; font-size: 15px; line-height: 1.05; margin: 5px 0 8px; color: var(--cream); }
@@ -786,6 +1196,9 @@ main.main { display: flex; flex-direction: column; min-width: 0; margin-left: 26
 .avatar-meta { line-height: 1.1; }
 .avatar-meta b { font-family: "Bungee"; font-size: 12px; display: block; }
 .avatar-meta small { font-family: "JetBrains Mono", monospace; font-size: 9px; color: var(--muted); }
+.org-badge { display: flex; align-items: center; padding-right: 10px; margin-right: 2px; border-right: 2px solid var(--ink); height: 32px; }
+.org-badge .org-logo { height: 32px; width: auto; max-width: 120px; object-fit: contain; }
+.org-badge .org-name { font-family: "Bungee"; font-size: 11px; white-space: nowrap; }
 .page { padding: 32px 36px 60px; flex: 1; min-width: 0; }
 .page .head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
 .page .head h1 { font-family: "Bungee"; font-size: 42px; margin: 0; line-height: .95; }
@@ -965,6 +1378,42 @@ td.mono-cell { font-family: "JetBrains Mono", monospace; font-size: 11px; font-w
 .two-col { display: grid; grid-template-columns: 1.3fr minmax(0, 1fr); gap: 24px; align-items: start; }
 .toast { position: fixed; left: 50%; bottom: 26px; transform: translate(-50%, 140%); background: var(--asphalt); color: var(--cream); border: 3px solid var(--sign-yellow); box-shadow: 5px 5px 0 var(--ink); padding: 12px 20px; font-family: "Bungee"; font-size: 12px; z-index: 400; transition: transform .26s cubic-bezier(.2, .8, .2, 1); }
 .toast.show { transform: translate(-50%, 0); }
+/* SETTINGS */
+.set-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 24px; align-items: start; }
+.set-grid .span2 { grid-column: 1 / -1; }
+.brand-lab { display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center; border: 3px solid var(--ink); background: var(--asphalt); color: var(--cream); padding: 16px; margin-top: 16px; }
+.brand-lab .bl-mark { width: 56px; height: 56px; border: 3px solid var(--sign-yellow); color: var(--ink); display: grid; place-items: center; font-family: "Bungee"; font-size: 16px; overflow: hidden; }
+.brand-lab .bl-mark img { width: 100%; height: 100%; object-fit: contain; background: #fff; }
+.brand-lab .bl-name { font-family: "Bungee"; font-size: 15px; line-height: 1.15; }
+.brand-lab .bl-sub { font-family: "JetBrains Mono", monospace; font-size: 9px; color: var(--sign-yellow); letter-spacing: .1em; margin-top: 5px; }
+.drop.sm { padding: 18px 14px; }
+.drop.sm .di { width: 44px; height: 44px; margin-bottom: 8px; }
+.swatches { display: flex; gap: 10px; flex-wrap: wrap; }
+.sw { width: 38px; height: 38px; border: 3px solid var(--ink); cursor: pointer; position: relative; }
+.sw.on:after { content: "✓"; position: absolute; inset: 0; display: grid; place-items: center; font-family: "Bungee"; font-size: 14px; color: var(--ink); }
+.meter { height: 10px; border: 2px solid var(--ink); background: #fff; margin-top: 8px; }
+.meter > i { display: block; height: 100%; width: 0; background: var(--signal-red); transition: width .18s, background .18s; }
+.rules { list-style: none; margin: 10px 0 0; padding: 0; display: grid; gap: 5px; font-family: "JetBrains Mono", monospace; font-size: 10px; color: var(--muted); }
+.rules li:before { content: "○ "; font-weight: 700; }
+.rules li.ok { color: #1c8a45; }
+.rules li.ok:before { content: "● "; }
+.sess { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center; border-bottom: 2px dashed var(--cream-3); padding: 11px 0; }
+.sess:last-of-type { border-bottom: 0; }
+.sess b { font-size: 13px; display: block; }
+.sess small { font-family: "JetBrains Mono", monospace; font-size: 10px; color: var(--muted); }
+.danger { border: 3px solid var(--signal-red); background: #fff; box-shadow: 6px 6px 0 var(--signal-red); padding: 22px; }
+.danger h3 { font-family: "Bungee"; font-size: 16px; margin: 0 0 6px; color: var(--signal-red); }
+.danger-row { display: flex; align-items: center; justify-content: space-between; gap: 14px; flex-wrap: wrap; border-top: 2px dashed var(--cream-3); padding: 13px 0; }
+.req-note { font-family: "JetBrains Mono", monospace; font-size: 10px; color: var(--muted); line-height: 1.6; margin-top: 10px; }
+@media (max-width: 900px) {
+  /* Permission Level now has 4 options (was 3) — grid-auto-flow:column has
+     no wrap concept and was pushing options past the edge of the card once
+     it dropped to full width. Flexbox wrapping is simpler to reason about
+     and guarantees two equal-width choices per row regardless of content
+     length or track-sizing edge cases. */
+  .perm-choices { display: flex; flex-wrap: wrap; }
+  .perm-choices .choice { flex: 1 1 calc(50% - 4px); min-width: 0; }
+}
 /* RESPONSIVE */
 .nav-toggle { display: none; }
 .nav-scrim { display: none; }
@@ -981,22 +1430,50 @@ td.mono-cell { font-family: "JetBrains Mono", monospace; font-size: 11px; font-w
   .fleet-office.nav-open .nav-scrim { opacity: 1; pointer-events: auto; }
   .nav-toggle { display: inline-flex; flex-direction: column; justify-content: center; align-items: center; gap: 5px; width: 44px; height: 44px; flex: 0 0 44px; background: var(--sign-yellow); border: 3px solid var(--ink); cursor: pointer; padding: 0; box-shadow: 3px 3px 0 var(--ink); }
   .nav-toggle span { display: block; width: 20px; height: 3px; background: var(--ink); }
+  .sidebar-close { display: grid; }
   .stat-strip { grid-template-columns: 1fr 1fr; }
+  /* Wrap instead of squeezing — on tablets the search box was fixed at
+     min-width:260px and would crush the org logo/admin name down to
+     nothing rather than actually shrinking. Give search its own full row. */
+  .topbar { flex-wrap: wrap; row-gap: 10px; }
+  .crumb { order: 1; flex: 1 1 auto; min-width: 0; }
+  .crumb span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .top-actions { order: 2; flex-shrink: 0; }
+  .top-search { order: 3; flex: 1 1 100%; width: 100%; margin-left: 0; }
 }
 @media (max-width: 680px) {
+  .set-grid { grid-template-columns: repeat(1, minmax(0, 1fr)); }
   .page { padding: 20px 16px 48px; }
   .page .head { flex-direction: column; align-items: flex-start; gap: 14px; }
   .page .head h1 { font-size: 30px; }
-  .topbar { padding: 12px 16px; gap: 12px; }
+  .topbar { padding: 12px 16px; gap: 8px; row-gap: 8px; }
   .top-search { display: none; }
-  .avatar-meta { display: none; }
+  /* Keep the admin's name and the org name visible on phones instead of
+     hiding them outright — shrink and truncate instead. */
+  .crumb { gap: 6px; font-size: 10px; }
+  .crumb span:first-child,
+  .crumb span:nth-child(2) { display: none; }
+  .icon-btn { display: none; }
+  .avatar { padding: 4px 8px 4px 4px; gap: 6px; }
+  .avatar-meta { max-width: 84px; }
+  .avatar-meta b { font-size: 11px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .avatar-meta small { display: none; }
+  .org-badge .org-name { max-width: 70px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .org-badge .org-logo { max-width: 60px; }
   .form-grid, .app-add { grid-template-columns: 1fr; }
-  .choice-group { grid-auto-flow: row; }
   .ml-meta { grid-template-columns: 1fr; }
   .wk-switch { margin-left: 0; width: 100%; }
   .wk-switch button { flex: 1; justify-content: center; }
   .card-picker { grid-template-columns: 1fr; }
   .card { padding: 16px; box-shadow: 4px 4px 0 var(--ink); }
+  /* SETTINGS — several of its cards use long uppercase tags ("PLAN: FLEET ·
+     $5 / USER / YEAR", "DISABLE · RE-ENABLE · REMOVE") that other tabs'
+     shorter tags never stress-tested this shared rule against. */
+  .card-head { flex-wrap: wrap; }
+  .brand-lab { grid-template-columns: 1fr; text-align: center; justify-items: center; }
+  .sess { grid-template-columns: 1fr; justify-items: start; gap: 8px; }
+  .sess > span, .sess > button { justify-self: start; }
+  .danger { padding: 16px; }
 }
 @media (max-width: 420px) {
   .stat-strip { grid-template-columns: 1fr; }

@@ -377,7 +377,7 @@
   }
   .brand { display: flex; align-items: center; gap: 12px; font-family: "Bungee", sans-serif; font-size: 18px; color: var(--cream); text-decoration: none; min-width: 0; }
   .brand:hover { color: var(--cream); }
-  .brand-mark { width: 40px; height: 40px; border-radius: 50%; background: var(--sign-yellow); border: 3px solid var(--ink); display: grid; place-items: center; font-family: "Bungee", sans-serif; font-size: 14px; color: var(--ink); box-shadow: 3px 3px 0 var(--asphalt-3); }
+  .brand-mark { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; box-shadow: 3px 3px 0 var(--asphalt-3); }
   .brand small { display:block; font-family: "JetBrains Mono", monospace; font-size: 9px; color: var(--cream-3); font-weight: 400; margin-top: 2px; }
 
   .tier-toggle { display: flex; border: 3px solid var(--ink); margin: 16px 0 6px; box-shadow: 3px 3px 0 var(--asphalt-3); }
@@ -423,6 +423,13 @@
   .side-card .lic-meter { height: 6px; background: var(--asphalt-3); margin-top: 10px; border: 1px solid var(--asphalt); position: relative; }
   .side-card .lic-meter > i { display: block; height: 100%; background: var(--accent); width: 78%; }
   .side-card .lic-meter-label { display: flex; justify-content: space-between; margin-top: 4px; font-size: 9px; }
+  .side-dl-btn {
+    display: block; width: 100%; margin-top: 12px; padding: 8px 10px;
+    background: transparent; border: 2px solid var(--cream-3); color: var(--cream-2);
+    font-family: "JetBrains Mono", monospace; font-size: 9px; letter-spacing: .06em;
+    cursor: pointer; text-align: center;
+  }
+  .side-dl-btn:hover { background: var(--sign-yellow); color: var(--ink); border-color: var(--sign-yellow); }
 
   /* ============================ MAIN ============================ */
   main.main { display: flex; flex-direction: column; min-width: 0; }
@@ -432,7 +439,10 @@
     border-bottom: 3px solid var(--ink);
     padding: 16px 36px;
     display: flex; align-items: center; gap: 24px;
-    position: sticky; top: 0; z-index: 30;
+    /* Fixed (not sticky) so it never scrolls with the page — sticky here was
+       unreliable across browsers once main.main became its own scroll
+       container (see portal-responsive.css desktop rules). */
+    position: fixed; top: 0; left: 268px; right: 0; z-index: 30;
   }
   .crumb { display: flex; align-items: center; gap: 10px; font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--muted); text-transform: uppercase; }
   .crumb .here { color: var(--ink); }
@@ -447,8 +457,11 @@
   .avatar-meta { line-height: 1.1; }
   .avatar-meta b { font-family: "Bungee"; font-size: 12px; display: block; }
   .avatar-meta small { font-family: "JetBrains Mono", monospace; font-size: 9px; color: var(--muted); }
+  .org-badge { display: flex; align-items: center; padding-right: 10px; margin-right: 2px; border-right: 2px solid var(--ink); height: 32px; }
+  .org-badge .org-logo { height: 32px; width: auto; max-width: 120px; object-fit: contain; }
+  .org-badge .org-name { font-family: "Bungee", sans-serif; font-size: 11px; white-space: nowrap; }
 
-  .page { padding: 32px 36px 60px; flex: 1; min-width: 0; }
+  .page { padding: 108px 36px 60px; flex: 1; min-width: 0; }
   .page .head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 24px; }
   .page .head h1 { font-family: "Bungee"; font-size: 44px; margin: 0; line-height: 0.95; }
   .page .head p { margin: 8px 0 0; color: var(--muted); font-size: 14px; max-width: 600px; }
@@ -468,6 +481,7 @@
   .btn.btn-red { background: var(--signal-red); color: var(--cream); box-shadow: 4px 4px 0 var(--ink); }
   .btn.btn-green { background: var(--signal-green); color: var(--ink); box-shadow: 4px 4px 0 var(--ink); }
   .btn.btn-ghost { background: var(--cream); color: var(--ink); box-shadow: none; }
+  .btn.sm { padding: 7px 12px; font-size: 10px; box-shadow: 3px 3px 0 var(--ink); }
   .rule-actions { display: flex; gap: 8px; }
 
   .view { display: none; }
@@ -531,6 +545,7 @@
   .lic-qr::after  { top: 4px; right: 4px; }
   .lic-qr .corner { position:absolute; bottom: 4px; left:4px; width:22px; height:22px; border: 4px solid var(--ink); background: #fff; }
   .lic-stamps { margin-top: 16px; padding-top: 12px; border-top: 2px dashed var(--ink); display: flex; gap: 6px; flex-wrap: wrap; }
+  .lic-actions { margin-top: 14px; }
   .lic-stamp { border: 2px solid var(--ink); padding: 3px 7px; font-family: "JetBrains Mono"; font-size: 9px; text-transform: uppercase; }
 
   .stat-strip { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; margin-top: 24px; }

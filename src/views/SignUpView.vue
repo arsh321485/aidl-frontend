@@ -3,7 +3,7 @@
     <div class="signin-card">
       <div class="signin-header">
         <a class="brand" href="#">
-          <span class="brand-mark">AI</span>
+          <img class="brand-mark" :src="aidlLogo" alt="AIDL" />
           <span>AIDL</span>
         </a>
         <div class="signin-badge">{{ mode === 'admin' ? 'ORG ADMIN' : 'USER' }}</div>
@@ -30,6 +30,17 @@
               :class="{ error: hasError }"
             />
           </div>
+          <template v-if="mode === 'admin'">
+            <div class="field" style="margin-top: 16px;">
+              <label>Organization Name <span>*</span></label>
+              <input
+                type="text"
+                v-model="orgName"
+                placeholder="e.g. Acme Corp"
+                :class="{ error: hasError }"
+              />
+            </div>
+          </template>
           <div class="field" style="margin-top: 16px;">
             <label>Password <span>*</span></label>
             <div class="password-wrap">
@@ -114,7 +125,8 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import { accountExists, createAccount } from '../lib/authAccounts'
+import { accountExists, createAccount, setCurrentAdminEmail } from '../lib/authAccounts'
+import aidlLogo from '../assets/images/aidl-logo.png'
 
 const router = useRouter()
 const route = useRoute()
@@ -122,6 +134,7 @@ const route = useRoute()
 const email = ref('')
 const password = ref('')
 const confirmPassword = ref('')
+const orgName = ref('')
 const hasError = ref(false)
 const errorMsg = ref('')
 const showPassword = ref(false)
@@ -140,8 +153,9 @@ function handleSignUp() {
   errorMsg.value = ''
 
   const trimmedEmail = email.value.trim()
+  const isAdmin = mode.value === 'admin'
 
-  if (!trimmedEmail || !password.value || !confirmPassword.value) {
+  if (!trimmedEmail || !password.value || !confirmPassword.value || (isAdmin && !orgName.value.trim())) {
     hasError.value = true
     errorMsg.value = 'Fill in every field to create your account.'
     return
@@ -159,11 +173,17 @@ function handleSignUp() {
     return
   }
 
-  createAccount(mode.value, trimmedEmail, password.value)
+  createAccount(
+    mode.value,
+    trimmedEmail,
+    password.value,
+    isAdmin ? { orgName: orgName.value.trim() } : undefined
+  )
 
   hasError.value = false
-  if (mode.value === 'admin') {
+  if (isAdmin) {
     localStorage.setItem('aidl_auth', 'true')
+    setCurrentAdminEmail(trimmedEmail)
     const redirect = typeof route.query.redirect === 'string' ? route.query.redirect : '/fleet-office'
     router.push(redirect)
   } else {
@@ -218,13 +238,7 @@ function handleSignUp() {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: var(--sign-yellow);
-  border: 3px solid var(--sign-yellow);
-  display: grid;
-  place-items: center;
-  font-family: "Bungee", sans-serif;
-  font-size: 16px;
-  color: var(--ink);
+  object-fit: cover;
   box-shadow: 3px 3px 0 rgba(255,255,255,0.2);
 }
 
@@ -293,23 +307,28 @@ function handleSignUp() {
 .password-wrap {
   position: relative;
   display: flex;
+  width: 100%;
 }
 
 .password-wrap input {
   width: 100%;
   padding-right: 48px;
+  margin: 0;
 }
 
 .password-toggle {
   position: absolute;
-  top: 0;
-  right: 0;
-  width: 48px;
-  height: 48px;
+  top: 50%;
+  right: 4px;
+  transform: translateY(-50%);
+  width: 40px;
+  height: 40px;
+  margin: 0;
   display: grid;
   place-items: center;
   background: transparent;
   border: none;
+  line-height: 0;
   cursor: pointer;
   color: #6a624a;
   padding: 0;

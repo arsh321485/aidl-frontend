@@ -1,6 +1,9 @@
 /* AIDL JUNIORS · DRIVER PORTAL v2 — built on The Open Road AI Curriculum Framework v1.0
    Two tracks: cadet = Junior Cadet (8–12), crew = Road Crew (12–16) */
 
+import { downloadLicenseCertificate } from './downloadLicense.js';
+import { notifySuccess, notifyWarning } from './notify.js';
+
 const STRANDS = [
   { id: 'S1', name: 'Sense & See', big: 'Perception', cadet: '"How do machines see, hear, and feel our town?"', crew: 'Sensors, computer vision, speech systems, and their failure modes' },
   { id: 'S2', name: 'Think & Decide', big: 'Representation & Reasoning', cadet: '"How does a machine make a choice?"', crew: 'Models, algorithms, search, optimization, uncertainty' },
@@ -345,6 +348,23 @@ const TIERS = {
 /* ================================================= STATE */
 let CURRENT = 'cadet';
 function T() { return TIERS[CURRENT]; }
+
+/* ================================================= DOWNLOAD */
+function downloadLicense() {
+  const t = T();
+  const lic = LADDER[t.licenceIdx];
+  downloadLicenseCertificate({
+    holder: t.learner,
+    licenseId: t.licId,
+    classLabel: lic.name + ' · ' + t.label,
+    issued: t.identity,
+    expires: t.renewal,
+    rows: [
+      { label: 'Ages', value: t.age },
+      { label: 'Grown-up', value: t.grownup },
+    ],
+  });
+}
 function chip(s) { return `<span class="strand-chip ${s}">${s}</span>`; }
 /* Route-map module -> lesson id in the Junior Lesson Player (JM-xx / TM-xx packs) */
 function moduleLessonId(n, tierKey) {
@@ -402,6 +422,7 @@ function renderDashboard() {
           <div class="lic-qr"><div class="corner"></div></div>
         </div>
         <div class="lic-stamps">${stamps}</div>
+        <div class="lic-actions"><button type="button" class="btn sm btn-ghost" onclick="downloadLicense()">⬇ DOWNLOAD LICENSE</button></div>
       </div>
       <div class="card">
         <div class="card-head"><h3>UP NEXT</h3><span class="tag">3 ITEMS</span></div>
@@ -606,8 +627,8 @@ function renderCode() {
   });
   document.getElementById('aupSubmit').addEventListener('click', () => {
     const acked = document.querySelectorAll('#aupList .aup-rule.ack').length;
-    if (acked < total) alert('Tick all ' + total + ' first! You have ' + acked + ' / ' + total + '.');
-    else alert('Signed! The ' + (CURRENT === 'cadet' ? 'Cadet' : 'Crew') + ' Code is on your record. Drive well!');
+    if (acked < total) notifyWarning('Tick all ' + total + ' first! You have ' + acked + ' / ' + total + '.', 'Not So Fast');
+    else notifySuccess('Signed! The ' + (CURRENT === 'cadet' ? 'Cadet' : 'Crew') + ' Code is on your record. Drive well!', 'Signed');
   });
   updateAck();
 }
@@ -852,6 +873,7 @@ function initPortal() {
   // window.goView. Claim it on mount instead, so it always matches whichever
   // portal is actually on screen.
   window.goView = goView;
+  window.downloadLicense = downloadLicense;
   document.querySelectorAll('.nav-item').forEach(n => n.addEventListener('click', () => goView(n.dataset.view)));
   document.querySelectorAll('.tier-toggle button').forEach(b => b.addEventListener('click', () => { applyTier(b.dataset.tier); goView('dashboard'); }));
   document.getElementById('tlInput').addEventListener('input', e => renderTL(e.target.value));

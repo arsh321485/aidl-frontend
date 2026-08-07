@@ -7,7 +7,7 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
         </RouterLink>
         <RouterLink class="brand" to="/home">
-    <span class="brand-mark">AI</span>
+    <img class="brand-mark" :src="aidlLogo" alt="AIDL" />
     <span>AIDL<small>Driver Portal · v2.6</small></span>
   </RouterLink></div>
 
@@ -64,36 +64,41 @@
     <div class="lic-id" id="sideId">AIDL-O-1182-4421</div>
     <div class="lic-meter"><i id="sideMeter"></i></div>
     <div class="lic-meter-label"><span id="sideClass">CLASS O · OPERATOR</span><span id="sideRenewal">9 mo left</span></div>
+    <button type="button" class="side-dl-btn" onclick="downloadLicense()">⬇ DOWNLOAD LICENSE</button>
   </div>
 </aside>
 
-<!-- ============================ MAIN ============================ -->
-<main class="main">
-  <div class="portal-nav-backdrop" id="portalNavBackdrop" aria-hidden="true"></div>
-  <div class="topbar">
-    <button type="button" class="portal-menu-btn" id="portalMenuBtn" aria-label="Open navigation">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
-    </button>
-    <div class="crumb"><span>AIDL</span><span>/</span><span class="here" id="crumbHere">Dashboard</span></div>
-    <div class="top-search">
-      <input placeholder="Search handbook, terms, rules…">
-      <kbd>⌘K</kbd>
+<!-- Sibling of aside/main (not nested inside main's own scroll container) so
+     position:fixed can't get trapped scrolling with main's content — a real
+     cross-browser quirk when a fixed element lives inside an overflow:auto
+     ancestor. -->
+<div class="portal-nav-backdrop" id="portalNavBackdrop" aria-hidden="true"></div>
+<div class="topbar">
+  <button type="button" class="portal-menu-btn" id="portalMenuBtn" aria-label="Open navigation">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+  </button>
+  <div class="crumb"><span>AIDL</span><span>/</span><span class="here" id="crumbHere">Dashboard</span></div>
+  <div class="top-search">
+    <input placeholder="Search handbook, terms, rules…">
+    <kbd>⌘K</kbd>
+  </div>
+  <div class="top-actions">
+    <div class="icon-btn" title="Notifications">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 8a6 6 0 1112 0c0 7 3 8 3 8H3s3-1 3-8"></path><path d="M10 21a2 2 0 004 0"></path></svg>
+      <span class="dot"></span>
     </div>
-    <div class="top-actions">
-      <div class="icon-btn" title="Notifications">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 8a6 6 0 1112 0c0 7 3 8 3 8H3s3-1 3-8"></path><path d="M10 21a2 2 0 004 0"></path></svg>
-        <span class="dot"></span>
-      </div>
-      <div class="icon-btn" title="Help">
-        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><path d="M9.5 9a2.5 2.5 0 015 0c0 2-2.5 2-2.5 4"></path><circle cx="12" cy="17" r="0.8" fill="currentColor"></circle></svg>
-      </div>
-      <div class="avatar">
-        <div class="avatar-img" id="avInit">AM</div>
-        <div class="avatar-meta"><b id="avName">Alex Morgan</b><small id="avRole">CLASS O · OPERATOR</small></div>
-      </div>
+    <div class="icon-btn" title="Help">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><path d="M9.5 9a2.5 2.5 0 015 0c0 2-2.5 2-2.5 4"></path><circle cx="12" cy="17" r="0.8" fill="currentColor"></circle></svg>
+    </div>
+    <div class="avatar">
+      <div class="avatar-img" id="avInit">AM</div>
+      <div class="avatar-meta"><b id="avName">Alex Morgan</b><small id="avRole">CLASS O · OPERATOR</small></div>
     </div>
   </div>
+</div>
 
+<!-- ============================ MAIN ============================ -->
+<main class="main">
   <!-- DASHBOARD (rendered by portal.js) -->
   <div class="page view active" id="view-dashboard" data-screen-label="01 Dashboard"></div>
 
@@ -250,6 +255,7 @@
 import { onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { initSeniorPortal } from '../lib/senior-portal.js'
+import aidlLogo from '../assets/images/aidl-logo.png'
 import '../styles/senior-driver-portal.css'
 import '../styles/portal-responsive.css'
 

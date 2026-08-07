@@ -176,7 +176,7 @@
 
       <div class="ap-foot">
         <button type="button" class="ap-btn ap-btn-ghost" @click="$emit('close')">Cancel</button>
-        <button type="button" class="ap-btn ap-btn-red" :disabled="!canConfirm" @click="confirm">Confirm &amp; Get Permit →</button>
+        <button type="button" class="ap-btn ap-btn-red" :disabled="!canConfirm" @click="confirm">Confirm &amp; Register →</button>
       </div>
     </div>
   </div>

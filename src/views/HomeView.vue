@@ -1,7 +1,7 @@
 <template>
   <nav class="nav">
     <div class="wrap nav-inner">
-      <div class="brand"><span class="brand-mark">AI</span><span class="brand-name">AIDL</span><span class="brand-sub">JUNIORS</span></div>
+      <div class="brand"><img class="brand-mark" :src="aidlLogo" alt="AIDL" /><span class="brand-name">AIDL</span><span class="brand-sub">JUNIORS</span></div>
       <div class="nav-links nav-adult">
         <a href="#trainings" @click="goToHomeSection($event, 'trainings')">Trainings</a>
         <a href="#juniors" class="nav-link-juniors" @click="goToHomeSection($event, 'juniors')">Ages 8–16</a>
@@ -23,14 +23,31 @@
           <button type="button" class="nav-auth-btn" @click.stop="toggleSignIn('senior')">SIGN IN</button>
           <div v-if="signInOpen === 'senior'" class="signin-drop signin-drop-senior" @click.stop>
             <div class="signin-drop-head">SIGN IN · SENIOR</div>
-            <p class="signin-drop-sub">Enter your license ID to open your dashboard.</p>
+            <div class="signin-drop-tabs">
+              <button type="button" class="signin-drop-tab" :class="{ active: signInMode === 'individual' }" @click="signInMode = 'individual'">INDIVIDUAL</button>
+              <button type="button" class="signin-drop-tab" :class="{ active: signInMode === 'organization' }" @click="signInMode = 'organization'">ORGANIZATION</button>
+            </div>
+            <p class="signin-drop-sub">Enter your email and password to open your dashboard.</p>
             <input
-              type="text"
-              v-model="signInId"
-              placeholder="AIDL-L-1182-4421"
-              autocomplete="off"
+              type="email"
+              v-model="signInEmail"
+              placeholder="you@company.com"
+              autocomplete="username"
               @keyup.enter="submitSignIn('senior')"
             />
+            <div class="password-field">
+              <input
+                :type="showSignInPassword ? 'text' : 'password'"
+                v-model="signInPassword"
+                placeholder="Password"
+                autocomplete="current-password"
+                @keyup.enter="submitSignIn('senior')"
+              />
+              <button type="button" class="password-toggle" @click="showSignInPassword = !showSignInPassword" :aria-label="showSignInPassword ? 'Hide password' : 'Show password'">
+                <svg v-if="showSignInPassword" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-10-8-10-8a18.5 18.5 0 015.06-5.94M9.9 4.24A10.94 10.94 0 0112 4c7 0 10 8 10 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s3-8 11-8 11 8 11 8-3 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+              </button>
+            </div>
             <button type="button" class="btn btn-yellow signin-drop-btn" @click="submitSignIn('senior')">Sign In →</button>
             <p v-if="signInError" class="signin-drop-error">{{ signInError }}</p>
             <p class="signin-drop-foot">Don't have one? <a href="#enroll" @click.prevent="closeSignInAndEnroll('adult')">Enroll here →</a></p>
@@ -57,6 +74,149 @@
       </div>
     </div>
   </nav>
+
+  <!-- Rendered unconditionally (not inside the !isJobsPage block below) so
+       Apply/Enroll on the Jobs page can open this without navigating away
+       to /home first. -->
+  <div v-if="showEnrollModal" class="enroll-drop" @click.stop>
+    <button type="button" class="enroll-drop-close" @click="showEnrollModal = false" aria-label="Close">✕</button>
+    <form class="form-card" @submit.prevent="handleSubmit">
+        <div class="form-header">
+          <span>AIDL · FRONT DESK</span>
+          <span class="stamp">APPLICATION</span>
+        </div>
+        <div class="form-body">
+          <template v-if="!enrollIndividualOnly">
+            <div class="field full" style="margin-bottom: 16px;">
+              <div class="choice-group two-cols">
+                <div class="choice choice-auth" @click="authComingSoon('slack')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="9" y="1" width="6" height="15" rx="3" fill="#36C5F0" />
+                    <rect x="1" y="9" width="15" height="6" rx="3" fill="#2EB67D" />
+                    <rect x="17" y="8" width="6" height="15" rx="3" fill="#ECB22E" />
+                    <rect x="8" y="17" width="15" height="6" rx="3" fill="#E01E5A" />
+                  </svg>
+                  SLACK
+                </div>
+                <div class="choice choice-auth" @click="authComingSoon('teams')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                    <rect width="24" height="24" rx="4" fill="#5059C9" />
+                    <text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#fff">T</text>
+                  </svg>
+                  TEAMS
+                </div>
+              </div>
+            </div>
+            <div class="form-divider">OR FILL IT IN YOURSELF</div>
+            <div class="field full" style="margin-bottom: 16px;">
+              <label>Enrolling As</label>
+              <div class="choice-group two-cols">
+                <div class="choice" :class="{ active: form.enrollAs === 'individual' }" @click="form.enrollAs = 'individual'">INDIVIDUAL</div>
+                <div class="choice" :class="{ active: form.enrollAs === 'organization' }" @click="form.enrollAs = 'organization'">ORGANIZATION</div>
+              </div>
+            </div>
+          </template>
+          <div class="form-row">
+            <div class="field">
+              <label>First Name <span>*</span></label>
+              <input type="text" v-model="form.firstName" />
+            </div>
+            <div class="field">
+              <label>Last Name <span>*</span></label>
+              <input type="text" v-model="form.lastName" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field full">
+              <label>Email <span>*</span></label>
+              <input type="email" placeholder="you@company.com" v-model="form.email" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field full">
+              <label>Password <span>*</span></label>
+              <div class="password-field">
+                <input :type="showFormPassword ? 'text' : 'password'" placeholder="Create a password" autocomplete="new-password" v-model="form.password" />
+                <button type="button" class="password-toggle" @click="showFormPassword = !showFormPassword" :aria-label="showFormPassword ? 'Hide password' : 'Show password'">
+                  <svg v-if="showFormPassword" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-10-8-10-8a18.5 18.5 0 015.06-5.94M9.9 4.24A10.94 10.94 0 0112 4c7 0 10 8 10 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                  <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s3-8 11-8 11 8 11 8-3 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          <div class="form-row" v-if="form.enrollAs === 'organization'">
+            <div class="field">
+              <label>Designation <span>*</span></label>
+              <input type="text" placeholder="e.g. L&D Manager" v-model="form.designation" />
+            </div>
+            <div class="field">
+              <label>Name of Organization <span>*</span></label>
+              <input type="text" placeholder="e.g. Acme Corp" v-model="form.orgName" />
+            </div>
+          </div>
+          <div class="form-row" v-if="form.enrollAs === 'organization'">
+            <div class="field full">
+              <label>Total Number of Users <span>*</span></label>
+              <input type="text" placeholder="e.g. 50" v-model="form.totalUsers" />
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field">
+              <label>Country</label>
+              <select v-model="form.country">
+                <option>United States</option>
+                <option>United Kingdom</option>
+                <option>India</option>
+                <option>Germany</option>
+                <option>Canada</option>
+              </select>
+            </div>
+            <div class="field">
+              <label>State</label>
+              <select v-model="form.state">
+                <option value="" disabled>Select state</option>
+                <option v-for="s in stateOptions" :key="s" :value="s">{{ s }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="field full">
+              <label>City</label>
+              <select v-model="form.city">
+                <option value="" disabled>Select city</option>
+                <option v-for="c in cityOptions" :key="c" :value="c">{{ c }}</option>
+              </select>
+            </div>
+          </div>
+          <div class="field full" style="margin-bottom: 16px;">
+            <label>{{ mode === 'junior' ? 'Pick Your Class' : 'Your License Class' }}</label>
+            <div class="choice-group" :class="{ 'two-cols': mode === 'junior', 'one-col': mode !== 'junior' }" id="classChoice">
+              <template v-if="mode === 'junior'">
+                <div class="choice" :class="{ active: activeClass === 'J' }" @click="activeClass = 'J'" style="font-size:10px;">JUNIOR<br/>8–12</div>
+                <div class="choice" :class="{ active: activeClass === 'T' }" @click="activeClass = 'T'" style="font-size:10px;">CREW<br/>12–16</div>
+              </template>
+              <template v-else>
+                <div class="choice active">CLASS&nbsp;L · LEARNER'S PERMIT</div>
+              </template>
+            </div>
+          </div>
+          <div class="field full" v-if="form.enrollAs === 'organization'">
+            <label>Upload your logo or company name (This is displayed on the dashboard)</label>
+            <input type="file" accept="image/*" @change="handleLogoUpload" />
+          </div>
+          <div class="field full" v-else>
+            <label>Why are you learning to drive AI? <span>OPTIONAL</span></label>
+            <input type="text" placeholder="One line is fine — we'll calibrate your route." v-model="form.why" />
+          </div>
+        </div>
+        <div class="form-foot">
+          <div class="tiny">EST. ARRIVAL · 5&nbsp;MIN</div>
+          <button type="submit" class="btn btn-red">REGISTER →</button>
+        </div>
+      </form>
+  </div>
+
+  <AvatarPickerModal v-if="showAvatarPicker" @confirm="onAvatarConfirmed" @close="showAvatarPicker = false" />
 
   <template v-if="!isJobsPage">
   <section class="split" id="splitChooser">
@@ -225,8 +385,8 @@
     <div class="wrap">
       <div class="top">
         <div>
-          <span class="section-eyebrow">▼ THREE CLASSES</span>
-          <h2 class="section-title">PICK YOUR<br/>CLASS OF LICENSE.</h2>
+          <span class="section-eyebrow">▼ CLASS L LIVE NOW</span>
+          <h2 class="section-title">YOUR<br/>CLASS OF LICENSE.</h2>
         </div>
         <p class="section-sub">Just like a real DMV — three tiers, three exam standards, three certifications. Start with a learner's permit — Operator and Specialist tracks coming soon.</p>
       </div>
@@ -431,128 +591,6 @@
     </div>
   </section>
 
-  <div v-if="showEnrollModal" class="enroll-drop" @click.stop>
-    <button type="button" class="enroll-drop-close" @click="showEnrollModal = false" aria-label="Close">✕</button>
-    <form class="form-card" @submit.prevent="handleSubmit">
-        <div class="form-header">
-          <span>AIDL · FRONT DESK</span>
-          <span class="stamp">APPLICATION</span>
-        </div>
-        <div class="form-body">
-          <div class="field full" style="margin-bottom: 16px;">
-            <div class="choice-group two-cols">
-              <div class="choice choice-auth" @click="authComingSoon('slack')">
-                <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-                  <rect x="9" y="1" width="6" height="15" rx="3" fill="#36C5F0" />
-                  <rect x="1" y="9" width="15" height="6" rx="3" fill="#2EB67D" />
-                  <rect x="17" y="8" width="6" height="15" rx="3" fill="#ECB22E" />
-                  <rect x="8" y="17" width="15" height="6" rx="3" fill="#E01E5A" />
-                </svg>
-                SLACK
-              </div>
-              <div class="choice choice-auth" @click="authComingSoon('teams')">
-                <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-                  <rect width="24" height="24" rx="4" fill="#5059C9" />
-                  <text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#fff">T</text>
-                </svg>
-                TEAMS
-              </div>
-            </div>
-          </div>
-          <div class="form-divider">OR FILL IT IN YOURSELF</div>
-          <div class="field full" style="margin-bottom: 16px;">
-            <label>Enrolling As</label>
-            <div class="choice-group two-cols">
-              <div class="choice" :class="{ active: form.enrollAs === 'individual' }" @click="form.enrollAs = 'individual'">INDIVIDUAL</div>
-              <div class="choice" :class="{ active: form.enrollAs === 'organization' }" @click="form.enrollAs = 'organization'">ORGANIZATION</div>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="field">
-              <label>First Name <span>*</span></label>
-              <input type="text" v-model="form.firstName" />
-            </div>
-            <div class="field">
-              <label>Last Name <span>*</span></label>
-              <input type="text" v-model="form.lastName" />
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="field full">
-              <label>Email <span>*</span></label>
-              <input type="email" placeholder="you@company.com" v-model="form.email" />
-            </div>
-          </div>
-          <div class="form-row" v-if="form.enrollAs === 'organization'">
-            <div class="field">
-              <label>Designation <span>*</span></label>
-              <input type="text" placeholder="e.g. L&D Manager" v-model="form.designation" />
-            </div>
-            <div class="field">
-              <label>Name of Organization <span>*</span></label>
-              <input type="text" placeholder="e.g. Acme Corp" v-model="form.orgName" />
-            </div>
-          </div>
-          <div class="form-row" v-if="form.enrollAs === 'organization'">
-            <div class="field full">
-              <label>Total Number of Users <span>*</span></label>
-              <input type="text" placeholder="e.g. 50" v-model="form.totalUsers" />
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="field">
-              <label>Country</label>
-              <select v-model="form.country">
-                <option>United States</option>
-                <option>United Kingdom</option>
-                <option>India</option>
-                <option>Germany</option>
-                <option>Canada</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>State</label>
-              <select v-model="form.state">
-                <option value="" disabled>Select state</option>
-                <option v-for="s in stateOptions" :key="s" :value="s">{{ s }}</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="field full">
-              <label>City</label>
-              <select v-model="form.city">
-                <option value="" disabled>Select city</option>
-                <option v-for="c in cityOptions" :key="c" :value="c">{{ c }}</option>
-              </select>
-            </div>
-          </div>
-          <div class="field full" style="margin-bottom: 16px;">
-            <label>{{ mode === 'junior' ? 'Pick Your Class' : 'Your License Class' }}</label>
-            <div class="choice-group" :class="{ 'two-cols': mode === 'junior', 'one-col': mode !== 'junior' }" id="classChoice">
-              <template v-if="mode === 'junior'">
-                <div class="choice" :class="{ active: activeClass === 'J' }" @click="activeClass = 'J'" style="font-size:10px;">JUNIOR<br/>8–12</div>
-                <div class="choice" :class="{ active: activeClass === 'T' }" @click="activeClass = 'T'" style="font-size:10px;">CREW<br/>12–16</div>
-              </template>
-              <template v-else>
-                <div class="choice active">CLASS&nbsp;L · LEARNER'S PERMIT</div>
-              </template>
-            </div>
-          </div>
-          <div class="field full">
-            <label>Why are you learning to drive AI? <span>OPTIONAL</span></label>
-            <input type="text" placeholder="One line is fine — we'll calibrate your route." v-model="form.why" />
-          </div>
-        </div>
-        <div class="form-foot">
-          <div class="tiny">EST. ARRIVAL · 5&nbsp;MIN</div>
-          <button type="submit" class="btn btn-red">GET MY PERMIT →</button>
-        </div>
-      </form>
-  </div>
-
-  <AvatarPickerModal v-if="showAvatarPicker" @confirm="onAvatarConfirmed" @close="showAvatarPicker = false" />
-
   <section class="band licenses" id="licenses">
     <div class="wrap">
       <span class="section-eyebrow">▼ THE CREDENTIALS</span>
@@ -579,6 +617,7 @@
             <span class="lic-stamp">Fundamentals ✓</span>
             <span class="lic-stamp">Written Exam ✓</span>
             <span class="lic-stamp">Safe-Use ✓</span>
+            <button type="button" class="lic-stamp lic-dl-btn" @click="downloadDemoLicense({ holder: 'Alex Morgan', licenseId: 'AIDL-L-0042-9381', classLabel: 'CLASS L · LEARNER', issued: '03/14/2026', expires: '03/14/2027', dob: '04/12/1994', hoursLabel: '14 / 20 hrs' })">⬇ Download</button>
           </div>
         </div>
 
@@ -601,6 +640,7 @@
             <span class="lic-stamp">Fundamentals ✓</span>
             <span class="lic-stamp">Written Exam ✓</span>
             <span class="lic-stamp">Safe-Use ✓</span>
+            <button type="button" class="lic-stamp lic-dl-btn" @click="downloadDemoLicense({ holder: 'Jamie Okafor', licenseId: 'AIDL-L-1182-4421', classLabel: 'CLASS L · LEARNER', issued: '04/29/2026', expires: '04/29/2027', dob: '08/02/1991', hoursLabel: '11 / 20 hrs' })">⬇ Download</button>
           </div>
         </div>
 
@@ -623,6 +663,7 @@
             <span class="lic-stamp">Fundamentals ✓</span>
             <span class="lic-stamp">Written Exam ✓</span>
             <span class="lic-stamp">Safe-Use ✓</span>
+            <button type="button" class="lic-stamp lic-dl-btn" @click="downloadDemoLicense({ holder: 'Priya Reddy', licenseId: 'AIDL-L-HC-2204', classLabel: 'CLASS L · LEARNER', issued: '05/04/2026', expires: '05/04/2027', dob: '11/19/1988', hoursLabel: '17 / 20 hrs' })">⬇ Download</button>
           </div>
         </div>
 
@@ -645,6 +686,7 @@
             <span class="lic-stamp">Eval ✓</span>
             <span class="lic-stamp">Red Team ✓</span>
             <span class="lic-stamp">Incident Drill ✓</span>
+            <button type="button" class="lic-stamp lic-dl-btn" @click="downloadDemoLicense({ holder: 'Sam Chen', licenseId: 'AIDL-X-SAFE-0918', classLabel: 'SAFETY ENDORSEMENT', issued: '04/01/2026', expires: '04/01/2027', dob: '02/22/1996', hoursLabel: '32 red-team hrs' })">⬇ Download</button>
           </div>
         </div>
       </div>
@@ -690,7 +732,7 @@
           <p>Whether you're entering the AI economy, getting better at the job you already have, or training your people to work with AI — it starts with a license. These are the seven job families our adult licensees get hired into. No coding background required for most of them.</p>
           <div class="jh-meta">
             <span class="chip">7 JOB FAMILIES</span>
-            <span class="chip">CLASS L / O / S HOLDERS PRIORITISED</span>
+            <span class="chip">CLASS L HOLDERS PRIORITISED · O/S COMING SOON</span>
             <span class="chip">PAID PER TASK OR HOURLY</span>
           </div>
         </div>
@@ -734,7 +776,7 @@
     <div class="wrap">
       <div class="foot-grid">
         <div>
-          <a class="brand" href="#" style="color: var(--cream);"><span class="brand-mark">AI</span><span>AIDL</span></a>
+          <a class="brand" href="#" style="color: var(--cream);"><img class="brand-mark" :src="aidlLogo" alt="AIDL" /><span>AIDL</span></a>
           <p class="foot-brand-blurb">The AI Driving License. A driving school for the AI era — for adults &amp; teams and for young learners aged 8–16. Real instructors, verifiable credentials. Get licensed, then go build.</p>
         </div>
         <div>
@@ -777,6 +819,9 @@
 import { ref, reactive, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AvatarPickerModal from '../components/AvatarPickerModal.vue'
+import aidlLogo from '../assets/images/aidl-logo.png'
+import { notifySuccess, notifyInfo } from '../lib/notify.js'
+import { downloadLicenseCertificate } from '../lib/downloadLicense.js'
 import '../styles/home-landing.css'
 
 const router = useRouter()
@@ -835,6 +880,10 @@ function goToHomeSection(e: MouseEvent, hash: string) {
 }
 
 const showEnrollModal = ref(false)
+// Set when the enroll form is opened from the Jobs page (Apply / Get Licensed) —
+// those applicants are individuals only, so Slack/Teams SSO and the
+// Individual/Organization choice are hidden and enrollAs is locked to individual.
+const enrollIndividualOnly = ref(false)
 
 function openEnroll(path?: 'adult' | 'junior') {
   if (path) {
@@ -843,9 +892,12 @@ function openEnroll(path?: 'adult' | 'junior') {
     syncBodyClasses()
   }
   signInOpen.value = null
-  if (isJobsPage.value) {
-    router.push('/home')
+  const fromJobsPage = isJobsPage.value
+  enrollIndividualOnly.value = fromJobsPage
+  if (fromJobsPage) {
+    form.enrollAs = 'individual'
   }
+  showFormPassword.value = false
   showEnrollModal.value = true
 }
 
@@ -893,11 +945,19 @@ function resetPath() {
 
 const signInOpen = ref<'senior' | 'junior' | null>(null)
 const signInId = ref('')
+const signInEmail = ref('')
+const signInPassword = ref('')
+const showSignInPassword = ref(false)
+const signInMode = ref<'individual' | 'organization'>('individual')
 const signInError = ref('')
 
 function toggleSignIn(which: 'senior' | 'junior') {
   signInOpen.value = signInOpen.value === which ? null : which
   signInId.value = ''
+  signInEmail.value = ''
+  signInPassword.value = ''
+  showSignInPassword.value = false
+  signInMode.value = 'individual'
   signInError.value = ''
   showEnrollModal.value = false
 }
@@ -1022,14 +1082,27 @@ const form = reactive({
   firstName: 'Alex',
   lastName: 'Morgan',
   email: 'alex@company.com',
+  password: '',
   designation: '',
   orgName: '',
+  orgLogo: '',
   totalUsers: '',
   country: 'United States',
   state: '',
   city: '',
   why: 'Build agents for my product team.'
 })
+
+function handleLogoUpload(e: Event) {
+  const input = e.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  const reader = new FileReader()
+  reader.onload = () => {
+    form.orgLogo = typeof reader.result === 'string' ? reader.result : ''
+  }
+  reader.readAsDataURL(file)
+}
 
 const stateOptions = computed(() => Object.keys(LOCATIONS[form.country] || {}))
 const cityOptions = computed(() => LOCATIONS[form.country]?.[form.state] || [])
@@ -1042,6 +1115,7 @@ watch(() => form.state, () => {
   form.city = ''
 })
 
+const showFormPassword = ref(false)
 const showAvatarPicker = ref(false)
 
 type ClassCode = 'L' | 'O' | 'S' | 'J' | 'T'
@@ -1054,6 +1128,11 @@ interface RegistryEntry {
   exp: string
   hrs: string
   end: string
+  email?: string
+  password?: string
+  enrollAs?: 'individual' | 'organization'
+  orgName?: string
+  orgLogo?: string
 }
 
 const SENIOR_CLASSES: ClassCode[] = ['L', 'O', 'S']
@@ -1068,12 +1147,13 @@ const CLASS_LABELS: Record<ClassCode, string> = {
 }
 
 const REGISTRY: Record<string, RegistryEntry> = {
-  'AIDL-L-1182-4421': { holder: 'Jamie Okafor', cls: 'CLASS L · LEARNER',     classCode: 'L', iss: '04/29/2026', exp: '04/29/2027', hrs: '11 hrs · in progress', end: '—' },
-  'AIDL-L-0042-9381': { holder: 'Alex Morgan',  cls: 'CLASS L · LEARNER',     classCode: 'L', iss: '03/14/2026', exp: '03/14/2027', hrs: '14 hrs · in progress',    end: '—' },
-  'AIDL-L-HC-2204':   { holder: 'Priya Reddy',  cls: 'CLASS L · LEARNER',     classCode: 'L', iss: '05/04/2026', exp: '05/04/2027', hrs: '17 hrs · in progress', end: '—' },
+  'AIDL-L-1182-4421': { holder: 'Jamie Okafor', cls: 'CLASS L · LEARNER',     classCode: 'L', iss: '04/29/2026', exp: '04/29/2027', hrs: '11 hrs · in progress', end: '—', email: 'jamie@company.com', password: 'demo1234', enrollAs: 'individual' },
+  'AIDL-L-0042-9381': { holder: 'Alex Morgan',  cls: 'CLASS L · LEARNER',     classCode: 'L', iss: '03/14/2026', exp: '03/14/2027', hrs: '14 hrs · in progress',    end: '—', email: 'alex@company.com', password: 'demo1234', enrollAs: 'individual' },
+  'AIDL-L-HC-2204':   { holder: 'Priya Reddy',  cls: 'CLASS L · LEARNER',     classCode: 'L', iss: '05/04/2026', exp: '05/04/2027', hrs: '17 hrs · in progress', end: '—', email: 'priya@company.com', password: 'demo1234', enrollAs: 'individual' },
   'AIDL-X-SAFE-0918': { holder: 'Sam Chen',     cls: 'SAFETY ENDORSEMENT',    classCode: null, iss: '04/01/2026', exp: '04/01/2027', hrs: '32 red-team hrs',               end: '—' },
   'AIDL-J-3301-7742': { holder: 'Riya Sharma',  cls: 'JUNIOR CADET · CLASS J', classCode: 'J', iss: '02/10/2026', exp: '02/10/2027', hrs: '9 hrs · in progress',  end: '—' },
-  'AIDL-T-5560-2213': { holder: 'Kabir Anand',  cls: 'ROAD CREW · CLASS T',    classCode: 'T', iss: '01/22/2026', exp: '01/22/2027', hrs: '22 hrs · sim solo ✓',  end: '+ Safety' }
+  'AIDL-T-5560-2213': { holder: 'Kabir Anand',  cls: 'ROAD CREW · CLASS T',    classCode: 'T', iss: '01/22/2026', exp: '01/22/2027', hrs: '22 hrs · sim solo ✓',  end: '+ Safety' },
+  'AIDL-L-ORG-3390':  { holder: 'Acme Corp',    cls: 'CLASS L · LEARNER',     classCode: 'L', iss: '02/02/2026', exp: '02/02/2027', hrs: '6 hrs · in progress', end: '—', email: 'admin@acme.com', password: 'demo1234', enrollAs: 'organization', orgName: 'Acme Corp' }
 }
 
 function loadDynamicRegistry(): Record<string, RegistryEntry> {
@@ -1095,6 +1175,32 @@ function lookupLicense(id: string): RegistryEntry | undefined {
   return REGISTRY[key] || loadDynamicRegistry()[key]
 }
 
+// Downloads for the showcase cards in the "Licenses You Can Earn" section —
+// these are fixed demo credentials, not the signed-in user's own license.
+function downloadDemoLicense(opts: { holder: string; licenseId: string; classLabel: string; issued: string; expires: string; dob: string; hoursLabel: string }) {
+  downloadLicenseCertificate({
+    holder: opts.holder,
+    licenseId: opts.licenseId,
+    classLabel: opts.classLabel,
+    issued: opts.issued,
+    expires: opts.expires,
+    rows: [
+      { label: 'Date of Birth', value: opts.dob },
+      { label: 'Hours', value: opts.hoursLabel },
+    ],
+  })
+}
+
+function lookupLicenseByCredentials(email: string, password: string): { id: string; entry: RegistryEntry } | undefined {
+  const all: Record<string, RegistryEntry> = { ...REGISTRY, ...loadDynamicRegistry() }
+  for (const [id, entry] of Object.entries(all)) {
+    if (entry.email && entry.email.toLowerCase() === email && entry.password === password) {
+      return { id, entry }
+    }
+  }
+  return undefined
+}
+
 function generateLicenseId(cls: ClassCode): string {
   const seg1 = Math.floor(1000 + Math.random() * 9000)
   const seg2 = Math.floor(1000 + Math.random() * 9000)
@@ -1103,13 +1209,20 @@ function generateLicenseId(cls: ClassCode): string {
 
 function startSession(licenseId: string, entry: RegistryEntry) {
   try {
-    localStorage.setItem('aidl-session', JSON.stringify({ licenseId, classCode: entry.classCode, holder: entry.holder }))
+    localStorage.setItem('aidl-session', JSON.stringify({
+      licenseId,
+      classCode: entry.classCode,
+      holder: entry.holder,
+      enrollAs: entry.enrollAs || 'individual',
+      orgName: entry.orgName || '',
+      orgLogo: entry.orgLogo || '',
+    }))
     if (entry.classCode) localStorage.setItem('aidl-selected-class', entry.classCode)
   } catch (e) {}
 }
 
 function authComingSoon(provider: 'slack' | 'teams') {
-  alert(`Sign in with ${provider === 'slack' ? 'Slack' : 'Microsoft Teams'} is coming soon!`)
+  notifyInfo(`Sign in with ${provider === 'slack' ? 'Slack' : 'Microsoft Teams'} is coming soon!`, 'Coming Soon')
 }
 
 function handleSubmit() {
@@ -1118,7 +1231,7 @@ function handleSubmit() {
   showAvatarPicker.value = true
 }
 
-function onAvatarConfirmed(avatar: unknown) {
+async function onAvatarConfirmed(avatar: unknown) {
   showAvatarPicker.value = false
   try { localStorage.setItem('aidl-avatar', JSON.stringify(avatar)) } catch (e) {}
 
@@ -1132,18 +1245,52 @@ function onAvatarConfirmed(avatar: unknown) {
     iss: new Date().toLocaleDateString('en-US'),
     exp: '—',
     hrs: '0 hrs · just enrolled',
-    end: '—'
+    end: '—',
+    email: form.email.trim(),
+    password: form.password,
+    enrollAs: form.enrollAs,
+    orgName: form.enrollAs === 'organization' ? form.orgName : undefined,
+    orgLogo: form.enrollAs === 'organization' ? form.orgLogo : undefined,
   }
   saveDynamicEntry(licenseId, entry)
   startSession(licenseId, entry)
 
-  alert(`Application received! Your license ID is ${licenseId} — check your inbox to get started.`)
+  await notifySuccess(`Application received! Your license ID is ${licenseId} — check your inbox to get started.`, 'Welcome to AIDL')
   const isJunior = cls === 'J' || cls === 'T'
   router.push(isJunior ? '/junior-portal' : '/senior-portal')
 }
 
 function submitSignIn(track: 'senior' | 'junior') {
   signInError.value = ''
+
+  if (track === 'senior') {
+    const email = signInEmail.value.trim().toLowerCase()
+    const password = signInPassword.value
+    if (!email || !password) {
+      signInError.value = 'Enter your email and password.'
+      return
+    }
+    const found = lookupLicenseByCredentials(email, password)
+    if (!found) {
+      signInError.value = 'No account found with those credentials.'
+      return
+    }
+    const { id, entry } = found
+    if (!entry.classCode || !SENIOR_CLASSES.includes(entry.classCode)) {
+      signInError.value = `That's a Junior license (${entry.cls}) — try Sign In on the Junior side.`
+      return
+    }
+    const accountType = entry.enrollAs || 'individual'
+    if (accountType !== signInMode.value) {
+      signInError.value = `This account is registered as ${accountType === 'organization' ? 'an Organization' : 'an Individual'} — switch tabs to sign in.`
+      return
+    }
+    startSession(id, entry)
+    signInOpen.value = null
+    router.push('/senior-portal')
+    return
+  }
+
   const id = signInId.value.trim()
   if (!id) {
     signInError.value = 'Enter your license ID.'
@@ -1154,20 +1301,13 @@ function submitSignIn(track: 'senior' | 'junior') {
     signInError.value = 'No permit found with that ID.'
     return
   }
-  const wantSenior = track === 'senior'
-  const isSeniorClass = SENIOR_CLASSES.includes(entry.classCode)
-  const isJuniorClass = JUNIOR_CLASSES.includes(entry.classCode)
-  if (wantSenior && !isSeniorClass) {
-    signInError.value = `That's a Junior license (${entry.cls}) — try Sign In on the Junior side.`
-    return
-  }
-  if (!wantSenior && !isJuniorClass) {
+  if (!JUNIOR_CLASSES.includes(entry.classCode)) {
     signInError.value = `That's a Senior license (${entry.cls}) — try Sign In on the Senior side.`
     return
   }
   startSession(id.trim().toUpperCase(), entry)
   signInOpen.value = null
-  router.push(wantSenior ? '/senior-portal' : '/junior-portal')
+  router.push('/junior-portal')
 }
 
 const licInput = ref('AIDL-L-1182-4421')
@@ -1246,8 +1386,7 @@ body { overflow-x: hidden; }
 }
 .brand-mark {
   width: 44px; height: 44px; border-radius: 50%;
-  background: var(--sign-yellow); border: 3px solid var(--ink);
-  display: grid; place-items: center; font-family: "Bungee", sans-serif; font-size: 16px;
+  object-fit: cover;
   box-shadow: 3px 3px 0 var(--ink);
   text-decoration: none;
 }
@@ -1269,13 +1408,16 @@ body:not(.pre-choice) .signin-wrap .nav-auth-btn { display: inline-flex; width: 
   position: absolute;
   top: calc(100% + 12px);
   right: 0;
-  width: 300px;
+  width: min(300px, calc(100vw - 32px));
+  max-height: calc(100vh - 110px);
+  overflow-y: auto;
   background: var(--cream);
   border: 3px solid var(--ink);
   box-shadow: 8px 8px 0 var(--ink);
   padding: 18px;
   z-index: 60;
   text-align: left;
+  box-sizing: border-box;
 }
 .signin-drop-head {
   font-family: "Bungee", sans-serif;
@@ -1286,6 +1428,17 @@ body:not(.pre-choice) .signin-wrap .nav-auth-btn { display: inline-flex; width: 
 .signin-drop-senior .signin-drop-head { color: var(--signal-red); }
 .signin-drop-junior .signin-drop-head { color: var(--signal-green); }
 .signin-drop-sub { font-size: 12px; color: #6a624a; margin: 0 0 12px; line-height: 1.4; }
+.signin-drop-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+.signin-drop-tab {
+  height: 34px;
+  border: 3px solid var(--ink);
+  background: var(--cream-2);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+}
+.signin-drop-tab.active { background: var(--sign-yellow); }
 .signin-drop input {
   width: 100%;
   height: 42px;
@@ -1298,6 +1451,7 @@ body:not(.pre-choice) .signin-wrap .nav-auth-btn { display: inline-flex; width: 
   outline: none;
   box-sizing: border-box;
 }
+.signin-drop input + input, .signin-drop input + .password-field { margin-top: 10px; }
 .signin-drop input:focus { background: var(--sign-yellow); }
 .signin-drop-btn { width: 100%; justify-content: center; margin-top: 10px; }
 .signin-drop-error {
@@ -1681,6 +1835,15 @@ section.band { position: relative; padding: 120px 0; border-bottom: 4px solid va
     width: auto;
     max-height: calc(100vh - 90px);
   }
+  .signin-drop {
+    position: fixed;
+    top: auto;
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    width: auto;
+    max-height: calc(100vh - 90px);
+  }
 }
 
 .form-card { background: var(--cream); border: 4px solid var(--ink); box-shadow: 12px 12px 0 var(--ink); padding: 0; overflow: visible; max-width: 100%; min-width: 0; width: 100%; box-sizing: border-box; }
@@ -1694,6 +1857,24 @@ section.band { position: relative; padding: 120px 0; border-bottom: 4px solid va
 .field input:focus, .field select:focus { outline: none; background: var(--sign-yellow); }
 body.mode-junior .field input:focus, body.mode-junior .field select:focus { background: rgb(46, 199, 99); }
 .field.full { grid-column: 1 / -1; }
+.password-field { position: relative; display: flex; }
+.password-field input { padding-right: 44px !important; }
+.password-toggle {
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  padding: 0;
+}
+.signin-drop .password-field input { height: 42px; padding-right: 40px !important; }
 .choice-group { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 4px; min-width: 0; }
 .choice-group.two-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .choice-group.one-col { grid-template-columns: 1fr; }
@@ -1737,8 +1918,10 @@ body.mode-junior .choice.active { background: rgb(46, 199, 99); }
 .lic-info { font-family: "JetBrains Mono", monospace; font-size: 12px; line-height: 1.5; }
 .lic-info b { font-family: "Bungee", sans-serif; font-size: 22px; display: block; line-height: 1; margin-bottom: 8px; }
 .lic-num { font-family: "JetBrains Mono", monospace; font-size: 18px; letter-spacing: 0.1em; margin-top: 12px; }
-.lic-stamps { margin-top: 16px; display: flex; gap: 8px; flex-wrap: wrap; border-top: 2px dashed currentColor; padding-top: 12px; }
+.lic-stamps { margin-top: 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; border-top: 2px dashed currentColor; padding-top: 12px; }
 .lic-stamp { border: 2px solid currentColor; padding: 3px 8px; font-family: "JetBrains Mono", monospace; font-size: 9px; text-transform: uppercase; }
+.lic-dl-btn { margin-left: auto; background: transparent; color: inherit; cursor: pointer; transition: background .12s; }
+.lic-dl-btn:hover { background: rgba(0, 0, 0, 0.08); }
 
 /* VERIFY */
 .verify { margin-top: 60px; background: var(--ink); color: var(--cream); border: 4px solid var(--ink); box-shadow: 12px 12px 0 var(--signal-green); display: grid; grid-template-columns: 1fr 1.2fr; gap: 0; overflow: hidden; }

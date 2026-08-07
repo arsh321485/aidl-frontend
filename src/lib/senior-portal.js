@@ -7,6 +7,9 @@
    Mirrors the junior portal's tier architecture.
    ============================================================ */
 
+import { downloadLicenseCertificate } from './downloadLicense.js';
+import { notifySuccess, notifyWarning } from './notify.js';
+
 const PORTALS = {
 
   /* ---------------------------------------------------------- LEARNER */
@@ -478,6 +481,22 @@ const PORTALS = {
 let CURRENT = 'operator';
 function P() { return PORTALS[CURRENT]; }
 
+/* ============================================================ DOWNLOAD */
+function downloadLicense() {
+  const t = P();
+  downloadLicenseCertificate({
+    holder: t.name,
+    licenseId: t.licId,
+    classLabel: t.cls,
+    issued: t.dash.issued.replace(/^ISSUED\s*/i, ''),
+    expires: t.expires,
+    rows: [
+      { label: 'Date of Birth', value: t.dob },
+      { label: 'Role', value: t.role },
+    ],
+  });
+}
+
 /* ============================================================ DASHBOARD */
 function renderDashboard() {
   const t = P();
@@ -535,6 +554,7 @@ function renderDashboard() {
           <div class="lic-qr"><div class="corner"></div></div>
         </div>
         <div class="lic-stamps">${stamps}</div>
+        <div class="lic-actions"><button type="button" class="btn sm btn-ghost" onclick="downloadLicense()">⬇ DOWNLOAD LICENSE</button></div>
       </div>
 
       <div class="card">
@@ -756,8 +776,8 @@ function renderAUP() {
   });
   document.getElementById('aupSubmit').addEventListener('click', () => {
     const acked = document.querySelectorAll('#aupList .aup-rule.ack').length;
-    if (acked < total) alert('Acknowledge all ' + total + ' rules before signing. You have ' + acked + ' / ' + total + '.');
-    else alert('Signed & submitted. Your ' + t.cls + ' is fully activated.');
+    if (acked < total) notifyWarning('Acknowledge all ' + total + ' rules before signing. You have ' + acked + ' / ' + total + '.', 'Not So Fast');
+    else notifySuccess('Signed & submitted. Your ' + t.cls + ' is fully activated.', 'Acceptable Use Policy');
   });
   updateAck();
 }
@@ -982,6 +1002,40 @@ function applyTier(key) {
   renderQref();
 }
 
+/* ============================================================ ORG BADGE */
+// Organization sign-ups upload a logo or set a company name at enroll time
+// (see HomeView's enroll form); individuals never set these. Shown inside
+// the same topbar avatar box (not a second box) so the org mark and the
+// personal name share one border, split by a thin divider.
+function renderOrgBadge() {
+  const avatarEl = document.querySelector('.top-actions .avatar');
+  if (!avatarEl) return;
+
+  const existing = document.getElementById('orgBadge');
+  if (existing) existing.remove();
+
+  let session = null;
+  try { session = JSON.parse(localStorage.getItem('aidl-session') || 'null'); } catch (e) {}
+  if (!session || session.enrollAs !== 'organization' || (!session.orgName && !session.orgLogo)) return;
+
+  const badge = document.createElement('div');
+  badge.className = 'org-badge';
+  badge.id = 'orgBadge';
+  if (session.orgLogo) {
+    const img = document.createElement('img');
+    img.className = 'org-logo';
+    img.src = session.orgLogo;
+    img.alt = session.orgName ? `${session.orgName} logo` : 'Organization logo';
+    badge.appendChild(img);
+  } else if (session.orgName) {
+    const span = document.createElement('span');
+    span.className = 'org-name';
+    span.textContent = session.orgName;
+    badge.appendChild(span);
+  }
+  avatarEl.insertBefore(badge, avatarEl.firstChild);
+}
+
 /* ============================================================ CLASS-GATED TIERS */
 function getAllowedTiers() {
   let cls = null;
@@ -1002,6 +1056,7 @@ function initPortal() {
   // onclick="goView(...)" buttons (sidebar nav-items don't need this, they
   // close over the local goView directly).
   window.goView = goView;
+  window.downloadLicense = downloadLicense;
   document.querySelectorAll('.nav-item').forEach(n => n.addEventListener('click', () => goView(n.dataset.view)));
   document.querySelectorAll('.tier-toggle button').forEach(b => b.addEventListener('click', () => { applyTier(b.dataset.tier); goView('dashboard'); }));
   document.getElementById('tlInput').addEventListener('input', e => renderTL(e.target.value));
@@ -1025,5 +1080,6 @@ function initPortal() {
   }
   applyTier(saved);
   goView('dashboard');
+  renderOrgBadge();
 }
 export function initSeniorPortal() { initPortal(); }

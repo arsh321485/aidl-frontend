@@ -12,7 +12,13 @@ html {
 
 body {
   margin: 0;
-  overflow-x: hidden;
+  /* overflow-x: hidden (rather than clip) forces the UA to compute
+     overflow-y as auto — silently turning body into a real scroll
+     container. That breaks position:fixed for descendants in several
+     browsers (a well-known CSS gotcha), which is why fixed portal navbars
+     were never actually staying put. overflow-x: clip avoids the
+     auto-promotion while still preventing horizontal scroll. */
+  overflow-x: clip;
 }
 
 img,
@@ -24,5 +30,5 @@ iframe {
 
 #app {
   min-width: 0;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
