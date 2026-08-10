@@ -87,13 +87,13 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="#25D366"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-1.7-.1a12 12 0 0 1-5.2-4.5c-.4-.6-.9-1.5-.9-2.4 0-.9.5-1.4.7-1.6.2-.2.4-.3.6-.3h.5c.2 0 .4 0 .6.5l.7 1.7c.1.2 0 .4-.1.5l-.3.4c-.1.1-.3.3-.1.6.2.3.7 1.1 1.4 1.8.9.8 1.6 1 1.9 1.2.2.1.4 0 .5-.1l.6-.7c.2-.2.3-.2.6-.1l1.6.8c.2.1.4.2.5.3 0 .1 0 .5-.1.8z" /></svg>
                 WHATSAPP
               </a>
-              <button type="button" class="sh" @click="copySlack">
-                <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#36C5F0" d="M9.5 15.2a2.4 2.4 0 1 1-2.4-2.4h2.4v2.4z" /><path fill="#2EB67D" d="M13.1 10.5a2.4 2.4 0 0 1 2.4 2.4 2.4 2.4 0 0 1-2.4 2.4h-6a2.4 2.4 0 0 1 0-4.8h6z" /><path fill="#ECB22E" d="M19 13.1a2.4 2.4 0 1 1 2.4 2.4H19v-2.4z" /><path fill="#E01E5A" d="M14.9 17.8a2.4 2.4 0 0 1-2.4-2.4 2.4 2.4 0 0 1 2.4-2.4h6a2.4 2.4 0 0 1 0 4.8h-6z" /></svg>
-                {{ slackCopyDone ? '✓ COPIED' : 'SLACK' }}
+              <button type="button" class="sh" @click="copyInstagram">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E4405F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5" /><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" /><line x1="17.5" y1="6.5" x2="17.51" y2="6.5" /></svg>
+                {{ instaCopyDone ? '✓ COPIED' : 'INSTAGRAM' }}
               </button>
-              <a class="sh" :href="mailHref">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14140f" stroke-width="2.2"><rect x="2.5" y="4.5" width="19" height="15" /><path d="M3 6l9 7 9-7" /></svg>
-                EMAIL
+              <a class="sh" :href="pinterestHref" target="_blank" rel="noopener">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#E60023"><path d="M12 0a12 12 0 0 0-4.373 23.178c-.035-.947-.007-2.086.235-3.117.26-1.103 1.73-7.35 1.73-7.35s-.43-.86-.43-2.13c0-2 1.16-3.49 2.6-3.49 1.23 0 1.82.92 1.82 2.02 0 1.23-.79 3.08-1.19 4.79-.34 1.43.72 2.6 2.13 2.6 2.56 0 4.28-3.29 4.28-7.19 0-2.96-1.99-5.18-5.62-5.18-4.1 0-6.65 3.06-6.65 6.47 0 1.18.35 2 .89 2.64.25.3.29.42.2.76-.07.26-.22.87-.28 1.11-.09.35-.37.48-.68.35-1.9-.78-2.79-2.85-2.79-5.19 0-3.86 3.25-8.49 9.71-8.49 5.19 0 8.6 3.75 8.6 7.78 0 5.34-2.98 9.32-7.38 9.32-1.48 0-2.87-.8-3.35-1.7l-.94 3.61c-.29 1.06-.86 2.12-1.38 2.95A12 12 0 1 0 12 0z" /></svg>
+                PINTEREST
               </a>
               <button class="sh wide" type="button" @click="copyLink">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#14140f" stroke-width="2.2"><rect x="8" y="8" width="13" height="13" /><path d="M16 8V3H3v13h5" /></svg>
@@ -107,7 +107,7 @@
             <p class="iss-hint">Anyone you share with can verify the number on the public registry — no account needed.</p>
           </div>
 
-          <button type="button" class="iss-ok" @click="$emit('close')">OK · GO TO DASHBOARD →</button>
+          <button type="button" class="iss-close-btn" @click="$emit('close')">CLOSE</button>
         </div>
       </div>
     </div>
@@ -184,14 +184,14 @@ const linkedinHref = computed(() => `https://www.linkedin.com/sharing/share-offs
 const xHref = computed(() => `https://twitter.com/intent/tweet?text=${encodeURIComponent(caption.value)}&url=${encodeURIComponent(verifyUrl())}`)
 const fbHref = computed(() => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(verifyUrl())}`)
 const waHref = computed(() => `https://wa.me/?text=${encodeURIComponent(caption.value + ' ' + verifyUrl())}`)
-const mailHref = computed(() => `mailto:?subject=${encodeURIComponent('My AI Driving License — ' + props.licenseId)}&body=${encodeURIComponent(caption.value + '\n\n' + verifyUrl())}`)
+const pinterestHref = computed(() => `https://pinterest.com/pin/create/button/?url=${encodeURIComponent(verifyUrl())}&description=${encodeURIComponent(caption.value)}`)
 
 // Inline "done" flags on the buttons themselves — a floating toast
 // (position:fixed inside a backdrop-filter ancestor) rendered as a stray
 // box pinned near the bottom of the overlay, so feedback lives on the
 // button instead.
 const linkCopyDone = ref(false)
-const slackCopyDone = ref(false)
+const instaCopyDone = ref(false)
 const downloadDone = ref(false)
 
 async function copyLink() {
@@ -200,11 +200,13 @@ async function copyLink() {
   setTimeout(() => { linkCopyDone.value = false }, 1800)
 }
 
-async function copySlack() {
+// Instagram has no web share intent for a link + caption, so — same as
+// Slack — copy it and let the user paste it in.
+async function copyInstagram() {
   const v = `${caption.value}\n${verifyUrl()}`
   try { await navigator.clipboard.writeText(v) } catch (e) {}
-  slackCopyDone.value = true
-  setTimeout(() => { slackCopyDone.value = false }, 1800)
+  instaCopyDone.value = true
+  setTimeout(() => { instaCopyDone.value = false }, 1800)
 }
 
 function hexToRgba(hex: string, alpha: number): string {
@@ -415,8 +417,8 @@ function downloadImage() {
 .cap-row { display: flex; flex-direction: column; gap: 8px; }
 .cap-row textarea { width: 100%; border: 3px solid var(--ink, #14140f); background: #fff; padding: 10px; font-family: "Space Grotesk", sans-serif; font-size: 12px; line-height: 1.5; resize: vertical; min-height: 82px; }
 
-.iss-ok { font-family: "Bungee", sans-serif; font-size: 13px; letter-spacing: .03em; background: var(--signal-red, #e23a2e); color: #fff; border: 3px solid var(--ink, #14140f); padding: 14px 18px; cursor: pointer; box-shadow: 4px 4px 0 var(--ink, #14140f); transition: transform .1s, box-shadow .1s; }
-.iss-ok:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink, #14140f); }
+.iss-close-btn { font-family: "Bungee", sans-serif; font-size: 13px; letter-spacing: .03em; background: var(--cream-2, #f0e3bd); color: var(--ink, #14140f); border: 3px solid var(--ink, #14140f); padding: 14px 18px; cursor: pointer; box-shadow: 4px 4px 0 var(--ink, #14140f); transition: transform .1s, box-shadow .1s; }
+.iss-close-btn:hover { transform: translate(-2px, -2px); box-shadow: 6px 6px 0 var(--ink, #14140f); }
 
 @media (max-width: 900px) {
   .iss-body { grid-template-columns: 1fr; }

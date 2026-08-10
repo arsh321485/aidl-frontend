@@ -24,28 +24,51 @@
               <button type="button" class="signin-drop-tab" :class="{ active: signInMode === 'individual' }" @click="signInMode = 'individual'">INDIVIDUAL</button>
               <button type="button" class="signin-drop-tab" :class="{ active: signInMode === 'organization' }" @click="signInMode = 'organization'">ORGANIZATION</button>
             </div>
-            <p class="signin-drop-sub">Enter your email and password to open your dashboard.</p>
-            <input
-              type="email"
-              v-model="signInEmail"
-              placeholder="you@company.com"
-              autocomplete="username"
-              @keyup.enter="submitSignIn('senior')"
-            />
-            <div class="password-field">
+            <template v-if="signInMode === 'organization'">
+              <p class="signin-drop-sub">Sign in with your organization's workspace.</p>
+              <div class="choice-group two-cols">
+                <div class="choice choice-auth" @click="authComingSoon('slack')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="9" y="1" width="6" height="15" rx="3" fill="#36C5F0" />
+                    <rect x="1" y="9" width="15" height="6" rx="3" fill="#2EB67D" />
+                    <rect x="17" y="8" width="6" height="15" rx="3" fill="#ECB22E" />
+                    <rect x="8" y="17" width="15" height="6" rx="3" fill="#E01E5A" />
+                  </svg>
+                  SLACK
+                </div>
+                <div class="choice choice-auth" @click="authComingSoon('teams')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                    <rect width="24" height="24" rx="4" fill="#5059C9" />
+                    <text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#fff">T</text>
+                  </svg>
+                  TEAMS
+                </div>
+              </div>
+            </template>
+            <template v-else>
+              <p class="signin-drop-sub">Enter your email and password to open your dashboard.</p>
               <input
-                :type="showSignInPassword ? 'text' : 'password'"
-                v-model="signInPassword"
-                placeholder="Password"
-                autocomplete="current-password"
+                type="email"
+                v-model="signInEmail"
+                placeholder="you@company.com"
+                autocomplete="username"
                 @keyup.enter="submitSignIn('senior')"
               />
-              <button type="button" class="password-toggle" @click="showSignInPassword = !showSignInPassword" :aria-label="showSignInPassword ? 'Hide password' : 'Show password'">
-                <svg v-if="showSignInPassword" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-10-8-10-8a18.5 18.5 0 015.06-5.94M9.9 4.24A10.94 10.94 0 0112 4c7 0 10 8 10 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s3-8 11-8 11 8 11 8-3 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-              </button>
-            </div>
-            <button type="button" class="btn btn-yellow signin-drop-btn" @click="submitSignIn('senior')">Sign In →</button>
+              <div class="password-field">
+                <input
+                  :type="showSignInPassword ? 'text' : 'password'"
+                  v-model="signInPassword"
+                  placeholder="Password"
+                  autocomplete="current-password"
+                  @keyup.enter="submitSignIn('senior')"
+                />
+                <button type="button" class="password-toggle" @click="showSignInPassword = !showSignInPassword" :aria-label="showSignInPassword ? 'Hide password' : 'Show password'">
+                  <svg v-if="showSignInPassword" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-10-8-10-8a18.5 18.5 0 015.06-5.94M9.9 4.24A10.94 10.94 0 0112 4c7 0 10 8 10 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                  <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s3-8 11-8 11 8 11 8-3 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                </button>
+              </div>
+              <button type="button" class="btn btn-yellow signin-drop-btn" @click="submitSignIn('senior')">Sign In →</button>
+            </template>
             <p v-if="signInError" class="signin-drop-error">{{ signInError }}</p>
             <p class="signin-drop-foot">Don't have one? <a href="#enroll" @click.prevent="closeSignInAndEnroll('adult')">Enroll here →</a></p>
           </div>
@@ -115,34 +138,97 @@
               </div>
             </template>
           </template>
-          <div class="form-row">
-            <div class="field">
-              <label>First Name <span>*</span></label>
-              <input type="text" v-model="form.firstName" />
-            </div>
-            <div class="field">
-              <label>Last Name <span>*</span></label>
-              <input type="text" v-model="form.lastName" />
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="field full">
-              <label>Email <span>*</span></label>
-              <input type="email" placeholder="you@company.com" v-model="form.email" />
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="field full">
-              <label>Password <span>*</span></label>
-              <div class="password-field">
-                <input :type="showFormPassword ? 'text' : 'password'" placeholder="Create a password" autocomplete="new-password" v-model="form.password" />
-                <button type="button" class="password-toggle" @click="showFormPassword = !showFormPassword" :aria-label="showFormPassword ? 'Hide password' : 'Show password'">
-                  <svg v-if="showFormPassword" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-10-8-10-8a18.5 18.5 0 015.06-5.94M9.9 4.24A10.94 10.94 0 0112 4c7 0 10 8 10 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                  <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s3-8 11-8 11 8 11 8-3 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                </button>
+          <template v-if="form.enrollAs !== 'organization'">
+            <div class="form-row">
+              <div class="field">
+                <label>First Name <span>*</span></label>
+                <input type="text" v-model="form.firstName" />
+              </div>
+              <div class="field">
+                <label>Last Name <span>*</span></label>
+                <input type="text" v-model="form.lastName" />
               </div>
             </div>
-          </div>
+            <div class="form-row">
+              <div class="field full">
+                <label>Email <span>*</span></label>
+                <input type="email" placeholder="you@company.com" v-model="form.email" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field full">
+                <label>Password <span>*</span></label>
+                <div class="password-field">
+                  <input :type="showFormPassword ? 'text' : 'password'" placeholder="Create a password" autocomplete="new-password" v-model="form.password" />
+                  <button type="button" class="password-toggle" @click="showFormPassword = !showFormPassword" :aria-label="showFormPassword ? 'Hide password' : 'Show password'">
+                    <svg v-if="showFormPassword" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-10-8-10-8a18.5 18.5 0 015.06-5.94M9.9 4.24A10.94 10.94 0 0112 4c7 0 10 8 10 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                    <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s3-8 11-8 11 8 11 8-3 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field full">
+                <label>Confirm Password <span>*</span></label>
+                <div class="password-field">
+                  <input :type="showConfirmPassword ? 'text' : 'password'" placeholder="Re-enter your password" autocomplete="new-password" v-model="form.confirmPassword" />
+                  <button type="button" class="password-toggle" @click="showConfirmPassword = !showConfirmPassword" :aria-label="showConfirmPassword ? 'Hide password' : 'Show password'">
+                    <svg v-if="showConfirmPassword" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-10-8-10-8a18.5 18.5 0 015.06-5.94M9.9 4.24A10.94 10.94 0 0112 4c7 0 10 8 10 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+                    <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s3-8 11-8 11 8 11 8-3 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>Mobile Number <span>*</span></label>
+                <input type="tel" placeholder="+1 555 000 0000" v-model="form.mobile" />
+              </div>
+              <div class="field">
+                <label>Country</label>
+                <select v-model="form.country">
+                  <option>United States</option>
+                  <option>United Kingdom</option>
+                  <option>India</option>
+                  <option>Germany</option>
+                  <option>Canada</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="field">
+                <label>State</label>
+                <select v-model="form.state">
+                  <option value="" disabled>Select state</option>
+                  <option v-for="s in stateOptions" :key="s" :value="s">{{ s }}</option>
+                </select>
+              </div>
+              <div class="field">
+                <label>City</label>
+                <select v-model="form.city">
+                  <option value="" disabled>Select city</option>
+                  <option v-for="c in cityOptions" :key="c" :value="c">{{ c }}</option>
+                </select>
+              </div>
+            </div>
+            <div class="field full" style="margin-bottom: 16px;">
+              <label>{{ mode === 'junior' ? 'Pick Your Class' : 'Your License Class' }}</label>
+              <div class="choice-group" :class="{ 'two-cols': mode === 'junior', 'one-col': mode !== 'junior' }" id="classChoice">
+                <template v-if="mode === 'junior'">
+                  <div class="choice" :class="{ active: activeClass === 'J' }" @click="activeClass = 'J'" style="font-size:10px;">JUNIOR<br/>8–12</div>
+                  <div class="choice" :class="{ active: activeClass === 'T' }" @click="activeClass = 'T'" style="font-size:10px;">CREW<br/>12–16</div>
+                </template>
+                <template v-else>
+                  <div class="choice active">CLASS&nbsp;L · LEARNER'S PERMIT</div>
+                </template>
+              </div>
+            </div>
+          </template>
+
+          <!-- Organization-only fields — the org enroll form only shows the
+               Slack/Teams buttons above for now (see the "OR SIGN UP WITH"
+               block near the top). Left here, commented out, to bring back
+               once org self-serve signup is ready.
           <div class="form-row" v-if="form.enrollAs === 'organization'">
             <div class="field">
               <label>Designation <span>*</span></label>
@@ -159,56 +245,14 @@
               <input type="text" placeholder="e.g. 50" v-model="form.totalUsers" />
             </div>
           </div>
-          <div class="form-row">
-            <div class="field">
-              <label>Country</label>
-              <select v-model="form.country">
-                <option>United States</option>
-                <option>United Kingdom</option>
-                <option>India</option>
-                <option>Germany</option>
-                <option>Canada</option>
-              </select>
-            </div>
-            <div class="field">
-              <label>State</label>
-              <select v-model="form.state">
-                <option value="" disabled>Select state</option>
-                <option v-for="s in stateOptions" :key="s" :value="s">{{ s }}</option>
-              </select>
-            </div>
-          </div>
-          <div class="form-row">
-            <div class="field full">
-              <label>City</label>
-              <select v-model="form.city">
-                <option value="" disabled>Select city</option>
-                <option v-for="c in cityOptions" :key="c" :value="c">{{ c }}</option>
-              </select>
-            </div>
-          </div>
-          <div class="field full" style="margin-bottom: 16px;">
-            <label>{{ mode === 'junior' ? 'Pick Your Class' : 'Your License Class' }}</label>
-            <div class="choice-group" :class="{ 'two-cols': mode === 'junior', 'one-col': mode !== 'junior' }" id="classChoice">
-              <template v-if="mode === 'junior'">
-                <div class="choice" :class="{ active: activeClass === 'J' }" @click="activeClass = 'J'" style="font-size:10px;">JUNIOR<br/>8–12</div>
-                <div class="choice" :class="{ active: activeClass === 'T' }" @click="activeClass = 'T'" style="font-size:10px;">CREW<br/>12–16</div>
-              </template>
-              <template v-else>
-                <div class="choice active">CLASS&nbsp;L · LEARNER'S PERMIT</div>
-              </template>
-            </div>
-          </div>
           <div class="field full" v-if="form.enrollAs === 'organization'">
             <label>Upload your logo or company name (This is displayed on the dashboard)</label>
             <input type="file" accept="image/*" @change="handleLogoUpload" />
           </div>
-          <div class="field full" v-else>
-            <label>Why are you learning to drive AI? <span>OPTIONAL</span></label>
-            <input type="text" placeholder="One line is fine — we'll calibrate your route." v-model="form.why" />
-          </div>
+          -->
         </div>
-        <div class="form-foot">
+        <div class="form-foot" v-if="form.enrollAs !== 'organization'">
+          <p v-if="formError" class="signin-drop-error" style="flex-basis:100%">{{ formError }}</p>
           <div class="tiny">EST. ARRIVAL · 5&nbsp;MIN</div>
           <button type="submit" class="btn btn-red">REGISTER →</button>
         </div>
@@ -1086,15 +1130,19 @@ const form = reactive({
   firstName: 'Alex',
   lastName: 'Morgan',
   email: 'alex@company.com',
+  mobile: '',
   password: '',
+  confirmPassword: '',
+  // Organization-only fields — the org enroll form only shows Slack/Teams
+  // right now (see the commented-out fields below), so these sit unused
+  // until that comes back.
   designation: '',
   orgName: '',
   orgLogo: '',
   totalUsers: '',
   country: 'United States',
   state: '',
-  city: '',
-  why: 'Build agents for my product team.'
+  city: ''
 })
 
 function handleLogoUpload(e: Event) {
@@ -1120,6 +1168,8 @@ watch(() => form.state, () => {
 })
 
 const showFormPassword = ref(false)
+const showConfirmPassword = ref(false)
+const formError = ref('')
 const showAvatarPicker = ref(false)
 const showLicenseModal = ref(false)
 const issuedLicense = reactive({
@@ -1142,6 +1192,7 @@ interface RegistryEntry {
   hrs: string
   end: string
   email?: string
+  mobile?: string
   password?: string
   enrollAs?: 'individual' | 'organization'
   orgName?: string
@@ -1242,12 +1293,15 @@ function authComingSoon(provider: 'slack' | 'teams') {
 }
 
 function handleSubmit() {
+  formError.value = ''
+  if (form.enrollAs !== 'organization' && form.password !== form.confirmPassword) {
+    formError.value = "Passwords don't match."
+    return
+  }
   try { localStorage.setItem('aidl-selected-class', activeClass.value) } catch (e) {}
   showEnrollModal.value = false
   showAvatarPicker.value = true
 }
-
-let pendingPortalRoute = '/senior-portal'
 
 function onAvatarConfirmed(avatar: unknown) {
   showAvatarPicker.value = false
@@ -1270,6 +1324,7 @@ function onAvatarConfirmed(avatar: unknown) {
     hrs: '0 hrs · just enrolled',
     end: '—',
     email: form.email.trim(),
+    mobile: form.mobile.trim(),
     password: form.password,
     enrollAs: form.enrollAs,
     orgName: form.enrollAs === 'organization' ? form.orgName : undefined,
@@ -1284,13 +1339,14 @@ function onAvatarConfirmed(avatar: unknown) {
   issuedLicense.classFull = CLASS_FULL[cls]
   issuedLicense.issued = issuedDate
   issuedLicense.expires = expiresDate
-  pendingPortalRoute = (cls === 'J' || cls === 'T') ? '/junior-portal' : '/senior-portal'
   showLicenseModal.value = true
 }
 
+// Closing the license card (✕ or the Close button) just dismisses it — the
+// account/session is already saved above, but the user stays on this page
+// instead of being sent to the dashboard.
 function onLicenseModalClose() {
   showLicenseModal.value = false
-  router.push(pendingPortalRoute)
 }
 
 function submitSignIn(track: 'senior' | 'junior') {
@@ -1789,7 +1845,11 @@ section.band { position: relative; padding: 120px 0; border-bottom: 4px solid va
 .enroll-drop {
   position: fixed;
   top: 90px;
-  right: 24px;
+  /* .wrap caps at 1440px and centers, so past that width its right edge
+     (and the CTA button inside it) drifts inward from the viewport edge —
+     track that drift instead of a flat offset, or this sits far right of
+     the button on wide screens. */
+  right: max(24px, calc((100vw - 1440px) / 2 + 24px));
   z-index: 120;
   width: min(460px, calc(100vw - 32px));
   max-height: calc(100vh - 110px);
