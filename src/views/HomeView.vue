@@ -8,7 +8,6 @@
         <a href="#licenses" @click="goToHomeSection($event, 'licenses')">Licenses</a>
         <a href="#verify" @click="goToHomeSection($event, 'verify')">Verify</a>
         <a href="#enroll" @click.stop.prevent="openEnroll()">For Teams</a>
-        <router-link to="/jobs" :class="{ on: isJobsPage }">Jobs</router-link>
       </div>
       <div class="nav-links nav-junior">
         <a href="#juniors">Junior Programs</a>
@@ -17,12 +16,10 @@
         <a href="#enroll" @click.stop.prevent="openEnroll()">Enroll</a>
       </div>
       <div class="nav-cta">
-        <button class="switch-path" type="button" @click="resetPath">↺ Switch Path</button>
-        <a class="btn btn-yellow cta-adult" href="#enroll" @click.stop.prevent="openEnroll('adult')"><span class="cta-long">Enroll Today →</span><span class="cta-short">Enroll →</span></a>
+        <a class="btn btn-yellow cta-adult" href="#enroll" @click.stop.prevent="openEnroll('adult')"><span class="cta-long">Get Your License →</span><span class="cta-short">Get License →</span></a>
         <div class="signin-wrap auth-adult">
           <button type="button" class="nav-auth-btn" @click.stop="toggleSignIn('senior')">SIGN IN</button>
           <div v-if="signInOpen === 'senior'" class="signin-drop signin-drop-senior" @click.stop>
-            <div class="signin-drop-head">SIGN IN · SENIOR</div>
             <div class="signin-drop-tabs">
               <button type="button" class="signin-drop-tab" :class="{ active: signInMode === 'individual' }" @click="signInMode = 'individual'">INDIVIDUAL</button>
               <button type="button" class="signin-drop-tab" :class="{ active: signInMode === 'organization' }" @click="signInMode = 'organization'">ORGANIZATION</button>
@@ -88,33 +85,35 @@
         <div class="form-body">
           <template v-if="!enrollIndividualOnly">
             <div class="field full" style="margin-bottom: 16px;">
-              <div class="choice-group two-cols">
-                <div class="choice choice-auth" @click="authComingSoon('slack')">
-                  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-                    <rect x="9" y="1" width="6" height="15" rx="3" fill="#36C5F0" />
-                    <rect x="1" y="9" width="15" height="6" rx="3" fill="#2EB67D" />
-                    <rect x="17" y="8" width="6" height="15" rx="3" fill="#ECB22E" />
-                    <rect x="8" y="17" width="15" height="6" rx="3" fill="#E01E5A" />
-                  </svg>
-                  SLACK
-                </div>
-                <div class="choice choice-auth" @click="authComingSoon('teams')">
-                  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-                    <rect width="24" height="24" rx="4" fill="#5059C9" />
-                    <text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#fff">T</text>
-                  </svg>
-                  TEAMS
-                </div>
-              </div>
-            </div>
-            <div class="form-divider">OR FILL IT IN YOURSELF</div>
-            <div class="field full" style="margin-bottom: 16px;">
               <label>Enrolling As</label>
               <div class="choice-group two-cols">
                 <div class="choice" :class="{ active: form.enrollAs === 'individual' }" @click="form.enrollAs = 'individual'">INDIVIDUAL</div>
                 <div class="choice" :class="{ active: form.enrollAs === 'organization' }" @click="form.enrollAs = 'organization'">ORGANIZATION</div>
               </div>
             </div>
+            <template v-if="form.enrollAs === 'organization'">
+              <div class="form-divider">OR SIGN UP WITH</div>
+              <div class="field full" style="margin-bottom: 16px;">
+                <div class="choice-group two-cols">
+                  <div class="choice choice-auth" @click="authComingSoon('slack')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                      <rect x="9" y="1" width="6" height="15" rx="3" fill="#36C5F0" />
+                      <rect x="1" y="9" width="15" height="6" rx="3" fill="#2EB67D" />
+                      <rect x="17" y="8" width="6" height="15" rx="3" fill="#ECB22E" />
+                      <rect x="8" y="17" width="15" height="6" rx="3" fill="#E01E5A" />
+                    </svg>
+                    SLACK
+                  </div>
+                  <div class="choice choice-auth" @click="authComingSoon('teams')">
+                    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                      <rect width="24" height="24" rx="4" fill="#5059C9" />
+                      <text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#fff">T</text>
+                    </svg>
+                    TEAMS
+                  </div>
+                </div>
+              </div>
+            </template>
           </template>
           <div class="form-row">
             <div class="field">
@@ -217,6 +216,17 @@
   </div>
 
   <AvatarPickerModal v-if="showAvatarPicker" @confirm="onAvatarConfirmed" @close="showAvatarPicker = false" />
+
+  <LicenseIssuedModal
+    v-if="showLicenseModal"
+    :license-id="issuedLicense.id"
+    :holder="issuedLicense.holder"
+    :class-short="issuedLicense.classShort"
+    :class-full="issuedLicense.classFull"
+    :issued="issuedLicense.issued"
+    :expires="issuedLicense.expires"
+    @close="onLicenseModalClose"
+  />
 
   <template v-if="!isJobsPage">
   <section class="split" id="splitChooser">
@@ -819,8 +829,9 @@
 import { ref, reactive, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AvatarPickerModal from '../components/AvatarPickerModal.vue'
+import LicenseIssuedModal from '../components/LicenseIssuedModal.vue'
 import aidlLogo from '../assets/images/aidl-logo.png'
-import { notifySuccess, notifyInfo } from '../lib/notify.js'
+import { notifyInfo } from '../lib/notify.js'
 import { downloadLicenseCertificate } from '../lib/downloadLicense.js'
 import '../styles/home-landing.css'
 
@@ -847,8 +858,11 @@ function syncBodyClasses() {
   }
 }
 
-const preChoice = ref(true)
-const mode = ref<'adult' | 'junior' | null>(null)
+// Junior is temporarily disabled — /home goes straight into adult mode
+// instead of showing the adult/junior split chooser. The junior views,
+// routes, and markup below are left in place to bring back later.
+const preChoice = ref(false)
+const mode = ref<'adult' | 'junior' | null>('adult')
 
 watch(mode, (m) => {
   const isJuniorClass = activeClass.value === 'J' || activeClass.value === 'T'
@@ -930,16 +944,6 @@ function choose(path: 'adult' | 'junior', hash?: string) {
     requestAnimationFrame(() => {
       window.location.hash = hash
     })
-  }
-}
-
-function resetPath() {
-  preChoice.value = true
-  mode.value = null
-  syncBodyClasses()
-  window.scrollTo(0, 0)
-  if (isJobsPage.value) {
-    router.push('/home')
   }
 }
 
@@ -1117,6 +1121,15 @@ watch(() => form.state, () => {
 
 const showFormPassword = ref(false)
 const showAvatarPicker = ref(false)
+const showLicenseModal = ref(false)
+const issuedLicense = reactive({
+  id: '',
+  holder: '',
+  classShort: '',
+  classFull: '',
+  issued: '',
+  expires: '',
+})
 
 type ClassCode = 'L' | 'O' | 'S' | 'J' | 'T'
 
@@ -1145,6 +1158,9 @@ const CLASS_LABELS: Record<ClassCode, string> = {
   J: 'JUNIOR CADET · CLASS J',
   T: 'ROAD CREW · CLASS T'
 }
+
+const CLASS_SHORT: Record<ClassCode, string> = { L: 'CLASS L', O: 'CLASS O', S: 'CLASS S', J: 'CLASS J', T: 'CLASS T' }
+const CLASS_FULL: Record<ClassCode, string> = { L: 'LEARNER', O: 'OPERATOR', S: 'SPECIALIST', J: 'JUNIOR CADET', T: 'ROAD CREW' }
 
 const REGISTRY: Record<string, RegistryEntry> = {
   'AIDL-L-1182-4421': { holder: 'Jamie Okafor', cls: 'CLASS L · LEARNER',     classCode: 'L', iss: '04/29/2026', exp: '04/29/2027', hrs: '11 hrs · in progress', end: '—', email: 'jamie@company.com', password: 'demo1234', enrollAs: 'individual' },
@@ -1231,19 +1247,26 @@ function handleSubmit() {
   showAvatarPicker.value = true
 }
 
-async function onAvatarConfirmed(avatar: unknown) {
+let pendingPortalRoute = '/senior-portal'
+
+function onAvatarConfirmed(avatar: unknown) {
   showAvatarPicker.value = false
   try { localStorage.setItem('aidl-avatar', JSON.stringify(avatar)) } catch (e) {}
 
   const cls = activeClass.value
   const licenseId = generateLicenseId(cls)
   const holder = `${form.firstName} ${form.lastName}`.trim() || 'AIDL Member'
+  const now = new Date()
+  const oneYearOut = new Date(now.getTime() + 31536000000)
+  const issuedDate = now.toLocaleDateString('en-US')
+  const expiresDate = oneYearOut.toLocaleDateString('en-US')
+
   const entry: RegistryEntry = {
     holder,
     cls: CLASS_LABELS[cls],
     classCode: cls,
-    iss: new Date().toLocaleDateString('en-US'),
-    exp: '—',
+    iss: issuedDate,
+    exp: expiresDate,
     hrs: '0 hrs · just enrolled',
     end: '—',
     email: form.email.trim(),
@@ -1255,9 +1278,19 @@ async function onAvatarConfirmed(avatar: unknown) {
   saveDynamicEntry(licenseId, entry)
   startSession(licenseId, entry)
 
-  await notifySuccess(`Application received! Your license ID is ${licenseId} — check your inbox to get started.`, 'Welcome to AIDL')
-  const isJunior = cls === 'J' || cls === 'T'
-  router.push(isJunior ? '/junior-portal' : '/senior-portal')
+  issuedLicense.id = licenseId
+  issuedLicense.holder = holder.toUpperCase()
+  issuedLicense.classShort = CLASS_SHORT[cls]
+  issuedLicense.classFull = CLASS_FULL[cls]
+  issuedLicense.issued = issuedDate
+  issuedLicense.expires = expiresDate
+  pendingPortalRoute = (cls === 'J' || cls === 'T') ? '/junior-portal' : '/senior-portal'
+  showLicenseModal.value = true
+}
+
+function onLicenseModalClose() {
+  showLicenseModal.value = false
+  router.push(pendingPortalRoute)
 }
 
 function submitSignIn(track: 'senior' | 'junior') {
