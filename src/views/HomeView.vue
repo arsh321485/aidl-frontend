@@ -439,13 +439,13 @@
     <div class="wrap">
       <div class="top">
         <div>
-          <span class="section-eyebrow">▼ CLASS L LIVE NOW</span>
-          <h2 class="section-title">YOUR<br/>CLASS OF LICENSE.</h2>
+          <span class="section-eyebrow">▼ ADULT LICENSE</span>
+          <h2 class="section-title">YOUR LICENSE<br/>TO DRIVE AI.</h2>
         </div>
-        <p class="section-sub">Just like a real DMV — three tiers, three exam standards, three certifications. Start with a learner's permit — Operator and Specialist tracks coming soon.</p>
+        <p class="section-sub">Just like a real DMV — one written standard, one road test, one credential employers can verify. Start with your learner's permit.</p>
       </div>
 
-      <div class="training-grid">
+      <div class="training-grid" style="grid-template-columns:minmax(0,520px);justify-content:center">
         <div class="tr-card">
           <div class="tr-head">
             <span class="tr-level">CLASS L · ENTRY</span>
@@ -476,77 +476,42 @@
           </ul>
           <a class="btn" href="#enroll" @click.stop.prevent="openEnroll()">Start Now</a>
         </div>
+      </div>
+    </div>
+  </section>
 
-        <div class="tr-card featured">
-          <div class="tr-head">
-            <span class="tr-level">CLASS O · CORE</span>
-            <span class="tr-stamp">★ MOST POPULAR</span>
+  <section class="band lanes" id="features">
+    <div class="wrap">
+      <span class="section-eyebrow">▼ KEY FEATURES</span>
+      <h2 class="section-title">TWO LANES.<br/>ONE ROAD CODE.</h2>
+      <p class="section-sub">Individuals learn the rules of the road and carry a license they can show. Organizations run the whole programme inside Slack or Teams — no new platform, no new login.</p>
+
+      <div class="lane-grid">
+        <div class="lane">
+          <div class="lane-head"><span class="lane-sign">L</span><div><h3>FOR INDIVIDUALS</h3><p>Learn · License · Save</p></div></div>
+          <div class="lane-body">
+            <div class="lf"><span class="lf-n">01</span><div><h4 class="lf-t">WATCH THE FUNDAMENTALS</h4><p class="lf-d">Short lessons on the AIDL YouTube channel map AI use to something you already know: driving. Basics, precautions, traffic rules, and the mistakes that get you pulled over.</p></div></div>
+            <div class="lf"><span class="lf-n">02</span><div><h4 class="lf-t">GENERATE YOUR LICENSE</h4><p class="lf-d">Register, take the test, and issue your driving license for a small fee — then share it across LinkedIn, X, WhatsApp and the rest in one tap.</p></div></div>
+            <div class="lf"><span class="lf-n">03</span><div><h4 class="lf-t">MEMBER DISCOUNTS &amp; DEALS</h4><p class="lf-d">Licensed members get discounts on 30+ AI tools and special deals aimed at building a career in AI. Codes are tied to your license and live in your Driver Portal.</p></div></div>
           </div>
-          <div class="tr-icon-row">
-            <div class="tr-icon">
-              <svg viewBox="0 0 60 60" fill="none">
-                <rect x="4" y="22" width="52" height="30" rx="3" fill="#e23a2e" stroke="#14140f" stroke-width="3"></rect>
-                <rect x="14" y="14" width="32" height="14" rx="2" fill="#fff" stroke="#14140f" stroke-width="3"></rect>
-                <circle cx="30" cy="21" r="3" fill="#14140f"></circle>
-                <circle cx="16" cy="50" r="6" fill="#14140f"></circle>
-                <circle cx="44" cy="50" r="6" fill="#14140f"></circle>
-                <path d="M30 28 V40" stroke="#14140f" stroke-width="3" stroke-linecap="round"></path>
-              </svg>
-            </div>
-            <div class="tr-qual">
-              <span class="tr-qual-label">QUALIFICATION CRITERIA</span>
-              <span class="tr-qual-value">Learner's Permit</span>
-            </div>
-          </div>
-          <h3 class="tr-name">OPERATOR'S<br/>LICENSE</h3>
-          <p class="tr-desc">For the everyday driver. Ship real work with AI — from research to writing to building agents you'd actually trust.</p>
-          <div class="tr-meta">
-            <div><b>8 WK</b>duration</div>
-            <div><b>5 HR</b>per week</div>
-            <div><b>$490</b>tuition</div>
-            <div><b>L2</b>certificate</div>
-          </div>
-          <ul class="tr-list">
-            <li>Build &amp; deploy 3 agents</li>
-            <li>RAG, tools, eval frameworks</li>
-            <li>1:1 instructor reviews</li>
-            <li>Practical road test</li>
-          </ul>
-          <button type="button" class="btn btn-red" disabled>Coming Soon</button>
+          <div class="lane-foot"><a class="btn btn-yellow" href="#enroll" @click.stop.prevent="openEnroll()">GET LICENSED</a><a class="btn" href="https://youtube.com" target="_blank" rel="noopener">▶ YOUTUBE CHANNEL</a></div>
         </div>
 
-        <div class="tr-card adv">
-          <div class="tr-head">
-            <span class="tr-level">CLASS S · PRO</span>
-            <span class="tr-stamp">COHORT-BASED</span>
+        <div class="lane org">
+          <div class="lane-head"><span class="lane-sign">ORG</span><div><h3>FOR ORGANIZATIONS</h3><p>No new platform · Runs in Slack &amp; Teams</p></div></div>
+          <div class="lane-body">
+            <div class="lane-chips"><span>SLACK</span><span>MICROSOFT TEAMS</span><span>NO NEW APP</span><span>NO NEW LOGIN</span></div>
+            <div class="lf"><span class="lf-n">01</span><div><h4 class="lf-t">AWARENESS WHERE STAFF ALREADY WORK</h4><p class="lf-d">Spread acceptable-use guidance for AI through the channels your people already read. Autogenerated cards land in Slack or Teams — nothing to install, nothing to adopt.</p></div></div>
+            <div class="lf"><span class="lf-n">02</span><div><h4 class="lf-t">LICENSES TIED TO ATTENDANCE &amp; TESTS</h4><p class="lf-d">Staff earn a license whose validity depends on attending the awareness session and passing the test. Lapse, and it expires.</p></div></div>
+            <div class="lf"><span class="lf-n">03</span><div><h4 class="lf-t">ORG-BRANDED CREDENTIALS</h4><p class="lf-d">Every license carries your logo, name and tagline — issued under your brand, not ours.</p></div></div>
+            <div class="lf"><span class="lf-n">04</span><div><h4 class="lf-t">ONBOARDING ON RAILS</h4><p class="lf-d">New joiners get a drip of cards and lessons from day one. Onboarding runs itself instead of sitting in someone's checklist.</p></div></div>
+            <div class="lf"><span class="lf-n">05</span><div><h4 class="lf-t">MAP LICENSES TO ACCESS</h4><p class="lf-d">Tie license status to the access card or to application entitlements — if a user falls out of compliance, access can be revoked automatically.</p></div></div>
+            <div class="lf"><span class="lf-n">06</span><div><h4 class="lf-t">MULTI-ADMIN BY FUNCTION</h4><p class="lf-d">HR, IT, CISO and Compliance each get admin seats and can publish their own policy information to users, in their own voice.</p></div></div>
+            <div class="lf"><span class="lf-n">07</span><div><h4 class="lf-t">MULTIPLE LANGUAGES</h4><p class="lf-d">Cards, lessons and licenses render in your workforce's languages, so the same road code reaches every region.</p></div></div>
+            <div class="lf"><span class="lf-n">08</span><div><h4 class="lf-t">AUTOMATION &amp; SCHEDULING</h4><p class="lf-d">Repeat cycles, new-joiner drips and targeted sends run on a scheduler. Set the cadence once and let it drive.</p></div></div>
+            <div class="lf"><span class="lf-n">09</span><div><h4 class="lf-t">ADVANCED TRAINING PER ROLE</h4><p class="lf-d">Staff can go further — training on approved AI tools applied to their actual job and use cases, not generic theory.</p></div></div>
           </div>
-          <div class="tr-icon-row">
-            <div class="tr-icon">
-              <svg viewBox="0 0 60 60" fill="none">
-                <path d="M30 6 L52 16 V32 C52 44 42 52 30 56 C18 52 8 44 8 32 V16 Z" fill="#ffcc00" stroke="#14140f" stroke-width="3"></path>
-                <text x="30" y="36" text-anchor="middle" font-family="Bungee" font-size="14" fill="#14140f">S</text>
-              </svg>
-            </div>
-            <div class="tr-qual">
-              <span class="tr-qual-label">QUALIFICATION CRITERIA</span>
-              <span class="tr-qual-value">Operator's License</span>
-            </div>
-          </div>
-          <h3 class="tr-name">SPECIALIST<br/>ENDORSEMENT</h3>
-          <p class="tr-desc">For the pro driver. Domain-deep tracks in healthcare, legal, security, and engineering — taught by industry instructors.</p>
-          <div class="tr-meta">
-            <div><b>12 WK</b>duration</div>
-            <div><b>8 HR</b>per week</div>
-            <div><b>$1,890</b>tuition</div>
-            <div><b>L3</b>endorsement</div>
-          </div>
-          <ul class="tr-list">
-            <li>Domain capstone project</li>
-            <li>Industry advisor pairing</li>
-            <li>Compliance &amp; governance</li>
-            <li>Practical + oral defense</li>
-          </ul>
-          <button type="button" class="btn btn-yellow" disabled>Coming Soon</button>
+          <div class="lane-foot"><a class="btn btn-yellow" href="/fleet-office">OPEN FLEET OFFICE</a></div>
         </div>
       </div>
     </div>
@@ -1831,6 +1796,30 @@ section.band { position: relative; padding: 120px 0; border-bottom: 4px solid va
 
 .tr-card .btn { margin-top: auto; align-self: flex-start; }
 
+.lanes { background: var(--cream-2); }
+.lane-grid { margin-top: 56px; display: grid; grid-template-columns: 1fr 1.25fr; gap: 28px; align-items: start; }
+.lane { border: 4px solid var(--ink); box-shadow: 10px 10px 0 var(--ink); background: var(--cream); display: flex; flex-direction: column; }
+.lane.org { background: var(--asphalt); color: var(--cream); }
+.lane-head { border-bottom: 4px solid var(--ink); padding: 22px 26px; display: flex; align-items: center; gap: 14px; background: var(--sign-yellow); }
+.lane.org .lane-head { background: var(--signal-red); color: var(--cream); border-bottom-color: var(--ink); }
+.lane-sign { width: 46px; height: 46px; flex: none; border: 3px solid var(--ink); background: var(--cream); display: grid; place-items: center; font-family: "Bungee", sans-serif; font-size: 17px; color: var(--ink); border-radius: 50%; }
+.lane-head h3 { font-family: "Bungee", sans-serif; font-size: 20px; margin: 0; line-height: 1.1; }
+.lane-head p { margin: 4px 0 0; font-family: "JetBrains Mono", monospace; font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; opacity: .8; }
+.lane-body { padding: 10px 26px 26px; display: flex; flex-direction: column; }
+.lf { display: flex; gap: 16px; padding: 18px 0; border-bottom: 2px dashed rgba(20, 20, 15, .28); }
+.lane.org .lf { border-bottom-color: rgba(246, 241, 222, .22); }
+.lf:last-of-type { border-bottom: 0; }
+.lf-n { font-family: "Bungee", sans-serif; font-size: 13px; flex: none; width: 34px; height: 34px; display: grid; place-items: center; border: 2.5px solid var(--ink); background: var(--sign-yellow); color: var(--ink); }
+.lane.org .lf-n { border-color: var(--cream); background: var(--asphalt-2); color: var(--sign-yellow); }
+.lf-t { font-family: "Bungee", sans-serif; font-size: 14px; line-height: 1.2; margin: 0 0 5px; }
+.lf-d { margin: 0; font-size: 14.5px; line-height: 1.5; color: #3a3528; }
+.lane.org .lf-d { color: var(--cream-2); }
+.lane-foot { margin-top: auto; padding: 22px 26px; border-top: 4px solid var(--ink); display: flex; gap: 12px; flex-wrap: wrap; background: rgba(20, 20, 15, .04); }
+.lane.org .lane-foot { border-top-color: var(--cream); background: rgba(246, 241, 222, .06); }
+.lane-chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 0 18px; }
+.lane-chips span { font-family: "JetBrains Mono", monospace; font-size: 10px; letter-spacing: .05em; padding: 5px 9px; border: 2px solid var(--ink); background: var(--cream-2); color: var(--ink); }
+.lane.org .lane-chips span { border-color: var(--cream); background: var(--asphalt-2); color: var(--cream); }
+
 .agent { width: 110px; height: 130px; position: relative; filter: drop-shadow(3px 3px 0 var(--ink)); }
 .agent .head { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 80px; height: 70px; background: var(--ink); border: 3px solid var(--ink); border-radius: 16px 16px 12px 12px; }
 .agent .head::before, .agent .head::after { content: ""; position: absolute; top: 22px; width: 14px; height: 14px; background: var(--sign-yellow); border-radius: 50%; }
@@ -2185,7 +2174,8 @@ footer.foot { background: var(--ink); color: var(--cream); padding: 70px 0 30px;
   .lic-grid,
   .verify,
   .foot-grid,
-  .jr-grid {
+  .jr-grid,
+  .lane-grid {
     grid-template-columns: 1fr !important;
   }
   .tr-card { min-height: 0; }
@@ -2264,6 +2254,9 @@ footer.foot { background: var(--ink); color: var(--cream); padding: 70px 0 30px;
   }
   .marquee-track span { font-size: 16px; }
   .lic-info b { font-size: 18px; }
+  .lane-head { padding: 18px; }
+  .lane-body, .lane-foot { padding-left: 18px; padding-right: 18px; }
+  .lf-d { font-size: 13.5px; }
   .roadmap-signs {
     flex-direction: column;
     align-items: center;
