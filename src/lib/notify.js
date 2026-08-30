@@ -32,3 +32,23 @@ export function notifyWarning(message, title) {
 export function notifyInfo(message, title) {
   return notify(message, { icon: 'info', title })
 }
+
+// Non-dismissible spinner popup for actions that redirect/navigate away
+// shortly after (e.g. kicking off an OAuth flow). Close it with notifyClose()
+// on the error path — success paths get cleared automatically by the
+// navigation away from the page.
+export function notifyLoading(message, title) {
+  return Swal.fire({
+    title,
+    text: message,
+    ...BRAND,
+    allowOutsideClick: false,
+    allowEscapeKey: false,
+    showConfirmButton: false,
+    didOpen: () => Swal.showLoading(),
+  })
+}
+
+export function notifyClose() {
+  Swal.close()
+}

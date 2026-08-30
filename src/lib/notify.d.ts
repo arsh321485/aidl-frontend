@@ -5,3 +5,5 @@ export function notifySuccess(message: string, title?: string): Promise<unknown>
 export function notifyError(message: string, title?: string): Promise<unknown>
 export function notifyWarning(message: string, title?: string): Promise<unknown>
 export function notifyInfo(message: string, title?: string): Promise<unknown>
+export function notifyLoading(message: string, title?: string): Promise<unknown>
+export function notifyClose(): void

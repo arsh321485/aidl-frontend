@@ -36,7 +36,7 @@
                   </svg>
                   SLACK
                 </div>
-                <div class="choice choice-auth" @click="authComingSoon('teams')">
+                <div class="choice choice-auth" @click="signInWithTeams()">
                   <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
                     <rect width="24" height="24" rx="4" fill="#5059C9" />
                     <text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#fff">T</text>
@@ -127,7 +127,7 @@
                     </svg>
                     SLACK
                   </div>
-                  <div class="choice choice-auth" @click="authComingSoon('teams')">
+                  <div class="choice choice-auth" @click="signInWithTeams()">
                     <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
                       <rect width="24" height="24" rx="4" fill="#5059C9" />
                       <text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#fff">T</text>
@@ -840,8 +840,9 @@ import { useRoute, useRouter } from 'vue-router'
 import AvatarPickerModal from '../components/AvatarPickerModal.vue'
 import LicenseIssuedModal from '../components/LicenseIssuedModal.vue'
 import aidlLogo from '../assets/images/aidl-logo.png'
-import { notifyInfo } from '../lib/notify.js'
+import { notifyInfo, notifySuccess, notifyError, notifyLoading, notifyClose } from '../lib/notify.js'
 import { downloadLicenseCertificate } from '../lib/downloadLicense.js'
+import { startTeamsLogin, consumeTeamsAuthCallback } from '../lib/msTeamsAuth'
 import '../styles/home-landing.css'
 
 const router = useRouter()
@@ -995,6 +996,20 @@ onMounted(() => {
   handleHashNavigation()
   window.addEventListener('hashchange', handleHashNavigation)
   document.addEventListener('click', handleDocClick)
+
+  // Landed back here from Microsoft's OAuth redirect (backend appends
+  // access_token/teams_url/... to this page's URL) — pick the tokens up,
+  // open Teams if asked to, and scrub the URL.
+  const teamsResult = consumeTeamsAuthCallback()
+  if (teamsResult) {
+    signInOpen.value = null
+    showEnrollModal.value = false
+    notifySuccess(
+      `Signed in with Microsoft Teams as ${teamsResult.fullName || teamsResult.email}.` +
+        (teamsResult.openTeams ? ' Opening Microsoft Teams…' : ''),
+      'Microsoft Teams Connected'
+    )
+  }
 })
 onUnmounted(() => {
   window.removeEventListener('hashchange', handleHashNavigation)
@@ -1253,8 +1268,26 @@ function startSession(licenseId: string, entry: RegistryEntry) {
   } catch (e) {}
 }
 
-function authComingSoon(provider: 'slack' | 'teams') {
+function authComingSoon(provider: 'slack') {
   notifyInfo(`Sign in with ${provider === 'slack' ? 'Slack' : 'Microsoft Teams'} is coming soon!`, 'Coming Soon')
+}
+
+// TEAMS button (sign-in dropdown and the org enroll form both call this) —
+// kicks off the Microsoft OAuth flow from AIDL_MS_TEAMS_API_RESPONSE.docx:
+// GET /api/auth/teams/login/?enroll_as=organization, then redirect the
+// browser to the returned auth_url. The Microsoft redirect back to this page
+// is picked up by consumeTeamsAuthCallback() in onMounted below.
+async function signInWithTeams() {
+  notifyLoading('Opening Microsoft Teams…', 'Just a moment')
+  try {
+    await startTeamsLogin('organization')
+  } catch (e) {
+    notifyClose()
+    notifyError(
+      e instanceof Error ? e.message : 'Could not start Microsoft Teams sign-in.',
+      'Teams Sign-In Failed'
+    )
+  }
 }
 
 function handleSubmit() {

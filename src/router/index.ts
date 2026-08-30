@@ -8,6 +8,7 @@ import RoadTestView from '../views/RoadTestView.vue'
 import SignInView from '../views/SignInView.vue'
 import SignUpView from '../views/SignUpView.vue'
 import FleetOfficeView from '../views/FleetOfficeView.vue'
+import TeamsCallbackView from '../views/TeamsCallbackView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -96,6 +97,14 @@ const router = createRouter({
       component: FleetOfficeView,
       meta: { requiresAdmin: true },
     },
+    {
+      path: '/auth/callback',
+      name: 'teams-auth-callback',
+      component: TeamsCallbackView,
+      // Backend's AUTH_SUCCESS_REDIRECT target after Microsoft/Teams OAuth —
+      // must stay public since aidl_user_auth isn't set until this page runs.
+      meta: { public: true },
+    },
   ],
 })
 
@@ -103,6 +112,7 @@ const SENIOR_CLASSES = ['L', 'O', 'S']
 const JUNIOR_CLASSES = ['J', 'T']
 
 router.beforeEach((to) => {
+  console.log('[Router] navigating to', to.path, 'matched routes:', to.matched.length, 'meta:', to.meta)
   // aidl_auth is the org-admin login (see SignInView). It is a separate
   // identity from aidl-session below, which is the driver/user identity —
   // an admin is also a user, and signs into their own driver dashboard the

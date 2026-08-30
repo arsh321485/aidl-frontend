@@ -1,0 +1,17 @@
+Backend now returns a real Microsoft Teams platform URL on /auth/callback:
+
+teams_url → e.g. https://teams.microsoft.com/v2/?login_hint=user@company.com
+open_teams=1
+optional teams_channel_url → AIDL channel deep link
+Blank callback page means tokens arrived but the page is not handling them.
+
+Required in TeamsCallbackView / consumeTeamsAuthCallback():
+
+Save access_token / refresh_token to localStorage
+If open_teams === '1' and teams_url exists → immediately
+window.open(teams_url, '_blank', 'noopener,noreferrer')
+(this opens the real Teams chat/platform, not stay on blank beige page)
+If popup blocked, show a visible “Open Microsoft Teams” button that opens teams_url
+Then router.replace('/home') and clear tokens from the URL
+Do not only land on /auth/callback with no UI
+Check DevTools Console for JS errors on that route. Backend is already sending teams_url + open_teams=1.
