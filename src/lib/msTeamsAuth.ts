@@ -52,10 +52,6 @@ export interface TeamsAuthResult extends TeamsProfile {
   accessToken: string
   refreshToken: string
   openTeams: boolean
-  // true when open_teams=1 + teamsUrl were set but the window.open() popup
-  // was blocked by the browser — TeamsCallbackView shows a manual
-  // "Open Microsoft Teams" button in that case instead of silently failing.
-  teamsPopupBlocked: boolean
 }
 
 // Call on app load. If the URL carries the tokens the backend callback
@@ -98,18 +94,13 @@ export function consumeTeamsAuthCallback(): TeamsAuthResult | null {
   window.history.replaceState({}, document.title, window.location.pathname + window.location.hash)
   console.log('[TeamsAuth] consumeTeamsAuthCallback: URL scrubbed of tokens')
 
-  let teamsPopupBlocked = false
-  if (openTeams && profile.teamsUrl) {
-    console.log('[TeamsAuth] consumeTeamsAuthCallback: opening Teams URL in new tab =', profile.teamsUrl)
-    const popup = window.open(profile.teamsUrl, '_blank', 'noopener,noreferrer')
-    // Browsers return null/undefined when a popup is blocked outright; some
-    // also hand back a window that's immediately .closed. Either way there's
-    // nothing left open for the user, so fall back to a manual button.
-    teamsPopupBlocked = !popup || popup.closed
-    console.log('[TeamsAuth] consumeTeamsAuthCallback: teams popup blocked? =', teamsPopupBlocked)
-  }
-
-  return { accessToken, refreshToken, openTeams, teamsPopupBlocked, ...profile }
+  // Deliberately does NOT call window.open() here. This runs inside
+  // onMounted after an automatic top-level redirect from Microsoft — there's
+  // no user gesture attached to that, so Chrome (and most browsers) silently
+  // block a popup opened at this point almost every time, with no reliable
+  // way to detect the block synchronously. TeamsCallbackView opens Teams
+  // from a real button click instead, which browsers never block.
+  return { accessToken, refreshToken, openTeams, ...profile }
 }
 
 export function getStoredAccessToken(): string | null {

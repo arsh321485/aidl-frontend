@@ -74,23 +74,29 @@ onMounted(async () => {
     console.error('[TeamsCallback] getCurrentTeamsUser() threw', e)
   }
 
-  console.log('[TeamsCallback] showing success notification, redirecting to /home')
-  notifySuccess(
-    `Signed in with Microsoft Teams as ${result.fullName || result.email}.` +
-      (result.openTeams ? ' Opening Microsoft Teams…' : ''),
-    'Microsoft Teams Connected'
-  )
-
-  // window.open() inside consumeTeamsAuthCallback() got blocked — don't just
-  // sit on a blank page, give the user something clickable to finish with.
-  if (result.openTeams && result.teamsUrl && result.teamsPopupBlocked) {
-    console.warn('[TeamsCallback] Teams popup was blocked, showing manual button')
-    statusText.value = 'Signed in! Your browser blocked the Microsoft Teams popup — open it below.'
+  // A page redirected here by Microsoft has no user gesture attached, so an
+  // automatic window.open() for Teams gets silently blocked by the browser
+  // almost every time (verified live — it returns null with no reliable way
+  // to detect that synchronously). Always show a real button instead: a
+  // click is a genuine user gesture, so browsers never block it.
+  if (result.openTeams && result.teamsUrl) {
+    console.log('[TeamsCallback] showing Open Microsoft Teams button')
+    notifySuccess(
+      `Signed in with Microsoft Teams as ${result.fullName || result.email}.`,
+      'Microsoft Teams Connected'
+    )
+    statusText.value = 'Signed in! Click below to open Microsoft Teams.'
     teamsUrlForButton.value = result.teamsUrl
     showTeamsButton.value = true
-    window.setTimeout(() => router.replace('/home'), 6000)
+    window.setTimeout(() => router.replace('/home'), 8000)
     return
   }
+
+  console.log('[TeamsCallback] showing success notification, redirecting to /home')
+  notifySuccess(
+    `Signed in with Microsoft Teams as ${result.fullName || result.email}.`,
+    'Microsoft Teams Connected'
+  )
 
   router.replace('/home')
   console.log('[TeamsCallback] router.replace(/home) called')
