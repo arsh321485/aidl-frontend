@@ -79,13 +79,17 @@ onMounted(async () => {
   // almost every time (verified live — it returns null with no reliable way
   // to detect that synchronously). Always show a real button instead: a
   // click is a genuine user gesture, so browsers never block it.
+  const landedOnChannel = result.landedOn === 'channel'
+  const teamsToastMessage = landedOnChannel
+    ? 'Opened your AIDL channel in Teams.'
+    : 'Opened Teams (AIDL channel not ready yet).'
+
   if (result.openTeams && result.teamsUrl) {
-    console.log('[TeamsCallback] showing Open Microsoft Teams button')
-    notifySuccess(
-      `Signed in with Microsoft Teams as ${result.fullName || result.email}.`,
-      'Microsoft Teams Connected'
-    )
-    statusText.value = 'Signed in! Click below to open Microsoft Teams.'
+    console.log('[TeamsCallback] showing Open Microsoft Teams button, landedOn =', result.landedOn)
+    notifySuccess(teamsToastMessage, 'Microsoft Teams Connected')
+    statusText.value = landedOnChannel
+      ? 'Signed in! Click below to open your AIDL channel.'
+      : 'Signed in! Click below to open Teams (AIDL channel not ready yet).'
     teamsUrlForButton.value = result.teamsUrl
     showTeamsButton.value = true
     window.setTimeout(() => router.replace('/home'), 8000)
@@ -93,10 +97,7 @@ onMounted(async () => {
   }
 
   console.log('[TeamsCallback] showing success notification, redirecting to /home')
-  notifySuccess(
-    `Signed in with Microsoft Teams as ${result.fullName || result.email}.`,
-    'Microsoft Teams Connected'
-  )
+  notifySuccess(teamsToastMessage, 'Microsoft Teams Connected')
 
   router.replace('/home')
   console.log('[TeamsCallback] router.replace(/home) called')

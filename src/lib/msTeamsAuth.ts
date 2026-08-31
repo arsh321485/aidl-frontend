@@ -40,12 +40,15 @@ export async function startTeamsLogin(enrollAs: EnrollAs): Promise<void> {
   window.location.href = data.auth_url
 }
 
+export type LandedOn = 'channel' | 'chat'
+
 export interface TeamsProfile {
   email: string
   fullName: string
   enrollAs: EnrollAs
   teamsUrl: string
   teamsChannelUrl: string
+  landedOn: LandedOn
 }
 
 export interface TeamsAuthResult extends TeamsProfile {
@@ -76,6 +79,7 @@ export function consumeTeamsAuthCallback(): TeamsAuthResult | null {
     enrollAs: (params.get('enroll_as') as EnrollAs) || 'organization',
     teamsUrl: params.get('teams_url') || '',
     teamsChannelUrl: params.get('teams_channel_url') || '',
+    landedOn: (params.get('landed_on') as LandedOn) || 'chat',
   }
   const openTeams = params.get('open_teams') === '1'
   console.log('[TeamsAuth] consumeTeamsAuthCallback: parsed profile =', profile, 'openTeams =', openTeams)
