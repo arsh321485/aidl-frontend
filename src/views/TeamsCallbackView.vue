@@ -1,16 +1,8 @@
 <template>
   <div class="teams-callback">
     <img :src="aidlLogo" alt="AIDL" class="teams-callback__logo" />
-    <div v-if="!showTeamsButton" class="teams-callback__spinner" aria-hidden="true"></div>
+    <div class="teams-callback__spinner" aria-hidden="true"></div>
     <p class="teams-callback__text">{{ statusText }}</p>
-    <button
-      v-if="showTeamsButton"
-      type="button"
-      class="teams-callback__button"
-      @click="openTeamsManually"
-    >
-      Open Microsoft Teams
-    </button>
   </div>
 </template>
 
@@ -23,13 +15,6 @@ import { consumeTeamsAuthCallback, getCurrentTeamsUser } from '../lib/msTeamsAut
 
 const router = useRouter()
 const statusText = ref('Finishing Microsoft Teams sign-in…')
-const showTeamsButton = ref(false)
-const teamsUrlForButton = ref('')
-
-function openTeamsManually() {
-  window.open(teamsUrlForButton.value, '_blank', 'noopener,noreferrer')
-  router.replace('/home')
-}
 
 // Backend's AUTH_SUCCESS_REDIRECT lands here after /api/auth/teams/callback/
 // does the code exchange (see AIDL_MS_TEAMS_API_RESPONSE.docx). This page
@@ -74,26 +59,20 @@ onMounted(async () => {
     console.error('[TeamsCallback] getCurrentTeamsUser() threw', e)
   }
 
-  // A page redirected here by Microsoft has no user gesture attached, so an
-  // automatic window.open() for Teams gets silently blocked by the browser
-  // almost every time (verified live — it returns null with no reliable way
-  // to detect that synchronously). Always show a real button instead: a
-  // click is a genuine user gesture, so browsers never block it.
+  // A page redirected here by Microsoft has no user gesture attached, so this
+  // window.open() gets silently blocked by the browser almost every time
+  // (verified live — it returns null with no reliable way to detect that
+  // synchronously). It's still attempted best-effort so it works in browsers
+  // that do allow it; either way we continue straight to /home with no
+  // button to click, per product decision to drop the manual fallback.
   const landedOnChannel = result.landedOn === 'channel'
   const teamsToastMessage = landedOnChannel
     ? 'Opened your AIDL channel in Teams.'
     : 'Opened Teams (AIDL channel not ready yet).'
 
   if (result.openTeams && result.teamsUrl) {
-    console.log('[TeamsCallback] showing Open Microsoft Teams button, landedOn =', result.landedOn)
-    notifySuccess(teamsToastMessage, 'Microsoft Teams Connected')
-    statusText.value = landedOnChannel
-      ? 'Signed in! Click below to open your AIDL channel.'
-      : 'Signed in! Click below to open Teams (AIDL channel not ready yet).'
-    teamsUrlForButton.value = result.teamsUrl
-    showTeamsButton.value = true
-    window.setTimeout(() => router.replace('/home'), 8000)
-    return
+    console.log('[TeamsCallback] attempting auto-open of Teams, landedOn =', result.landedOn)
+    window.open(result.teamsUrl, '_blank', 'noopener,noreferrer')
   }
 
   console.log('[TeamsCallback] showing success notification, redirecting to /home')
@@ -136,21 +115,6 @@ onMounted(async () => {
 .teams-callback__text {
   font-size: 0.95rem;
   opacity: 0.8;
-}
-
-.teams-callback__button {
-  border: 2px solid #14140f;
-  background: #ffcc00;
-  color: #14140f;
-  font-weight: 700;
-  font-size: 0.95rem;
-  padding: 0.7rem 1.5rem;
-  border-radius: 8px;
-  cursor: pointer;
-}
-
-.teams-callback__button:hover {
-  background: #ffd633;
 }
 
 @keyframes teams-callback-spin {
