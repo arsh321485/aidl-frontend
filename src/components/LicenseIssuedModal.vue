@@ -52,48 +52,6 @@
           <p class="iss-hint" style="text-align:center;max-width:46ch">
             Pick a design — it's how your license appears in your portal, on the public registry, and anywhere you share it. You can change it any time from your Driver Portal.
           </p>
-
-          <div class="perks">
-            <div class="perks-head">
-              <h4>Driver perks · claim your discounts</h4>
-              <span>{{ claimedCount }} CLAIMED</span>
-            </div>
-            <p class="perks-sub">
-              Licensed drivers get member pricing on the tools they'll actually use. Pick a category, claim a code, and it's copied to your clipboard — codes are tied to your license number and stay in your Driver Portal.
-            </p>
-            <div class="pk-cats">
-              <button
-                v-for="c in perkCategories"
-                :key="c"
-                type="button"
-                :class="{ on: c === perkCategory }"
-                @click="perkCategory = c"
-              >{{ c.toUpperCase() }} ({{ perkCategoryCount(c) }})</button>
-            </div>
-            <div class="pk-grid">
-              <div class="pk" v-for="p in filteredPerks" :key="p.name" :style="{ '--pk-accent': categoryColor(p.category) }">
-                <span class="pk-ribbon">{{ p.offer }}</span>
-                <div class="pk-t">
-                  <span class="pk-logo">{{ p.name.slice(0, 2).toUpperCase() }}</span>
-                  <div>
-                    <div class="pk-n">{{ p.name }}</div>
-                    <div class="pk-c">{{ p.category }}</div>
-                  </div>
-                </div>
-                <p class="pk-d">{{ p.desc }}</p>
-                <div class="pk-act">
-                  <button
-                    type="button"
-                    class="claim"
-                    :class="{ done: !!perkClaimed[p.name] }"
-                    @click="claimPerk(p)"
-                  >{{ perkClaimed[p.name] ? 'CODE COPIED' : 'CLAIM CODE' }}</button>
-                  <a class="visit" :href="p.url" target="_blank" rel="noopener">VISIT</a>
-                </div>
-              </div>
-              <p v-if="!filteredPerks.length" class="pk-none">No perks in this category yet.</p>
-            </div>
-          </div>
         </div>
 
         <div class="iss-side">
@@ -101,7 +59,7 @@
             <span class="wmark"><img :src="aidlLogo" alt="AIDL" class="wmark-img" /></span>
             <div>
               <h4>Welcome, {{ firstName }}</h4>
-              <p>{{ classShort }} · {{ classFull }} · {{ licenseId }} — your perks are unlocked below.</p>
+              <p>{{ classShort }} · {{ classFull }} · {{ licenseId }} — your license is ready below.</p>
             </div>
           </div>
 
@@ -176,7 +134,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, reactive, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import aidlLogo from '../assets/images/aidl-logo.png'
 
 const props = defineProps<{
@@ -240,10 +198,6 @@ onMounted(() => {
     const saved = localStorage.getItem('aidl.license.design')
     if (saved && DESIGNS.some((d) => d.id === saved)) design.value = saved
   } catch (e) {}
-  try {
-    const savedClaims = localStorage.getItem('aidl.perks.claimed')
-    if (savedClaims) Object.assign(perkClaimed, JSON.parse(savedClaims))
-  } catch (e) {}
   document.addEventListener('keydown', onKeydown)
 
   // Preloaded so the download canvas can draw the real logo into the seal
@@ -291,83 +245,6 @@ async function copySlack() {
   const v = `${caption.value}\n${verifyUrl()}`
   try { await navigator.clipboard.writeText(v) } catch (e) {}
   showToast('COPIED — PASTE INTO SLACK')
-}
-
-interface Perk {
-  name: string
-  category: string
-  url: string
-  offer: string
-  desc: string
-}
-
-const PERKS: Perk[] = [
-  { name: 'ChatGPT', category: 'Chat & reasoning', url: 'https://chatgpt.com', offer: '20% OFF PLUS · 2 MO', desc: 'General-purpose assistant. The default first stop for drafting, analysis and everyday questions.' },
-  { name: 'Claude', category: 'Chat & reasoning', url: 'https://claude.ai', offer: '25% OFF FIRST YEAR', desc: 'Long-document reading, careful writing and code review with a large context window.' },
-  { name: 'Gemini', category: 'Chat & reasoning', url: 'https://gemini.google.com', offer: '3 MO FREE AI PRO', desc: "Google's assistant, wired into Search, Docs and Gmail for work that lives in Workspace." },
-  { name: 'Perplexity', category: 'Chat & reasoning', url: 'https://perplexity.ai', offer: '1 MO PRO FREE', desc: 'Answer engine that cites live sources — research you can check before you use it.' },
-  { name: 'Midjourney', category: 'Image', url: 'https://midjourney.com', offer: '20% OFF STANDARD', desc: 'Stylised, art-directed image generation for concept and campaign work.' },
-  { name: 'Canva', category: 'Image', url: 'https://canva.com', offer: '45 DAYS PRO FREE', desc: 'Templates plus generative fill — the fastest path to a usable, on-brand asset.' },
-  { name: 'Adobe Firefly', category: 'Image', url: 'https://firefly.adobe.com', offer: '30% OFF ANNUAL', desc: 'Commercially-safe generation, trained on licensed stock and native to Creative Cloud.' },
-  { name: 'Runway', category: 'Video', url: 'https://runwayml.com', offer: '20% OFF STANDARD', desc: 'Text- and image-to-video with editing tools built for real production timelines.' },
-  { name: 'CapCut', category: 'Video', url: 'https://capcut.com', offer: '25% OFF PRO', desc: 'Auto-captions, cutting and effects for short-form social edits.' },
-  { name: 'ElevenLabs', category: 'Audio & voice', url: 'https://elevenlabs.io', offer: '2 MO 50% OFF', desc: 'Natural speech synthesis, dubbing and voice cloning for narration.' },
-  { name: 'Suno', category: 'Audio & voice', url: 'https://suno.com', offer: '20% OFF PRO', desc: 'Full-track music generation for stings, beds and internal video scoring.' },
-  { name: 'Otter.ai', category: 'Audio & voice', url: 'https://otter.ai', offer: '20% OFF PRO', desc: 'Live meeting transcription with searchable notes and action items.' },
-  { name: 'GitHub Copilot', category: 'Code', url: 'https://github.com/features/copilot', offer: '2 MO FREE', desc: 'In-editor completion and chat across the repo you are actually working in.' },
-  { name: 'Cursor', category: 'Code', url: 'https://cursor.com', offer: '20% OFF PRO', desc: 'AI-native editor for multi-file changes with codebase-wide context.' },
-  { name: 'Replit', category: 'Code', url: 'https://replit.com', offer: '1 MO CORE FREE', desc: 'Browser IDE with an agent that builds and deploys working apps.' },
-  { name: 'Grammarly', category: 'Writing & docs', url: 'https://grammarly.com', offer: '25% OFF PREMIUM', desc: 'Tone, clarity and correctness checks across every app you write in.' },
-  { name: 'Notion AI', category: 'Writing & docs', url: 'https://notion.so', offer: '3 MO FREE', desc: 'Summaries, drafting and Q&A over your own team wiki and notes.' },
-  { name: 'Gamma', category: 'Productivity', url: 'https://gamma.app', offer: '20% OFF PLUS', desc: 'Decks, docs and pages generated from an outline in one pass.' },
-  { name: 'Zapier', category: 'Productivity', url: 'https://zapier.com', offer: '20% OFF PRO', desc: 'Connect apps and put AI steps inside automated workflows.' },
-  { name: 'Figma', category: 'Design', url: 'https://figma.com', offer: '15% OFF SEAT', desc: 'Design and prototyping with AI assists for layout, copy and search.' },
-  { name: 'Framer', category: 'Design', url: 'https://framer.com', offer: '1 MO MINI FREE', desc: 'Generate and publish production websites without a build step.' },
-]
-
-// Cycled across categories (in first-seen order) to give each perk card's
-// top accent, logo chip and offer ribbon a bit of colour variety.
-const CATEGORY_COLORS = [
-  'var(--sign-yellow, #ffcc00)',
-  'var(--signal-red, #e23a2e)',
-  'var(--sky, #6fb3e0)',
-  'var(--signal-green, #2ec866)',
-  'var(--sign-amber, #ff9d00)',
-]
-function categoryColor(cat: string): string {
-  const cats = perkCategories.value.filter((c) => c !== 'All')
-  const idx = Math.max(0, cats.indexOf(cat))
-  return CATEGORY_COLORS[idx % CATEGORY_COLORS.length]!
-}
-
-const perkCategory = ref('All')
-const perkCategories = computed(() => {
-  const cats = ['All']
-  for (const p of PERKS) if (!cats.includes(p.category)) cats.push(p.category)
-  return cats
-})
-function perkCategoryCount(cat: string) {
-  return cat === 'All' ? PERKS.length : PERKS.filter((p) => p.category === cat).length
-}
-const filteredPerks = computed(() => PERKS.filter((p) => perkCategory.value === 'All' || p.category === perkCategory.value))
-
-// Claimed perk codes, keyed by perk name — persisted so a driver's claimed
-// codes survive closing and reopening the license modal.
-const perkClaimed = reactive<Record<string, string>>({})
-const claimedCount = computed(() => Object.keys(perkClaimed).length)
-
-function perkCode(name: string): string {
-  const slug = name.replace(/[^A-Za-z0-9]/g, '').toUpperCase().slice(0, 6)
-  const tail = props.licenseId.split('-').slice(2).join('')
-  return `AIDL-${slug}-${tail}`
-}
-
-async function claimPerk(perk: Perk) {
-  const code = perkCode(perk.name)
-  perkClaimed[perk.name] = code
-  try { localStorage.setItem('aidl.perks.claimed', JSON.stringify(perkClaimed)) } catch (e) {}
-  try { await navigator.clipboard.writeText(code) } catch (e) {}
-  showToast(`${perk.name.toUpperCase()} CODE: ${code}`)
 }
 
 const logoImg = ref<HTMLImageElement | null>(null)
@@ -627,58 +504,6 @@ function downloadImage() {
 .iss-welcome h4 { font-family: "Bungee", sans-serif; font-size: 19px; margin: 0 0 3px; letter-spacing: .01em; }
 .iss-welcome p { margin: 0; font-family: "JetBrains Mono", monospace; font-size: 11.5px; line-height: 1.45; color: #3a3528; }
 
-.perks { border-top: 3px dashed rgba(20, 20, 15, .35); margin-top: 6px; padding-top: 22px; width: 100%; }
-.perks-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 14px; flex-wrap: wrap; margin-bottom: 4px; }
-.perks-head h4 { font-family: "Bungee", sans-serif; font-size: 16px; margin: 0; }
-.perks-head span { font-family: "JetBrains Mono", monospace; font-size: 11px; background: var(--ink, #14140f); color: var(--sign-yellow, #ffcc00); padding: 4px 9px; }
-.perks-sub { font-family: "JetBrains Mono", monospace; font-size: 11.5px; color: #3a3528; line-height: 1.5; margin: 8px 0 16px; max-width: 64ch; }
-.pk-cats { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 18px; }
-.pk-cats button { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: .03em; padding: 7px 12px; background: var(--cream, #f5ecd2); color: var(--ink, #14140f); border: 2.5px solid var(--ink, #14140f); cursor: pointer; box-shadow: 3px 3px 0 var(--ink, #14140f); transition: transform .1s, box-shadow .1s, background .1s; }
-.pk-cats button:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink, #14140f); }
-.pk-cats button.on { background: var(--ink, #14140f); color: var(--sign-yellow, #ffcc00); }
-/* Perk cards scroll inside their own box instead of stretching the whole
-   popup — there can be a couple dozen of them, and letting the modal grow
-   to fit them all made it feel like an endless page rather than a card. */
-.pk-grid {
-  display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 18px 14px;
-  max-height: 460px; overflow-y: auto; padding: 4px 10px 4px 4px; margin: 0 -10px 0 -4px;
-  scrollbar-width: thin; scrollbar-color: var(--ink, #14140f) var(--cream-2, #f0e3bd);
-}
-.pk-grid::-webkit-scrollbar { width: 10px; }
-.pk-grid::-webkit-scrollbar-track { background: var(--cream-2, #f0e3bd); border: 2px solid var(--ink, #14140f); }
-.pk-grid::-webkit-scrollbar-thumb { background: var(--ink, #14140f); border: 2px solid var(--cream-2, #f0e3bd); }
-.pk-grid::-webkit-scrollbar-thumb:hover { background: var(--signal-red, #e23a2e); }
-.pk {
-  --pk-accent: var(--sign-yellow, #ffcc00);
-  border: 3px solid var(--ink, #14140f); border-top: 6px solid var(--pk-accent);
-  background: var(--cream, #f5ecd2); box-shadow: 5px 5px 0 var(--ink, #14140f);
-  padding: 16px 14px 14px; display: flex; flex-direction: column; gap: 10px;
-  container-type: inline-size; position: relative;
-  transition: transform .12s, box-shadow .12s;
-}
-.pk:hover { transform: translate(-2px, -2px); box-shadow: 8px 8px 0 var(--ink, #14140f); }
-.pk-ribbon {
-  position: absolute; top: -12px; right: 12px;
-  background: var(--pk-accent); color: var(--ink, #14140f);
-  font-family: "Bungee", sans-serif; font-size: 10px; line-height: 1.15;
-  padding: 5px 9px; border: 2.5px solid var(--ink, #14140f);
-  box-shadow: 2px 2px 0 var(--ink, #14140f); transform: rotate(-3deg);
-  max-width: calc(100% - 24px); text-align: right;
-}
-.pk-t { display: flex; align-items: center; gap: 10px; margin-top: 6px; }
-.pk-logo { width: 38px; height: 38px; flex: none; display: grid; place-items: center; border: 2.5px solid var(--ink, #14140f); font-family: "Bungee", sans-serif; font-size: 12px; background: var(--pk-accent); color: var(--ink, #14140f); box-shadow: 2px 2px 0 var(--ink, #14140f); }
-.pk-n { font-family: "Bungee", sans-serif; font-size: 14px; line-height: 1.2; }
-.pk-c { font-family: "JetBrains Mono", monospace; font-size: 9.5px; color: #5c5646; letter-spacing: .05em; text-transform: uppercase; margin-top: 3px; }
-.pk-d { font-family: "JetBrains Mono", monospace; font-size: 11px; color: #3a3528; line-height: 1.5; flex: 1; margin: 0; }
-.pk-act { display: flex; gap: 8px; flex-wrap: wrap; border-top: 2px dashed rgba(20, 20, 15, .3); padding-top: 10px; }
-.pk-act button, .pk-act a { font-family: "Bungee", sans-serif; font-size: 10.5px; padding: 8px 10px; border: 2.5px solid var(--ink, #14140f); cursor: pointer; text-decoration: none; text-align: center; box-shadow: 3px 3px 0 var(--ink, #14140f); transition: transform .1s, box-shadow .1s; flex: 1; color: var(--ink, #14140f); }
-.pk-act button:hover, .pk-act a:hover { transform: translate(-1px, -1px); box-shadow: 4px 4px 0 var(--ink, #14140f); }
-.pk-act .claim { background: var(--sign-yellow, #ffcc00); color: var(--ink, #14140f); }
-.pk-act .claim.done { background: var(--signal-green, #2ec866); }
-.pk-act .visit { background: var(--cream-2, #f0e3bd); color: var(--ink, #14140f); }
-.pk-none { font-family: "JetBrains Mono", monospace; font-size: 11.5px; color: #5c5646; padding: 18px 0; }
-@container (max-width: 250px) { .pk-act { flex-direction: column; } }
-
 .dz { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .dz b { display: block; border: 3px solid var(--ink, #14140f); height: 52px; cursor: pointer; position: relative; transition: transform .12s; }
 .dz b:hover { transform: translateY(-2px); }
@@ -754,6 +579,5 @@ function downloadImage() {
   .iss-stage { border-right: 0; border-bottom: 4px solid var(--ink, #14140f); padding: 24px 18px; }
   .iss-side { padding: 22px 18px; }
   .iss-ov { padding: 16px 12px; }
-  .pk-grid { max-height: 340px; }
 }
 </style>
