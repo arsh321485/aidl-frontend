@@ -840,7 +840,7 @@ import { useRoute, useRouter } from 'vue-router'
 import AvatarPickerModal from '../components/AvatarPickerModal.vue'
 import LicenseIssuedModal from '../components/LicenseIssuedModal.vue'
 import aidlLogo from '../assets/images/aidl-logo.png'
-import { notifyInfo, notifyError } from '../lib/notify.js'
+import { notifyInfo, notifyError, notifyLoading, notifyClose } from '../lib/notify.js'
 import { downloadLicenseCertificate } from '../lib/downloadLicense.js'
 import { startTeamsLogin, consumeTeamsAuthCallback } from '../lib/msTeamsAuth'
 import '../styles/home-landing.css'
@@ -1276,9 +1276,11 @@ function authComingSoon(provider: 'slack') {
 // browser to the returned auth_url. The Microsoft redirect back to this page
 // is picked up by consumeTeamsAuthCallback() in onMounted below.
 async function signInWithTeams() {
+  notifyLoading('Opening Microsoft Teams…', 'One moment')
   try {
     await startTeamsLogin('organization')
   } catch (e) {
+    notifyClose()
     notifyError(
       e instanceof Error ? e.message : 'Could not start Microsoft Teams sign-in.',
       'Teams Sign-In Failed'
