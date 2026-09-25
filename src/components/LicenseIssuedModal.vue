@@ -38,7 +38,10 @@
                   <div><span>STATUS</span><b>ACTIVE</b></div>
                 </div>
               </div>
-              <div class="lc-photo" :style="{ borderColor: activeDesign.ink }">
+              <div v-if="avatar" ref="photoEl" class="lc-photo lc-photo-avatar" :style="{ borderColor: activeDesign.ink }">
+                <AvatarBuilder :config="avatar" />
+              </div>
+              <div v-else class="lc-photo" :style="{ borderColor: activeDesign.ink }">
                 <svg viewBox="0 0 24 24" class="lc-photo-icon" fill="currentColor"><path d="M12 12.4a5.2 5.2 0 1 0 0-10.4 5.2 5.2 0 0 0 0 10.4Zm0 2.4c-4.4 0-9 2.2-9 5v2.6h18v-2.6c0-2.8-4.6-5-9-5Z" /></svg>
                 <span class="lc-photo-cap">DRIVER PHOTO</span>
               </div>
@@ -136,6 +139,8 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import aidlLogo from '../assets/images/aidl-logo.png'
+import AvatarBuilder from './AvatarBuilder.vue'
+import type { AvatarConfig } from '../lib/avatar-parts'
 
 const props = defineProps<{
   licenseId: string
@@ -144,6 +149,8 @@ const props = defineProps<{
   classFull: string
   issued: string
   expires: string
+  // The avatar picked just before issuing — shown in the photo slot.
+  avatar?: AvatarConfig | null
 }>()
 
 const emit = defineEmits<{ close: [] }>()
@@ -204,6 +211,7 @@ onMounted(() => {
   // instead of falling back to a plain circle.
   const img = new Image()
   img.onload = () => { logoImg.value = img }
+  loadAvatarImage()
   img.src = aidlLogo
 })
 onUnmounted(() => document.removeEventListener('keydown', onKeydown))
@@ -248,6 +256,22 @@ async function copySlack() {
 }
 
 const logoImg = ref<HTMLImageElement | null>(null)
+const photoEl = ref<HTMLElement | null>(null)
+const avatarImg = ref<HTMLImageElement | null>(null)
+
+// The PNG download is drawn on a <canvas>, so turn the rendered avatar <svg>
+// into an image once, up front, for drawLicenseCard to use.
+function loadAvatarImage() {
+  const svg = photoEl.value?.querySelector('svg')
+  if (!svg) return
+  const clone = svg.cloneNode(true) as SVGSVGElement
+  clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
+  clone.setAttribute('width', '200')
+  clone.setAttribute('height', '220')
+  const img = new Image()
+  img.onload = () => { avatarImg.value = img }
+  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(clone))
+}
 
 const firstName = computed(() => {
   const first = props.holder.trim().split(/\s+/)[0] || 'DRIVER'
@@ -420,27 +444,41 @@ function drawLicenseCard(ctx: CanvasRenderingContext2D, w: number, h: number) {
   ctx.strokeStyle = d.ink
   ctx.lineWidth = 3
   ctx.strokeRect(photoX, photoY, photoW, photoH)
-  // Simple person-silhouette placeholder (head circle + shoulders arc),
-  // matching the CSS `.lc-photo-icon`. Clipped to the photo box so the
-  // shoulders arc can't spill past the border.
-  ctx.save()
-  ctx.beginPath()
-  ctx.rect(photoX, photoY, photoW, photoH)
-  ctx.clip()
-  const iconCx = photoX + photoW / 2
-  const iconCy = photoY + photoH / 2 - 14
-  ctx.fillStyle = hexToRgba(d.ink, 0.55)
-  ctx.beginPath()
-  ctx.arc(iconCx, iconCy - 14, 22, 0, Math.PI * 2)
-  ctx.fill()
-  ctx.beginPath()
-  ctx.arc(iconCx, iconCy + 46, 42, Math.PI, 0)
-  ctx.fill()
-  ctx.restore()
-  ctx.fillStyle = hexToRgba(d.ink, 0.8)
-  ctx.font = '600 11px "Courier New", monospace'
-  ctx.textAlign = 'center'
-  ctx.fillText('DRIVER PHOTO', photoX + photoW / 2, photoY + photoH - 14)
+  if (avatarImg.value) {
+    // Cover-fit the 200x220 avatar into the photo box, like the SVG's
+    // preserveAspectRatio="xMidYMid slice" does on screen.
+    const scale = Math.max(photoW / 200, photoH / 220)
+    const dw = 200 * scale
+    const dh = 220 * scale
+    ctx.save()
+    ctx.beginPath()
+    ctx.rect(photoX + 1.5, photoY + 1.5, photoW - 3, photoH - 3)
+    ctx.clip()
+    ctx.drawImage(avatarImg.value, photoX + (photoW - dw) / 2, photoY + (photoH - dh) / 2, dw, dh)
+    ctx.restore()
+  } else {
+    // Simple person-silhouette placeholder (head circle + shoulders arc),
+    // matching the CSS `.lc-photo-icon`. Clipped to the photo box so the
+    // shoulders arc can't spill past the border.
+    ctx.save()
+    ctx.beginPath()
+    ctx.rect(photoX, photoY, photoW, photoH)
+    ctx.clip()
+    const iconCx = photoX + photoW / 2
+    const iconCy = photoY + photoH / 2 - 14
+    ctx.fillStyle = hexToRgba(d.ink, 0.55)
+    ctx.beginPath()
+    ctx.arc(iconCx, iconCy - 14, 22, 0, Math.PI * 2)
+    ctx.fill()
+    ctx.beginPath()
+    ctx.arc(iconCx, iconCy + 46, 42, Math.PI, 0)
+    ctx.fill()
+    ctx.restore()
+    ctx.fillStyle = hexToRgba(d.ink, 0.8)
+    ctx.font = '600 11px "Courier New", monospace'
+    ctx.textAlign = 'center'
+    ctx.fillText('DRIVER PHOTO', photoX + photoW / 2, photoY + photoH - 14)
+  }
 
   const footerY = h - stripH - 46
   ctx.strokeStyle = d.ink
@@ -546,6 +584,7 @@ function downloadImage() {
 .lc-rows span { display: block; opacity: .68; font-size: clamp(6px, 1.4cqw, 8px); margin-bottom: 2px; }
 .lc-rows b { font-size: clamp(8px, 2cqw, 11px); letter-spacing: .04em; white-space: nowrap; }
 .lc-photo { align-self: start; aspect-ratio: 3 / 4; max-height: 100%; border: clamp(2px, .6cqw, 3px) solid var(--ink, #14140f); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(3px, 1.4cqw, 7px); background: rgba(127, 127, 127, .14); }
+.lc-photo-avatar { padding: 0; overflow: hidden; background: none; }
 .lc-photo-icon { width: 42%; height: auto; opacity: .55; }
 .lc-photo-cap { font-family: "JetBrains Mono", monospace; font-size: clamp(5px, 1.3cqw, 7px); letter-spacing: .1em; text-align: center; opacity: .8; }
 .lc-foot { display: flex; align-items: flex-end; justify-content: space-between; gap: clamp(6px, 2cqw, 12px); flex: none; border-top: clamp(2px, .7cqw, 3px) solid currentColor; padding-top: clamp(4px, 1.8cqw, 9px); margin-top: clamp(4px, 2cqw, 10px); position: relative; z-index: 2; }

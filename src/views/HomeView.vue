@@ -46,7 +46,7 @@
               </div>
             </template>
             <template v-else>
-              <p class="signin-drop-sub">Enter your email and password to open your dashboard.</p>
+              <p class="signin-drop-sub">Enter your email and password</p>
               <input
                 type="email"
                 v-model="signInEmail"
@@ -54,6 +54,7 @@
                 autocomplete="username"
                 @keyup.enter="submitSignIn('senior')"
               />
+              <p v-if="signInFieldErrors.email" class="field-error">{{ signInFieldErrors.email }}</p>
               <div class="password-field">
                 <input
                   :type="showSignInPassword ? 'text' : 'password'"
@@ -67,7 +68,8 @@
                   <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s3-8 11-8 11 8 11 8-3 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                 </button>
               </div>
-              <button type="button" class="btn btn-yellow signin-drop-btn" @click="submitSignIn('senior')">Sign In →</button>
+              <p v-if="signInFieldErrors.password" class="field-error">{{ signInFieldErrors.password }}</p>
+              <button type="button" class="btn btn-yellow signin-drop-btn" :disabled="signInSubmitting" @click="submitSignIn('senior')">{{ signInSubmitting ? 'Signing In…' : 'Sign In →' }}</button>
             </template>
             <p v-if="signInError" class="signin-drop-error">{{ signInError }}</p>
             <p class="signin-drop-foot">Don't have one? <a href="#enroll" @click.prevent="closeSignInAndEnroll('adult')">Enroll here →</a></p>
@@ -143,16 +145,19 @@
               <div class="field">
                 <label>First Name <span>*</span></label>
                 <input type="text" v-model="form.firstName" />
+                <p v-if="fieldErrors.first_name" class="field-error">{{ fieldErrors.first_name }}</p>
               </div>
               <div class="field">
                 <label>Last Name <span>*</span></label>
                 <input type="text" v-model="form.lastName" />
+                <p v-if="fieldErrors.last_name" class="field-error">{{ fieldErrors.last_name }}</p>
               </div>
             </div>
             <div class="form-row">
               <div class="field full">
                 <label>Email <span>*</span></label>
                 <input type="email" placeholder="you@company.com" v-model="form.email" />
+                <p v-if="fieldErrors.email" class="field-error">{{ fieldErrors.email }}</p>
               </div>
             </div>
             <div class="form-row">
@@ -165,6 +170,13 @@
                     <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s3-8 11-8 11 8 11 8-3 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                   </button>
                 </div>
+                <div v-if="form.password && unmetPasswordRules.length" class="field-hint">
+                  Password must:
+                  <ul class="password-rules">
+                    <li v-for="rule in unmetPasswordRules" :key="rule">{{ rule }}</li>
+                  </ul>
+                </div>
+                <p v-if="fieldErrors.password" class="field-error">{{ fieldErrors.password }}</p>
               </div>
             </div>
             <div class="form-row">
@@ -177,38 +189,61 @@
                     <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s3-8 11-8 11 8 11 8-3 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                   </button>
                 </div>
+                <p v-if="form.confirmPassword && form.confirmPassword !== form.password" class="field-hint">Must match the password above.</p>
+                <p v-if="fieldErrors.confirm_password" class="field-error">{{ fieldErrors.confirm_password }}</p>
               </div>
             </div>
             <div class="form-row">
               <div class="field">
                 <label>Mobile Number <span>*</span></label>
                 <input type="tel" placeholder="+1 555 000 0000" v-model="form.mobile" />
+                <p v-if="fieldErrors.mobile_number" class="field-error">{{ fieldErrors.mobile_number }}</p>
               </div>
               <div class="field">
-                <label>Country</label>
-                <select v-model="form.country">
-                  <option>United States</option>
-                  <option>United Kingdom</option>
-                  <option>India</option>
-                  <option>Germany</option>
-                  <option>Canada</option>
+                <label>Country <span>*</span></label>
+                <select v-model="countryCode" @change="onCountryChange">
+                  <option value="" disabled>{{ countriesLoading ? 'Loading countries…' : 'Select country' }}</option>
+                  <option v-for="c in countries" :key="c.code" :value="c.code">{{ c.name }}</option>
                 </select>
+                <p v-if="locationError.country" class="field-error">{{ locationError.country }}</p>
+                <p v-if="fieldErrors.country" class="field-error">{{ fieldErrors.country }}</p>
               </div>
             </div>
             <div class="form-row">
               <div class="field">
-                <label>State</label>
-                <select v-model="form.state">
-                  <option value="" disabled>Select state</option>
-                  <option v-for="s in stateOptions" :key="s" :value="s">{{ s }}</option>
+                <label>State <span>*</span></label>
+                <!-- A few countries have no states in the data: free text then. -->
+                <input v-if="statesEmpty" type="text" placeholder="Enter state" v-model="form.state" />
+                <select
+                  v-else
+                  v-model="stateCode"
+                  @change="onStateChange"
+                  @mousedown="guardLocation($event, 'state')"
+                  @focus="guardLocation($event, 'state')"
+                >
+                  <option value="" disabled>{{ statesLoading ? 'Loading states…' : 'Select state' }}</option>
+                  <option v-for="st in states" :key="st.code" :value="st.code">{{ st.name }}</option>
                 </select>
+                <p v-if="stateHint" class="field-hint">{{ stateHint }}</p>
+                <p v-if="locationError.state" class="field-error">{{ locationError.state }}</p>
+                <p v-if="fieldErrors.state" class="field-error">{{ fieldErrors.state }}</p>
               </div>
               <div class="field">
-                <label>City</label>
-                <select v-model="form.city">
-                  <option value="" disabled>Select city</option>
-                  <option v-for="c in cityOptions" :key="c" :value="c">{{ c }}</option>
+                <label>City <span>*</span></label>
+                <!-- Some states have no cities in the data: free text then. -->
+                <input v-if="citiesEmpty" type="text" placeholder="Enter city" v-model="form.city" />
+                <select
+                  v-else
+                  v-model="form.city"
+                  @mousedown="guardLocation($event, 'city')"
+                  @focus="guardLocation($event, 'city')"
+                >
+                  <option value="" disabled>{{ citiesLoading ? 'Loading cities…' : 'Select city' }}</option>
+                  <option v-for="c in cities" :key="c.name" :value="c.name">{{ c.name }}</option>
                 </select>
+                <p v-if="cityHint" class="field-hint">{{ cityHint }}</p>
+                <p v-if="locationError.city" class="field-error">{{ locationError.city }}</p>
+                <p v-if="fieldErrors.city" class="field-error">{{ fieldErrors.city }}</p>
               </div>
             </div>
             <div class="field full" style="margin-bottom: 16px;">
@@ -254,12 +289,12 @@
         <div class="form-foot" v-if="form.enrollAs !== 'organization'">
           <p v-if="formError" class="signin-drop-error" style="flex-basis:100%">{{ formError }}</p>
           <div class="tiny">EST. ARRIVAL · 5&nbsp;MIN</div>
-          <button type="submit" class="btn btn-red">REGISTER →</button>
+          <button type="submit" class="btn btn-red" :disabled="submitting">{{ submitting ? 'REGISTERING…' : 'REGISTER →' }}</button>
         </div>
       </form>
   </div>
 
-  <AvatarPickerModal v-if="showAvatarPicker" @confirm="onAvatarConfirmed" @close="showAvatarPicker = false" />
+  <AvatarPickerModal v-if="showAvatarPicker" @confirm="onAvatarConfirmed" @close="showAvatarPicker = false; signedInLicense = null" />
 
   <LicenseIssuedModal
     v-if="showLicenseModal"
@@ -269,6 +304,7 @@
     :class-full="issuedLicense.classFull"
     :issued="issuedLicense.issued"
     :expires="issuedLicense.expires"
+    :avatar="issuedAvatar"
     @close="onLicenseModalClose"
   />
 
@@ -838,11 +874,14 @@
 import { ref, reactive, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AvatarPickerModal from '../components/AvatarPickerModal.vue'
+import type { AvatarConfig } from '../lib/avatar-parts'
 import LicenseIssuedModal from '../components/LicenseIssuedModal.vue'
 import aidlLogo from '../assets/images/aidl-logo.png'
 import { notifyInfo, notifyError, notifyLoading, notifyClose } from '../lib/notify.js'
 import { downloadLicenseCertificate } from '../lib/downloadLicense.js'
 import { startTeamsLogin, consumeTeamsAuthCallback } from '../lib/msTeamsAuth'
+import { signup, signin, ApiError, type ApiUser } from '../lib/authApi'
+import { getCountries, getStates, getCities, type Country, type State as LocationState, type City } from '../lib/locationsApi'
 import '../styles/home-landing.css'
 
 const router = useRouter()
@@ -964,6 +1003,9 @@ const signInPassword = ref('')
 const showSignInPassword = ref(false)
 const signInMode = ref<'individual' | 'organization'>('individual')
 const signInError = ref('')
+// Per-field messages from POST /api/auth/signin/.
+const signInFieldErrors = reactive<Record<string, string>>({})
+const signInSubmitting = ref(false)
 
 function toggleSignIn(which: 'senior' | 'junior') {
   signInOpen.value = signInOpen.value === which ? null : which
@@ -973,6 +1015,7 @@ function toggleSignIn(which: 'senior' | 'junior') {
   showSignInPassword.value = false
   signInMode.value = 'individual'
   signInError.value = ''
+  for (const key of Object.keys(signInFieldErrors)) delete signInFieldErrors[key]
   showEnrollModal.value = false
 }
 
@@ -1075,39 +1118,11 @@ const jobs: JobFamily[] = [
   },
 ]
 
-const LOCATIONS: Record<string, Record<string, string[]>> = {
-  'United States': {
-    California: ['Los Angeles', 'San Francisco', 'San Diego'],
-    'New York': ['New York City', 'Buffalo', 'Albany'],
-    Texas: ['Houston', 'Austin', 'Dallas']
-  },
-  'United Kingdom': {
-    England: ['London', 'Manchester', 'Birmingham'],
-    Scotland: ['Edinburgh', 'Glasgow', 'Aberdeen'],
-    Wales: ['Cardiff', 'Swansea', 'Newport']
-  },
-  India: {
-    Maharashtra: ['Mumbai', 'Pune', 'Nagpur'],
-    Karnataka: ['Bengaluru', 'Mysuru', 'Hubli'],
-    Delhi: ['New Delhi', 'Dwarka', 'Rohini']
-  },
-  Germany: {
-    Bavaria: ['Munich', 'Nuremberg', 'Augsburg'],
-    Berlin: ['Berlin'],
-    Hesse: ['Frankfurt', 'Wiesbaden', 'Kassel']
-  },
-  Canada: {
-    Ontario: ['Toronto', 'Ottawa', 'Hamilton'],
-    Quebec: ['Montreal', 'Quebec City', 'Laval'],
-    'British Columbia': ['Vancouver', 'Victoria', 'Surrey']
-  }
-}
-
 const form = reactive({
   enrollAs: 'individual' as 'individual' | 'organization',
-  firstName: 'Alex',
-  lastName: 'Morgan',
-  email: 'alex@company.com',
+  firstName: '',
+  lastName: '',
+  email: '',
   mobile: '',
   password: '',
   confirmPassword: '',
@@ -1118,7 +1133,7 @@ const form = reactive({
   orgName: '',
   orgLogo: '',
   totalUsers: '',
-  country: 'United States',
+  country: '',
   state: '',
   city: ''
 })
@@ -1134,22 +1149,152 @@ function handleLogoUpload(e: Event) {
   reader.readAsDataURL(file)
 }
 
-const stateOptions = computed(() => Object.keys(LOCATIONS[form.country] || {}))
-const cityOptions = computed(() => LOCATIONS[form.country]?.[form.state] || [])
+// Country → state → city dropdowns, filled from the Locations API. The
+// selects work on codes (what the API takes); form.country/state/city keep
+// the names, which is what signup expects.
+const countries = ref<Country[]>([])
+const states = ref<LocationState[]>([])
+const cities = ref<City[]>([])
+const countryCode = ref('')
+const stateCode = ref('')
+const countriesLoading = ref(false)
+const statesLoading = ref(false)
+const citiesLoading = ref(false)
+// Loaded but empty → the field becomes a free-text input (per the API guide).
+const statesEmpty = ref(false)
+const citiesEmpty = ref(false)
+const locationError = reactive({ country: '', state: '', city: '' })
+// Set when the user tries to open State/City before picking its parent.
+const locationGuard = reactive({ state: false, city: false })
 
-watch(() => form.country, () => {
+const stateHint = computed(() =>
+  locationGuard.state && !form.country ? 'Please select a country first.' : ''
+)
+const cityHint = computed(() => {
+  if (!locationGuard.city) return ''
+  if (!form.country) return 'Please select a country first.'
+  if (!form.state && !statesEmpty.value) return 'Please select a state first.'
+  return ''
+})
+
+function guardLocation(e: Event, field: 'state' | 'city') {
+  const blocked = field === 'state'
+    ? !form.country
+    : !form.country || (!form.state && !statesEmpty.value)
+  locationGuard[field] = blocked
+  if (blocked && e.type === 'mousedown') e.preventDefault()
+}
+
+async function loadCountries() {
+  if (countries.value.length || countriesLoading.value) return
+  countriesLoading.value = true
+  locationError.country = ''
+  try {
+    countries.value = await getCountries()
+  } catch (e) {
+    locationError.country = 'Could not load countries. Please try again.'
+  } finally {
+    countriesLoading.value = false
+  }
+}
+
+async function onCountryChange() {
+  const country = countries.value.find((c) => c.code === countryCode.value)
+  const previousPhoneCode = countries.value.find((c) => c.name === form.country)?.phone_code
+  form.country = country?.name || ''
   form.state = ''
   form.city = ''
-})
-watch(() => form.state, () => {
+  stateCode.value = ''
+  states.value = []
+  cities.value = []
+  statesEmpty.value = false
+  citiesEmpty.value = false
+  locationError.state = ''
+  locationError.city = ''
+  locationGuard.state = false
+  locationGuard.city = false
+  if (!country) return
+
+  // Pre-fill the mobile country code while the user hasn't typed a number yet.
+  const mobile = form.mobile.trim()
+  if (!mobile || mobile === previousPhoneCode) form.mobile = country.phone_code
+
+  statesLoading.value = true
+  try {
+    const list = await getStates(country.code)
+    if (countryCode.value !== country.code) return
+    states.value = list
+    statesEmpty.value = list.length === 0
+    // No states → cities can't be looked up either, so City is free text too.
+    citiesEmpty.value = list.length === 0
+  } catch (e) {
+    if (countryCode.value === country.code) locationError.state = 'Could not load states. Please try again.'
+  } finally {
+    if (countryCode.value === country.code) statesLoading.value = false
+  }
+}
+
+async function onStateChange() {
+  const state = states.value.find((st) => st.code === stateCode.value)
+  form.state = state?.name || ''
   form.city = ''
-})
+  cities.value = []
+  citiesEmpty.value = false
+  locationError.city = ''
+  locationGuard.city = false
+  if (!state) return
+
+  const key = `${countryCode.value}/${state.code}`
+  const isCurrent = () => `${countryCode.value}/${stateCode.value}` === key
+  citiesLoading.value = true
+  try {
+    const list = await getCities(countryCode.value, state.code)
+    if (!isCurrent()) return
+    cities.value = list
+    citiesEmpty.value = list.length === 0
+  } catch (e) {
+    if (isCurrent()) locationError.city = 'Could not load cities. Please try again.'
+  } finally {
+    if (isCurrent()) citiesLoading.value = false
+  }
+}
+
+// Fetch the country list the first time the enroll form opens.
+watch(showEnrollModal, (open) => {
+  if (open) loadCountries()
+}, { immediate: true })
 
 const showFormPassword = ref(false)
+
+// Mirrors the backend password rules (see src/prompt.txt). Only the rules
+// the typed password still fails are listed under the field; "not a common
+// password" can only be checked by the API, so it surfaces as an API error.
+const unmetPasswordRules = computed(() => {
+  const pw = form.password
+  const lower = pw.toLowerCase()
+  const personal = [form.firstName, form.lastName, form.email.split('@')[0] ?? '']
+    .map((v) => v.trim().toLowerCase())
+    .filter((v) => v.length >= 3)
+  return [
+    { label: 'Be 8–128 characters', ok: pw.length >= 8 && pw.length <= 128 },
+    { label: 'Include 1 uppercase letter (A-Z)', ok: /[A-Z]/.test(pw) },
+    { label: 'Include 1 lowercase letter (a-z)', ok: /[a-z]/.test(pw) },
+    { label: 'Include 1 number (0-9)', ok: /[0-9]/.test(pw) },
+    { label: 'Include 1 special character (!@#$%^&*_- etc.)', ok: /[^A-Za-z0-9\s]/.test(pw) },
+    { label: 'Not be entirely numeric', ok: !/^[0-9]+$/.test(pw) },
+    { label: 'Not use your name or email', ok: !personal.some((v) => lower.includes(v)) },
+  ].filter((rule) => !rule.ok).map((rule) => rule.label)
+})
 const showConfirmPassword = ref(false)
 const formError = ref('')
+// Per-field messages from the signup API (keyed by API field name).
+const fieldErrors = reactive<Record<string, string>>({})
+const submitting = ref(false)
 const showAvatarPicker = ref(false)
+// Set after a successful API sign-in, consumed by onAvatarConfirmed.
+const signedInLicense = ref<{ id: string; entry: RegistryEntry } | null>(null)
 const showLicenseModal = ref(false)
+const issuedAvatar = ref<AvatarConfig | null>(null)
 const issuedLicense = reactive({
   id: '',
   holder: '',
@@ -1236,10 +1381,11 @@ function downloadDemoLicense(opts: { holder: string; licenseId: string; classLab
   })
 }
 
-function lookupLicenseByCredentials(email: string, password: string): { id: string; entry: RegistryEntry } | undefined {
+function lookupLicenseByEmail(email: string): { id: string; entry: RegistryEntry } | undefined {
+  const normalized = email.trim().toLowerCase()
   const all: Record<string, RegistryEntry> = { ...REGISTRY, ...loadDynamicRegistry() }
   for (const [id, entry] of Object.entries(all)) {
-    if (entry.email && entry.email.toLowerCase() === email && entry.password === password) {
+    if (entry.email && entry.email.toLowerCase() === normalized) {
       return { id, entry }
     }
   }
@@ -1288,20 +1434,107 @@ async function signInWithTeams() {
   }
 }
 
-function handleSubmit() {
+async function handleSubmit() {
+  if (submitting.value) return
   formError.value = ''
+  for (const key of Object.keys(fieldErrors)) delete fieldErrors[key]
+
   if (form.enrollAs !== 'organization' && form.password !== form.confirmPassword) {
-    formError.value = "Passwords don't match."
+    fieldErrors.confirm_password = "Passwords don't match."
     return
   }
+
+  submitting.value = true
+  try {
+    await signup({
+      enroll_as: form.enrollAs,
+      first_name: form.firstName.trim(),
+      last_name: form.lastName.trim(),
+      email: form.email.trim().toLowerCase(),
+      password: form.password,
+      confirm_password: form.confirmPassword,
+      mobile_number: form.mobile.replace(/[\s\-().]/g, ''),
+      country: form.country,
+      state: form.state,
+      city: form.city,
+      license_class: 'class_l',
+      organization_name: form.enrollAs === 'organization' ? form.orgName.trim() : '',
+    })
+  } catch (e) {
+    if (e instanceof ApiError) {
+      for (const [key, messages] of Object.entries(e.fieldErrors)) {
+        // Password can come back with several failed rules at once — show them all.
+        if (messages.length) fieldErrors[key] = messages.join('\n')
+      }
+      // Errors for fields without an input of their own (enroll_as,
+      // license_class, non_field_errors, ...) go in the general slot.
+      const shown = ['first_name', 'last_name', 'email', 'password', 'confirm_password', 'mobile_number', 'country', 'state', 'city']
+      const other = Object.entries(e.fieldErrors).find(([key]) => !shown.includes(key))
+      if (other) formError.value = other[1][0] || ''
+      else if (!Object.keys(e.fieldErrors).length) formError.value = e.message
+    } else {
+      formError.value = 'Sign up failed. Please try again.'
+    }
+    return
+  } finally {
+    submitting.value = false
+  }
+
   try { localStorage.setItem('aidl-selected-class', activeClass.value) } catch (e) {}
   showEnrollModal.value = false
   showAvatarPicker.value = true
 }
 
-function onAvatarConfirmed(avatar: unknown) {
-  showAvatarPicker.value = false
+// Avatars picked per account, keyed by lowercased email. Kept in the browser
+// until the backend has an avatar API — see loadSavedAvatar.
+function saveAvatarForEmail(email: string, avatar: AvatarConfig) {
+  try {
+    const all = JSON.parse(localStorage.getItem('aidl-avatars') || '{}')
+    all[email.trim().toLowerCase()] = avatar
+    localStorage.setItem('aidl-avatars', JSON.stringify(all))
+  } catch (e) {}
+}
+
+// Prefers an avatar returned by the API (user.avatar, once the backend adds
+// it), falling back to one picked earlier in this browser.
+function loadSavedAvatar(user: ApiUser): AvatarConfig | null {
+  if (user.avatar && typeof user.avatar === 'object') return user.avatar as AvatarConfig
+  try {
+    return JSON.parse(localStorage.getItem('aidl-avatars') || '{}')[user.email.trim().toLowerCase()] || null
+  } catch (e) {
+    return null
+  }
+}
+
+function showSignedInLicense(id: string, entry: RegistryEntry, avatar: AvatarConfig) {
   try { localStorage.setItem('aidl-avatar', JSON.stringify(avatar)) } catch (e) {}
+  issuedAvatar.value = avatar
+  startSession(id, entry)
+  issuedLicense.id = id
+  issuedLicense.holder = entry.holder.toUpperCase()
+  issuedLicense.classShort = entry.classCode ? CLASS_SHORT[entry.classCode] : entry.cls
+  issuedLicense.classFull = entry.classCode ? CLASS_FULL[entry.classCode] : entry.cls
+  issuedLicense.issued = entry.iss
+  issuedLicense.expires = entry.exp
+  showLicenseModal.value = true
+}
+
+function onAvatarConfirmed(avatar: AvatarConfig) {
+  showAvatarPicker.value = false
+
+  // Coming from sign-in: reuse the account's existing license instead of
+  // issuing a new one from the enroll form.
+  if (signedInLicense.value) {
+    const { id, entry } = signedInLicense.value
+    signedInLicense.value = null
+    if (entry.email) saveAvatarForEmail(entry.email, avatar)
+    showSignedInLicense(id, entry, avatar)
+    return
+  }
+
+  try { localStorage.setItem('aidl-avatar', JSON.stringify(avatar)) } catch (e) {}
+  issuedAvatar.value = avatar
+  saveAvatarForEmail(form.email, avatar)
 
   const cls = activeClass.value
   const licenseId = generateLicenseId(cls)
@@ -1345,34 +1578,76 @@ function onLicenseModalClose() {
   showLicenseModal.value = false
 }
 
+// Senior sign-in goes through POST /api/auth/signin/. The portals still read
+// the local aidl-session (license ID + class), so on success we reuse the
+// license already stored for this email, or issue one on first sign-in.
+async function submitSeniorSignIn() {
+  if (signInSubmitting.value) return
+  signInError.value = ''
+  for (const key of Object.keys(signInFieldErrors)) delete signInFieldErrors[key]
+
+  const email = signInEmail.value.trim().toLowerCase()
+  const password = signInPassword.value
+  if (!email) signInFieldErrors.email = 'Enter your email.'
+  if (!password) signInFieldErrors.password = 'Enter your password.'
+  if (!email || !password) return
+
+  signInSubmitting.value = true
+  let user: ApiUser
+  try {
+    user = (await signin({ enroll_as: signInMode.value, email, password })).user
+  } catch (e) {
+    if (e instanceof ApiError) {
+      if (e.fieldErrors.email?.[0]) signInFieldErrors.email = e.fieldErrors.email[0]
+      if (e.fieldErrors.password?.[0]) signInFieldErrors.password = e.fieldErrors.password[0]
+      const other = Object.entries(e.fieldErrors).find(([key]) => key !== 'email' && key !== 'password')
+      if (other) signInError.value = other[1][0] || ''
+      else if (!Object.keys(e.fieldErrors).length) signInError.value = e.message
+    } else {
+      signInError.value = 'Sign in failed. Please try again.'
+    }
+    return
+  } finally {
+    signInSubmitting.value = false
+  }
+
+  let found = lookupLicenseByEmail(user.email)
+  if (!found || !found.entry.classCode || !SENIOR_CLASSES.includes(found.entry.classCode)) {
+    const now = new Date()
+    const entry: RegistryEntry = {
+      holder: user.full_name || `${user.first_name} ${user.last_name}`.trim() || 'AIDL Member',
+      cls: CLASS_LABELS.L,
+      classCode: 'L',
+      iss: now.toLocaleDateString('en-US'),
+      exp: new Date(now.getTime() + 31536000000).toLocaleDateString('en-US'),
+      hrs: '0 hrs · just enrolled',
+      end: '—',
+      email: user.email,
+      mobile: String(user.mobile_number || ''),
+      enrollAs: user.enroll_as,
+      orgName: user.organization_name || undefined,
+    }
+    const id = generateLicenseId('L')
+    saveDynamicEntry(id, entry)
+    found = { id, entry }
+  }
+  signInOpen.value = null
+  // Avatar already picked (after signup or an earlier sign-in) → straight to
+  // the license card. Otherwise pick one first, same as signup.
+  const savedAvatar = loadSavedAvatar(user)
+  if (savedAvatar) {
+    showSignedInLicense(found.id, found.entry, savedAvatar)
+    return
+  }
+  signedInLicense.value = found
+  showAvatarPicker.value = true
+}
+
 function submitSignIn(track: 'senior' | 'junior') {
   signInError.value = ''
 
   if (track === 'senior') {
-    const email = signInEmail.value.trim().toLowerCase()
-    const password = signInPassword.value
-    if (!email || !password) {
-      signInError.value = 'Enter your email and password.'
-      return
-    }
-    const found = lookupLicenseByCredentials(email, password)
-    if (!found) {
-      signInError.value = 'No account found with those credentials.'
-      return
-    }
-    const { id, entry } = found
-    if (!entry.classCode || !SENIOR_CLASSES.includes(entry.classCode)) {
-      signInError.value = `That's a Junior license (${entry.cls}) — try Sign In on the Junior side.`
-      return
-    }
-    const accountType = entry.enrollAs || 'individual'
-    if (accountType !== signInMode.value) {
-      signInError.value = `This account is registered as ${accountType === 'organization' ? 'an Organization' : 'an Individual'} — switch tabs to sign in.`
-      return
-    }
-    startSession(id, entry)
-    signInOpen.value = null
-    router.push('/senior-portal')
+    submitSeniorSignIn()
     return
   }
 
@@ -1548,6 +1823,23 @@ body:not(.pre-choice) .signin-wrap .nav-auth-btn { display: inline-flex; width: 
   font-size: 11px;
   border: 2px solid var(--ink);
 }
+.field-error {
+  margin: 4px 0 0;
+  color: var(--signal-red);
+  font-family: "JetBrains Mono", monospace;
+  font-size: 11px;
+  white-space: pre-line;
+}
+.field-hint {
+  margin: 4px 0 0;
+  color: #6a624a;
+  font-family: "JetBrains Mono", monospace;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.password-rules { margin: 2px 0 0; padding: 0; list-style: none; }
+.password-rules li::before { content: "• "; }
+.form-foot .btn:disabled, .signin-drop-btn:disabled { opacity: 0.6; cursor: wait; }
 .signin-drop-foot { margin: 12px 0 0; font-size: 11px; color: #6a624a; }
 .signin-drop-foot a { color: var(--ink); font-weight: 700; }
 
@@ -1966,6 +2258,7 @@ section.band { position: relative; padding: 120px 0; border-bottom: 4px solid va
 .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; min-width: 0; }
 .field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .field label { font-family: "JetBrains Mono", monospace; font-size: 10px; text-transform: uppercase; color: var(--ink); display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+.field label span { color: var(--signal-red); font-weight: 700; }
 .field input, .field select { width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; height: 44px; border: 3px solid var(--ink); background: var(--cream-2); padding: 0 14px; font-family: "Space Grotesk", sans-serif; font-size: 15px; font-weight: 600; }
 .field input:focus, .field select:focus { outline: none; background: var(--sign-yellow); }
 body.mode-junior .field input:focus, body.mode-junior .field select:focus { background: rgb(46, 199, 99); }

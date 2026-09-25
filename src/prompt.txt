@@ -1,0 +1,90 @@
+Baaki field errors (400)
+Case	Response
+Duplicate email
+{ "email": ["A user with this email already exists."] }
+Invalid email
+{ "email": ["Enter a valid email address."] }
+Invalid first name
+{ "first_name": ["Enter a valid first name."] }
+Invalid last name
+{ "last_name": ["Enter a valid last name."] }
+Invalid mobile
+{ "mobile_number": ["Enter a valid mobile number with country code, e.g. +15550000000."] }
+Country/state/city < 2 chars
+{ "country": ["Country is required."] }
+Org tab, name empty
+{ "organization_name": ["Organization name is required for organization signup."] }
+Invalid license
+{ "license_class": ["Invalid license class. Use class_l (Class L · Learner's Permit)."] }
+Missing required
+{ "first_name": ["This field is required."], ... }
+Other field rules (same as pehle)
+Name: letters, space, -, ', . — numbers/symbols nahi, max 100
+Email: valid + unique
+Mobile: country code, e.g. +91 9876543210
+Country/state/city: min 2 chars
+enroll_as: individual | organization
+license_class: class_l
+organization_name: org tab pe required
+Yeh list frontend ko de do. Purane weak passwords ab 400 denge; test/signup ke liye CreateA-StrongPass1 use karo. Server auto-reload ho to naya restart zaroori nahi.
+
+Password rules (ab API enforce karti hai)
+Password tab accept hoga jab saari conditions true hon:
+
+#	Condition	Example fail	API error
+1
+8–128 characters
+Ab1@xy
+This password is too short. It must contain at least 8 characters.
+2
+Kam se kam 1 uppercase A-Z
+createa-strong1
+Password must include at least one uppercase letter (A-Z).
+3
+Kam se kam 1 lowercase a-z
+CREATEA-STRONG1
+Password must include at least one lowercase letter (a-z).
+4
+Kam se kam 1 number 0-9
+CreateA-Strong
+Password must include at least one number (0-9).
+5
+Kam se kam 1 special
+CreateAStrong1
+Password must include at least one special character (!@#$%^&*_- etc.).
+6
+Sirf numbers nahi
+12345678
+This password is entirely numeric.
+7
+Common password nahi
+Password1!
+This password is too common.
+8
+Name / email jaisa nahi
+AlexMorgan1!
+The password is too similar to the first name.
+9
+Confirm same
+mismatch
+Passwords do not match.
+Allowed special characters:
+! @ # $ % ^ & * ( ) _ + - = [ ] { } \| ; : ' , . < > ? / \ ~`
+
+Valid example: CreateA-StrongPass1
+
+Invalid: password, 12345678, alex1234, CREATEA-STRONG1, createa-strong1
+
+Frontend helper text
+Password field ke neeche yeh dikhao:
+
+
+Password must:
+• Be 8–128 characters
+• Include 1 uppercase letter (A-Z)
+• Include 1 lowercase letter (a-z)
+• Include 1 number (0-9)
+• Include 1 special character (!@#$%^&*_- etc.)
+• Not be a common password
+• Not use your name or email
+• Match Confirm password
