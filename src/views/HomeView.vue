@@ -26,8 +26,13 @@
             </div>
             <template v-if="signInMode === 'organization'">
               <p class="signin-drop-sub">Sign in with your organization's workspace.</p>
+              <div class="policy-gate">
+                <p v-if="policyComplete" class="policy-gate-hint done">✓ Policy questions answered.</p>
+                <p v-else class="policy-gate-hint">Answer 8 quick policy questions to unlock Slack / Teams sign-in.</p>
+                <button type="button" class="policy-gate-btn" @click="openPolicyQuiz(policyComplete)">{{ policyComplete ? 'Review policy answers' : 'Answer policy questions →' }}</button>
+              </div>
               <div class="choice-group two-cols">
-                <div class="choice choice-auth" @click="authComingSoon('slack')">
+                <div class="choice choice-auth" :class="{ locked: !policyComplete }" :aria-disabled="!policyComplete" @click="signInWithSlack()">
                   <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
                     <rect x="9" y="1" width="6" height="15" rx="3" fill="#36C5F0" />
                     <rect x="1" y="9" width="15" height="6" rx="3" fill="#2EB67D" />
@@ -36,7 +41,7 @@
                   </svg>
                   SLACK
                 </div>
-                <div class="choice choice-auth" @click="signInWithTeams()">
+                <div class="choice choice-auth" :class="{ locked: !policyComplete }" :aria-disabled="!policyComplete" @click="signInWithTeams()">
                   <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
                     <rect width="24" height="24" rx="4" fill="#5059C9" />
                     <text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#fff">T</text>
@@ -117,10 +122,15 @@
               </div>
             </div>
             <template v-if="form.enrollAs === 'organization'">
+              <div class="policy-gate">
+                <p v-if="policyComplete" class="policy-gate-hint done">✓ Policy questions answered.</p>
+                <p v-else class="policy-gate-hint">Answer 8 quick policy questions to unlock Slack / Teams sign-up.</p>
+                <button type="button" class="policy-gate-btn" @click="openPolicyQuiz(policyComplete)">{{ policyComplete ? 'Review policy answers' : 'Answer policy questions →' }}</button>
+              </div>
               <div class="form-divider">OR SIGN UP WITH</div>
               <div class="field full" style="margin-bottom: 16px;">
                 <div class="choice-group two-cols">
-                  <div class="choice choice-auth" @click="authComingSoon('slack')">
+                  <div class="choice choice-auth" :class="{ locked: !policyComplete }" :aria-disabled="!policyComplete" @click="signInWithSlack()">
                     <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
                       <rect x="9" y="1" width="6" height="15" rx="3" fill="#36C5F0" />
                       <rect x="1" y="9" width="15" height="6" rx="3" fill="#2EB67D" />
@@ -129,7 +139,7 @@
                     </svg>
                     SLACK
                   </div>
-                  <div class="choice choice-auth" @click="signInWithTeams()">
+                  <div class="choice choice-auth" :class="{ locked: !policyComplete }" :aria-disabled="!policyComplete" @click="signInWithTeams()">
                     <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
                       <rect width="24" height="24" rx="4" fill="#5059C9" />
                       <text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#fff">T</text>
@@ -294,6 +304,13 @@
       </form>
   </div>
 
+  <OrgPolicyQuizModal
+    v-if="showPolicyQuiz"
+    v-model:answers="policyAnswers"
+    :review="policyReview"
+    @close="showPolicyQuiz = false"
+    @finish="onPolicyFinish"
+  />
   <AvatarPickerModal v-if="showAvatarPicker" @confirm="onAvatarConfirmed" @close="showAvatarPicker = false; signedInLicense = null" />
 
   <LicenseIssuedModal
@@ -874,12 +891,15 @@
 import { ref, reactive, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AvatarPickerModal from '../components/AvatarPickerModal.vue'
+import OrgPolicyQuizModal from '../components/OrgPolicyQuizModal.vue'
+import { isPolicyComplete, loadPolicyAnswers, savePolicyAnswers, type PolicyAnswers } from '../lib/orgPolicyQuestions'
 import type { AvatarConfig } from '../lib/avatar-parts'
 import LicenseIssuedModal from '../components/LicenseIssuedModal.vue'
 import aidlLogo from '../assets/images/aidl-logo.png'
-import { notifyInfo, notifyError, notifyLoading, notifyClose } from '../lib/notify.js'
+import { notifyError, notifyLoading, notifyClose } from '../lib/notify.js'
 import { downloadLicenseCertificate } from '../lib/downloadLicense.js'
 import { startTeamsLogin, consumeTeamsAuthCallback } from '../lib/msTeamsAuth'
+import { startSlackLogin } from '../lib/slackAuth'
 import { signup, signin, ApiError, type ApiUser } from '../lib/authApi'
 import { getCountries, getStates, getCities, type Country, type State as LocationState, type City } from '../lib/locationsApi'
 import '../styles/home-landing.css'
@@ -1026,6 +1046,8 @@ function closeSignInAndEnroll(path: 'adult' | 'junior') {
 
 function handleDocClick(e: MouseEvent) {
   const target = e.target as HTMLElement
+  // Clicks inside the policy popup or an alert never close the form (guide 11).
+  if (target.closest('.opq-backdrop, .swal2-container')) return
   if (signInOpen.value && !target.closest('.signin-wrap')) {
     signInOpen.value = null
   }
@@ -1412,8 +1434,54 @@ function startSession(licenseId: string, entry: RegistryEntry) {
   } catch (e) {}
 }
 
-function authComingSoon(provider: 'slack') {
-  notifyInfo(`Sign in with ${provider === 'slack' ? 'Slack' : 'Microsoft Teams'} is coming soon!`, 'Coming Soon')
+// Organization policy questions (AIDL Slack guide 4–5). Slack and Teams stay
+// locked until all 8 are answered; answers are kept in the browser until the
+// login finishes, then saved on the organization by the backend.
+const policyAnswers = ref<PolicyAnswers>(loadPolicyAnswers())
+const policyComplete = computed(() => isPolicyComplete(policyAnswers.value))
+const showPolicyQuiz = ref(false)
+const policyReview = ref(false)
+
+watch(policyAnswers, (answers) => savePolicyAnswers(answers))
+
+function openPolicyQuiz(review = false) {
+  policyReview.value = review
+  showPolicyQuiz.value = true
+}
+
+function onPolicyFinish(answers: PolicyAnswers) {
+  policyAnswers.value = answers
+  showPolicyQuiz.value = false
+}
+
+// Choosing Organization (enroll form or sign-in tab) opens the questions
+// straight away when they aren't answered yet.
+watch(() => form.enrollAs, (value) => {
+  if (value === 'organization' && !policyComplete.value) openPolicyQuiz()
+})
+watch(signInMode, (value) => {
+  if (value === 'organization' && !policyComplete.value) openPolicyQuiz()
+})
+
+// SLACK button (sign-in dropdown and the org enroll form) — GET
+// /api/auth/slack/login/, then redirect to Slack. Slack's redirect back goes
+// through the backend to /auth/callback (TeamsCallbackView, mode=slack).
+async function signInWithSlack() {
+  // A locked button sends nothing — it just reopens the questions.
+  if (!policyComplete.value) {
+    openPolicyQuiz()
+    return
+  }
+  notifyLoading('Opening Slack…', 'One moment')
+  try {
+    await startSlackLogin('organization', policyAnswers.value)
+  } catch (e) {
+    notifyClose()
+    notifyError(
+      e instanceof Error ? e.message : 'Could not start Slack sign-in.',
+      'Slack Sign-In Failed'
+    )
+  }
 }
 
 // TEAMS button (sign-in dropdown and the org enroll form both call this) —
@@ -1422,6 +1490,10 @@ function authComingSoon(provider: 'slack') {
 // browser to the returned auth_url. The Microsoft redirect back to this page
 // is picked up by consumeTeamsAuthCallback() in onMounted below.
 async function signInWithTeams() {
+  if (!policyComplete.value) {
+    openPolicyQuiz()
+    return
+  }
   notifyLoading('Opening Microsoft Teams…', 'One moment')
   try {
     await startTeamsLogin('organization')
@@ -2290,6 +2362,12 @@ body.mode-junior .field input:focus, body.mode-junior .field select:focus { back
 body.mode-junior .choice.active { background: rgb(46, 199, 99); }
 .choice-auth { display: flex; align-items: center; justify-content: center; gap: 8px; }
 .choice-auth svg { flex-shrink: 0; }
+.choice-auth.locked { opacity: 0.45; filter: grayscale(1); }
+.policy-gate { margin: 4px 0 14px; }
+.policy-gate-hint { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--ink); margin: 0 0 10px; }
+.policy-gate-hint.done { font-weight: 700; }
+.policy-gate-btn { width: 100%; border: 3px solid var(--ink); background: var(--sign-yellow); padding: 12px 10px; font-family: "Bungee", sans-serif; font-size: 12px; text-transform: uppercase; color: var(--ink); cursor: pointer; box-shadow: 3px 3px 0 var(--ink); }
+.policy-gate-btn:hover { filter: brightness(1.04); }
 .form-divider { display: flex; align-items: center; gap: 10px; margin: 4px 0 16px; font-family: "JetBrains Mono", monospace; font-size: 10px; text-transform: uppercase; color: var(--ink); opacity: 0.7; }
 .form-divider::before, .form-divider::after { content: ''; flex: 1; border-top: 2px dashed var(--ink); opacity: 0.4; }
 .form-foot { background: var(--cream-2); border-top: 3px dashed var(--ink); padding: 18px 28px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; min-width: 0; }

@@ -55,6 +55,11 @@ export interface TeamsAuthResult extends TeamsProfile {
   accessToken: string
   refreshToken: string
   openTeams: boolean
+  // Slack organization login (mode=slack): link to the #aidl channel.
+  slackUrl: string
+  openSlack: boolean
+  // Slack org login: '0' when the organization has no saved policy answers.
+  policyCompleted: string | null
 }
 
 // Call on app load. If the URL carries the tokens the backend callback
@@ -82,6 +87,9 @@ export function consumeTeamsAuthCallback(): TeamsAuthResult | null {
     landedOn: (params.get('landed_on') as LandedOn) || 'chat',
   }
   const openTeams = params.get('open_teams') === '1'
+  const slackUrl = params.get('slack_url') || ''
+  const openSlack = params.get('open_slack') === '1'
+  const policyCompleted = params.get('policy_completed')
   console.log('[TeamsAuth] consumeTeamsAuthCallback: parsed profile =', profile, 'openTeams =', openTeams)
 
   try {
@@ -104,7 +112,7 @@ export function consumeTeamsAuthCallback(): TeamsAuthResult | null {
   // block a popup opened at this point almost every time, with no reliable
   // way to detect the block synchronously. TeamsCallbackView opens Teams
   // from a real button click instead, which browsers never block.
-  return { accessToken, refreshToken, openTeams, ...profile }
+  return { accessToken, refreshToken, openTeams, slackUrl, openSlack, policyCompleted, ...profile }
 }
 
 export function getStoredAccessToken(): string | null {
