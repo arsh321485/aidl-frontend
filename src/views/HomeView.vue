@@ -300,7 +300,6 @@
       </form>
   </div>
 
-  />
   <OtpModal
     v-if="otpChallenge"
     :title="otpPurpose === 'signup' ? 'Confirm your email' : 'Check your email'"
