@@ -82,7 +82,7 @@
           </div>
 
           <div>
-            <h4>2 · Say something</h4>
+            <h4>2 · Message</h4>
             <div class="cap-row">
               <textarea v-model="caption"></textarea>
             </div>
@@ -103,14 +103,38 @@
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="#1877F2"><path d="M22 12a10 10 0 1 0-11.6 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.4v7A10 10 0 0 0 22 12z" /></svg>
                 FACEBOOK
               </a>
+              <button type="button" class="sh" @click="shareToApp('Instagram', 'https://www.instagram.com/')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#E4405F" stroke-width="2.2"><rect x="3" y="3" width="18" height="18" rx="5" /><circle cx="12" cy="12" r="4.2" /><circle cx="17.4" cy="6.6" r="1" fill="#E4405F" stroke="none" /></svg>
+                INSTAGRAM
+              </button>
+              <button type="button" class="sh" @click="shareToApp('TikTok', 'https://www.tiktok.com/upload')">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#14140f"><path d="M16.6 5.8a4.3 4.3 0 0 1-1-2.8h-3.1v12.4a2.6 2.6 0 1 1-2.6-2.6c.3 0 .5 0 .8.1V9.7a5.8 5.8 0 1 0 4.9 5.7V9.1a7.3 7.3 0 0 0 4.3 1.4V7.4a4.3 4.3 0 0 1-3.3-1.6z" /></svg>
+                TIKTOK
+              </button>
               <a class="sh" :href="waHref" target="_blank" rel="noopener">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="#25D366"><path d="M12 2a10 10 0 0 0-8.6 15L2 22l5.2-1.4A10 10 0 1 0 12 2zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.2-.5.1-1 .1-1.7-.1a12 12 0 0 1-5.2-4.5c-.4-.6-.9-1.5-.9-2.4 0-.9.5-1.4.7-1.6.2-.2.4-.3.6-.3h.5c.2 0 .4 0 .6.5l.7 1.7c.1.2 0 .4-.1.5l-.3.4c-.1.1-.3.3-.1.6.2.3.7 1.1 1.4 1.8.9.8 1.6 1 1.9 1.2.2.1.4 0 .5-.1l.6-.7c.2-.2.3-.2.6-.1l1.6.8c.2.1.4.2.5.3 0 .1 0 .5-.1.8z" /></svg>
                 WHATSAPP
+              </a>
+              <a class="sh" :href="telegramHref" target="_blank" rel="noopener">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#26A5E4"><path d="M21.9 4.3 18.6 20c-.2 1.1-.9 1.4-1.8.9l-5-3.7-2.4 2.3c-.3.3-.5.5-1 .5l.4-5.1 9.3-8.4c.4-.4-.1-.6-.6-.2L6 13.5l-4.9-1.5c-1.1-.3-1.1-1.1.2-1.6L20.6 3c.9-.3 1.7.2 1.3 1.3z" /></svg>
+                TELEGRAM
+              </a>
+              <a class="sh" :href="threadsHref" target="_blank" rel="noopener">
+                <svg width="16" height="16" viewBox="0 0 24 24"><text x="12" y="18" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="19" fill="#14140f">@</text></svg>
+                THREADS
+              </a>
+              <a class="sh" :href="redditHref" target="_blank" rel="noopener">
+                <svg width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="11" fill="#FF4500" /><ellipse cx="12" cy="14" rx="6.5" ry="4.3" fill="#fff" /><circle cx="9.6" cy="13.6" r="1.1" fill="#FF4500" /><circle cx="14.4" cy="13.6" r="1.1" fill="#FF4500" /><circle cx="17.2" cy="7" r="1.4" fill="#fff" /></svg>
+                REDDIT
               </a>
               <button type="button" class="sh" @click="copySlack">
                 <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#36C5F0" d="M9.5 15.2a2.4 2.4 0 1 1-2.4-2.4h2.4v2.4z" /><path fill="#2EB67D" d="M13.1 10.5a2.4 2.4 0 0 1 2.4 2.4 2.4 2.4 0 0 1-2.4 2.4h-6a2.4 2.4 0 0 1 0-4.8h6z" /><path fill="#ECB22E" d="M19 13.1a2.4 2.4 0 1 1 2.4 2.4H19v-2.4z" /><path fill="#E01E5A" d="M14.9 17.8a2.4 2.4 0 0 1-2.4-2.4 2.4 2.4 0 0 1 2.4-2.4h6a2.4 2.4 0 0 1 0 4.8h-6z" /></svg>
                 SLACK
               </button>
+              <a class="sh" :href="teamsHref" target="_blank" rel="noopener">
+                <svg width="16" height="16" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#5059C9" /><text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#fff">T</text></svg>
+                TEAMS
+              </a>
               <a class="sh" :href="mailHref">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#14140f" stroke-width="2.2"><rect x="2.5" y="4.5" width="19" height="15" /><path d="M3 6l9 7 9-7" /></svg>
                 EMAIL
@@ -226,6 +250,10 @@ const linkedinHref = computed(() => `https://www.linkedin.com/sharing/share-offs
 const xHref = computed(() => `https://twitter.com/intent/tweet?text=${encodeURIComponent(caption.value)}&url=${encodeURIComponent(verifyUrl())}`)
 const fbHref = computed(() => `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(verifyUrl())}`)
 const waHref = computed(() => `https://wa.me/?text=${encodeURIComponent(caption.value + ' ' + verifyUrl())}`)
+const telegramHref = computed(() => `https://t.me/share/url?url=${encodeURIComponent(verifyUrl())}&text=${encodeURIComponent(caption.value)}`)
+const threadsHref = computed(() => `https://www.threads.net/intent/post?text=${encodeURIComponent(caption.value + ' ' + verifyUrl())}`)
+const redditHref = computed(() => `https://www.reddit.com/submit?url=${encodeURIComponent(verifyUrl())}&title=${encodeURIComponent(caption.value)}`)
+const teamsHref = computed(() => `https://teams.microsoft.com/share?href=${encodeURIComponent(verifyUrl())}&msgText=${encodeURIComponent(caption.value)}`)
 const mailHref = computed(() => `mailto:?subject=${encodeURIComponent('My AI Driving License — ' + props.licenseId)}&body=${encodeURIComponent(caption.value + '\n\n' + verifyUrl())}`)
 
 // A single bottom-of-screen toast, rendered as a template ROOT SIBLING of
@@ -500,24 +528,54 @@ function drawLicenseCard(ctx: CanvasRenderingContext2D, w: number, h: number) {
   ctx.fillText('AUTHORISED SIGNATORY', w - pad, footerY + 32)
 }
 
-function downloadImage() {
+function licenseBlob(): Promise<Blob | null> {
   const w = 1120
   const h = Math.round(w / 1.586)
   const cv = document.createElement('canvas')
   cv.width = w
   cv.height = h
   const ctx = cv.getContext('2d')
-  if (!ctx) return
+  if (!ctx) return Promise.resolve(null)
   drawLicenseCard(ctx, w, h)
-  cv.toBlob((b) => {
-    if (!b) return
-    const a = document.createElement('a')
-    a.href = URL.createObjectURL(b)
-    a.download = `${props.licenseId}.png`
-    a.click()
-    setTimeout(() => URL.revokeObjectURL(a.href), 4000)
-    showToast('LICENSE IMAGE DOWNLOADED')
-  })
+  return new Promise((resolve) => cv.toBlob(resolve))
+}
+
+function saveBlob(b: Blob) {
+  const a = document.createElement('a')
+  a.href = URL.createObjectURL(b)
+  a.download = `${props.licenseId}.png`
+  a.click()
+  setTimeout(() => URL.revokeObjectURL(a.href), 4000)
+}
+
+async function downloadImage() {
+  const b = await licenseBlob()
+  if (!b) return
+  saveBlob(b)
+  showToast('LICENSE IMAGE DOWNLOADED')
+}
+
+// Instagram and TikTok have no web "share a link" page: they post images
+// from their apps. On phones the system share sheet sends the license image
+// + caption straight to the app; on computers we save the image, copy the
+// caption and open the site so the user can upload it.
+async function shareToApp(app: string, url: string) {
+  const b = await licenseBlob()
+  if (!b) return
+  const text = `${caption.value}\n${verifyUrl()}`
+  const file = new File([b], `${props.licenseId}.png`, { type: 'image/png' })
+  if (navigator.canShare?.({ files: [file] })) {
+    try {
+      await navigator.share({ files: [file], text })
+      return
+    } catch (e) {
+      if (e instanceof DOMException && e.name === 'AbortError') return
+    }
+  }
+  saveBlob(b)
+  try { await navigator.clipboard.writeText(text) } catch (e) {}
+  window.open(url, '_blank', 'noopener')
+  showToast(`IMAGE SAVED + CAPTION COPIED — POST IT ON ${app.toUpperCase()}`)
 }
 </script>
 

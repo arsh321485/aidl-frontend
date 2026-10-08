@@ -1,11 +1,11 @@
 <template>
   <div class="teams-callback">
     <img :src="aidlLogo" alt="AIDL" class="teams-callback__logo" />
-    <OrgPolicyQuizModal
-      v-if="policyPrompt"
-      v-model:answers="policyAnswers"
-      @close="finishPolicy(false)"
-      @finish="finishPolicy(true)"
+    <AvatarPickerModal
+      v-if="pickAvatar"
+      confirm-label="Confirm & continue →"
+      @confirm="onAvatarPicked"
+      @close="continueToWorkspace"
     />
     <template v-if="slackUrl">
       <h1 class="teams-callback__title">You're signed in with Slack</h1>
@@ -26,9 +26,8 @@ import { useRouter } from 'vue-router'
 import aidlLogo from '../assets/images/aidl-logo.png'
 import { notifyError } from '../lib/notify.js'
 import { consumeTeamsAuthCallback, getCurrentTeamsUser } from '../lib/msTeamsAuth'
-import OrgPolicyQuizModal from '../components/OrgPolicyQuizModal.vue'
-import { sendPolicyAnswers } from '../lib/orgPolicyApi'
-import { isPolicyComplete, loadPolicyAnswers, savePolicyAnswers, type PolicyAnswers } from '../lib/orgPolicyQuestions'
+import AvatarPickerModal from '../components/AvatarPickerModal.vue'
+import type { AvatarConfig } from '../lib/avatar-parts'
 
 const router = useRouter()
 // Slack sign-in lands here too (backend adds mode=slack); it carries the
@@ -49,32 +48,40 @@ function openInNewTab(url: string): boolean {
   return true
 }
 
-// Guide 4.7: the backend says whether this organization has answered the
-// 8 policy questions. If not, send the answers this browser has — or ask
-// them now (e.g. first sign-in from another laptop) before opening Slack.
-const policyPrompt = ref(false)
-const policyAnswers = ref<PolicyAnswers>(loadPolicyAnswers())
-let resolvePolicy: (() => void) | null = null
+// AI-C-005: organization admins get an avatar too. It's picked here, after
+// Slack / Teams sign-in, and saved like an individual's (aidl-avatars, keyed
+// by email). Opening the workspace from that click also means the browser
+// never blocks the new tab.
+const pickAvatar = ref(false)
+let avatarEmail = ''
+let workspace: { kind: 'slack' | 'teams'; url: string } | null = null
 
-async function ensurePolicyAnswers(token: string) {
-  if (!isPolicyComplete(policyAnswers.value)) {
-    policyPrompt.value = true
-    statusText.value = "One more step: answer your organization's policy questions."
-    await new Promise<void>((resolve) => { resolvePolicy = resolve })
-  }
-  if (isPolicyComplete(policyAnswers.value)) {
-    savePolicyAnswers(policyAnswers.value)
-    await sendPolicyAnswers(token, policyAnswers.value)
+function hasAvatar(email: string): boolean {
+  try {
+    return !!JSON.parse(localStorage.getItem('aidl-avatars') || '{}')[email.trim().toLowerCase()]
+  } catch (e) {
+    return false
   }
 }
 
-function finishPolicy(done: boolean) {
-  if (!done && !isPolicyComplete(policyAnswers.value)) {
-    notifyError('Your Slack cards use these answers — you can finish them later from Sign In → Organization.', 'Policy questions')
+function onAvatarPicked(avatar: AvatarConfig) {
+  try {
+    const all = JSON.parse(localStorage.getItem('aidl-avatars') || '{}')
+    all[avatarEmail.trim().toLowerCase()] = avatar
+    localStorage.setItem('aidl-avatars', JSON.stringify(all))
+  } catch (e) {}
+  continueToWorkspace()
+}
+
+function continueToWorkspace() {
+  pickAvatar.value = false
+  if (workspace && !openInNewTab(workspace.url)) {
+    if (workspace.kind === 'slack') {
+      slackUrl.value = workspace.url
+      return
+    }
   }
-  policyPrompt.value = false
-  statusText.value = `Finishing ${providerName} sign-in…`
-  resolvePolicy?.()
+  router.replace('/home')
 }
 
 function openSlack() {
@@ -128,8 +135,17 @@ onMounted(async () => {
   // Slack organization login: open Slack on the #aidl channel with the
   // Admin cards (guide 7.1). landed_on=chat means the channel couldn't be
   // created, so the workspace opens instead.
-  if (result.openSlack && result.policyCompleted === '0') {
-    await ensurePolicyAnswers(result.accessToken)
+  const target = result.openSlack && result.slackUrl ? { kind: 'slack' as const, url: result.slackUrl }
+    : result.openTeams && result.teamsUrl ? { kind: 'teams' as const, url: result.teamsUrl } : null
+  if (target && result.email && !hasAvatar(result.email)) {
+    if (target.kind === 'slack' && result.landedOn !== 'channel') {
+      notifyError('AIDL could not create the #aidl channel. Ask your Slack admin to allow the AIDL app.', 'Slack Channel')
+    }
+    workspace = target
+    avatarEmail = result.email
+    statusText.value = 'Pick your avatar, then we open your workspace.'
+    pickAvatar.value = true
+    return
   }
 
   if (result.openSlack && result.slackUrl) {

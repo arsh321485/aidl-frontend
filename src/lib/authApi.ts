@@ -18,7 +18,7 @@ export interface SignupPayload {
   email: string
   password: string
   confirm_password: string
-  mobile_number: string
+  mobile_number?: string // optional — the sign-up form no longer asks for it
   country: string
   state: string
   city: string
@@ -65,13 +65,28 @@ function saveAuth(data: AuthResponse) {
   } catch (e) {}
 }
 
-async function postAuth(path: string, payload: object, fallback: string): Promise<AuthResponse> {
+// Sign-up and sign-in answer with this first: the user then types the
+// 6-digit code we emailed (dev_code only when the backend runs locally
+// without an email account).
+export interface OtpChallenge {
+  otp_required: true
+  otp_token: string
+  email: string
+  message: string
+  dev_code?: string
+}
+
+export function isOtpChallenge(data: unknown): data is OtpChallenge {
+  return !!data && typeof data === 'object' && (data as OtpChallenge).otp_required === true
+}
+
+async function postAuth<T = AuthResponse>(path: string, payload: object, fallback: string): Promise<T> {
   let res: Response
   try {
     res = await fetch(`${API_BASE}${path}`, {
-      method: 'POST',
+      method: payload ? 'POST' : 'GET',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      body: payload ? JSON.stringify(payload) : undefined,
     })
   } catch (e) {
     throw new ApiError('Could not reach the server. Check your connection and try again.')
@@ -88,19 +103,45 @@ async function postAuth(path: string, payload: object, fallback: string): Promis
     throw new ApiError(first || fallback, fieldErrors)
   }
 
-  saveAuth(data as AuthResponse)
-  return data as AuthResponse
+  if ((data as AuthResponse).access_token) saveAuth(data as AuthResponse)
+  return data as T
 }
 
-// POST /api/auth/signup/ — on success stores the tokens + user and returns
-// the response; on a 400 throws ApiError carrying the per-field messages.
-export function signup(payload: SignupPayload): Promise<AuthResponse> {
+// POST /api/auth/signup/ — returns an OtpChallenge (code emailed; nothing is
+// stored yet) or, when the backend has codes switched off, the tokens. A 400
+// throws ApiError carrying the per-field messages.
+export function signup(payload: SignupPayload): Promise<AuthResponse | OtpChallenge> {
   return postAuth('/api/auth/signup/', payload, 'Sign up failed. Please try again.')
 }
 
-// POST /api/auth/signin/ — same token/error handling as signup().
-export function signin(payload: { enroll_as: EnrollAs; email: string; password: string }): Promise<AuthResponse> {
+// POST /api/auth/signup/verify/ — the emailed code; stores the tokens.
+export function verifySignup(otpToken: string, code: string): Promise<AuthResponse> {
+  return postAuth('/api/auth/signup/verify/', { otp_token: otpToken, code }, 'That code did not work.')
+}
+
+// POST /api/auth/signin/ — needs the picture code (getCaptcha); returns an
+// OtpChallenge like signup().
+export function signin(payload: {
+  enroll_as: EnrollAs
+  email: string
+  password: string
+  captcha_token?: string
+  captcha_answer?: string
+}): Promise<AuthResponse | OtpChallenge> {
   return postAuth('/api/auth/signin/', payload, 'Sign in failed. Please try again.')
+}
+
+export function verifySignin(otpToken: string, code: string): Promise<AuthResponse> {
+  return postAuth('/api/auth/signin/verify/', { otp_token: otpToken, code }, 'That code did not work.')
+}
+
+export function resendCode(otpToken: string): Promise<OtpChallenge> {
+  return postAuth('/api/auth/otp/resend/', { otp_token: otpToken }, 'Could not send a new code.')
+}
+
+// GET /api/auth/captcha/ — a fresh picture code for the sign-in form.
+export function getCaptcha(): Promise<{ captcha_token: string; image: string }> {
+  return postAuth('/api/auth/captcha/', null as unknown as object, 'Could not load the picture code.')
 }
 
 export function getAccessToken(): string | null {

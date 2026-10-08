@@ -21,7 +21,7 @@
       <div class="opq-guide">
         <div class="opq-avatar"><AvatarBuilder :config="guide" /></div>
         <div class="opq-bubble">
-          <small>Aisha · AIDL Guide</small>
+          <small>AIDL Guide</small>
           <p>{{ current.question }}</p>
         </div>
       </div>
