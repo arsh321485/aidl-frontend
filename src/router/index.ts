@@ -14,7 +14,14 @@ const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
+      // The site opens straight on the website (no sign-in page first).
       path: '/',
+      redirect: '/home',
+    },
+    {
+      // Old local "Fleet Office" admin sign-in — kept reachable for the
+      // /fleet-office guard, no longer the landing page.
+      path: '/admin/signin',
       name: 'signin',
       component: SignInView,
       meta: { public: true, authRole: 'admin' },

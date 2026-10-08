@@ -98,7 +98,7 @@ const password = ref('')
 const hasError = ref(false)
 const showPassword = ref(false)
 
-// The path picks the mode ('/' = admin, '/signin' = user) so admin vs.
+// The path picks the mode ('/admin/signin' = admin, '/signin' = user) so admin vs.
 // user sign-in are distinct, linkable/bookmarkable URLs rather than
 // component-local state — see router/index.ts.
 const mode = computed<'admin' | 'user'>(() => (route.meta.authRole === 'user' ? 'user' : 'admin'))
