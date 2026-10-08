@@ -26,13 +26,8 @@
             </div>
             <template v-if="signInMode === 'organization'">
               <p class="signin-drop-sub">Sign in with your organization's workspace.</p>
-              <div class="policy-gate">
-                <p v-if="policyComplete" class="policy-gate-hint done">✓ Policy questions answered.</p>
-                <p v-else class="policy-gate-hint">Answer 8 quick policy questions to unlock Slack / Teams sign-in.</p>
-                <button type="button" class="policy-gate-btn" @click="openPolicyQuiz(policyComplete)">{{ policyComplete ? 'Review policy answers' : 'Answer policy questions →' }}</button>
-              </div>
               <div class="choice-group two-cols">
-                <div class="choice choice-auth" :class="{ locked: !policyComplete }" :aria-disabled="!policyComplete" @click="signInWithSlack()">
+                <div class="choice choice-auth" @click="signInWithSlack()">
                   <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
                     <rect x="9" y="1" width="6" height="15" rx="3" fill="#36C5F0" />
                     <rect x="1" y="9" width="15" height="6" rx="3" fill="#2EB67D" />
@@ -41,7 +36,7 @@
                   </svg>
                   SLACK
                 </div>
-                <div class="choice choice-auth" :class="{ locked: !policyComplete }" :aria-disabled="!policyComplete" @click="signInWithTeams()">
+                <div class="choice choice-auth" @click="signInWithTeams()">
                   <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
                     <rect width="24" height="24" rx="4" fill="#5059C9" />
                     <text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#fff">T</text>
@@ -74,6 +69,20 @@
                 </button>
               </div>
               <p v-if="signInFieldErrors.password" class="field-error">{{ signInFieldErrors.password }}</p>
+              <div class="captcha-row">
+                <img v-if="captchaImage" :src="captchaImage" alt="Picture code" class="captcha-img" />
+                <span v-else class="captcha-img captcha-loading">Loading…</span>
+                <button type="button" class="captcha-refresh" aria-label="Show a new picture code" @click="loadCaptcha">↻</button>
+              </div>
+              <input
+                type="text"
+                v-model="captchaAnswer"
+                placeholder="Type the letters in the picture"
+                autocomplete="off"
+                autocapitalize="characters"
+                @keyup.enter="submitSignIn('senior')"
+              />
+              <p v-if="signInFieldErrors.captcha" class="field-error">{{ signInFieldErrors.captcha }}</p>
               <button type="button" class="btn btn-yellow signin-drop-btn" :disabled="signInSubmitting" @click="submitSignIn('senior')">{{ signInSubmitting ? 'Signing In…' : 'Sign In →' }}</button>
             </template>
             <p v-if="signInError" class="signin-drop-error">{{ signInError }}</p>
@@ -122,15 +131,10 @@
               </div>
             </div>
             <template v-if="form.enrollAs === 'organization'">
-              <div class="policy-gate">
-                <p v-if="policyComplete" class="policy-gate-hint done">✓ Policy questions answered.</p>
-                <p v-else class="policy-gate-hint">Answer 8 quick policy questions to unlock Slack / Teams sign-up.</p>
-                <button type="button" class="policy-gate-btn" @click="openPolicyQuiz(policyComplete)">{{ policyComplete ? 'Review policy answers' : 'Answer policy questions →' }}</button>
-              </div>
               <div class="form-divider">OR SIGN UP WITH</div>
               <div class="field full" style="margin-bottom: 16px;">
                 <div class="choice-group two-cols">
-                  <div class="choice choice-auth" :class="{ locked: !policyComplete }" :aria-disabled="!policyComplete" @click="signInWithSlack()">
+                  <div class="choice choice-auth" @click="signInWithSlack()">
                     <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
                       <rect x="9" y="1" width="6" height="15" rx="3" fill="#36C5F0" />
                       <rect x="1" y="9" width="15" height="6" rx="3" fill="#2EB67D" />
@@ -139,7 +143,7 @@
                     </svg>
                     SLACK
                   </div>
-                  <div class="choice choice-auth" :class="{ locked: !policyComplete }" :aria-disabled="!policyComplete" @click="signInWithTeams()">
+                  <div class="choice choice-auth" @click="signInWithTeams()">
                     <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
                       <rect width="24" height="24" rx="4" fill="#5059C9" />
                       <text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#fff">T</text>
@@ -204,12 +208,7 @@
               </div>
             </div>
             <div class="form-row">
-              <div class="field">
-                <label>Mobile Number <span>*</span></label>
-                <input type="tel" placeholder="+1 555 000 0000" v-model="form.mobile" />
-                <p v-if="fieldErrors.mobile_number" class="field-error">{{ fieldErrors.mobile_number }}</p>
-              </div>
-              <div class="field">
+              <div class="field full">
                 <label>Country <span>*</span></label>
                 <select v-model="countryCode" @change="onCountryChange">
                   <option value="" disabled>{{ countriesLoading ? 'Loading countries…' : 'Select country' }}</option>
@@ -256,15 +255,12 @@
                 <p v-if="fieldErrors.city" class="field-error">{{ fieldErrors.city }}</p>
               </div>
             </div>
-            <div class="field full" style="margin-bottom: 16px;">
-              <label>{{ mode === 'junior' ? 'Pick Your Class' : 'Your License Class' }}</label>
-              <div class="choice-group" :class="{ 'two-cols': mode === 'junior', 'one-col': mode !== 'junior' }" id="classChoice">
+            <div v-if="mode === 'junior'" class="field full" style="margin-bottom: 16px;">
+              <label>Pick Your Class</label>
+              <div class="choice-group two-cols" id="classChoice">
                 <template v-if="mode === 'junior'">
                   <div class="choice" :class="{ active: activeClass === 'J' }" @click="activeClass = 'J'" style="font-size:10px;">JUNIOR<br/>8–12</div>
                   <div class="choice" :class="{ active: activeClass === 'T' }" @click="activeClass = 'T'" style="font-size:10px;">CREW<br/>12–16</div>
-                </template>
-                <template v-else>
-                  <div class="choice active">CLASS&nbsp;L · LEARNER'S PERMIT</div>
                 </template>
               </div>
             </div>
@@ -304,12 +300,17 @@
       </form>
   </div>
 
-  <OrgPolicyQuizModal
-    v-if="showPolicyQuiz"
-    v-model:answers="policyAnswers"
-    :review="policyReview"
-    @close="showPolicyQuiz = false"
-    @finish="onPolicyFinish"
+  />
+  <OtpModal
+    v-if="otpChallenge"
+    :title="otpPurpose === 'signup' ? 'Confirm your email' : 'Check your email'"
+    :email="otpChallenge.email"
+    :error="otpError"
+    :busy="otpBusy"
+    :dev-code="otpChallenge.dev_code"
+    @verify="onOtpVerify"
+    @resend="onOtpResend"
+    @close="otpChallenge = null"
   />
   <AvatarPickerModal v-if="showAvatarPicker" @confirm="onAvatarConfirmed" @close="showAvatarPicker = false; signedInLicense = null" />
 
@@ -891,8 +892,7 @@
 import { ref, reactive, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import AvatarPickerModal from '../components/AvatarPickerModal.vue'
-import OrgPolicyQuizModal from '../components/OrgPolicyQuizModal.vue'
-import { isPolicyComplete, loadPolicyAnswers, savePolicyAnswers, type PolicyAnswers } from '../lib/orgPolicyQuestions'
+import OtpModal from '../components/OtpModal.vue'
 import type { AvatarConfig } from '../lib/avatar-parts'
 import LicenseIssuedModal from '../components/LicenseIssuedModal.vue'
 import aidlLogo from '../assets/images/aidl-logo.png'
@@ -900,7 +900,10 @@ import { notifyError, notifyLoading, notifyClose } from '../lib/notify.js'
 import { downloadLicenseCertificate } from '../lib/downloadLicense.js'
 import { startTeamsLogin, consumeTeamsAuthCallback } from '../lib/msTeamsAuth'
 import { startSlackLogin } from '../lib/slackAuth'
-import { signup, signin, ApiError, type ApiUser } from '../lib/authApi'
+import {
+  signup, signin, verifySignup, verifySignin, resendCode, getCaptcha, isOtpChallenge,
+  ApiError, type ApiUser, type OtpChallenge,
+} from '../lib/authApi'
 import { getCountries, getStates, getCities, type Country, type State as LocationState, type City } from '../lib/locationsApi'
 import '../styles/home-landing.css'
 
@@ -1037,6 +1040,68 @@ function toggleSignIn(which: 'senior' | 'junior') {
   signInError.value = ''
   for (const key of Object.keys(signInFieldErrors)) delete signInFieldErrors[key]
   showEnrollModal.value = false
+  captchaAnswer.value = ''
+  if (signInOpen.value === 'senior') loadCaptcha()
+}
+
+// Sign-in picture code (AI-C-008). Each one works once, so a new one is
+// loaded after every attempt.
+const captchaToken = ref('')
+const captchaImage = ref('')
+const captchaAnswer = ref('')
+async function loadCaptcha() {
+  captchaImage.value = ''
+  captchaAnswer.value = ''
+  try {
+    const c = await getCaptcha()
+    captchaToken.value = c.captcha_token
+    captchaImage.value = c.image
+  } catch (e) {
+    signInFieldErrors.captcha = 'Could not load the picture code — tap ↻.'
+  }
+}
+
+// The emailed 6-digit code, after Register (AI-C-004) and Sign In (AI-C-008).
+const otpChallenge = ref<OtpChallenge | null>(null)
+const otpPurpose = ref<'signup' | 'signin'>('signup')
+const otpError = ref('')
+const otpBusy = ref(false)
+
+function askForCode(challenge: OtpChallenge, purpose: 'signup' | 'signin') {
+  otpPurpose.value = purpose
+  otpError.value = ''
+  otpChallenge.value = challenge
+}
+
+async function onOtpVerify(code: string) {
+  if (!otpChallenge.value || otpBusy.value) return
+  otpBusy.value = true
+  otpError.value = ''
+  try {
+    if (otpPurpose.value === 'signup') {
+      await verifySignup(otpChallenge.value.otp_token, code)
+      otpChallenge.value = null
+      afterSignup()
+    } else {
+      const { user } = await verifySignin(otpChallenge.value.otp_token, code)
+      otpChallenge.value = null
+      afterSeniorSignIn(user)
+    }
+  } catch (e) {
+    otpError.value = e instanceof ApiError ? e.message : 'That code did not work.'
+  } finally {
+    otpBusy.value = false
+  }
+}
+
+async function onOtpResend() {
+  if (!otpChallenge.value) return
+  try {
+    askForCode(await resendCode(otpChallenge.value.otp_token), otpPurpose.value)
+    otpError.value = 'A new code is on its way.'
+  } catch (e) {
+    otpError.value = e instanceof ApiError ? e.message : 'Could not send a new code.'
+  }
 }
 
 function closeSignInAndEnroll(path: 'adult' | 'junior') {
@@ -1047,7 +1112,7 @@ function closeSignInAndEnroll(path: 'adult' | 'junior') {
 function handleDocClick(e: MouseEvent) {
   const target = e.target as HTMLElement
   // Clicks inside the policy popup or an alert never close the form (guide 11).
-  if (target.closest('.opq-backdrop, .swal2-container')) return
+  if (target.closest('.opq-backdrop, .otp-backdrop, .swal2-container')) return
   if (signInOpen.value && !target.closest('.signin-wrap')) {
     signInOpen.value = null
   }
@@ -1222,7 +1287,6 @@ async function loadCountries() {
 
 async function onCountryChange() {
   const country = countries.value.find((c) => c.code === countryCode.value)
-  const previousPhoneCode = countries.value.find((c) => c.name === form.country)?.phone_code
   form.country = country?.name || ''
   form.state = ''
   form.city = ''
@@ -1236,10 +1300,6 @@ async function onCountryChange() {
   locationGuard.state = false
   locationGuard.city = false
   if (!country) return
-
-  // Pre-fill the mobile country code while the user hasn't typed a number yet.
-  const mobile = form.mobile.trim()
-  if (!mobile || mobile === previousPhoneCode) form.mobile = country.phone_code
 
   statesLoading.value = true
   try {
@@ -1434,47 +1494,13 @@ function startSession(licenseId: string, entry: RegistryEntry) {
   } catch (e) {}
 }
 
-// Organization policy questions (AIDL Slack guide 4–5). Slack and Teams stay
-// locked until all 8 are answered; answers are kept in the browser until the
-// login finishes, then saved on the organization by the backend.
-const policyAnswers = ref<PolicyAnswers>(loadPolicyAnswers())
-const policyComplete = computed(() => isPolicyComplete(policyAnswers.value))
-const showPolicyQuiz = ref(false)
-const policyReview = ref(false)
-
-watch(policyAnswers, (answers) => savePolicyAnswers(answers))
-
-function openPolicyQuiz(review = false) {
-  policyReview.value = review
-  showPolicyQuiz.value = true
-}
-
-function onPolicyFinish(answers: PolicyAnswers) {
-  policyAnswers.value = answers
-  showPolicyQuiz.value = false
-}
-
-// Choosing Organization (enroll form or sign-in tab) opens the questions
-// straight away when they aren't answered yet.
-watch(() => form.enrollAs, (value) => {
-  if (value === 'organization' && !policyComplete.value) openPolicyQuiz()
-})
-watch(signInMode, (value) => {
-  if (value === 'organization' && !policyComplete.value) openPolicyQuiz()
-})
-
 // SLACK button (sign-in dropdown and the org enroll form) — GET
 // /api/auth/slack/login/, then redirect to Slack. Slack's redirect back goes
 // through the backend to /auth/callback (TeamsCallbackView, mode=slack).
 async function signInWithSlack() {
-  // A locked button sends nothing — it just reopens the questions.
-  if (!policyComplete.value) {
-    openPolicyQuiz()
-    return
-  }
   notifyLoading('Opening Slack…', 'One moment')
   try {
-    await startSlackLogin('organization', policyAnswers.value)
+    await startSlackLogin('organization')
   } catch (e) {
     notifyClose()
     notifyError(
@@ -1490,10 +1516,6 @@ async function signInWithSlack() {
 // browser to the returned auth_url. The Microsoft redirect back to this page
 // is picked up by consumeTeamsAuthCallback() in onMounted below.
 async function signInWithTeams() {
-  if (!policyComplete.value) {
-    openPolicyQuiz()
-    return
-  }
   notifyLoading('Opening Microsoft Teams…', 'One moment')
   try {
     await startTeamsLogin('organization')
@@ -1517,15 +1539,15 @@ async function handleSubmit() {
   }
 
   submitting.value = true
+  let result
   try {
-    await signup({
+    result = await signup({
       enroll_as: form.enrollAs,
       first_name: form.firstName.trim(),
       last_name: form.lastName.trim(),
       email: form.email.trim().toLowerCase(),
       password: form.password,
       confirm_password: form.confirmPassword,
-      mobile_number: form.mobile.replace(/[\s\-().]/g, ''),
       country: form.country,
       state: form.state,
       city: form.city,
@@ -1540,7 +1562,7 @@ async function handleSubmit() {
       }
       // Errors for fields without an input of their own (enroll_as,
       // license_class, non_field_errors, ...) go in the general slot.
-      const shown = ['first_name', 'last_name', 'email', 'password', 'confirm_password', 'mobile_number', 'country', 'state', 'city']
+      const shown = ['first_name', 'last_name', 'email', 'password', 'confirm_password', 'country', 'state', 'city']
       const other = Object.entries(e.fieldErrors).find(([key]) => !shown.includes(key))
       if (other) formError.value = other[1][0] || ''
       else if (!Object.keys(e.fieldErrors).length) formError.value = e.message
@@ -1552,6 +1574,14 @@ async function handleSubmit() {
     submitting.value = false
   }
 
+  if (isOtpChallenge(result)) {
+    askForCode(result, 'signup')  // avatar + licence only after the code
+    return
+  }
+  afterSignup()
+}
+
+function afterSignup() {
   try { localStorage.setItem('aidl-selected-class', activeClass.value) } catch (e) {}
   showEnrollModal.value = false
   showAvatarPicker.value = true
@@ -1662,17 +1692,23 @@ async function submitSeniorSignIn() {
   const password = signInPassword.value
   if (!email) signInFieldErrors.email = 'Enter your email.'
   if (!password) signInFieldErrors.password = 'Enter your password.'
-  if (!email || !password) return
+  if (!captchaAnswer.value.trim()) signInFieldErrors.captcha = 'Type the letters in the picture.'
+  if (!email || !password || !captchaAnswer.value.trim()) return
 
   signInSubmitting.value = true
-  let user: ApiUser
+  let result
   try {
-    user = (await signin({ enroll_as: signInMode.value, email, password })).user
+    result = await signin({
+      enroll_as: signInMode.value, email, password,
+      captcha_token: captchaToken.value, captcha_answer: captchaAnswer.value.trim(),
+    })
   } catch (e) {
+    loadCaptcha()  // a picture code works once
     if (e instanceof ApiError) {
       if (e.fieldErrors.email?.[0]) signInFieldErrors.email = e.fieldErrors.email[0]
       if (e.fieldErrors.password?.[0]) signInFieldErrors.password = e.fieldErrors.password[0]
-      const other = Object.entries(e.fieldErrors).find(([key]) => key !== 'email' && key !== 'password')
+      if (e.fieldErrors.captcha?.[0]) signInFieldErrors.captcha = e.fieldErrors.captcha[0]
+      const other = Object.entries(e.fieldErrors).find(([key]) => !['email', 'password', 'captcha'].includes(key))
       if (other) signInError.value = other[1][0] || ''
       else if (!Object.keys(e.fieldErrors).length) signInError.value = e.message
     } else {
@@ -1683,6 +1719,15 @@ async function submitSeniorSignIn() {
     signInSubmitting.value = false
   }
 
+  if (isOtpChallenge(result)) {
+    signInOpen.value = null
+    askForCode(result, 'signin')
+    return
+  }
+  afterSeniorSignIn(result.user)
+}
+
+function afterSeniorSignIn(user: ApiUser) {
   let found = lookupLicenseByEmail(user.email)
   if (!found || !found.entry.classCode || !SENIOR_CLASSES.includes(found.entry.classCode)) {
     const now = new Date()
@@ -2336,6 +2381,11 @@ section.band { position: relative; padding: 120px 0; border-bottom: 4px solid va
 body.mode-junior .field input:focus, body.mode-junior .field select:focus { background: rgb(46, 199, 99); }
 .field.full { grid-column: 1 / -1; }
 .password-field { position: relative; display: flex; }
+.captcha-row { display: flex; align-items: stretch; gap: 8px; margin-top: 10px; }
+.captcha-img { flex: 1; height: 50px; min-width: 0; object-fit: contain; border: 2px solid var(--ink); background: #f5ecd2; }
+.captcha-loading { display: grid; place-items: center; font-family: "JetBrains Mono", monospace; font-size: 11px; }
+.captcha-refresh { width: 46px; border: 2px solid var(--ink); background: var(--sign-yellow); font-size: 20px; cursor: pointer; }
+.signin-drop .captcha-row + input { margin-top: 8px; }
 .password-field input { padding-right: 44px !important; }
 .password-toggle {
   position: absolute;

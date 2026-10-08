@@ -176,7 +176,7 @@
 
       <div class="ap-foot">
         <button type="button" class="ap-btn ap-btn-ghost" @click="$emit('close')">Cancel</button>
-        <button type="button" class="ap-btn ap-btn-red" :disabled="!canConfirm" @click="confirm">Confirm &amp; Register →</button>
+        <button type="button" class="ap-btn ap-btn-red" :disabled="!canConfirm" @click="confirm">{{ confirmLabel || 'Confirm & Register →' }}</button>
       </div>
     </div>
   </div>
@@ -191,6 +191,7 @@ import {
   DEFAULT_AVATAR, PRESETS, type AvatarConfig
 } from '../lib/avatar-parts'
 
+defineProps<{ confirmLabel?: string }>()
 const emit = defineEmits<{
   confirm: [avatar: AvatarConfig & { name?: string }]
   close: []
