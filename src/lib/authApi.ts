@@ -16,8 +16,8 @@ export interface SignupPayload {
   first_name: string
   last_name: string
   email: string
-  password: string
-  confirm_password: string
+  password?: string // optional — sign-in uses the emailed code
+  confirm_password?: string
   mobile_number?: string // optional — the sign-up form no longer asks for it
   country: string
   state: string
@@ -124,7 +124,7 @@ export function verifySignup(otpToken: string, code: string): Promise<AuthRespon
 export function signin(payload: {
   enroll_as: EnrollAs
   email: string
-  password: string
+  password?: string
   captcha_token?: string
   captcha_answer?: string
 }): Promise<AuthResponse | OtpChallenge> {

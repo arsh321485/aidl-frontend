@@ -46,7 +46,7 @@
               </div>
             </template>
             <template v-else>
-              <p class="signin-drop-sub">Enter your email and password</p>
+              <p class="signin-drop-sub">Enter your email — we'll email you a sign-in code.</p>
               <input
                 type="email"
                 v-model="signInEmail"
@@ -55,20 +55,6 @@
                 @keyup.enter="submitSignIn('senior')"
               />
               <p v-if="signInFieldErrors.email" class="field-error">{{ signInFieldErrors.email }}</p>
-              <div class="password-field">
-                <input
-                  :type="showSignInPassword ? 'text' : 'password'"
-                  v-model="signInPassword"
-                  placeholder="Password"
-                  autocomplete="current-password"
-                  @keyup.enter="submitSignIn('senior')"
-                />
-                <button type="button" class="password-toggle" @click="showSignInPassword = !showSignInPassword" :aria-label="showSignInPassword ? 'Hide password' : 'Show password'">
-                  <svg v-if="showSignInPassword" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-10-8-10-8a18.5 18.5 0 015.06-5.94M9.9 4.24A10.94 10.94 0 0112 4c7 0 10 8 10 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                  <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s3-8 11-8 11 8 11 8-3 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                </button>
-              </div>
-              <p v-if="signInFieldErrors.password" class="field-error">{{ signInFieldErrors.password }}</p>
               <div class="captcha-row">
                 <img v-if="captchaImage" :src="captchaImage" alt="Picture code" class="captcha-img" />
                 <span v-else class="captcha-img captcha-loading">Loading…</span>
@@ -172,39 +158,6 @@
                 <label>Email <span>*</span></label>
                 <input type="email" placeholder="you@company.com" v-model="form.email" />
                 <p v-if="fieldErrors.email" class="field-error">{{ fieldErrors.email }}</p>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="field full">
-                <label>Password <span>*</span></label>
-                <div class="password-field">
-                  <input :type="showFormPassword ? 'text' : 'password'" placeholder="Create a password" autocomplete="new-password" v-model="form.password" />
-                  <button type="button" class="password-toggle" @click="showFormPassword = !showFormPassword" :aria-label="showFormPassword ? 'Hide password' : 'Show password'">
-                    <svg v-if="showFormPassword" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-10-8-10-8a18.5 18.5 0 015.06-5.94M9.9 4.24A10.94 10.94 0 0112 4c7 0 10 8 10 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                    <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s3-8 11-8 11 8 11 8-3 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                  </button>
-                </div>
-                <div v-if="form.password && unmetPasswordRules.length" class="field-hint">
-                  Password must:
-                  <ul class="password-rules">
-                    <li v-for="rule in unmetPasswordRules" :key="rule">{{ rule }}</li>
-                  </ul>
-                </div>
-                <p v-if="fieldErrors.password" class="field-error">{{ fieldErrors.password }}</p>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="field full">
-                <label>Confirm Password <span>*</span></label>
-                <div class="password-field">
-                  <input :type="showConfirmPassword ? 'text' : 'password'" placeholder="Re-enter your password" autocomplete="new-password" v-model="form.confirmPassword" />
-                  <button type="button" class="password-toggle" @click="showConfirmPassword = !showConfirmPassword" :aria-label="showConfirmPassword ? 'Hide password' : 'Show password'">
-                    <svg v-if="showConfirmPassword" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.94 10.94 0 0112 20c-7 0-10-8-10-8a18.5 18.5 0 015.06-5.94M9.9 4.24A10.94 10.94 0 0112 4c7 0 10 8 10 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
-                    <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s3-8 11-8 11 8 11 8-3 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                  </button>
-                </div>
-                <p v-if="form.confirmPassword && form.confirmPassword !== form.password" class="field-hint">Must match the password above.</p>
-                <p v-if="fieldErrors.confirm_password" class="field-error">{{ fieldErrors.confirm_password }}</p>
               </div>
             </div>
             <div class="form-row">
@@ -1062,6 +1015,8 @@ async function loadCaptcha() {
 
 // The emailed 6-digit code, after Register (AI-C-004) and Sign In (AI-C-008).
 const otpChallenge = ref<OtpChallenge | null>(null)
+// The account created by Register (holds the Learner licence the server issued).
+const signupUser = ref<ApiUser | null>(null)
 const otpPurpose = ref<'signup' | 'signin'>('signup')
 const otpError = ref('')
 const otpBusy = ref(false)
@@ -1078,7 +1033,7 @@ async function onOtpVerify(code: string) {
   otpError.value = ''
   try {
     if (otpPurpose.value === 'signup') {
-      await verifySignup(otpChallenge.value.otp_token, code)
+      signupUser.value = (await verifySignup(otpChallenge.value.otp_token, code)).user
       otpChallenge.value = null
       afterSignup()
     } else {
@@ -1532,11 +1487,6 @@ async function handleSubmit() {
   formError.value = ''
   for (const key of Object.keys(fieldErrors)) delete fieldErrors[key]
 
-  if (form.enrollAs !== 'organization' && form.password !== form.confirmPassword) {
-    fieldErrors.confirm_password = "Passwords don't match."
-    return
-  }
-
   submitting.value = true
   let result
   try {
@@ -1545,8 +1495,6 @@ async function handleSubmit() {
       first_name: form.firstName.trim(),
       last_name: form.lastName.trim(),
       email: form.email.trim().toLowerCase(),
-      password: form.password,
-      confirm_password: form.confirmPassword,
       country: form.country,
       state: form.state,
       city: form.city,
@@ -1638,10 +1586,14 @@ function onAvatarConfirmed(avatar: AvatarConfig) {
   saveAvatarForEmail(form.email, avatar)
 
   const cls = activeClass.value
-  const licenseId = generateLicenseId(cls)
+  // Individuals get their Learner licence from the server at sign-up (1 year).
+  const server = cls === 'L' && signupUser.value?.licence_number ? signupUser.value : null
+  const licenseId = server ? String(server.licence_number) : generateLicenseId(cls)
   const holder = `${form.firstName} ${form.lastName}`.trim() || 'AIDL Member'
-  const now = new Date()
-  const oneYearOut = new Date(now.getTime() + 31536000000)
+  const now = server?.licence_issued_at ? new Date(String(server.licence_issued_at)) : new Date()
+  const oneYearOut = server?.licence_expires_at
+    ? new Date(String(server.licence_expires_at))
+    : new Date(now.getTime() + 31536000000)
   const issuedDate = now.toLocaleDateString('en-US')
   const expiresDate = oneYearOut.toLocaleDateString('en-US')
 
@@ -1655,7 +1607,6 @@ function onAvatarConfirmed(avatar: AvatarConfig) {
     end: '—',
     email: form.email.trim(),
     mobile: form.mobile.trim(),
-    password: form.password,
     enrollAs: form.enrollAs,
     orgName: form.enrollAs === 'organization' ? form.orgName : undefined,
     orgLogo: form.enrollAs === 'organization' ? form.orgLogo : undefined,
@@ -1688,17 +1639,15 @@ async function submitSeniorSignIn() {
   for (const key of Object.keys(signInFieldErrors)) delete signInFieldErrors[key]
 
   const email = signInEmail.value.trim().toLowerCase()
-  const password = signInPassword.value
   if (!email) signInFieldErrors.email = 'Enter your email.'
-  if (!password) signInFieldErrors.password = 'Enter your password.'
   if (!captchaAnswer.value.trim()) signInFieldErrors.captcha = 'Type the letters in the picture.'
-  if (!email || !password || !captchaAnswer.value.trim()) return
+  if (!email || !captchaAnswer.value.trim()) return
 
   signInSubmitting.value = true
   let result
   try {
     result = await signin({
-      enroll_as: signInMode.value, email, password,
+      enroll_as: signInMode.value, email,
       captcha_token: captchaToken.value, captcha_answer: captchaAnswer.value.trim(),
     })
   } catch (e) {
@@ -1728,14 +1677,16 @@ async function submitSeniorSignIn() {
 
 function afterSeniorSignIn(user: ApiUser) {
   let found = lookupLicenseByEmail(user.email)
+  if (user.licence_number && found?.id !== user.licence_number) found = undefined
   if (!found || !found.entry.classCode || !SENIOR_CLASSES.includes(found.entry.classCode)) {
-    const now = new Date()
+    const now = user.licence_issued_at ? new Date(String(user.licence_issued_at)) : new Date()
     const entry: RegistryEntry = {
       holder: user.full_name || `${user.first_name} ${user.last_name}`.trim() || 'AIDL Member',
       cls: CLASS_LABELS.L,
       classCode: 'L',
       iss: now.toLocaleDateString('en-US'),
-      exp: new Date(now.getTime() + 31536000000).toLocaleDateString('en-US'),
+      exp: (user.licence_expires_at ? new Date(String(user.licence_expires_at))
+        : new Date(now.getTime() + 31536000000)).toLocaleDateString('en-US'),
       hrs: '0 hrs · just enrolled',
       end: '—',
       email: user.email,
@@ -1743,7 +1694,7 @@ function afterSeniorSignIn(user: ApiUser) {
       enrollAs: user.enroll_as,
       orgName: user.organization_name || undefined,
     }
-    const id = generateLicenseId('L')
+    const id = user.licence_number ? String(user.licence_number) : generateLicenseId('L')
     saveDynamicEntry(id, entry)
     found = { id, entry }
   }
