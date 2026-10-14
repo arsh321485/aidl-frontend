@@ -12,6 +12,14 @@
     <div v-else-if="error && !data" class="pl-msg pl-err">{{ error }}</div>
 
     <template v-else-if="data">
+      <div v-if="returned === 'success'" class="pl-result activated">
+        <h2>✅ Payment received</h2>
+        <p>Thank you — your new plan is being activated. It shows here and in the Slack Admin Center within a minute.</p>
+      </div>
+      <div v-else-if="returned === 'cancelled'" class="pl-result">
+        <h2>Payment cancelled</h2>
+        <p>Nothing was charged. You can pick your plan again below.</p>
+      </div>
       <div v-if="result" class="pl-result" :class="result.status">
         <h2>{{ result.status === 'activated' ? '✅ Plan upgraded' : '📨 Request received' }}</h2>
         <p>{{ result.message }}</p>
@@ -113,8 +121,11 @@
             class="pl-go"
             :disabled="busy || !data.can_upgrade || !topics.length"
             @click="submit"
-          >{{ busy ? 'Please wait…' : data.test_mode ? 'Activate (test mode — no payment) →' : 'Continue to payment →' }}</button>
-          <p v-if="data.test_mode" class="pl-hint">Test mode is on: the upgrade is activated without payment.</p>
+          >{{ busy ? 'Please wait…' : buttonLabel }}</button>
+          <p v-if="paymentReady" class="pl-hint">You'll pay securely on Stripe's checkout page. Billed monthly per user.</p>
+          <p v-else-if="data.test_mode" class="pl-hint">Test mode is on: the upgrade is activated without payment.</p>
+          <p v-if="data.sales_email" class="pl-hint">Questions about plans? Email
+            <a :href="`mailto:${data.sales_email}`">{{ data.sales_email }}</a>.</p>
         </section>
       </template>
     </template>
@@ -148,6 +159,10 @@ const hours = Array.from({ length: 15 }, (_, i) => i + 6)
 
 const currentLabel = computed(() => data.value?.plans.find((p) => p.current)?.label || '')
 const targetPlan = computed(() => data.value?.plans.find((p) => p.key === target.value) || null)
+const returned = ref<'success' | 'cancelled' | ''>('')
+const paymentReady = computed(() => !!(target.value && data.value?.payment_ready?.[target.value]))
+const buttonLabel = computed(() => paymentReady.value ? 'Continue to payment →'
+  : data.value?.test_mode ? 'Activate (test mode — no payment) →' : 'Request upgrade →')
 
 // A higher plan, or Enterprise again to change its topics / schedule.
 function selectable(p: PlanInfo) {
@@ -219,6 +234,11 @@ async function submit() {
 
 onMounted(async () => {
   const token = typeof route.query.token === 'string' ? route.query.token : ''
+  const back = route.query.checkout
+  if (back === 'success' || back === 'cancelled') {
+    returned.value = back
+    router.replace({ path: '/plans', query: {} })
+  }
   if (token) {
     saveToken(token)
     router.replace({ path: '/plans', query: {} }) // keep the token out of the address bar
