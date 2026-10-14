@@ -36,6 +36,8 @@ export interface PlansData {
   pending: { plan: string } | null
   test_mode: boolean
   provider: string
+  payment_ready: Record<string, boolean>
+  sales_email: string
   topic_cards: number
   weekdays: string[]
   can_upgrade: boolean
