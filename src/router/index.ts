@@ -9,6 +9,7 @@ import SignInView from '../views/SignInView.vue'
 import SignUpView from '../views/SignUpView.vue'
 import FleetOfficeView from '../views/FleetOfficeView.vue'
 import TeamsCallbackView from '../views/TeamsCallbackView.vue'
+import PlansView from '../views/PlansView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -103,6 +104,13 @@ const router = createRouter({
       name: 'fleet-office',
       component: FleetOfficeView,
       meta: { requiresAdmin: true },
+    },
+    {
+      // Plan upgrades — opened from Slack (Admin Center → Upgrade plan) with ?token=
+      path: '/plans',
+      name: 'plans',
+      component: PlansView,
+      meta: { public: true },
     },
     {
       path: '/auth/callback',
