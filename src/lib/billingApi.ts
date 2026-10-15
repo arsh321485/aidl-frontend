@@ -13,6 +13,7 @@ export interface PlanInfo {
   cadence: string
   users: number | string
   picks_topics: boolean
+  all_topics: boolean
   custom_schedule: boolean
   current: boolean
   available: boolean
@@ -38,7 +39,7 @@ export interface PlansData {
   provider: string
   payment_ready: Record<string, boolean>
   sales_email: string
-  topic_cards: number
+  preview_cards: number
   weekdays: string[]
   can_upgrade: boolean
 }
@@ -101,7 +102,7 @@ async function call<T>(path: string, body?: object): Promise<T> {
 export const getPlans = () => call<PlansData>('/api/billing/plans/')
 
 export const previewCards = (plan: string, topics: string[]) =>
-  call<{ cards: PreviewCard[] }>('/api/billing/preview/', { plan, topics })
+  call<{ cards: PreviewCard[]; total: number }>('/api/billing/preview/', { plan, topics })
 
 export const checkout = (payload: {
   plan: string

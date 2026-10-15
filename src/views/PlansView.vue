@@ -43,16 +43,18 @@
             <li><b>{{ p.cards }}</b> awareness cards</li>
             <li>{{ p.cadence }}</li>
             <li>Users: {{ p.users }}</li>
-            <li v-if="p.picks_topics">Choose the topics of {{ data.topic_cards }} cards</li>
+            <li v-if="p.picks_topics">Choose the topics of your cards</li>
+            <li v-if="p.all_topics">Cards from all {{ data.categories.length }} topics</li>
             <li v-if="p.custom_schedule">Pick your delivery days and time</li>
           </ul>
         </button>
       </section>
 
-      <template v-if="targetPlan && targetPlan.picks_topics">
-        <section class="pl-box">
-          <h2>1 · Pick your topics</h2>
-          <p class="pl-hint">Your {{ data.topic_cards }} extra {{ targetPlan.label }} cards come from the topics you pick.</p>
+      <template v-if="targetPlan">
+        <section v-if="targetPlan.picks_topics" class="pl-box">
+          <h2>{{ step('topics') }} · Pick your topics</h2>
+          <p class="pl-hint">Your {{ targetPlan.label }} cards come from the topics you pick
+            ({{ targetPlan.cards }} cards a year, including the Default 12).</p>
           <div class="pl-topics">
             <button
               v-for="t in data.categories"
@@ -70,8 +72,20 @@
           <p v-if="fieldErrors.topics" class="pl-field-err">{{ fieldErrors.topics }}</p>
         </section>
 
+        <section v-else-if="targetPlan.all_topics" class="pl-box">
+          <h2>{{ step('topics') }} · Topics</h2>
+          <p class="pl-hint">{{ targetPlan.label }} covers all {{ data.categories.length }} topics —
+            {{ targetPlan.cards }} cards a year, including the Default 12.</p>
+          <div class="pl-topics">
+            <span v-for="t in data.categories" :key="t.code" class="pl-topic on" :title="t.covers">
+              <span class="pl-topic-title">{{ t.title }}</span>
+              <span class="pl-rating" :class="t.rating.toLowerCase()">{{ t.rating }}</span>
+            </span>
+          </div>
+        </section>
+
         <section v-if="targetPlan.custom_schedule" class="pl-box">
-          <h2>2 · Delivery schedule</h2>
+          <h2>{{ step('schedule') }} · Delivery schedule</h2>
           <p class="pl-hint">Choose 4 days a week and a time (each employee's own time zone).</p>
           <div class="pl-days">
             <button
@@ -90,9 +104,10 @@
         </section>
 
         <section class="pl-box">
-          <h2>{{ targetPlan.custom_schedule ? '3' : '2' }} · Your {{ data.topic_cards }} new cards</h2>
-          <p class="pl-hint">A preview of the cards you unlock — the full text appears in Slack after upgrading.</p>
-          <p v-if="!topics.length" class="pl-hint">Pick at least one topic to see your cards.</p>
+          <h2>{{ step('cards') }} · Your new cards</h2>
+          <p class="pl-hint">The first {{ preview.length }} of the {{ previewTotal }} cards you unlock — the full text
+            appears in Slack after upgrading.</p>
+          <p v-if="needsTopics" class="pl-hint">Pick at least one topic to see your cards.</p>
           <div v-else class="pl-cards">
             <article v-for="c in preview" :key="c.no" class="pl-card">
               <span class="pl-card-meta">{{ c.category }} · {{ c.type }}</span>
@@ -115,11 +130,11 @@
             <b>{{ targetPlan.price }}</b>
           </div>
           <p v-if="error" class="pl-field-err">{{ error }}</p>
-          <p v-if="!data.can_upgrade" class="pl-hint">Only the admin who set up AIDL can change the plan.</p>
+          <p v-if="!data.can_upgrade" class="pl-hint">Only the master admin, or admins allowed to manage the plan, can upgrade.</p>
           <button
             type="button"
             class="pl-go"
-            :disabled="busy || !data.can_upgrade || !topics.length"
+            :disabled="busy || !data.can_upgrade || needsTopics"
             @click="submit"
           >{{ busy ? 'Please wait…' : buttonLabel }}</button>
           <p v-if="paymentReady" class="pl-hint">You'll pay securely on Stripe's checkout page. Billed monthly per user.</p>
@@ -155,11 +170,19 @@ const days = ref<number[]>([0, 1, 3, 4])
 const hour = ref(10)
 const seats = ref(0)
 const preview = ref<PreviewCard[]>([])
+const previewTotal = ref(0)
 const hours = Array.from({ length: 15 }, (_, i) => i + 6)
 
 const currentLabel = computed(() => data.value?.plans.find((p) => p.current)?.label || '')
 const targetPlan = computed(() => data.value?.plans.find((p) => p.key === target.value) || null)
 const returned = ref<'success' | 'cancelled' | ''>('')
+const needsTopics = computed(() => !!targetPlan.value?.picks_topics && !topics.value.length)
+
+// Section numbers: topics, then the schedule (Enterprise), then the cards.
+function step(name: 'topics' | 'schedule' | 'cards') {
+  const order = ['topics', ...(targetPlan.value?.custom_schedule ? ['schedule'] : []), 'cards']
+  return order.indexOf(name) + 1
+}
 const paymentReady = computed(() => !!(target.value && data.value?.payment_ready?.[target.value]))
 const buttonLabel = computed(() => paymentReady.value ? 'Continue to payment →'
   : data.value?.test_mode ? 'Activate (test mode — no payment) →' : 'Request upgrade →')
@@ -188,13 +211,15 @@ function toggleDay(i: number) {
 let previewTimer: ReturnType<typeof setTimeout> | undefined
 watch([target, topics], () => {
   clearTimeout(previewTimer)
-  if (!target.value || !topics.value.length) {
+  if (!target.value || needsTopics.value) {
     preview.value = []
     return
   }
   previewTimer = setTimeout(async () => {
     try {
-      preview.value = (await previewCards(target.value, topics.value)).cards
+      const r = await previewCards(target.value, topics.value)
+      preview.value = r.cards
+      previewTotal.value = r.total
     } catch (e) {
       preview.value = []
     }
