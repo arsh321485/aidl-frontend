@@ -9,6 +9,7 @@ import SignInView from '../views/SignInView.vue'
 import SignUpView from '../views/SignUpView.vue'
 import FleetOfficeView from '../views/FleetOfficeView.vue'
 import TeamsCallbackView from '../views/TeamsCallbackView.vue'
+import AvatarView from '../views/AvatarView.vue'
 import PlansView from '../views/PlansView.vue'
 
 const router = createRouter({
@@ -104,6 +105,13 @@ const router = createRouter({
       name: 'fleet-office',
       component: FleetOfficeView,
       meta: { requiresAdmin: true },
+    },
+    {
+      // Licence avatar — opened from Slack ("Create my avatar") with ?token=
+      path: '/avatar',
+      name: 'avatar',
+      component: AvatarView,
+      meta: { public: true },
     },
     {
       // Plan upgrades — opened from Slack (Admin Center → Upgrade plan) with ?token=
