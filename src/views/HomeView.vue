@@ -4,7 +4,7 @@
 <div class="lp-wrap lp-nav-in">
 <a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a>
 <div class="lp-nl"><a href="#how">How it works</a><a href="#admins">For admins</a><a href="#drivers">For your team</a><a href="#control">Oversight</a><RouterLink to="/plans">Pricing</RouterLink></div>
-<div class="lp-ncta"><span class="lp-pf" role="group" aria-label="Platform"><button type="button" :aria-pressed="platform === 'slack'" @click="setPlatform('slack')"><i></i>Slack</button><button type="button" :aria-pressed="platform === 'teams'" @click="setPlatform('teams')"><i></i>Teams</button></span><a class="lp-btn lp-y" href="#start" @click.prevent="addTo(platform)"><span class="lp-v-s">Add to Slack →</span><span class="lp-v-t">Add to Teams →</span></a></div>
+<div class="lp-ncta"><span class="lp-pf" role="group" aria-label="Platform"><button type="button" :aria-pressed="platform === 'slack'" @click="setPlatform('slack')"><i></i>Slack</button><button type="button" :aria-pressed="platform === 'teams'" @click="setPlatform('teams')"><i></i>Teams</button></span><a class="lp-btn lp-y" href="#start" @click.prevent="addTo(platform)"><span class="lp-v-s">Add to Slack</span><span class="lp-v-t">Add to Teams</span><span class="lp-arr">→</span></a></div>
 </div>
 </nav>
 
@@ -173,7 +173,7 @@
 </section>
 
 <footer class="lp-foot">
-<div class="lp-wrap lp-foot-in"><a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a><a href="#how">How it works</a><a href="#admins">For admins</a><a href="#drivers">For your team</a><a href="#control">Oversight</a><RouterLink to="/plans">Pricing</RouterLink><span style="margin-left:auto">© 2026 AI Driving License</span></div>
+<div class="lp-wrap lp-foot-in"><a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a><a href="#how">How it works</a><a href="#admins">For admins</a><a href="#drivers">For your team</a><a href="#control">Oversight</a><RouterLink to="/plans">Pricing</RouterLink><span class="lp-copy">© 2026 AI Driving License</span></div>
 </footer>
 </div>
 </template>
@@ -378,7 +378,7 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-hstats b{display:block;font-family:"Bungee",sans-serif;font-weight:400;font-size:24px;line-height:1}
 .lp-hstats span{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.1em;color:var(--muted)}
 @media(prefers-reduced-motion:reduce){.lp-dash-stroke,.lp-cloud,.lp-wheel,.lp-gauge .lp-needle,.lp-infotainment .lp-bar>i,.lp-hero-eyebrow .lp-blink{animation:none}}
-@media(max-width:1000px){.lp-rs-3,.lp-rs-4{display:none}.lp-gauge-cluster{visibility:hidden}.lp-dash-inner{grid-template-columns:1fr auto 1fr;padding:70px 24px 30px}.lp-infotainment{width:220px}.lp-wheel{width:240px;height:240px;margin-top:-60px}.lp-acp{grid-template-columns:1fr}}
+@media(max-width:1000px){.lp-rs-3,.lp-rs-4{display:none}.lp-dash-inner{grid-template-columns:1fr auto 1fr;padding:70px 24px 30px}.lp-infotainment{width:220px}.lp-wheel{width:240px;height:240px;margin-top:-60px}.lp-acp{grid-template-columns:1fr}}
 @media(max-width:640px){.lp-hero{height:820px}.lp-rs-1,.lp-rs-2,.lp-infotainment,.lp-gauge-cluster{display:none}.lp-dash-inner{grid-template-columns:1fr;justify-items:center}.lp-wheel{margin:-40px auto 0}.lp-hero-sub{font-size:16px}}
 /* SLACK WINDOW MOCK */
 .lp-win{background:#fff;border:3px solid var(--ink);box-shadow:10px 10px 0 var(--ink);display:grid;grid-template-columns:150px minmax(0,1fr);min-height:520px;font-size:13.5px;color:#1d1c1d}
@@ -574,4 +574,96 @@ const userCur = computed(() => USER[userStep.value]!)
 @media(max-width:1060px){.lp-hero-in,.lp-stp,.lp-ov,.lp-sides,.lp-plat{grid-template-columns:1fr}.lp-g3{grid-template-columns:1fr}.lp-pane{position:static}.lp-nl{display:none}}
 @media(max-width:640px){.lp-wrap{padding:0 20px}.lp-hero-in{padding:56px 20px 130px}.lp-win{grid-template-columns:1fr}.lp-win-sb{display:none}.lp-band{padding:76px 0}.lp-ev{grid-template-columns:1fr}.lp-ev>div:first-child{padding-bottom:0}.lp-outs{grid-template-columns:1fr}.lp-ncta .lp-ghost{display:none}}
 .lp-root [id]{scroll-margin-top:80px}
+.lp-copy{margin-left:auto}
+
+/* Tablets: steps sit above the detail pane, so lay them out 2-up */
+@media(max-width:1060px){
+.lp-stl{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+/* Dashboard gauges: shrink where they'd touch the wheel; one gauge on small tablets */
+@media(max-width:860px),(min-width:1001px) and (max-width:1140px){
+.lp-gauge-cluster{zoom:.78;gap:22px}
+}
+@media(max-width:720px){
+.lp-gauge.lp-lvl{display:none}
+}
+@media(max-width:760px){
+.lp-infotainment{width:180px;padding:12px 14px}
+.lp-infotainment .lp-big{font-size:16px}
+}
+@media(max-width:690px){
+.lp-infotainment{width:156px;padding:10px 12px}
+.lp-infotainment .lp-row{font-size:9.5px}
+.lp-infotainment .lp-big{font-size:14px}
+}
+@media(min-width:1001px) and (max-width:1100px){
+.lp-infotainment{width:240px}
+}
+
+/* Phones / small tablets */
+@media(max-width:640px){
+.lp-nav-in{height:64px;gap:10px}
+.lp-nav .lp-bm{width:40px;height:40px}
+.lp-ncta{gap:8px}
+.lp-ncta .lp-pf{border-width:2px;box-shadow:2px 2px 0 var(--ink)}
+.lp-ncta .lp-pf button{font-size:10px;padding:6px 7px;gap:5px}
+.lp-ncta .lp-pf button+button{border-left-width:2px}
+.lp-ncta .lp-pf i{width:8px;height:8px}
+.lp-ncta .lp-btn{padding:7px 10px;font-size:10px;gap:6px;border-width:2px;box-shadow:3px 3px 0 var(--ink)}
+.lp-root [id]{scroll-margin-top:70px}
+.lp-hero{height:680px}
+.lp-cloud.lp-c2,.lp-cloud.lp-c3{display:none}
+.lp-cloud.lp-c1{top:10px;left:-40px}
+.lp-hero-headline{top:44px}
+.lp-hero-title{font-size:clamp(40px,12.5vw,64px);text-shadow:4px 4px 0 var(--yellow)}
+.lp-hero-title .lp-l2{text-shadow:4px 4px 0 var(--ink)}
+.lp-hero-eyebrow{font-size:11px;padding:7px 12px;margin-bottom:16px}
+.lp-hero-sub{margin-top:18px;font-size:15px;padding:9px 14px}
+.lp-hstats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));width:100%}
+.lp-hstats div{padding:10px 12px}
+.lp-hstats b{font-size:19px}
+.lp-hstats span{font-size:9.5px;letter-spacing:.06em}
+.lp-win,.lp-det{box-shadow:6px 6px 0 var(--ink)}
+.lp-dark .lp-det{box-shadow:6px 6px 0 var(--yellow)}
+.lp-win-top{flex-wrap:wrap;row-gap:6px}
+.lp-win-top .lp-pin{margin-left:0}
+.lp-msg{padding:12px;gap:8px}
+.lp-stp{margin-top:32px;gap:24px}
+.lp-stl{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.lp-sbtn{grid-template-columns:34px minmax(0,1fr);gap:10px;padding:8px 10px 8px 8px}
+.lp-sbtn .lp-n{width:34px;height:34px;font-size:14px;border-width:2px}
+.lp-sbtn b{font-size:13px;line-height:1.15}
+.lp-sbtn small{display:none}
+.lp-sbtn[aria-selected="true"],.lp-dark .lp-sbtn[aria-selected="true"]{box-shadow:4px 4px 0 var(--ink);transform:translate(-2px,-2px)}
+.lp-dark .lp-sbtn[aria-selected="true"]{box-shadow:4px 4px 0 var(--cream)}
+.lp-det-body{padding:14px}
+.lp-tl{grid-template-columns:1fr}
+.lp-sides,.lp-g3,.lp-ov,.lp-plat{margin-top:32px;gap:22px}
+.lp-side,.lp-tile,.lp-panel,.lp-pl{padding:22px}
+.lp-side,.lp-pl{box-shadow:5px 5px 0 var(--ink)}
+.lp-side.lp-k{box-shadow:5px 5px 0 var(--yellow)}
+.lp-side h3,.lp-pl h3{font-size:23px}
+.lp-cta{padding:72px 0}
+.lp-cta .lp-hcta{flex-direction:column;align-items:stretch;max-width:300px;margin:0 auto}
+.lp-cta .lp-hcta .lp-btn{justify-content:center}
+.lp-foot{padding:32px 0}
+.lp-foot-in{gap:12px 22px}
+.lp-foot .lp-brand{flex-basis:100%;margin-bottom:6px}
+.lp-copy{margin-left:0;flex-basis:100%;margin-top:6px;font-size:13px}
+}
+@media(max-width:480px){
+.lp-nav .lp-brand span{display:none}
+.lp-msg>.lp-av{display:none}
+.lp-det-hd{flex-wrap:wrap;row-gap:4px}
+.lp-ac-plan{gap:6px 12px}
+}
+@media(max-width:360px){
+.lp-wrap{padding:0 14px}
+.lp-nav .lp-bm{width:36px;height:36px}
+.lp-ncta .lp-pf i,.lp-arr{display:none}
+.lp-hstats b{font-size:16px}
+}
+@media(max-width:340px){
+.lp-stl{grid-template-columns:1fr}
+}
 </style>
