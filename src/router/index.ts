@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
+import ClassicHomeView from '../views/ClassicHomeView.vue'
 import SeniorPortalView from '../views/SeniorPortalView.vue'
 import JuniorDriverPortalView from '../views/JuniorDriverPortalView.vue'
 import SeniorLessonPlayerView from '../views/SeniorLessonPlayerView.vue'
@@ -53,6 +54,14 @@ const router = createRouter({
       meta: { public: true },
     },
     {
+      // Previous landing page (individual / junior enroll, licence sign-in,
+      // verify) — linked as "Classic site" from the new landing's footer.
+      path: '/classic',
+      name: 'classic',
+      component: ClassicHomeView,
+      meta: { public: true },
+    },
+    {
       path: '/senior-portal',
       name: 'senior-portal',
       component: SeniorPortalView,
@@ -93,11 +102,11 @@ const router = createRouter({
     {
       path: '/jobs',
       name: 'jobs',
-      // Renders HomeView itself (not a redirect) — Vue Router reuses the same
-      // component instance across /home <-> /jobs since it's the identical
-      // import, so the nav/enroll-modal/sign-in state and DOM never remount.
-      // HomeView swaps only the section below the nav based on route.path.
-      component: HomeView,
+      // Renders ClassicHomeView itself (not a redirect) — Vue Router reuses the
+      // same component instance across /classic <-> /jobs since it's the
+      // identical import, so the nav/enroll-modal/sign-in state and DOM never
+      // remount. It swaps only the section below the nav based on route.path.
+      component: ClassicHomeView,
       meta: { public: true },
     },
     {
@@ -170,14 +179,14 @@ router.beforeEach((to) => {
     try { session = JSON.parse(localStorage.getItem('aidl-session') || 'null') } catch (e) {}
 
     if (!session?.classCode) {
-      return { path: '/home' }
+      return { path: '/classic' }
     }
     const track = to.meta.track as 'senior' | 'junior' | undefined
     if (track === 'senior' && !SENIOR_CLASSES.includes(session.classCode)) {
-      return { path: '/home' }
+      return { path: '/classic' }
     }
     if (track === 'junior' && !JUNIOR_CLASSES.includes(session.classCode)) {
-      return { path: '/home' }
+      return { path: '/classic' }
     }
     return
   }

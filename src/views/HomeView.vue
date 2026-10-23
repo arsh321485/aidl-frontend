@@ -1,2685 +1,577 @@
 <template>
-  <nav class="nav">
-    <div class="wrap nav-inner">
-      <div class="brand"><img class="brand-mark" :src="aidlLogo" alt="AIDL" /><span class="brand-name">AIDL</span><span class="brand-sub">JUNIORS</span></div>
-      <div class="nav-links nav-adult">
-        <a href="#trainings" @click="goToHomeSection($event, 'trainings')">Trainings</a>
-        <a href="#juniors" class="nav-link-juniors" @click="goToHomeSection($event, 'juniors')">Ages 8–16</a>
-        <a href="#licenses" @click="goToHomeSection($event, 'licenses')">Licenses</a>
-        <a href="#verify" @click="goToHomeSection($event, 'verify')">Verify</a>
-        <a href="#enroll" @click.stop.prevent="openEnroll()">For Teams</a>
-      </div>
-      <div class="nav-links nav-junior">
-        <a href="#juniors">Junior Programs</a>
-        <a href="#juniors">The Route</a>
-        <a href="#licenses">Licenses</a>
-        <a href="#enroll" @click.stop.prevent="openEnroll()">Enroll</a>
-      </div>
-      <div class="nav-cta">
-        <a class="btn btn-yellow cta-adult" href="#enroll" @click.stop.prevent="openEnroll('adult')"><span class="cta-long">Get Your License →</span><span class="cta-short">Get License →</span></a>
-        <div class="signin-wrap auth-adult">
-          <button type="button" class="nav-auth-btn" @click.stop="toggleSignIn('senior')">SIGN IN</button>
-          <div v-if="signInOpen === 'senior'" class="signin-drop signin-drop-senior" @click.stop>
-            <div class="signin-drop-tabs">
-              <button type="button" class="signin-drop-tab" :class="{ active: signInMode === 'individual' }" @click="signInMode = 'individual'">INDIVIDUAL</button>
-              <button type="button" class="signin-drop-tab" :class="{ active: signInMode === 'organization' }" @click="signInMode = 'organization'">ORGANIZATION</button>
-            </div>
-            <template v-if="signInMode === 'organization'">
-              <p class="signin-drop-sub">Sign in with your organization's workspace.</p>
-              <div class="choice-group two-cols">
-                <div class="choice choice-auth" @click="signInWithSlack()">
-                  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-                    <rect x="9" y="1" width="6" height="15" rx="3" fill="#36C5F0" />
-                    <rect x="1" y="9" width="15" height="6" rx="3" fill="#2EB67D" />
-                    <rect x="17" y="8" width="6" height="15" rx="3" fill="#ECB22E" />
-                    <rect x="8" y="17" width="15" height="6" rx="3" fill="#E01E5A" />
-                  </svg>
-                  SLACK
-                </div>
-                <div class="choice choice-auth" @click="signInWithTeams()">
-                  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-                    <rect width="24" height="24" rx="4" fill="#5059C9" />
-                    <text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#fff">T</text>
-                  </svg>
-                  TEAMS
-                </div>
-              </div>
-            </template>
-            <template v-else>
-              <p class="signin-drop-sub">Enter your email — we'll email you a sign-in code.</p>
-              <input
-                type="email"
-                v-model="signInEmail"
-                placeholder="you@company.com"
-                autocomplete="username"
-                @keyup.enter="submitSignIn('senior')"
-              />
-              <p v-if="signInFieldErrors.email" class="field-error">{{ signInFieldErrors.email }}</p>
-              <div class="captcha-row">
-                <img v-if="captchaImage" :src="captchaImage" alt="Picture code" class="captcha-img" />
-                <span v-else class="captcha-img captcha-loading">Loading…</span>
-                <button type="button" class="captcha-refresh" aria-label="Show a new picture code" @click="loadCaptcha">↻</button>
-              </div>
-              <input
-                type="text"
-                v-model="captchaAnswer"
-                placeholder="Type the letters in the picture"
-                autocomplete="off"
-                autocapitalize="characters"
-                @keyup.enter="submitSignIn('senior')"
-              />
-              <p v-if="signInFieldErrors.captcha" class="field-error">{{ signInFieldErrors.captcha }}</p>
-              <button type="button" class="btn btn-yellow signin-drop-btn" :disabled="signInSubmitting" @click="submitSignIn('senior')">{{ signInSubmitting ? 'Signing In…' : 'Sign In →' }}</button>
-            </template>
-            <p v-if="signInError" class="signin-drop-error">{{ signInError }}</p>
-            <p class="signin-drop-foot">Don't have one? <a href="#enroll" @click.prevent="closeSignInAndEnroll('adult')">Enroll here →</a></p>
-          </div>
-        </div>
-        <a class="btn btn-green cta-junior" href="#enroll" @click.stop.prevent="openEnroll('junior')"><span class="cta-long">Enroll Your Learner →</span><span class="cta-short">Enroll →</span></a>
-        <div class="signin-wrap auth-junior">
-          <button type="button" class="nav-auth-btn" @click.stop="toggleSignIn('junior')">SIGN IN</button>
-          <div v-if="signInOpen === 'junior'" class="signin-drop signin-drop-junior" @click.stop>
-            <div class="signin-drop-head">SIGN IN · JUNIOR</div>
-            <p class="signin-drop-sub">Enter your license ID to open your dashboard.</p>
-            <input
-              type="text"
-              v-model="signInId"
-              placeholder="AIDL-J-3301-7742"
-              autocomplete="off"
-              @keyup.enter="submitSignIn('junior')"
-            />
-            <button type="button" class="btn btn-green signin-drop-btn" @click="submitSignIn('junior')">Sign In →</button>
-            <p v-if="signInError" class="signin-drop-error">{{ signInError }}</p>
-            <p class="signin-drop-foot">Don't have one? <a href="#enroll" @click.prevent="closeSignInAndEnroll('junior')">Enroll here →</a></p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </nav>
+<div class="lp-root" :class="{ 'lp-pf-teams': platform === 'teams' }">
+<nav class="lp-nav">
+<div class="lp-wrap lp-nav-in">
+<a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a>
+<div class="lp-nl"><a href="#how">How it works</a><a href="#admins">For admins</a><a href="#drivers">For your team</a><a href="#control">Oversight</a><RouterLink to="/plans">Pricing</RouterLink></div>
+<div class="lp-ncta"><span class="lp-pf" role="group" aria-label="Platform"><button type="button" :aria-pressed="platform === 'slack'" @click="setPlatform('slack')"><i></i>Slack</button><button type="button" :aria-pressed="platform === 'teams'" @click="setPlatform('teams')"><i></i>Teams</button></span><a class="lp-btn lp-y" href="#start" @click.prevent="addTo(platform)"><span class="lp-v-s">Add to Slack →</span><span class="lp-v-t">Add to Teams →</span></a></div>
+</div>
+</nav>
 
-  <!-- Rendered unconditionally (not inside the !isJobsPage block below) so
-       Apply/Enroll on the Jobs page can open this without navigating away
-       to /home first. -->
-  <div v-if="showEnrollModal" class="enroll-drop" @click.stop>
-    <button type="button" class="enroll-drop-close" @click="showEnrollModal = false" aria-label="Close">✕</button>
-    <form class="form-card" @submit.prevent="handleSubmit">
-        <div class="form-header">
-          <span>AIDL · FRONT DESK</span>
-          <span class="stamp">APPLICATION</span>
-        </div>
-        <div class="form-body">
-          <template v-if="!enrollIndividualOnly">
-            <div class="field full" style="margin-bottom: 16px;">
-              <label>Enrolling As</label>
-              <div class="choice-group two-cols">
-                <div class="choice" :class="{ active: form.enrollAs === 'individual' }" @click="form.enrollAs = 'individual'">INDIVIDUAL</div>
-                <div class="choice" :class="{ active: form.enrollAs === 'organization' }" @click="form.enrollAs = 'organization'">ORGANIZATION</div>
-              </div>
-            </div>
-            <template v-if="form.enrollAs === 'organization'">
-              <div class="form-divider">OR SIGN UP WITH</div>
-              <div class="field full" style="margin-bottom: 16px;">
-                <div class="choice-group two-cols">
-                  <div class="choice choice-auth" @click="signInWithSlack()">
-                    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-                      <rect x="9" y="1" width="6" height="15" rx="3" fill="#36C5F0" />
-                      <rect x="1" y="9" width="15" height="6" rx="3" fill="#2EB67D" />
-                      <rect x="17" y="8" width="6" height="15" rx="3" fill="#ECB22E" />
-                      <rect x="8" y="17" width="15" height="6" rx="3" fill="#E01E5A" />
-                    </svg>
-                    SLACK
-                  </div>
-                  <div class="choice choice-auth" @click="signInWithTeams()">
-                    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
-                      <rect width="24" height="24" rx="4" fill="#5059C9" />
-                      <text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#fff">T</text>
-                    </svg>
-                    TEAMS
-                  </div>
-                </div>
-              </div>
-            </template>
-          </template>
-          <template v-if="form.enrollAs !== 'organization'">
-            <div class="form-row">
-              <div class="field">
-                <label>First Name <span>*</span></label>
-                <input type="text" v-model="form.firstName" />
-                <p v-if="fieldErrors.first_name" class="field-error">{{ fieldErrors.first_name }}</p>
-              </div>
-              <div class="field">
-                <label>Last Name <span>*</span></label>
-                <input type="text" v-model="form.lastName" />
-                <p v-if="fieldErrors.last_name" class="field-error">{{ fieldErrors.last_name }}</p>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="field full">
-                <label>Email <span>*</span></label>
-                <input type="email" placeholder="you@company.com" v-model="form.email" />
-                <p v-if="fieldErrors.email" class="field-error">{{ fieldErrors.email }}</p>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="field full">
-                <label>Country <span>*</span></label>
-                <select v-model="countryCode" @change="onCountryChange">
-                  <option value="" disabled>{{ countriesLoading ? 'Loading countries…' : 'Select country' }}</option>
-                  <option v-for="c in countries" :key="c.code" :value="c.code">{{ c.name }}</option>
-                </select>
-                <p v-if="locationError.country" class="field-error">{{ locationError.country }}</p>
-                <p v-if="fieldErrors.country" class="field-error">{{ fieldErrors.country }}</p>
-              </div>
-            </div>
-            <div class="form-row">
-              <div class="field">
-                <label>State <span>*</span></label>
-                <!-- A few countries have no states in the data: free text then. -->
-                <input v-if="statesEmpty" type="text" placeholder="Enter state" v-model="form.state" />
-                <select
-                  v-else
-                  v-model="stateCode"
-                  @change="onStateChange"
-                  @mousedown="guardLocation($event, 'state')"
-                  @focus="guardLocation($event, 'state')"
-                >
-                  <option value="" disabled>{{ statesLoading ? 'Loading states…' : 'Select state' }}</option>
-                  <option v-for="st in states" :key="st.code" :value="st.code">{{ st.name }}</option>
-                </select>
-                <p v-if="stateHint" class="field-hint">{{ stateHint }}</p>
-                <p v-if="locationError.state" class="field-error">{{ locationError.state }}</p>
-                <p v-if="fieldErrors.state" class="field-error">{{ fieldErrors.state }}</p>
-              </div>
-              <div class="field">
-                <label>City <span>*</span></label>
-                <!-- Some states have no cities in the data: free text then. -->
-                <input v-if="citiesEmpty" type="text" placeholder="Enter city" v-model="form.city" />
-                <select
-                  v-else
-                  v-model="form.city"
-                  @mousedown="guardLocation($event, 'city')"
-                  @focus="guardLocation($event, 'city')"
-                >
-                  <option value="" disabled>{{ citiesLoading ? 'Loading cities…' : 'Select city' }}</option>
-                  <option v-for="c in cities" :key="c.name" :value="c.name">{{ c.name }}</option>
-                </select>
-                <p v-if="cityHint" class="field-hint">{{ cityHint }}</p>
-                <p v-if="locationError.city" class="field-error">{{ locationError.city }}</p>
-                <p v-if="fieldErrors.city" class="field-error">{{ fieldErrors.city }}</p>
-              </div>
-            </div>
-            <div v-if="mode === 'junior'" class="field full" style="margin-bottom: 16px;">
-              <label>Pick Your Class</label>
-              <div class="choice-group two-cols" id="classChoice">
-                <template v-if="mode === 'junior'">
-                  <div class="choice" :class="{ active: activeClass === 'J' }" @click="activeClass = 'J'" style="font-size:10px;">JUNIOR<br/>8–12</div>
-                  <div class="choice" :class="{ active: activeClass === 'T' }" @click="activeClass = 'T'" style="font-size:10px;">CREW<br/>12–16</div>
-                </template>
-              </div>
-            </div>
-          </template>
+<section class="lp-hero">
+<div class="lp-sun"></div><div class="lp-cloud lp-c1"></div><div class="lp-cloud lp-c2"></div><div class="lp-cloud lp-c3"></div>
+<div class="lp-mtn lp-m1"></div><div class="lp-mtn lp-m2"></div><div class="lp-mtn lp-m3"></div>
+<div class="lp-road"></div>
+<div class="lp-road-dash"><svg viewBox="0 0 1440 484" preserveAspectRatio="none"><path class="lp-dash-stroke" d="M 720 0 L 720 484"></path><path class="lp-dash-stroke" d="M 720 0 L 200 484" style="animation-duration:1.4s"></path><path class="lp-dash-stroke" d="M 720 0 L 1240 484" style="animation-duration:1.4s"></path></svg></div>
+<div class="lp-road-sign lp-rs-1"><div class="lp-plate lp-diamond"><span>NEXT EXIT<br>AI POLICY</span></div><div class="lp-post"></div></div>
+<div class="lp-road-sign lp-rs-2"><div class="lp-plate lp-round lp-green">START</div><div class="lp-post"></div></div>
+<div class="lp-road-sign lp-rs-3"><div class="lp-plate lp-white">AGREE<br>LEARN<br>LICENSE</div><div class="lp-post"></div></div>
+<div class="lp-road-sign lp-rs-4"><div class="lp-plate lp-red">10 MIN<br>AHEAD</div><div class="lp-post"></div></div>
+<div class="lp-hero-headline">
+<div class="lp-hero-eyebrow"><span class="lp-blink"></span><span class="lp-v-s">NOW LIVE IN SLACK</span><span class="lp-v-t">NOW LIVE IN MICROSOFT TEAMS</span></div>
+<h1 class="lp-hero-title">LICENSE TO<span class="lp-l2">DRIVE&nbsp;AI</span></h1>
+<p class="lp-hero-sub">Write your AI policy, get every employee to agree to it point by point, and issue each one a verifiable AI Driving License — about ten minutes per person, without leaving <span class="lp-v-s">Slack</span><span class="lp-v-t">Teams</span>.</p>
+</div>
+<div class="lp-dashboard"><div class="lp-dash-bg"></div>
+<div class="lp-dash-inner">
+<div class="lp-gauge-cluster">
+<div class="lp-gauge lp-kmh"><div class="lp-tick" style="transform:rotate(0deg)"></div><div class="lp-tick" style="transform:rotate(30deg)"></div><div class="lp-tick" style="transform:rotate(60deg)"></div><div class="lp-tick" style="transform:rotate(90deg)"></div><div class="lp-tick" style="transform:rotate(-30deg)"></div><div class="lp-tick" style="transform:rotate(-60deg)"></div><div class="lp-tick" style="transform:rotate(-90deg)"></div><div class="lp-needle"></div><div class="lp-center"></div><div class="lp-label">AGREED · 8/12</div></div>
+<div class="lp-gauge lp-lvl"><div class="lp-tick" style="transform:rotate(-60deg)"></div><div class="lp-tick" style="transform:rotate(-30deg)"></div><div class="lp-tick" style="transform:rotate(0deg)"></div><div class="lp-tick" style="transform:rotate(30deg)"></div><div class="lp-tick" style="transform:rotate(60deg)"></div><div class="lp-needle"></div><div class="lp-center"></div><div class="lp-label">ACK · 81%</div></div>
+</div>
+<div class="lp-wheel"><div class="lp-wheel-hub"><div class="lp-wheel-hub-inner">AIDL</div></div></div>
+<div class="lp-infotainment">
+<div class="lp-row"><span>ADMIN CENTER</span><span>● LIVE</span></div>
+<div class="lp-big">STEP 3 OF 6</div>
+<div class="lp-row"><span>Add team</span><span>3 seats free</span></div>
+<div class="lp-bar"><i></i></div>
+<div class="lp-row" style="margin-top:14px"><span>NEXT</span><span>APPROVE CARDS</span></div>
+</div>
+</div></div>
+</section>
 
-          <!-- Organization-only fields — the org enroll form only shows the
-               Slack/Teams buttons above for now (see the "OR SIGN UP WITH"
-               block near the top). Left here, commented out, to bring back
-               once org self-serve signup is ready.
-          <div class="form-row" v-if="form.enrollAs === 'organization'">
-            <div class="field">
-              <label>Designation <span>*</span></label>
-              <input type="text" placeholder="e.g. L&D Manager" v-model="form.designation" />
-            </div>
-            <div class="field">
-              <label>Name of Organization <span>*</span></label>
-              <input type="text" placeholder="e.g. Acme Corp" v-model="form.orgName" />
-            </div>
-          </div>
-          <div class="form-row" v-if="form.enrollAs === 'organization'">
-            <div class="field full">
-              <label>Total Number of Users <span>*</span></label>
-              <input type="text" placeholder="e.g. 50" v-model="form.totalUsers" />
-            </div>
-          </div>
-          <div class="field full" v-if="form.enrollAs === 'organization'">
-            <label>Upload your logo or company name (This is displayed on the dashboard)</label>
-            <input type="file" accept="image/*" @change="handleLogoUpload" />
-          </div>
-          -->
-        </div>
-        <div class="form-foot" v-if="form.enrollAs !== 'organization'">
-          <p v-if="formError" class="signin-drop-error" style="flex-basis:100%">{{ formError }}</p>
-          <div class="tiny">EST. ARRIVAL · 5&nbsp;MIN</div>
-          <button type="submit" class="btn btn-red" :disabled="submitting">{{ submitting ? 'REGISTERING…' : 'REGISTER →' }}</button>
-        </div>
-      </form>
-  </div>
+<section class="lp-band" style="background:var(--cream-2)">
+<div class="lp-wrap lp-acp">
+<div>
+<span class="lp-eb">▼ THE ADMIN CENTER</span>
+<h2 class="lp-h2">One message runs the whole road.</h2>
+<p class="lp-lede">AIDL posts a single Admin Center in its own channel and keeps updating it in place — plan, seats, progress and the next step to take. The channel never fills up.</p>
+<div class="lp-hstats"><div><b>10 MIN</b><span>TO LICENSED</span></div><div><b>14</b><span>POLICY POINTS</span></div><div><b>1</b><span>CHANNEL MESSAGE</span></div></div>
+</div>
+<div class="lp-win" aria-label="AIDL Admin Center">
+<div class="lp-win-sb"><div class="lp-ws">Northwind</div><div class="lp-sec"><span class="lp-v-s">Channels</span><span class="lp-v-t">Teams › AIDL</span></div><div class="lp-ch"><span class="lp-v-s"># general</span><span class="lp-v-t">Announcements</span></div><div class="lp-ch lp-on"><span class="lp-v-s"># aidl</span><span class="lp-v-t">General</span></div><div class="lp-ch"><span class="lp-v-s"># design</span><span class="lp-v-t">Design</span></div><div class="lp-ch"><span class="lp-v-s"># sales</span><span class="lp-v-t">Sales</span></div><div class="lp-sec">Apps</div><div class="lp-ch">AIDL</div></div>
+<div class="lp-win-main">
+<div class="lp-win-top"><span class="lp-v-s"># aidl</span><span class="lp-v-t">AIDL › General</span> <small>· 14 members</small><span class="lp-pin"><span class="lp-v-s">PINNED</span><span class="lp-v-t">ADAPTIVE CARD</span> · UPDATES IN PLACE</span></div>
+<div class="lp-msg"><span class="lp-av">AI</span><div style="flex:1;min-width:0">
+<div class="lp-mh"><strong>AIDL</strong><span class="lp-app"><span class="lp-v-s">APP</span><span class="lp-v-t">BOT</span></span><span class="lp-mt">9:02 AM · edited</span></div>
+<div class="lp-ac">
+<div class="lp-ac-hd"><span class="lp-d">AIDL ADMIN CENTER</span><span class="lp-m">MAIN ADMIN</span></div>
+<div class="lp-ac-plan"><span>Plan <b>Team</b></span><span><b>48</b> cards</span><span><b>2</b> / week</span><span><b>12 of 15</b> users</span></div>
+<div class="lp-prog"><div class="lp-bar"><i style="width:33%"></i></div><div class="lp-lb">2 of 6 setup steps done</div></div>
+<div class="lp-steps">
+<div v-for="(s, i) in heroSteps" :key="s.title" class="lp-st" :class="'lp-' + s.state"><span class="lp-dot">{{ s.state === 'done' ? '✓' : s.state === 'now' ? i + 1 : '' }}</span><div class="lp-tx">{{ i + 1 }}. {{ s.title }}<small v-if="s.note">{{ s.note }}</small></div><span v-if="s.action" class="lp-sb lp-pri">{{ s.action }}</span></div>
+</div>
+</div>
+</div></div>
+</div>
+</div>
+</div></section>
 
-  <OtpModal
-    v-if="otpChallenge"
-    :title="otpPurpose === 'signup' ? 'Confirm your email' : 'Check your email'"
-    :email="otpChallenge.email"
-    :error="otpError"
-    :busy="otpBusy"
-    :dev-code="otpChallenge.dev_code"
-    @verify="onOtpVerify"
-    @resend="onOtpResend"
-    @close="otpChallenge = null"
-  />
-  <AvatarPickerModal v-if="showAvatarPicker" @confirm="onAvatarConfirmed" @close="showAvatarPicker = false; signedInLicense = null" />
+<div class="lp-mq" aria-hidden="true"><div class="lp-mq-t"><span>AI POLICY IN 15 GUIDED PAGES</span><i>●</i><span>AGREED POINT BY POINT</span><i>●</i><span>LICENSED IN 10 MINUTES</span><i>●</i><span>NOTHING SENT UNTIL APPROVED</span><i>●</i><span>COVERAGE EXPORT IN ONE CLICK</span><i>●</i><span>AI POLICY IN 15 GUIDED PAGES</span><i>●</i><span>AGREED POINT BY POINT</span><i>●</i><span>LICENSED IN 10 MINUTES</span><i>●</i><span>NOTHING SENT UNTIL APPROVED</span><i>●</i><span>COVERAGE EXPORT IN ONE CLICK</span><i>●</i></div></div>
 
-  <LicenseIssuedModal
-    v-if="showLicenseModal"
-    :license-id="issuedLicense.id"
-    :holder="issuedLicense.holder"
-    :class-short="issuedLicense.classShort"
-    :class-full="issuedLicense.classFull"
-    :issued="issuedLicense.issued"
-    :expires="issuedLicense.expires"
-    :avatar="issuedAvatar"
-    @close="onLicenseModalClose"
-  />
+<section class="lp-band" id="how">
+<div class="lp-wrap">
+<span class="lp-eb">▼ HOW IT WORKS</span>
+<h2 class="lp-h2">One channel. Two seats in the car.</h2>
+<p class="lp-lede">Admins steer from a single Admin Center message that keeps updating instead of flooding the channel. Employees get everything privately, one card at a time.</p>
+<div class="lp-sides">
+<div class="lp-side lp-k"><span class="lp-tag">ADMIN · THE INSTRUCTOR</span><h3>Set the rules, then watch the road.</h3><p>Click <span class="lp-v-s">“Add to Slack”</span><span class="lp-v-t">“Add to Teams”</span> and AIDL creates its own <span class="lp-v-s">#aidl channel</span><span class="lp-v-t">AIDL team and channel</span>, makes you Main admin and posts your Admin Center. Six steps unlock one after another.</p>
+<ol><li>Create and approve your AI policy</li><li>Add co-admins with only the rights they need</li><li>Add your team, up to your seats</li><li>Approve the cards before anything is sent</li><li>Start — everyone gets their Welcome</li><li>Track licences and card reads</li></ol></div>
+<div class="lp-side"><span class="lp-tag">EMPLOYEE · THE DRIVER</span><h3>Ten minutes to road-ready.</h3><p>A private Welcome message walks each person through three cards. Finish them, save an avatar, and the licence arrives — valid for one year.</p>
+<ol><li>Open the Welcome card</li><li>Agree to the 14 policy points</li><li>Learn the Traffic Light rule</li><li>Learn the 5-rule Highway Code</li><li>Create an avatar</li><li>Download or share the licence</li></ol></div>
+</div>
+</div>
+</section>
 
-  <template v-if="!isJobsPage">
-  <section class="split" id="splitChooser">
-    <div class="split-panel adult">
-      <div class="split-content">
-        <span class="split-eyebrow">▸ FOR ADULTS &amp; TEAMS</span>
-        <h2 class="split-title">DRIVE&nbsp;AI.</h2>
-        <p class="split-sub">Three license classes — Learner, Operator (coming soon), Specialist (coming soon). Get behind the wheel, log your hours, and earn a credential employers can verify.</p>
-        <button type="button" class="btn btn-yellow split-select-btn" @click="choose('adult')">Select Adult / Team →</button>
-      </div>
-    </div>
-    <div class="split-panel junior">
-      <div class="split-content">
-        <span class="split-eyebrow">▸ JUNIORS · AGES 8–16</span>
-        <h2 class="split-title">LEARN&nbsp;AI.</h2>
-        <p class="split-sub">Two safe, age-tuned tracks — Junior Cadet (8–12) and Road Crew (12–16). Supervised agents, a parent dashboard, and a real junior license.</p>
-        <button type="button" class="btn btn-green split-select-btn" @click="choose('junior')">Select Junior →</button>
-      </div>
-    </div>
-  </section>
+<section class="lp-band lp-dark" id="admins">
+<div class="lp-wrap">
+<span class="lp-eb">▼ FOR ADMINS</span>
+<h2 class="lp-h2">Six steps. One message.</h2>
+<p class="lp-lede" style="color:#e9e0c4">Every step lives in the same Admin Center. Pick one to see what it looks like.</p>
+<div class="lp-stp">
+<div class="lp-stl" role="tablist">
+<button v-for="(d, i) in ADMIN" :key="i" type="button" class="lp-sbtn" role="tab" :aria-selected="i === adminStep" @click="adminStep = i"><span class="lp-n"><span>{{ i + 1 }}</span></span><span><b v-html="d.t"></b><small v-html="d.s"></small></span></button>
+</div>
+<div class="lp-pane"><div class="lp-det"><div class="lp-det-hd"><span class="lp-av" style="width:24px;height:24px;font-size:9px;border-radius:4px">AI</span>AIDL Admin Center<span class="lp-m">STEP {{ adminStep + 1 }} OF {{ ADMIN.length }}</span></div><div class="lp-det-body">
+<h4 v-html="adminCur.h"></h4><p class="lp-why" v-html="adminCur.w"></p><div v-html="adminCur.m"></div>
+<ul v-if="adminCur.f" class="lp-facts"><li v-for="x in adminCur.f" :key="x" v-html="x"></li></ul>
+</div></div></div>
+</div>
+</div>
+</section>
 
-  <section class="hero">
-    <div class="sun"></div>
-    <div class="cloud c1"></div>
-    <div class="cloud c2"></div>
-    <div class="cloud c3"></div>
-    <div class="mtn m1"></div>
-    <div class="mtn m2"></div>
-    <div class="mtn m3"></div>
+<section class="lp-band" id="drivers">
+<div class="lp-wrap">
+<span class="lp-eb">▼ FOR YOUR TEAM</span>
+<h2 class="lp-h2">From Welcome to licence.</h2>
+<p class="lp-lede">Each step is a private message that updates in place, with a progress bar — not a course portal, not a login.</p>
+<div class="lp-stp">
+<div class="lp-stl" role="tablist">
+<button v-for="(d, i) in USER" :key="i" type="button" class="lp-sbtn" role="tab" :aria-selected="i === userStep" @click="userStep = i"><span class="lp-n"><span>{{ i + 1 }}</span></span><span><b v-html="d.t"></b><small v-html="d.s"></small></span></button>
+</div>
+<div class="lp-pane"><div class="lp-det"><div class="lp-det-hd"><span class="lp-av" style="width:24px;height:24px;font-size:9px;border-radius:4px">AI</span>AIDL · <span class="lp-v-s">direct message</span><span class="lp-v-t">bot chat</span><span class="lp-m">STOP {{ userStep + 1 }} OF {{ USER.length }}</span></div><div class="lp-det-body">
+<h4 v-html="userCur.h"></h4><p class="lp-why" v-html="userCur.w"></p><div v-html="userCur.m"></div>
+<ul v-if="userCur.f" class="lp-facts"><li v-for="x in userCur.f" :key="x" v-html="x"></li></ul>
+</div></div></div>
+</div>
+</div>
+</section>
 
-    <div class="road"></div>
-    <div class="road-dash">
-      <svg viewBox="0 0 1440 484" preserveAspectRatio="none">
-        <path class="dash-stroke" d="M 720 0 L 720 484"></path>
-        <path class="dash-stroke" d="M 720 0 L 200 484" style="animation-duration: 1.4s"></path>
-        <path class="dash-stroke" d="M 720 0 L 1240 484" style="animation-duration: 1.4s"></path>
-      </svg>
-    </div>
+<section class="lp-band" style="background:var(--cream-2)">
+<div class="lp-wrap">
+<span class="lp-eb">▼ AFTER THE LICENCE</span>
+<h2 class="lp-h2">The learning keeps arriving.</h2>
+<p class="lp-lede">The licence is the start. Short learning cards follow on your plan’s schedule, and everyone keeps their own garage of what they’ve read.</p>
+<div class="lp-g3">
+<div class="lp-tile"><span class="lp-sign"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4.5" width="19" height="13" rx="2"></rect><path d="M10.4 8.6 L15 11 L10.4 13.4 Z"></path><path d="M8 20.5 h8"></path></svg></span><h3>Learning cards</h3><p>The first card lands right after the licence; the rest follow the plan, in each person’s own time zone.</p><ul><li>“Card 5 of 48” with topic, picture and company info</li><li>“Got it” turns into “Acknowledged · 22 Oct” — the admin sees it</li><li>One reminder after 7 days, never more</li></ul></div>
+<div class="lp-tile"><span class="lp-sign"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="1.5"></rect><path d="M8.6 4.5 V19.5"></path><path d="M11.4 9.2 h6.4"></path><path d="M11.4 12.6 h6.4"></path><path d="M11.4 16 h4.4"></path><path d="M6 9.2 h.01"></path><path d="M6 12.6 h.01"></path><path d="M6 16 h.01"></path></svg></span><h3>My cards</h3><p>Every card received so far, with a nudge for the ones still waiting — “7 cards still need your Got it.”</p><ul><li>Search by words; filter by read, topic, month or latest 2/5/10</li><li>Card view: one at a time, Previous / Next</li><li>List view: 10 per page, grouped by month</li></ul></div>
+<div class="lp-tile"><span class="lp-sign"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21 V13"></path><path d="M12 13 L6 7"></path><path d="M12 13 L18 7"></path><path d="M6 7 h3.1"></path><path d="M6 7 v3.1"></path><path d="M18 7 h-3.1"></path><path d="M18 7 v3.1"></path></svg></span><h3>Request an app</h3><p>Name the app, the site, what it’s for and what data it would touch. AIDL answers before an admin has to.</p><ul><li>Already allowed? “Go ahead.”</li><li>Already requested? You’re added to that request</li><li>Otherwise it goes to an admin, and the answer comes back by message</li></ul></div>
+</div>
+</div>
+</section>
 
-    <div class="road-sign rs-1"><div class="plate diamond"><span>NEXT EXIT<br/>AI 101</span></div><div class="post"></div></div>
-    <div class="road-sign rs-2"><div class="plate round green">START</div><div class="post"></div></div>
-    <div class="road-sign rs-3"><div class="plate white">LEARN<br/>DRIVE<br/>EARN</div><div class="post"></div></div>
-    <div class="road-sign rs-4"><div class="plate red">DRIVE<br/>SAFE</div><div class="post"></div></div>
+<section class="lp-band lp-dark" id="control">
+<div class="lp-wrap">
+<span class="lp-eb">▼ OVERSIGHT</span>
+<h2 class="lp-h2">Runs itself. Reports to you.</h2>
+<p class="lp-lede" style="color:#e9e0c4">Team changes are handled automatically, app requests arrive as one-tap decisions, and the Main admin hears about every change another admin makes.</p>
+<div class="lp-ov">
+<div class="lp-panel"><h3>When the team changes</h3><p>Channel membership is the switch. No spreadsheets to keep in sync.</p>
+<div class="lp-ev"><div>JOINS #AIDL</div><div>Set up automatically and sent their Welcome message.</div></div>
+<div class="lp-ev"><div>LEAVES OR REMOVED</div><div>Licence paused, future cards stop, Main admin notified.</div></div>
+<div class="lp-ev"><div>ADDED BACK</div><div>Licence returns; cards continue from where they stopped.</div></div>
+<div class="lp-ev"><div>PLAN IS FULL</div><div>Taken back out of the channel — both they and the Main admin are told why.</div></div>
+<div class="lp-ev"><div>OTHER ADMIN ACTS</div><div>Main admin gets a message: new admin, policy change, card approval, app decision.</div></div>
+</div>
+<div class="lp-panel"><h3>App requests, decided in Slack</h3><p>No ticket queue. The request arrives with everything needed to decide.</p>
+<div class="lp-flow">
+<div class="lp-fl"><span class="lp-k">1</span><div><b>Employee asks</b><span>App, website, what it’s for, and what data it would use.</span></div></div>
+<div class="lp-fl"><span class="lp-k">2</span><div><b>Admin decides</b><span>One message, three buttons.</span><div class="lp-outs"><div><b>APPROVE</b>Added to the allowed apps list</div><div><b>REJECT</b>With a reason the employee sees</div><div><b>ASK</b>A question goes back for more info</div></div></div></div>
+<div class="lp-fl"><span class="lp-k">3</span><div><b>Employee hears back</b><span>By message — including which data is allowed in the approved app.</span></div></div>
+</div>
+</div>
+</div>
+</div>
+</section>
 
-    <div class="hero-headline">
-      <div class="hero-eyebrow"><span class="blink"></span> <span class="v-adult">NOW ENROLLING · COHORT 06</span><span class="v-junior">NOW ENROLLING · JUNIOR PERMITS</span></div>
-      <h1 class="hero-title">LICENSE TO<span class="l2 v-adult">DRIVE&nbsp;AI</span><span class="l2 v-junior">LEARN&nbsp;AI</span></h1>
-      <p class="hero-sub v-adult">Get a license to drive — and a job — in the AI era. Get better at the job you already have, or train your people to work with AI. Log your hours, pass the road test, and earn a verifiable license that proves you can operate AI safely, skilfully, at speed.</p>
-      <p class="hero-sub v-junior">The driving school for young minds in the AI era. Two safe, age-tuned tracks for ages 8–16 — learn, play, and build with AI, then earn a real junior license.</p>
-    </div>
+<section class="lp-band">
+<div class="lp-wrap">
+<span class="lp-eb">▼ WHERE IT RUNS</span>
+<h2 class="lp-h2">Wherever your team already talks.</h2>
+<div class="lp-plat">
+<div class="lp-pl"><span class="lp-s lp-live">LIVE</span><h3>Slack</h3><p>Block Kit messages in a dedicated #aidl channel and private DMs from the AIDL app. Admin Center pinned and updated in place.</p><div class="lp-hcta" style="margin:18px 0 0"><a class="lp-btn lp-y" href="#start" @click.prevent="addTo('slack')">Add to Slack →</a></div></div>
+<div class="lp-pl"><span class="lp-s lp-live">LIVE</span><h3>Microsoft Teams</h3><p>The same admin and employee flow as Adaptive Cards in an AIDL team channel and bot chats. Follows light, dark and high-contrast themes; signs in with Microsoft Entra.</p><div class="lp-hcta" style="margin:18px 0 0"><a class="lp-btn lp-y" href="#start" @click.prevent="addTo('teams')">Add to Teams →</a></div></div>
+</div>
+</div>
+</section>
 
-    <div class="dashboard">
-      <div class="dash-bg"></div>
-      <div class="wrap dash-inner">
-        <div class="gauge-cluster">
-          <div class="gauge kmh">
-            <div class="tick" style="transform: rotate(0deg)"></div>
-            <div class="tick" style="transform: rotate(30deg)"></div>
-            <div class="tick" style="transform: rotate(60deg)"></div>
-            <div class="tick" style="transform: rotate(90deg)"></div>
-            <div class="tick" style="transform: rotate(-30deg)"></div>
-            <div class="tick" style="transform: rotate(-60deg)"></div>
-            <div class="tick" style="transform: rotate(-90deg)"></div>
-            <div class="needle"></div>
-            <div class="center"></div>
-            <div class="label"><span class="v-adult">PROMPTS/MIN · 87</span><span class="v-junior">FUN/MIN · 99</span></div>
-          </div>
-          <div class="gauge lvl">
-            <div class="tick" style="transform: rotate(-60deg)"></div>
-            <div class="tick" style="transform: rotate(-30deg)"></div>
-            <div class="tick" style="transform: rotate(0deg)"></div>
-            <div class="tick" style="transform: rotate(30deg)"></div>
-            <div class="tick" style="transform: rotate(60deg)"></div>
-            <div class="needle"></div>
-            <div class="center"></div>
-            <div class="label"><span class="v-adult">SKILL LVL · L2</span><span class="v-junior">BADGES · 3</span></div>
-          </div>
-        </div>
+<section class="lp-cta" id="start">
+<div class="lp-wrap">
+<h2 class="lp-h2">Your team, road-ready this week.</h2>
+<p class="lp-lede">Add AIDL to Slack or Teams, approve your policy and three starter cards, and press Start.</p>
+<div class="lp-hcta"><a class="lp-btn" href="#start" @click.prevent="addTo('slack')">Add to Slack →</a><a class="lp-btn" href="#start" @click.prevent="addTo('teams')">Add to Teams →</a><RouterLink class="lp-btn lp-ghost" to="/plans">See plans</RouterLink></div>
+</div>
+</section>
 
-        <div class="wheel">
-          <div class="wheel-hub"><div class="wheel-hub-inner">AIDL</div></div>
-        </div>
-
-        <div class="infotainment">
-          <div class="row"><span>NOW PLAYING</span><span>● REC</span></div>
-          <div class="big"><span class="v-adult">LESSON 04</span><span class="v-junior">LESSON 02</span></div>
-          <div class="row"><span><span class="v-adult">RAG · Retrieval</span><span class="v-junior">Meet Your AI Buddy</span></span><span>14:22 / 22:00</span></div>
-          <div class="bar"><i></i></div>
-          <div class="row" style="margin-top:14px;"><span>NEXT</span><span><span class="v-adult">EVALS &amp; SAFETY</span><span class="v-junior">MAKER LANE</span></span></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <div class="marquee">
-    <div class="marquee-track v-adult">
-      <span>★ 24,500+ LICENSED OPERATORS</span><i>●</i>
-      <span>96% PASS RATE</span><i>●</i>
-      <span>EMPLOYER-VERIFIED</span><i>●</i>
-      <span>4 HOURS A WEEK</span><i>●</i>
-      <span>INSTRUCTORS ON CALL 24/7</span><i>●</i>
-      <span>★ 24,500+ LICENSED OPERATORS</span><i>●</i>
-      <span>96% PASS RATE</span><i>●</i>
-      <span>EMPLOYER-VERIFIED</span><i>●</i>
-      <span>4 HOURS A WEEK</span><i>●</i>
-      <span>INSTRUCTORS ON CALL 24/7</span><i>●</i>
-    </div>
-    <div class="marquee-track v-junior">
-      <span>★ KID-SAFE BY DESIGN</span><i>●</i>
-      <span>PARENT DASHBOARD</span><i>●</i>
-      <span>NO ADS · NO DATA SALES</span><i>●</i>
-      <span>SUPERVISED AGENTS</span><i>●</i>
-      <span>SCREEN-TIME FRIENDLY</span><i>●</i>
-      <span>★ KID-SAFE BY DESIGN</span><i>●</i>
-      <span>PARENT DASHBOARD</span><i>●</i>
-      <span>NO ADS · NO DATA SALES</span><i>●</i>
-      <span>SUPERVISED AGENTS</span><i>●</i>
-      <span>SCREEN-TIME FRIENDLY</span><i>●</i>
-    </div>
-  </div>
-
-  <section class="band roadmap" id="curriculum" data-aud="adult">
-    <div class="wrap">
-      <span class="section-eyebrow">▼ THE ROUTE</span>
-      <h2 class="section-title">YOUR ROAD<br/>FROM 0 TO LICENSED.</h2>
-      <p class="section-sub">Every program is mapped like a real driving course — signs, checkpoints, road hazards. You always know what's ahead, what you've passed, and how far to the next milestone.</p>
-    </div>
-
-    <div class="roadmap-stage">
-      <div class="lane-line top"></div>
-      <div class="lane-line bot"></div>
-      <div class="lane-line solid top"></div>
-      <div class="lane-line solid bot"></div>
-
-      <div class="wrap roadmap-signs">
-        <div class="feature-sign diamond">
-          <div class="badge"><span>FUNDAMENTALS<br/>AHEAD</span></div>
-          <div class="post"></div>
-          <div class="desc"><strong>WEEK 01–02</strong>Models, tokens, context windows. The mechanics of the machine.</div>
-        </div>
-        <div class="feature-sign shield">
-          <div class="badge">PROMPT<br/>HIGHWAY</div>
-          <div class="post"></div>
-          <div class="desc"><strong>WEEK 03–04</strong>Defensive prompting, structured outputs, controlled creativity.</div>
-        </div>
-        <div class="feature-sign green">
-          <div class="badge">JCT 7<br/>AGENTS</div>
-          <div class="post"></div>
-          <div class="desc"><strong>WEEK 05–06</strong>Tools, memory, multi-step reasoning. Build your first agent.</div>
-        </div>
-        <div class="feature-sign octagon">
-          <div class="badge">SAFETY<br/>STOP</div>
-          <div class="post"></div>
-          <div class="desc"><strong>WEEK 07</strong>Hallucinations, jailbreaks, red teaming. Slow down and inspect.</div>
-        </div>
-        <div class="feature-sign">
-          <div class="badge">FINAL EXAM<br/>2 MI</div>
-          <div class="post"></div>
-          <div class="desc"><strong>WEEK 08</strong>Live driving test on a real-world brief. No autopilot allowed.</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="band trainings" id="trainings" data-aud="adult">
-    <div class="wrap">
-      <div class="top">
-        <div>
-          <span class="section-eyebrow">▼ ADULT LICENSE</span>
-          <h2 class="section-title">YOUR LICENSE<br/>TO DRIVE AI.</h2>
-        </div>
-        <p class="section-sub">Just like a real DMV — one written standard, one road test, one credential employers can verify. Start with your learner's permit.</p>
-      </div>
-
-      <div class="training-grid" style="grid-template-columns:minmax(0,520px);justify-content:center">
-        <div class="tr-card">
-          <div class="tr-head">
-            <span class="tr-level">CLASS L · ENTRY</span>
-            <span class="tr-stamp">14-DAY START</span>
-          </div>
-          <div class="tr-icon">
-            <svg viewBox="0 0 60 60" fill="none">
-              <rect x="6" y="20" width="48" height="32" rx="4" fill="#ffcc00" stroke="#14140f" stroke-width="3"></rect>
-              <rect x="14" y="12" width="32" height="14" rx="2" fill="#fff" stroke="#14140f" stroke-width="3"></rect>
-              <text x="30" y="22" text-anchor="middle" font-family="Bungee" font-size="9" fill="#14140f">L</text>
-              <circle cx="20" cy="50" r="6" fill="#14140f"></circle>
-              <circle cx="40" cy="50" r="6" fill="#14140f"></circle>
-            </svg>
-          </div>
-          <h3 class="tr-name">LEARNER'S<br/>PERMIT</h3>
-          <p class="tr-desc">For the new driver. Learn how AI models actually work, write your first useful prompts, and pass the written exam.</p>
-          <div class="tr-meta">
-            <div><b>4 WK</b>duration</div>
-            <div><b>2 HR</b>per week</div>
-            <div><b>$0</b>tuition</div>
-            <div><b>L1</b>certificate</div>
-          </div>
-          <ul class="tr-list">
-            <li>What models can and can't do</li>
-            <li>Prompt fundamentals</li>
-            <li>Safe-use basics</li>
-            <li>Written road-rules exam</li>
-          </ul>
-          <a class="btn" href="#enroll" @click.stop.prevent="openEnroll()">Start Now</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="band lanes" id="features">
-    <div class="wrap">
-      <span class="section-eyebrow">▼ KEY FEATURES</span>
-      <h2 class="section-title">TWO LANES.<br/>ONE ROAD CODE.</h2>
-      <p class="section-sub">Individuals learn the rules of the road and carry a license they can show. Organizations run the whole programme inside Slack or Teams — no new platform, no new login.</p>
-
-      <div class="lane-grid">
-        <div class="lane">
-          <div class="lane-head"><span class="lane-sign">L</span><div><h3>FOR INDIVIDUALS</h3><p>Learn · License · Save</p></div></div>
-          <div class="lane-body">
-            <div class="lf"><span class="lf-n">01</span><div><h4 class="lf-t">WATCH THE FUNDAMENTALS</h4><p class="lf-d">Short lessons on the AIDL YouTube channel map AI use to something you already know: driving. Basics, precautions, traffic rules, and the mistakes that get you pulled over.</p></div></div>
-            <div class="lf"><span class="lf-n">02</span><div><h4 class="lf-t">GENERATE YOUR LICENSE</h4><p class="lf-d">Register, take the test, and issue your driving license for a small fee — then share it across LinkedIn, X, WhatsApp and the rest in one tap.</p></div></div>
-            <div class="lf"><span class="lf-n">03</span><div><h4 class="lf-t">MEMBER DISCOUNTS &amp; DEALS</h4><p class="lf-d">Licensed members get discounts on 30+ AI tools and special deals aimed at building a career in AI. Codes are tied to your license and live in your Driver Portal.</p></div></div>
-          </div>
-          <div class="lane-foot"><a class="btn btn-yellow" href="#enroll" @click.stop.prevent="openEnroll()">GET LICENSED</a><a class="btn" href="https://youtube.com" target="_blank" rel="noopener">▶ YOUTUBE CHANNEL</a></div>
-        </div>
-
-        <div class="lane org">
-          <div class="lane-head"><span class="lane-sign">ORG</span><div><h3>FOR ORGANIZATIONS</h3><p>No new platform · Runs in Slack &amp; Teams</p></div></div>
-          <div class="lane-body">
-            <div class="lane-chips"><span>SLACK</span><span>MICROSOFT TEAMS</span><span>NO NEW APP</span><span>NO NEW LOGIN</span></div>
-            <div class="lf"><span class="lf-n">01</span><div><h4 class="lf-t">AWARENESS WHERE STAFF ALREADY WORK</h4><p class="lf-d">Spread acceptable-use guidance for AI through the channels your people already read. Autogenerated cards land in Slack or Teams — nothing to install, nothing to adopt.</p></div></div>
-            <div class="lf"><span class="lf-n">02</span><div><h4 class="lf-t">LICENSES TIED TO ATTENDANCE &amp; TESTS</h4><p class="lf-d">Staff earn a license whose validity depends on attending the awareness session and passing the test. Lapse, and it expires.</p></div></div>
-            <div class="lf"><span class="lf-n">03</span><div><h4 class="lf-t">ORG-BRANDED CREDENTIALS</h4><p class="lf-d">Every license carries your logo, name and tagline — issued under your brand, not ours.</p></div></div>
-            <div class="lf"><span class="lf-n">04</span><div><h4 class="lf-t">ONBOARDING ON RAILS</h4><p class="lf-d">New joiners get a drip of cards and lessons from day one. Onboarding runs itself instead of sitting in someone's checklist.</p></div></div>
-            <div class="lf"><span class="lf-n">05</span><div><h4 class="lf-t">MAP LICENSES TO ACCESS</h4><p class="lf-d">Tie license status to the access card or to application entitlements — if a user falls out of compliance, access can be revoked automatically.</p></div></div>
-            <div class="lf"><span class="lf-n">06</span><div><h4 class="lf-t">MULTI-ADMIN BY FUNCTION</h4><p class="lf-d">HR, IT, CISO and Compliance each get admin seats and can publish their own policy information to users, in their own voice.</p></div></div>
-            <div class="lf"><span class="lf-n">07</span><div><h4 class="lf-t">MULTIPLE LANGUAGES</h4><p class="lf-d">Cards, lessons and licenses render in your workforce's languages, so the same road code reaches every region.</p></div></div>
-            <div class="lf"><span class="lf-n">08</span><div><h4 class="lf-t">AUTOMATION &amp; SCHEDULING</h4><p class="lf-d">Repeat cycles, new-joiner drips and targeted sends run on a scheduler. Set the cadence once and let it drive.</p></div></div>
-            <div class="lf"><span class="lf-n">09</span><div><h4 class="lf-t">ADVANCED TRAINING PER ROLE</h4><p class="lf-d">Staff can go further — training on approved AI tools applied to their actual job and use cases, not generic theory.</p></div></div>
-          </div>
-          <div class="lane-foot"><a class="btn btn-yellow" href="/fleet-office">OPEN FLEET OFFICE</a></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="band juniors" id="juniors" data-aud="junior">
-    <div class="wrap">
-      <div class="top">
-        <div>
-          <span class="section-eyebrow">▼ JUNIOR LICENSES</span>
-          <h2 class="section-title">LEARNER PERMITS<br/>FOR AGES 8–16.</h2>
-        </div>
-        <p class="section-sub">Same driving school, two safe age-tuned tracks for younger drivers. Supervised agents, a parent dashboard, and a real, verifiable AIDL Junior license at the finish.</p>
-      </div>
-
-      <div class="jr-grid">
-        <div class="jr-card kid">
-          <div class="jr-top">
-            <div class="jr-age">8–12<small>JUNIOR CADET · CLASS J</small></div>
-            <div class="jr-badge">JR</div>
-          </div>
-          <div class="jr-body">
-            <h3 class="jr-name">JUNIOR CADET</h3>
-            <div class="jr-tag">BEGINNER · WITH A GROWN-UP</div>
-            <p class="jr-desc">A playful first ride. Kids meet a friendly AI buddy, learn what AI is (and isn't), make stories, art, and quizzes — and learn the golden rules of using AI kindly and safely.</p>
-            <div class="jr-meta">
-              <div><b>6 WK</b>length</div>
-              <div><b>45 MIN</b>session</div>
-              <div><b>2×/WK</b>cadence</div>
-              <div><b>J1</b>license</div>
-            </div>
-            <ul class="jr-list">
-              <li>What is AI? Robots, smarts &amp; pretend</li>
-              <li>Ask-it-nicely: your first safe prompts</li>
-              <li>Make a story, a comic, and a quiz</li>
-              <li>Spotting "make-believe" answers</li>
-              <li>Be kind, be private, ask a grown-up</li>
-            </ul>
-            <a class="btn btn-green" href="#enroll" @click.stop.prevent="openEnroll()">Start Junior Cadet →</a>
-          </div>
-        </div>
-
-        <div class="jr-card teen">
-          <div class="jr-top">
-            <div class="jr-age">12–16<small>ROAD CREW · CLASS T</small></div>
-            <div class="jr-badge">RC</div>
-          </div>
-          <div class="jr-body">
-            <h3 class="jr-name">ROAD CREW</h3>
-            <div class="jr-tag">INTERMEDIATE · MORE INDEPENDENT</div>
-            <p class="jr-desc">For teens ready to take the wheel. Real prompting skills, AI for homework done honestly, building a simple bot, plus a serious look at bias, misinformation, and digital citizenship.</p>
-            <div class="jr-meta">
-              <div><b>8 WK</b>length</div>
-              <div><b>60 MIN</b>session</div>
-              <div><b>2×/WK</b>cadence</div>
-              <div><b>T2</b>license</div>
-            </div>
-            <ul class="jr-list">
-              <li>Prompting like a pro &amp; fact-checking</li>
-              <li>AI for study — the honest way</li>
-              <li>Build your own helper bot</li>
-              <li>Bias, deepfakes &amp; misinformation</li>
-              <li>Digital citizenship &amp; road test project</li>
-            </ul>
-            <a class="btn btn-sky" href="#enroll" @click.stop.prevent="openEnroll()">Start Road Crew →</a>
-          </div>
-        </div>
-      </div>
-
-      <div class="jr-toggle">
-        <button type="button" :class="{ active: jrRoute === 'k', k: jrRoute === 'k' }" @click="jrRoute = 'k'">ROUTE · AGES 8–12</button>
-        <button type="button" :class="{ active: jrRoute === 't', t: jrRoute === 't' }" @click="jrRoute = 't'">ROUTE · AGES 12–16</button>
-      </div>
-
-      <div class="jr-stage">
-        <div class="jr-lane solid top"></div>
-        <div class="jr-lane mid"></div>
-        <div class="jr-lane solid bot"></div>
-
-        <div class="wrap jr-route k" :class="{ hidden: jrRoute !== 'k' }">
-          <div class="jr-stop"><div class="badge">MEET YOUR<br/>AI BUDDY</div><div class="post"></div><div class="desc"><strong>WEEK 01–02</strong>What AI is, what it isn't, and how to say hello.</div></div>
-          <div class="jr-stop"><div class="badge">ASK IT<br/>NICELY</div><div class="post"></div><div class="desc"><strong>WEEK 03</strong>Your first prompts — make a story and a picture.</div></div>
-          <div class="jr-stop"><div class="badge">MAKER<br/>LANE</div><div class="post"></div><div class="desc"><strong>WEEK 04–05</strong>Build a quiz game and a comic with your buddy.</div></div>
-          <div class="jr-stop"><div class="badge">SAFETY<br/>STOP</div><div class="post"></div><div class="desc"><strong>WEEK 06</strong>Make-believe answers, privacy, and asking grown-ups.</div></div>
-          <div class="jr-stop"><div class="badge">SHOW &amp;<br/>TELL</div><div class="post"></div><div class="desc"><strong>FINISH</strong>Share your project and earn your J1 license.</div></div>
-        </div>
-
-        <div class="wrap jr-route t" :class="{ hidden: jrRoute !== 't' }">
-          <div class="jr-stop"><div class="badge">HOW AI<br/>THINKS</div><div class="post"></div><div class="desc"><strong>WEEK 01–02</strong>Models, training, and why AI gets things wrong.</div></div>
-          <div class="jr-stop"><div class="badge">PROMPT<br/>HIGHWAY</div><div class="post"></div><div class="desc"><strong>WEEK 03–04</strong>Prompting like a pro and fact-checking answers.</div></div>
-          <div class="jr-stop"><div class="badge">BUILD A<br/>BOT</div><div class="post"></div><div class="desc"><strong>WEEK 05–06</strong>Make your own helper bot for a real task.</div></div>
-          <div class="jr-stop"><div class="badge">CHECK<br/>YOURSELF</div><div class="post"></div><div class="desc"><strong>WEEK 07</strong>Bias, deepfakes, misinformation &amp; digital citizenship.</div></div>
-          <div class="jr-stop"><div class="badge">ROAD<br/>TEST</div><div class="post"></div><div class="desc"><strong>WEEK 08</strong>Present your project and earn your T2 license.</div></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="band licenses" id="licenses">
-    <div class="wrap">
-      <span class="section-eyebrow">▼ THE CREDENTIALS</span>
-      <h2 class="section-title">LICENSES<br/>YOU CAN EARN.</h2>
-      <p class="section-sub">Each license is a verifiable credential, signed by AIDL and timestamped on a public registry. Hiring managers, clients, and platforms can check it in one click.</p>
-
-      <div class="lic-grid">
-        <div class="lic-card">
-          <div class="lic-top">
-            <span><b>LEARNER'S PERMIT</b> · CLASS L</span>
-            <span>ISSUED 03/14/2026</span>
-          </div>
-          <div class="lic-main">
-            <div class="lic-portrait"><div class="agent"><div class="antenna"></div><div class="head"></div><div class="body"></div><div class="a-badge"></div></div></div>
-            <div class="lic-info">
-              <b>ALEX MORGAN</b>
-              DOB 04/12/1994<br/>
-              EXPIRES 03/14/2027<br/>
-              HOURS LOGGED · 14 / 20
-              <div class="lic-num">AIDL-L-0042-9381</div>
-            </div>
-          </div>
-          <div class="lic-stamps">
-            <span class="lic-stamp">Fundamentals ✓</span>
-            <span class="lic-stamp">Written Exam ✓</span>
-            <span class="lic-stamp">Safe-Use ✓</span>
-            <button type="button" class="lic-stamp lic-dl-btn" @click="downloadDemoLicense({ holder: 'Alex Morgan', licenseId: 'AIDL-L-0042-9381', classLabel: 'CLASS L · LEARNER', issued: '03/14/2026', expires: '03/14/2027', dob: '04/12/1994', hoursLabel: '14 / 20 hrs' })">⬇ Download</button>
-          </div>
-        </div>
-
-        <div class="lic-card">
-          <div class="lic-top">
-            <span><b>LEARNER'S PERMIT</b> · CLASS L</span>
-            <span>ISSUED 04/29/2026</span>
-          </div>
-          <div class="lic-main">
-            <div class="lic-portrait"><div class="agent"><div class="antenna"></div><div class="head"></div><div class="body"></div><div class="a-badge"></div></div></div>
-            <div class="lic-info">
-              <b>JAMIE OKAFOR</b>
-              DOB 08/02/1991<br/>
-              EXPIRES 04/29/2027<br/>
-              HOURS LOGGED · 11 / 20
-              <div class="lic-num">AIDL-L-1182-4421</div>
-            </div>
-          </div>
-          <div class="lic-stamps">
-            <span class="lic-stamp">Fundamentals ✓</span>
-            <span class="lic-stamp">Written Exam ✓</span>
-            <span class="lic-stamp">Safe-Use ✓</span>
-            <button type="button" class="lic-stamp lic-dl-btn" @click="downloadDemoLicense({ holder: 'Jamie Okafor', licenseId: 'AIDL-L-1182-4421', classLabel: 'CLASS L · LEARNER', issued: '04/29/2026', expires: '04/29/2027', dob: '08/02/1991', hoursLabel: '11 / 20 hrs' })">⬇ Download</button>
-          </div>
-        </div>
-
-        <div class="lic-card">
-          <div class="lic-top">
-            <span><b>LEARNER'S PERMIT</b> · CLASS L</span>
-            <span>ISSUED 05/04/2026</span>
-          </div>
-          <div class="lic-main">
-            <div class="lic-portrait"><div class="agent"><div class="antenna"></div><div class="head"></div><div class="body"></div><div class="a-badge"></div></div></div>
-            <div class="lic-info">
-              <b>PRIYA REDDY</b>
-              DOB 11/19/1988<br/>
-              EXPIRES 05/04/2027<br/>
-              HOURS LOGGED · 17 / 20
-              <div class="lic-num">AIDL-L-HC-2204</div>
-            </div>
-          </div>
-          <div class="lic-stamps">
-            <span class="lic-stamp">Fundamentals ✓</span>
-            <span class="lic-stamp">Written Exam ✓</span>
-            <span class="lic-stamp">Safe-Use ✓</span>
-            <button type="button" class="lic-stamp lic-dl-btn" @click="downloadDemoLicense({ holder: 'Priya Reddy', licenseId: 'AIDL-L-HC-2204', classLabel: 'CLASS L · LEARNER', issued: '05/04/2026', expires: '05/04/2027', dob: '11/19/1988', hoursLabel: '17 / 20 hrs' })">⬇ Download</button>
-          </div>
-        </div>
-
-        <div class="lic-card green">
-          <div class="lic-top">
-            <span><b>SAFETY ENDORSEMENT</b> · ADD-ON</span>
-            <span>ISSUED 04/01/2026</span>
-          </div>
-          <div class="lic-main">
-            <div class="lic-portrait"><div class="agent"><div class="antenna"></div><div class="head"></div><div class="body"></div><div class="a-badge"></div></div></div>
-            <div class="lic-info">
-              <b>SAM CHEN</b>
-              DOB 02/22/1996<br/>
-              EXPIRES 04/01/2027<br/>
-              RED-TEAM HOURS · 32
-              <div class="lic-num">AIDL-X-SAFE-0918</div>
-            </div>
-          </div>
-          <div class="lic-stamps">
-            <span class="lic-stamp">Eval ✓</span>
-            <span class="lic-stamp">Red Team ✓</span>
-            <span class="lic-stamp">Incident Drill ✓</span>
-            <button type="button" class="lic-stamp lic-dl-btn" @click="downloadDemoLicense({ holder: 'Sam Chen', licenseId: 'AIDL-X-SAFE-0918', classLabel: 'SAFETY ENDORSEMENT', issued: '04/01/2026', expires: '04/01/2027', dob: '02/22/1996', hoursLabel: '32 red-team hrs' })">⬇ Download</button>
-          </div>
-        </div>
-      </div>
-
-      <div class="verify" id="verify">
-        <div class="verify-left">
-          <h3>VERIFY A<br/>LICENSE.</h3>
-          <p>Enter a license number to confirm an operator's credentials. Used by hiring teams, clients, and platforms to check who's actually licensed to drive AI.</p>
-          <div class="verify-form">
-            <input type="text" v-model="licInput" />
-            <button type="button" @click="verify">VERIFY</button>
-          </div>
-        </div>
-        <div class="verify-right">
-          <div class="verify-status">
-            <span class="verify-dot"></span>
-            <div>
-              <b :style="{ color: verifyResult.statusColor }">{{ verifyResult.status }}</b><br/>
-              <span>{{ verifyResult.time }}</span>
-            </div>
-          </div>
-          <div class="verify-result">
-            <div><div class="k">Holder</div><div class="v">{{ verifyResult.holder }}</div></div>
-            <div><div class="k">Class</div><div class="v acc">{{ verifyResult.cls }}</div></div>
-            <div><div class="k">Issued</div><div class="v">{{ verifyResult.issued }}</div></div>
-            <div><div class="k">Expires</div><div class="v">{{ verifyResult.expires }}</div></div>
-            <div><div class="k">Hours Logged</div><div class="v">{{ verifyResult.hours }}</div></div>
-            <div><div class="k">Endorsements</div><div class="v ok">{{ verifyResult.end }}</div></div>
-            <div class="verify-hash">REGISTRY HASH · 0x9f2c…b14d8a · sig:ed25519:AIDL-Auth · public-verify ✓</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-  </template>
-
-  <template v-if="isJobsPage">
-    <div class="jobs-page-content">
-      <header class="jh">
-        <div class="wrap">
-          <span class="tag mono">ADULT LEARNERS · 18+ · REMOTE &amp; PROJECT WORK</span>
-          <h1>Get a license to drive — and a <em>job</em> in the AI era.</h1>
-          <p>Whether you're entering the AI economy, getting better at the job you already have, or training your people to work with AI — it starts with a license. These are the seven job families our adult licensees get hired into. No coding background required for most of them.</p>
-          <div class="jh-meta">
-            <span class="chip">7 JOB FAMILIES</span>
-            <span class="chip">CLASS L HOLDERS PRIORITISED · O/S COMING SOON</span>
-            <span class="chip">PAID PER TASK OR HOURLY</span>
-          </div>
-        </div>
-      </header>
-
-      <section class="jobs">
-        <div class="wrap">
-          <div class="sec-head">
-            <h2>Open Roles</h2>
-            <span class="mono">ROLE / TASK / SKILL REQUIRED</span>
-          </div>
-          <div class="grid">
-            <article class="job" v-for="job in jobs" :key="job.no">
-              <div class="job-top"><div class="job-no">{{ job.no }}</div><h3>{{ job.title }}</h3></div>
-              <div class="job-body">
-                <div class="row"><div class="lab mono">TASK</div><p>{{ job.task }}</p></div>
-                <div class="row"><div class="lab skill mono">SKILL</div><p>{{ job.skill }}</p></div>
-              </div>
-              <div class="job-foot"><span>{{ job.tag }}</span><a href="#enroll" @click.stop.prevent="openEnroll()">APPLY →</a></div>
-            </article>
-          </div>
-        </div>
-      </section>
-
-      <section class="cta">
-        <div class="wrap cta-in">
-          <div>
-            <h2>Not licensed yet? Start there.</h2>
-            <p>Most of these roles hire straight from the AIDL registry. Finish a class, get your license verified, and your profile goes into the hiring pool.</p>
-          </div>
-          <div class="cta-actions">
-            <a class="btn" href="#enroll" @click.stop.prevent="openEnroll()">GET LICENSED</a>
-            <a class="btn btn-yellow" href="#verify" @click.stop="goToHomeSection($event, 'verify')" style="box-shadow:4px 4px 0 var(--signal-red)">VERIFY A LICENSE</a>
-          </div>
-        </div>
-      </section>
-    </div>
-  </template>
-
-  <footer class="foot">
-    <div class="wrap">
-      <div class="foot-grid">
-        <div>
-          <a class="brand" href="#" style="color: var(--cream);"><img class="brand-mark" :src="aidlLogo" alt="AIDL" /><span>AIDL</span></a>
-          <p class="foot-brand-blurb">The AI Driving License. A driving school for the AI era — for adults &amp; teams and for young learners aged 8–16. Real instructors, verifiable credentials. Get licensed, then go build.</p>
-        </div>
-        <div>
-          <h5>PROGRAMS</h5>
-          <ul>
-            <li><a href="#">Class L · Adults</a></li>
-            <li><a href="#">Junior Cadet · 8–12</a></li>
-            <li><a href="#">Road Crew · 12–16</a></li>
-            <li><a href="#">Practice Yard</a></li>
-          </ul>
-        </div>
-        <div>
-          <h5>VERIFY</h5>
-          <ul>
-            <li><a href="#">Public Registry</a></li>
-            <li><a href="#">Employer Portal</a></li>
-            <li><a href="#">Parent Dashboard</a></li>
-            <li><a href="#">Trust Center</a></li>
-          </ul>
-        </div>
-        <div>
-          <h5>COMPANY</h5>
-          <ul>
-            <li><a href="#">About</a></li>
-            <li><a href="#">Instructors</a></li>
-            <li><a href="#">Careers</a></li>
-            <li><a href="#">Contact</a></li>
-          </ul>
-        </div>
-      </div>
-      <div class="foot-bot">
-        <div>© 2026 AIDL · ISSUED UNDER PUBLIC REGISTRY · CLASS L + J/T</div>
-        <div>BUILT FOR ADULTS &amp; YOUNG LEARNERS · v2.6</div>
-      </div>
-    </div>
-  </footer>
+<footer class="lp-foot">
+<div class="lp-wrap lp-foot-in"><a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a><a href="#how">How it works</a><a href="#admins">For admins</a><a href="#drivers">For your team</a><a href="#control">Oversight</a><RouterLink to="/plans">Pricing</RouterLink><span style="margin-left:auto">© 2026 AI Driving License</span></div>
+</footer>
+</div>
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, computed, watch, onMounted, onUnmounted } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
-import AvatarPickerModal from '../components/AvatarPickerModal.vue'
-import OtpModal from '../components/OtpModal.vue'
-import type { AvatarConfig } from '../lib/avatar-parts'
-import LicenseIssuedModal from '../components/LicenseIssuedModal.vue'
-import aidlLogo from '../assets/images/aidl-logo.png'
-import { notifyError, notifyLoading, notifyClose } from '../lib/notify.js'
-import { downloadLicenseCertificate } from '../lib/downloadLicense.js'
-import { startTeamsLogin, consumeTeamsAuthCallback } from '../lib/msTeamsAuth'
+import { ref, computed } from 'vue'
+import { RouterLink } from 'vue-router'
 import { startSlackLogin } from '../lib/slackAuth'
-import {
-  signup, signin, verifySignup, verifySignin, resendCode, getCaptcha, isOtpChallenge,
-  ApiError, type ApiUser, type OtpChallenge,
-} from '../lib/authApi'
-import { getCountries, getStates, getCities, type Country, type State as LocationState, type City } from '../lib/locationsApi'
-import '../styles/home-landing.css'
+import { startTeamsLogin } from '../lib/msTeamsAuth'
+import { notifyError, notifyLoading, notifyClose } from '../lib/notify.js'
+import aidlLogo from '../assets/images/aidl-logo-transparent.png'
 
-const router = useRouter()
-const route = useRoute()
+type Platform = 'slack' | 'teams'
 
-// /jobs renders this same component (see router/index.ts) so the nav, enroll
-// modal and sign-in state stay mounted — only the section below the nav swaps.
-const isJobsPage = computed(() => route.path === '/jobs')
+// Slack / Teams switch — swaps the copy and the mock windows between the two.
+const PLATFORM_KEY = 'aidl-v2-pf'
+const platform = ref<Platform>('slack')
+try {
+  if (localStorage.getItem(PLATFORM_KEY) === 'teams') platform.value = 'teams'
+} catch (e) {}
 
-const jrRoute = ref<'k' | 't'>('k')
-
-const activeClass = ref<'L' | 'O' | 'S' | 'J' | 'T'>('L')
-
-function syncBodyClasses() {
-  const b = document.body
-  b.classList.remove('pre-choice', 'mode-adult', 'mode-junior', 'focus-adult', 'focus-junior')
-  if (preChoice.value) {
-    b.classList.add('pre-choice')
-  } else if (mode.value === 'adult') {
-    b.classList.add('mode-adult', 'focus-adult')
-  } else if (mode.value === 'junior') {
-    b.classList.add('mode-junior', 'focus-junior')
-  }
+function setPlatform(p: Platform) {
+  platform.value = p
+  try { localStorage.setItem(PLATFORM_KEY, p) } catch (e) {}
 }
 
-// Junior is temporarily disabled — /home goes straight into adult mode
-// instead of showing the adult/junior split chooser. The junior views,
-// routes, and markup below are left in place to bring back later.
-const preChoice = ref(false)
-const mode = ref<'adult' | 'junior' | null>('adult')
-
-watch(mode, (m) => {
-  const isJuniorClass = activeClass.value === 'J' || activeClass.value === 'T'
-  if (m === 'junior' && !isJuniorClass) {
-    activeClass.value = 'J'
-  } else if (m === 'adult' && isJuniorClass) {
-    activeClass.value = 'L'
-  }
-})
-
-// The Jobs page is adult-only and has no split-chooser of its own, so landing
-// on /jobs (fresh load or nav click) always locks the header into adult mode.
-watch(isJobsPage, (jobsActive) => {
-  if (jobsActive) {
-    preChoice.value = false
-    mode.value = 'adult'
-    syncBodyClasses()
-    window.scrollTo(0, 0)
-  }
-}, { immediate: true })
-
-function goToHomeSection(e: MouseEvent, hash: string) {
-  if (!isJobsPage.value) return
-  e.preventDefault()
-  router.push('/home')
-  requestAnimationFrame(() => {
-    document.getElementById(hash)?.scrollIntoView()
-  })
-}
-
-const showEnrollModal = ref(false)
-// Set when the enroll form is opened from the Jobs page (Apply / Get Licensed) —
-// those applicants are individuals only, so Slack/Teams SSO and the
-// Individual/Organization choice are hidden and enrollAs is locked to individual.
-const enrollIndividualOnly = ref(false)
-
-function openEnroll(path?: 'adult' | 'junior') {
-  if (path) {
-    preChoice.value = false
-    mode.value = path
-    syncBodyClasses()
-  }
-  signInOpen.value = null
-  const fromJobsPage = isJobsPage.value
-  enrollIndividualOnly.value = fromJobsPage
-  if (fromJobsPage) {
-    form.enrollAs = 'individual'
-  }
-  showFormPassword.value = false
-  showEnrollModal.value = true
-}
-
-function scrollToEnrollForm() {
-  if (window.location.hash !== '#enroll') return
-  showEnrollModal.value = true
-}
-
-function handleHashNavigation() {
-  const hash = window.location.hash
-  if (!hash || hash === '#') return
-
-  if (preChoice.value) {
-    preChoice.value = false
-    if (!mode.value) {
-      mode.value = hash === '#juniors' ? 'junior' : 'adult'
-    }
-    syncBodyClasses()
-  }
-
-  scrollToEnrollForm()
-}
-
-function choose(path: 'adult' | 'junior', hash?: string) {
-  preChoice.value = false
-  mode.value = path
-  syncBodyClasses()
-  window.scrollTo(0, 0)
-  if (hash) {
-    requestAnimationFrame(() => {
-      window.location.hash = hash
-    })
-  }
-}
-
-const signInOpen = ref<'senior' | 'junior' | null>(null)
-const signInId = ref('')
-const signInEmail = ref('')
-const signInPassword = ref('')
-const showSignInPassword = ref(false)
-const signInMode = ref<'individual' | 'organization'>('individual')
-const signInError = ref('')
-// Per-field messages from POST /api/auth/signin/.
-const signInFieldErrors = reactive<Record<string, string>>({})
-const signInSubmitting = ref(false)
-
-function toggleSignIn(which: 'senior' | 'junior') {
-  signInOpen.value = signInOpen.value === which ? null : which
-  signInId.value = ''
-  signInEmail.value = ''
-  signInPassword.value = ''
-  showSignInPassword.value = false
-  signInMode.value = 'individual'
-  signInError.value = ''
-  for (const key of Object.keys(signInFieldErrors)) delete signInFieldErrors[key]
-  showEnrollModal.value = false
-  captchaAnswer.value = ''
-  if (signInOpen.value === 'senior') loadCaptcha()
-}
-
-// Sign-in picture code (AI-C-008). Each one works once, so a new one is
-// loaded after every attempt.
-const captchaToken = ref('')
-const captchaImage = ref('')
-const captchaAnswer = ref('')
-async function loadCaptcha() {
-  captchaImage.value = ''
-  captchaAnswer.value = ''
+// "Add to Slack" / "Add to Teams" — the same organization sign-in the old
+// landing page used; the backend redirects back to /auth/callback.
+async function addTo(p: Platform) {
+  const name = p === 'slack' ? 'Slack' : 'Microsoft Teams'
+  notifyLoading(`Opening ${name}…`, 'One moment')
   try {
-    const c = await getCaptcha()
-    captchaToken.value = c.captcha_token
-    captchaImage.value = c.image
+    if (p === 'slack') await startSlackLogin('organization')
+    else await startTeamsLogin('organization')
   } catch (e) {
-    signInFieldErrors.captcha = 'Could not load the picture code — tap ↻.'
+    notifyClose()
+    notifyError(e instanceof Error ? e.message : `Could not start ${name} sign-in.`, `${name} Sign-In Failed`)
   }
 }
 
-// The emailed 6-digit code, after Register (AI-C-004) and Sign In (AI-C-008).
-const otpChallenge = ref<OtpChallenge | null>(null)
-// The account created by Register (holds the Learner licence the server issued).
-const signupUser = ref<ApiUser | null>(null)
-const otpPurpose = ref<'signup' | 'signin'>('signup')
-const otpError = ref('')
-const otpBusy = ref(false)
-
-function askForCode(challenge: OtpChallenge, purpose: 'signup' | 'signin') {
-  otpPurpose.value = purpose
-  otpError.value = ''
-  otpChallenge.value = challenge
-}
-
-async function onOtpVerify(code: string) {
-  if (!otpChallenge.value || otpBusy.value) return
-  otpBusy.value = true
-  otpError.value = ''
-  try {
-    if (otpPurpose.value === 'signup') {
-      signupUser.value = (await verifySignup(otpChallenge.value.otp_token, code)).user
-      otpChallenge.value = null
-      afterSignup()
-    } else {
-      const { user } = await verifySignin(otpChallenge.value.otp_token, code)
-      otpChallenge.value = null
-      afterSeniorSignIn(user)
-    }
-  } catch (e) {
-    otpError.value = e instanceof ApiError ? e.message : 'That code did not work.'
-  } finally {
-    otpBusy.value = false
-  }
-}
-
-async function onOtpResend() {
-  if (!otpChallenge.value) return
-  try {
-    askForCode(await resendCode(otpChallenge.value.otp_token), otpPurpose.value)
-    otpError.value = 'A new code is on its way.'
-  } catch (e) {
-    otpError.value = e instanceof ApiError ? e.message : 'Could not send a new code.'
-  }
-}
-
-function closeSignInAndEnroll(path: 'adult' | 'junior') {
-  signInOpen.value = null
-  openEnroll(path)
-}
-
-function handleDocClick(e: MouseEvent) {
-  const target = e.target as HTMLElement
-  // Clicks inside the policy popup or an alert never close the form (guide 11).
-  if (target.closest('.opq-backdrop, .otp-backdrop, .swal2-container')) return
-  if (signInOpen.value && !target.closest('.signin-wrap')) {
-    signInOpen.value = null
-  }
-  if (showEnrollModal.value && !target.closest('.enroll-drop')) {
-    showEnrollModal.value = false
-  }
-}
-
-onMounted(() => {
-  syncBodyClasses()
-  handleHashNavigation()
-  window.addEventListener('hashchange', handleHashNavigation)
-  document.addEventListener('click', handleDocClick)
-
-  // Landed back here from Microsoft's OAuth redirect (backend appends
-  // access_token/teams_url/... to this page's URL) — pick the tokens up,
-  // open Teams if asked to, and scrub the URL.
-  const teamsResult = consumeTeamsAuthCallback()
-  if (teamsResult) {
-    signInOpen.value = null
-    showEnrollModal.value = false
-    if (teamsResult.openTeams && teamsResult.teamsUrl) {
-      window.open(teamsResult.teamsUrl, '_blank', 'noopener,noreferrer')
-    }
-  }
-})
-onUnmounted(() => {
-  window.removeEventListener('hashchange', handleHashNavigation)
-  document.removeEventListener('click', handleDocClick)
-  document.body.classList.remove('pre-choice', 'mode-adult', 'mode-junior', 'focus-adult', 'focus-junior')
-})
-
-interface JobFamily {
-  no: string
-  title: string
-  task: string
-  skill: string
-  tag: string
-}
-
-const jobs: JobFamily[] = [
-  {
-    no: '01',
-    title: 'Preference Ranking & Pairwise Scoring (RLHF / DPO)',
-    task: 'Comparing two or more AI-generated responses (Response A vs. Response B) based on helpfulness, accuracy, brevity, tone, and formatting.',
-    skill: 'Critical thinking, baseline literacy, structured evaluation.',
-    tag: 'ENTRY FRIENDLY',
-  },
-  {
-    no: '02',
-    title: 'Supervised Fine-Tuning (SFT) & Prompt Authoring',
-    task: 'Writing synthetic prompts and drafting gold-standard responses from scratch to teach models how to respond in specific domains, tones, or languages.',
-    skill: 'Creative writing, domain knowledge, clear language expression.',
-    tag: 'WRITING HEAVY',
-  },
-  {
-    no: '03',
-    title: 'Multilingual Localization & Dialect Calibration',
-    task: 'Rewriting English-centric prompt outputs into localized dialects, evaluating machine translation quality, transcribing audio accents, and auditing cultural sensitivity and nuance.',
-    skill: 'Native/bilingual proficiency, regional context awareness.',
-    tag: 'LANGUAGE PAIRS OPEN',
-  },
-  {
-    no: '04',
-    title: 'Red Teaming & Safety Testing (Adversarial Prompting)',
-    task: 'Attempting to trick, "jailbreak," or prompt the model into violating safety guidelines — e.g. generating harmful code, hate speech, medical misinformation, or proprietary leakages.',
-    skill: 'Adversarial mindset, security awareness, policy compliance.',
-    tag: 'VETTED ACCESS',
-  },
-  {
-    no: '05',
-    title: 'Factuality Verification & Citation Auditing',
-    task: 'Fact-checking AI outputs against external sources, verifying whether citations exist and accurately support the claims made.',
-    skill: 'Research ability, attention to detail.',
-    tag: 'ENTRY FRIENDLY',
-  },
-  {
-    no: '06',
-    title: 'Tool-Use & Agentic Trajectory Labeling',
-    task: 'Demonstrating or correcting multi-step user workflows — clicking web buttons, filling out forms, querying databases — so AI agents can learn web and software navigation.',
-    skill: 'Technical usability, methodical step-by-step execution.',
-    tag: 'SCREEN RECORDING',
-  },
-  {
-    no: '07',
-    title: 'Domain-Specific Expert Feedback (STEM, Code, Legal, Finance)',
-    task: 'Reviewing complex code snippets, solving math proofs step-by-step, or evaluating legal and medical outputs for correctness.',
-    skill: 'Advanced academic or professional qualifications.',
-    tag: 'CREDENTIALS REQUIRED',
-  },
+const heroSteps = [
+  { title: 'AI policy', note: 'Approved · v1', state: 'done' },
+  { title: 'Add admins', note: '2 admins', state: 'done' },
+  { title: 'Add team', note: '3 free seats', state: 'now', action: 'Add people' },
+  { title: 'Approve cards', note: '3 starter cards waiting', state: 'lock' },
+  { title: 'Start', note: 'Needs starter cards approved', state: 'lock' },
+  { title: 'Licences & cards', note: '', state: 'lock' },
 ]
 
-const form = reactive({
-  enrollAs: 'individual' as 'individual' | 'organization',
-  firstName: '',
-  lastName: '',
-  email: '',
-  mobile: '',
-  password: '',
-  confirmPassword: '',
-  // Organization-only fields — the org enroll form only shows Slack/Teams
-  // right now (see the commented-out fields below), so these sit unused
-  // until that comes back.
-  designation: '',
-  orgName: '',
-  orgLogo: '',
-  totalUsers: '',
-  country: '',
-  state: '',
-  city: ''
-})
+// Steppers: t/s = tab title/subtitle, h/w = heading/why, m = mock message
+// markup, f = facts. All static HTML, rendered with v-html.
+interface Step { t: string; s: string; h: string; w: string; m: string; f?: string[] }
 
-function handleLogoUpload(e: Event) {
-  const input = e.target as HTMLInputElement
-  const file = input.files?.[0]
-  if (!file) return
-  const reader = new FileReader()
-  reader.onload = () => {
-    form.orgLogo = typeof reader.result === 'string' ? reader.result : ''
-  }
-  reader.readAsDataURL(file)
+function B(t: string, p?: number) {
+  return '<span class="lp-sb' + (p ? ' lp-pri' : '') + '">' + t + '</span>'
 }
 
-// Country → state → city dropdowns, filled from the Locations API. The
-// selects work on codes (what the API takes); form.country/state/city keep
-// the names, which is what signup expects.
-const countries = ref<Country[]>([])
-const states = ref<LocationState[]>([])
-const cities = ref<City[]>([])
-const countryCode = ref('')
-const stateCode = ref('')
-const countriesLoading = ref(false)
-const statesLoading = ref(false)
-const citiesLoading = ref(false)
-// Loaded but empty → the field becomes a free-text input (per the API guide).
-const statesEmpty = ref(false)
-const citiesEmpty = ref(false)
-const locationError = reactive({ country: '', state: '', city: '' })
-// Set when the user tries to open State/City before picking its parent.
-const locationGuard = reactive({ state: false, city: false })
+const ADMIN: Step[] = [
+{t:'AI policy',s:'Build, approve, manage apps',h:'Your AI policy in 15 guided pages',w:'Company info plus the 14 points of the policy. Best answers are pre-picked, so you can just click Next. Close halfway and it saves.',
+ m:'<div class="lp-card"><p class="lp-ct">Acceptable Use Policy</p><p class="lp-cs">Page 6 of 15 &middot; Data you may share</p><div class="lp-bar2"><i style="width:40%"></i></div><div class="lp-btns" style="margin-top:10px">'+B('Continue AUP (step 6 of 15)',1)+'</div></div><div class="lp-card"><p class="lp-ct"><span class="lp-ok">&#10003;</span> Step 1 done &middot; AUP approved</p><div class="lp-btns">'+B('View AUP')+B('Change AUP')+B('AI apps')+B('IT apps')+'</div></div>',
+ f:['Generate, view, then Approve AUP','AI apps and IT apps lists show what is allowed or blocked, and what data each may use','Add a new app at any time']},
+{t:'Add admins',s:'Optional &middot; scoped rights',h:'Co-admins with only the keys they need',w:'Pick a person and tick what they may do. They join the channel and get their own Admin Center showing only those rights.',
+ m:'<div class="lp-card"><p class="lp-ct">Add admin &middot; Dan Okafor</p><p class="lp-cs">Allowed to&hellip;</p><div class="lp-chips"><span class="lp-chip lp-on">Approve apps</span><span class="lp-chip lp-on">See cards</span><span class="lp-chip">Create cards</span><span class="lp-chip">Manage admins</span><span class="lp-chip">Manage plan</span><span class="lp-chip lp-on">Approve cards</span></div><div class="lp-btns" style="margin-top:12px">'+B('Add admin',1)+B('Skip')+'</div></div>',
+ f:['Edit or Remove next to any admin','A removed admin becomes a normal team member','The Main admin can never be removed']},
+{t:'Add team',s:'Invite up to your seats',h:'Bring people into #aidl',w:'AIDL lists Slack people not yet in the channel. Select some or all &mdash; never more than your free seats.',
+ m:'<div class="lp-card"><p class="lp-ct">Add people</p><p class="lp-cs">3 free seats</p><div class="lp-row"><span class="lp-chip lp-on">Priya Raman</span><span class="lp-r">Design</span></div><div class="lp-row"><span class="lp-chip lp-on">Marcus Webb</span><span class="lp-r">Risk</span></div><div class="lp-row"><span class="lp-chip lp-on">Lena Fischer</span><span class="lp-r">L&amp;D</span></div><div class="lp-row"><span class="lp-chip">Sam Ortiz</span><span class="lp-r">No seat left</span></div><div class="lp-btns" style="margin-top:10px">'+B('Add 3',1)+B('Select all')+'</div></div>',
+ f:['Each person gets an AIDL account and a private Welcome message','If AIDL can&rsquo;t message someone, you get a private warning']},
+{t:'Approve cards',s:'Nothing goes out unapproved',h:'You decide every card that reaches the team',w:'Start with the 3 starter cards, then work through the learning cards month by month.',
+ m:'<div class="lp-card"><p class="lp-ct">Starter cards</p><div class="lp-row">AI policy<span class="lp-r"><span class="lp-st-tag lp-g">APPROVED</span></span></div><div class="lp-row">Traffic Light<span class="lp-r"><span class="lp-st-tag lp-g">APPROVED</span></span></div><div class="lp-row">Highway Code<span class="lp-r">'+B('Preview')+' '+B('Approve',1)+'</span></div></div><div class="lp-card"><p class="lp-ct">November &middot; 8 cards</p><div class="lp-btns">'+B('Approve month',1)+B('Preview')+B('Skip')+B('Swap')+'</div></div>',
+ f:['Approve all, a month, or card by card &mdash; Preview, Approve, Skip or Swap','A late approval never blocks the team: the next approved card goes instead','Approvers are warned before approved cards run out','See most and least read, and % who tapped Got it']},
+{t:'Start',s:'One button for everyone',h:'Press Start, and everyone gets their Welcome',w:'Works once the 3 starter cards are approved. People who join later start automatically.',
+ m:'<div class="lp-card"><p class="lp-ct">Ready to start</p><p class="lp-cs">12 people in #aidl</p><div class="lp-btns">'+B('Start for 12',1)+'</div></div><div class="lp-card"><p class="lp-ct">Progress</p><div class="lp-row">Agreed to the policy<span class="lp-r">8 of 12</span></div><div class="lp-bar2"><i style="width:67%"></i></div><div class="lp-row">Licensed<span class="lp-r">5 of 12</span></div><div class="lp-bar2"><i style="width:42%"></i></div><div class="lp-btns" style="margin-top:10px">'+B('Remind people who haven&rsquo;t finished')+'</div></div>',
+ f:['A reminder re-sends each person the exact card they&rsquo;re stuck on','Changed the policy? Approve the new version, then Send new version so everyone agrees again']},
+{t:'Licences &amp; cards',s:'Coverage you can prove',h:'Who is licensed, who has read what',w:'Licensed counts, people waiting for a seat, and this month&rsquo;s card reads &mdash; in the same message.',
+ m:'<div class="lp-card"><div class="lp-row"><b>Cards acknowledged this month</b><span class="lp-r"><b style="color:#1d1c1d;font-size:15px">81%</b></span></div><div class="lp-row">Licensed<span class="lp-r"><span class="lp-st-tag lp-g">9</span></span></div><div class="lp-row">In progress<span class="lp-r"><span class="lp-st-tag lp-a">2</span></span></div><div class="lp-row">Not started<span class="lp-r"><span class="lp-st-tag">1</span></span></div><div class="lp-btns" style="margin-top:10px">'+B('View team progress')+B('Export coverage',1)+B('Acknowledgement alerts')+'</div></div><div class="lp-card"><p class="lp-ct">Late on a card</p><div class="lp-row">Sam Ortiz &middot; Card 7<span class="lp-r">'+B('Remind')+'</span></div><div class="lp-row">Lena Fischer &middot; Card 6<span class="lp-r">Reminded by you</span></div></div>',
+ f:['Export coverage as CSV &mdash; a copy also arrives by message','Remind tells the person the admin asked','Alerts: none, one a day, or every Got it &mdash; plus late-person alerts']}
+];
+const USER: Step[] = [
+{t:'Welcome',s:'About 10 minutes',h:'&ldquo;Hi Priya, welcome to your AI Driving License&rdquo;',w:'A private message with the three steps ahead. If the admin hasn&rsquo;t started yet, it says the first card arrives soon.',
+ m:'<div class="lp-card"><p class="lp-ct">Welcome to your AI Driving License</p><p class="lp-cs">About 10 minutes &middot; 3 cards</p><div class="lp-row">1 &middot; AI policy</div><div class="lp-row">2 &middot; Traffic Light</div><div class="lp-row">3 &middot; Highway Code</div><div class="lp-btns" style="margin-top:10px">'+B('Let&rsquo;s go',1)+'</div></div>'},
+{t:'AI policy',s:'Card 1 of 3 &middot; 14 points',h:'Agree to the policy, point by point',w:'Each point is a picture in the same message, with a progress bar. One tap per point.',
+ m:'<div class="lp-card"><p class="lp-ct">Card 1 of 3 &middot; AI policy</p><p class="lp-cs">Point 6 of 14 &middot; Only use approved apps</p><div class="lp-bar2"><i style="width:43%"></i></div><div class="lp-btns" style="margin-top:10px">'+B('I agree to point 6',1)+'</div></div><div class="lp-card"><p class="lp-ct"><span class="lp-ok">&#10003;</span> I agreed to all 14 points</p><p class="lp-cs" style="margin:0">Card turns green &middot; AGREED</p></div>'},
+{t:'Traffic Light',s:'Card 2 of 3',h:'What&rsquo;s safe to share with AI',w:'Three colours, one decision before every prompt.',
+ m:'<div class="lp-card"><p class="lp-ct">Card 2 of 3 &middot; Traffic Light</p><div class="lp-tl" style="margin:8px 0 12px"><div class="lp-g"><b>Green</b>Safe to share</div><div class="lp-a"><b>Amber</b>Be careful</div><div class="lp-r"><b>Red</b>Never share with AI</div></div><div class="lp-btns">'+B('Got it. Next',1)+'</div></div>'},
+{t:'Highway Code',s:'Card 3 of 3 &middot; 5 rules',h:'The five learner rules',w:'The rules every new driver follows when using AI at work.',
+ m:'<div class="lp-card"><p class="lp-ct">Card 3 of 3 &middot; Highway Code</p><p class="lp-cs">5 learner rules for using AI</p><div class="lp-bar2"><i style="width:100%"></i></div><div class="lp-btns" style="margin-top:10px">'+B('Got it. Get my license',1)+'</div></div><div class="lp-card"><p class="lp-ct">Your next card is on its way</p><p class="lp-cs" style="margin:0">Shown if the admin hasn&rsquo;t approved the next card yet &mdash; it arrives by itself.</p></div>'},
+{t:'Avatar',s:'One quick step',h:'Create your avatar',w:'The licence is issued the moment the avatar is saved.',
+ m:'<div class="lp-card" style="display:flex;gap:14px;align-items:center"><span class="lp-lic-av" style="flex:none;color:#ffcc00">PR</span><div><p class="lp-ct">Create my avatar</p><p class="lp-cs">Shown on your licence</p><div class="lp-btns">'+B('Create my avatar',1)+'</div></div></div><div class="lp-card"><p class="lp-ct">Almost there</p><p class="lp-cs" style="margin:0">No free seat? The licence is issued as soon as one opens.</p></div>'},
+{t:'Licence',s:'Valid for 1 year',h:'&ldquo;You&rsquo;re road-ready!&rdquo;',w:'Name, avatar, licence number, company and logo &mdash; ready to download or post.',
+ m:'<div class="lp-lic"><div class="lp-lic-hd"><span class="lp-s">AI</span><span class="lp-d">AI DRIVING LICENSE</span><span class="lp-lg">NORTHWIND</span></div><div class="lp-lic-b"><span class="lp-lic-av">PR</span><div><div class="lp-d">PRIYA RAMAN</div><div class="lp-m">AIDL-L-4417-0932<br />VALID 22 OCT 2026 &ndash; 22 OCT 2027</div></div></div><div class="lp-lic-strip"></div></div><div class="lp-btns" style="margin-top:12px">'+B('Download',1)+B('Change avatar')+B('Share on LinkedIn')+'</div>'}
+];
 
-const stateHint = computed(() =>
-  locationGuard.state && !form.country ? 'Please select a country first.' : ''
-)
-const cityHint = computed(() => {
-  if (!locationGuard.city) return ''
-  if (!form.country) return 'Please select a country first.'
-  if (!form.state && !statesEmpty.value) return 'Please select a state first.'
-  return ''
-})
-
-function guardLocation(e: Event, field: 'state' | 'city') {
-  const blocked = field === 'state'
-    ? !form.country
-    : !form.country || (!form.state && !statesEmpty.value)
-  locationGuard[field] = blocked
-  if (blocked && e.type === 'mousedown') e.preventDefault()
-}
-
-async function loadCountries() {
-  if (countries.value.length || countriesLoading.value) return
-  countriesLoading.value = true
-  locationError.country = ''
-  try {
-    countries.value = await getCountries()
-  } catch (e) {
-    locationError.country = 'Could not load countries. Please try again.'
-  } finally {
-    countriesLoading.value = false
-  }
-}
-
-async function onCountryChange() {
-  const country = countries.value.find((c) => c.code === countryCode.value)
-  form.country = country?.name || ''
-  form.state = ''
-  form.city = ''
-  stateCode.value = ''
-  states.value = []
-  cities.value = []
-  statesEmpty.value = false
-  citiesEmpty.value = false
-  locationError.state = ''
-  locationError.city = ''
-  locationGuard.state = false
-  locationGuard.city = false
-  if (!country) return
-
-  statesLoading.value = true
-  try {
-    const list = await getStates(country.code)
-    if (countryCode.value !== country.code) return
-    states.value = list
-    statesEmpty.value = list.length === 0
-    // No states → cities can't be looked up either, so City is free text too.
-    citiesEmpty.value = list.length === 0
-  } catch (e) {
-    if (countryCode.value === country.code) locationError.state = 'Could not load states. Please try again.'
-  } finally {
-    if (countryCode.value === country.code) statesLoading.value = false
-  }
-}
-
-async function onStateChange() {
-  const state = states.value.find((st) => st.code === stateCode.value)
-  form.state = state?.name || ''
-  form.city = ''
-  cities.value = []
-  citiesEmpty.value = false
-  locationError.city = ''
-  locationGuard.city = false
-  if (!state) return
-
-  const key = `${countryCode.value}/${state.code}`
-  const isCurrent = () => `${countryCode.value}/${stateCode.value}` === key
-  citiesLoading.value = true
-  try {
-    const list = await getCities(countryCode.value, state.code)
-    if (!isCurrent()) return
-    cities.value = list
-    citiesEmpty.value = list.length === 0
-  } catch (e) {
-    if (isCurrent()) locationError.city = 'Could not load cities. Please try again.'
-  } finally {
-    if (isCurrent()) citiesLoading.value = false
-  }
-}
-
-// Fetch the country list the first time the enroll form opens.
-watch(showEnrollModal, (open) => {
-  if (open) loadCountries()
-}, { immediate: true })
-
-const showFormPassword = ref(false)
-
-// Mirrors the backend password rules (see src/prompt.txt). Only the rules
-// the typed password still fails are listed under the field; "not a common
-// password" can only be checked by the API, so it surfaces as an API error.
-const unmetPasswordRules = computed(() => {
-  const pw = form.password
-  const lower = pw.toLowerCase()
-  const personal = [form.firstName, form.lastName, form.email.split('@')[0] ?? '']
-    .map((v) => v.trim().toLowerCase())
-    .filter((v) => v.length >= 3)
-  return [
-    { label: 'Be 8–128 characters', ok: pw.length >= 8 && pw.length <= 128 },
-    { label: 'Include 1 uppercase letter (A-Z)', ok: /[A-Z]/.test(pw) },
-    { label: 'Include 1 lowercase letter (a-z)', ok: /[a-z]/.test(pw) },
-    { label: 'Include 1 number (0-9)', ok: /[0-9]/.test(pw) },
-    { label: 'Include 1 special character (!@#$%^&*_- etc.)', ok: /[^A-Za-z0-9\s]/.test(pw) },
-    { label: 'Not be entirely numeric', ok: !/^[0-9]+$/.test(pw) },
-    { label: 'Not use your name or email', ok: !personal.some((v) => lower.includes(v)) },
-  ].filter((rule) => !rule.ok).map((rule) => rule.label)
-})
-const showConfirmPassword = ref(false)
-const formError = ref('')
-// Per-field messages from the signup API (keyed by API field name).
-const fieldErrors = reactive<Record<string, string>>({})
-const submitting = ref(false)
-const showAvatarPicker = ref(false)
-// Set after a successful API sign-in, consumed by onAvatarConfirmed.
-const signedInLicense = ref<{ id: string; entry: RegistryEntry } | null>(null)
-const showLicenseModal = ref(false)
-const issuedAvatar = ref<AvatarConfig | null>(null)
-const issuedLicense = reactive({
-  id: '',
-  holder: '',
-  classShort: '',
-  classFull: '',
-  issued: '',
-  expires: '',
-})
-
-type ClassCode = 'L' | 'O' | 'S' | 'J' | 'T'
-
-interface RegistryEntry {
-  holder: string
-  cls: string
-  classCode: ClassCode | null
-  iss: string
-  exp: string
-  hrs: string
-  end: string
-  email?: string
-  mobile?: string
-  password?: string
-  enrollAs?: 'individual' | 'organization'
-  orgName?: string
-  orgLogo?: string
-}
-
-const SENIOR_CLASSES: ClassCode[] = ['L', 'O', 'S']
-const JUNIOR_CLASSES: ClassCode[] = ['J', 'T']
-
-const CLASS_LABELS: Record<ClassCode, string> = {
-  L: 'CLASS L · LEARNER',
-  O: 'CLASS O · OPERATOR',
-  S: 'CLASS S · SPECIALIST',
-  J: 'JUNIOR CADET · CLASS J',
-  T: 'ROAD CREW · CLASS T'
-}
-
-const CLASS_SHORT: Record<ClassCode, string> = { L: 'CLASS L', O: 'CLASS O', S: 'CLASS S', J: 'CLASS J', T: 'CLASS T' }
-const CLASS_FULL: Record<ClassCode, string> = { L: 'LEARNER', O: 'OPERATOR', S: 'SPECIALIST', J: 'JUNIOR CADET', T: 'ROAD CREW' }
-
-const REGISTRY: Record<string, RegistryEntry> = {
-  'AIDL-L-1182-4421': { holder: 'Jamie Okafor', cls: 'CLASS L · LEARNER',     classCode: 'L', iss: '04/29/2026', exp: '04/29/2027', hrs: '11 hrs · in progress', end: '—', email: 'jamie@company.com', password: 'demo1234', enrollAs: 'individual' },
-  'AIDL-L-0042-9381': { holder: 'Alex Morgan',  cls: 'CLASS L · LEARNER',     classCode: 'L', iss: '03/14/2026', exp: '03/14/2027', hrs: '14 hrs · in progress',    end: '—', email: 'alex@company.com', password: 'demo1234', enrollAs: 'individual' },
-  'AIDL-L-HC-2204':   { holder: 'Priya Reddy',  cls: 'CLASS L · LEARNER',     classCode: 'L', iss: '05/04/2026', exp: '05/04/2027', hrs: '17 hrs · in progress', end: '—', email: 'priya@company.com', password: 'demo1234', enrollAs: 'individual' },
-  'AIDL-X-SAFE-0918': { holder: 'Sam Chen',     cls: 'SAFETY ENDORSEMENT',    classCode: null, iss: '04/01/2026', exp: '04/01/2027', hrs: '32 red-team hrs',               end: '—' },
-  'AIDL-J-3301-7742': { holder: 'Riya Sharma',  cls: 'JUNIOR CADET · CLASS J', classCode: 'J', iss: '02/10/2026', exp: '02/10/2027', hrs: '9 hrs · in progress',  end: '—' },
-  'AIDL-T-5560-2213': { holder: 'Kabir Anand',  cls: 'ROAD CREW · CLASS T',    classCode: 'T', iss: '01/22/2026', exp: '01/22/2027', hrs: '22 hrs · sim solo ✓',  end: '+ Safety' },
-  'AIDL-L-ORG-3390':  { holder: 'Acme Corp',    cls: 'CLASS L · LEARNER',     classCode: 'L', iss: '02/02/2026', exp: '02/02/2027', hrs: '6 hrs · in progress', end: '—', email: 'admin@acme.com', password: 'demo1234', enrollAs: 'organization', orgName: 'Acme Corp' }
-}
-
-function loadDynamicRegistry(): Record<string, RegistryEntry> {
-  try {
-    return JSON.parse(localStorage.getItem('aidl-registry') || '{}')
-  } catch (e) {
-    return {}
-  }
-}
-
-function saveDynamicEntry(id: string, entry: RegistryEntry) {
-  const reg = loadDynamicRegistry()
-  reg[id] = entry
-  try { localStorage.setItem('aidl-registry', JSON.stringify(reg)) } catch (e) {}
-}
-
-function lookupLicense(id: string): RegistryEntry | undefined {
-  const key = id.trim().toUpperCase()
-  return REGISTRY[key] || loadDynamicRegistry()[key]
-}
-
-// Downloads for the showcase cards in the "Licenses You Can Earn" section —
-// these are fixed demo credentials, not the signed-in user's own license.
-function downloadDemoLicense(opts: { holder: string; licenseId: string; classLabel: string; issued: string; expires: string; dob: string; hoursLabel: string }) {
-  downloadLicenseCertificate({
-    holder: opts.holder,
-    licenseId: opts.licenseId,
-    classLabel: opts.classLabel,
-    issued: opts.issued,
-    expires: opts.expires,
-    rows: [
-      { label: 'Date of Birth', value: opts.dob },
-      { label: 'Hours', value: opts.hoursLabel },
-    ],
-  })
-}
-
-function lookupLicenseByEmail(email: string): { id: string; entry: RegistryEntry } | undefined {
-  const normalized = email.trim().toLowerCase()
-  const all: Record<string, RegistryEntry> = { ...REGISTRY, ...loadDynamicRegistry() }
-  for (const [id, entry] of Object.entries(all)) {
-    if (entry.email && entry.email.toLowerCase() === normalized) {
-      return { id, entry }
-    }
-  }
-  return undefined
-}
-
-function generateLicenseId(cls: ClassCode): string {
-  const seg1 = Math.floor(1000 + Math.random() * 9000)
-  const seg2 = Math.floor(1000 + Math.random() * 9000)
-  return `AIDL-${cls}-${seg1}-${seg2}`
-}
-
-function startSession(licenseId: string, entry: RegistryEntry) {
-  try {
-    localStorage.setItem('aidl-session', JSON.stringify({
-      licenseId,
-      classCode: entry.classCode,
-      holder: entry.holder,
-      enrollAs: entry.enrollAs || 'individual',
-      orgName: entry.orgName || '',
-      orgLogo: entry.orgLogo || '',
-    }))
-    if (entry.classCode) localStorage.setItem('aidl-selected-class', entry.classCode)
-  } catch (e) {}
-}
-
-// SLACK button (sign-in dropdown and the org enroll form) — GET
-// /api/auth/slack/login/, then redirect to Slack. Slack's redirect back goes
-// through the backend to /auth/callback (TeamsCallbackView, mode=slack).
-async function signInWithSlack() {
-  notifyLoading('Opening Slack…', 'One moment')
-  try {
-    await startSlackLogin('organization')
-  } catch (e) {
-    notifyClose()
-    notifyError(
-      e instanceof Error ? e.message : 'Could not start Slack sign-in.',
-      'Slack Sign-In Failed'
-    )
-  }
-}
-
-// TEAMS button (sign-in dropdown and the org enroll form both call this) —
-// kicks off the Microsoft OAuth flow from AIDL_MS_TEAMS_API_RESPONSE.docx:
-// GET /api/auth/teams/login/?enroll_as=organization, then redirect the
-// browser to the returned auth_url. The Microsoft redirect back to this page
-// is picked up by consumeTeamsAuthCallback() in onMounted below.
-async function signInWithTeams() {
-  notifyLoading('Opening Microsoft Teams…', 'One moment')
-  try {
-    await startTeamsLogin('organization')
-  } catch (e) {
-    notifyClose()
-    notifyError(
-      e instanceof Error ? e.message : 'Could not start Microsoft Teams sign-in.',
-      'Teams Sign-In Failed'
-    )
-  }
-}
-
-async function handleSubmit() {
-  if (submitting.value) return
-  formError.value = ''
-  for (const key of Object.keys(fieldErrors)) delete fieldErrors[key]
-
-  submitting.value = true
-  let result
-  try {
-    result = await signup({
-      enroll_as: form.enrollAs,
-      first_name: form.firstName.trim(),
-      last_name: form.lastName.trim(),
-      email: form.email.trim().toLowerCase(),
-      country: form.country,
-      state: form.state,
-      city: form.city,
-      license_class: 'class_l',
-      organization_name: form.enrollAs === 'organization' ? form.orgName.trim() : '',
-    })
-  } catch (e) {
-    if (e instanceof ApiError) {
-      for (const [key, messages] of Object.entries(e.fieldErrors)) {
-        // Password can come back with several failed rules at once — show them all.
-        if (messages.length) fieldErrors[key] = messages.join('\n')
-      }
-      // Errors for fields without an input of their own (enroll_as,
-      // license_class, non_field_errors, ...) go in the general slot.
-      const shown = ['first_name', 'last_name', 'email', 'password', 'confirm_password', 'country', 'state', 'city']
-      const other = Object.entries(e.fieldErrors).find(([key]) => !shown.includes(key))
-      if (other) formError.value = other[1][0] || ''
-      else if (!Object.keys(e.fieldErrors).length) formError.value = e.message
-    } else {
-      formError.value = 'Sign up failed. Please try again.'
-    }
-    return
-  } finally {
-    submitting.value = false
-  }
-
-  if (isOtpChallenge(result)) {
-    askForCode(result, 'signup')  // avatar + licence only after the code
-    return
-  }
-  afterSignup()
-}
-
-function afterSignup() {
-  try { localStorage.setItem('aidl-selected-class', activeClass.value) } catch (e) {}
-  showEnrollModal.value = false
-  showAvatarPicker.value = true
-}
-
-// Avatars picked per account, keyed by lowercased email. Kept in the browser
-// until the backend has an avatar API — see loadSavedAvatar.
-function saveAvatarForEmail(email: string, avatar: AvatarConfig) {
-  try {
-    const all = JSON.parse(localStorage.getItem('aidl-avatars') || '{}')
-    all[email.trim().toLowerCase()] = avatar
-    localStorage.setItem('aidl-avatars', JSON.stringify(all))
-  } catch (e) {}
-}
-
-// Prefers an avatar returned by the API (user.avatar, once the backend adds
-// it), falling back to one picked earlier in this browser.
-function loadSavedAvatar(user: ApiUser): AvatarConfig | null {
-  if (user.avatar && typeof user.avatar === 'object') return user.avatar as AvatarConfig
-  try {
-    return JSON.parse(localStorage.getItem('aidl-avatars') || '{}')[user.email.trim().toLowerCase()] || null
-  } catch (e) {
-    return null
-  }
-}
-
-function showSignedInLicense(id: string, entry: RegistryEntry, avatar: AvatarConfig) {
-  try { localStorage.setItem('aidl-avatar', JSON.stringify(avatar)) } catch (e) {}
-  issuedAvatar.value = avatar
-  startSession(id, entry)
-  issuedLicense.id = id
-  issuedLicense.holder = entry.holder.toUpperCase()
-  issuedLicense.classShort = entry.classCode ? CLASS_SHORT[entry.classCode] : entry.cls
-  issuedLicense.classFull = entry.classCode ? CLASS_FULL[entry.classCode] : entry.cls
-  issuedLicense.issued = entry.iss
-  issuedLicense.expires = entry.exp
-  showLicenseModal.value = true
-}
-
-function onAvatarConfirmed(avatar: AvatarConfig) {
-  showAvatarPicker.value = false
-
-  // Coming from sign-in: reuse the account's existing license instead of
-  // issuing a new one from the enroll form.
-  if (signedInLicense.value) {
-    const { id, entry } = signedInLicense.value
-    signedInLicense.value = null
-    if (entry.email) saveAvatarForEmail(entry.email, avatar)
-    showSignedInLicense(id, entry, avatar)
-    return
-  }
-
-  try { localStorage.setItem('aidl-avatar', JSON.stringify(avatar)) } catch (e) {}
-  issuedAvatar.value = avatar
-  saveAvatarForEmail(form.email, avatar)
-
-  const cls = activeClass.value
-  // Individuals get their Learner licence from the server at sign-up (1 year).
-  const server = cls === 'L' && signupUser.value?.licence_number ? signupUser.value : null
-  const licenseId = server ? String(server.licence_number) : generateLicenseId(cls)
-  const holder = `${form.firstName} ${form.lastName}`.trim() || 'AIDL Member'
-  const now = server?.licence_issued_at ? new Date(String(server.licence_issued_at)) : new Date()
-  const oneYearOut = server?.licence_expires_at
-    ? new Date(String(server.licence_expires_at))
-    : new Date(now.getTime() + 31536000000)
-  const issuedDate = now.toLocaleDateString('en-US')
-  const expiresDate = oneYearOut.toLocaleDateString('en-US')
-
-  const entry: RegistryEntry = {
-    holder,
-    cls: CLASS_LABELS[cls],
-    classCode: cls,
-    iss: issuedDate,
-    exp: expiresDate,
-    hrs: '0 hrs · just enrolled',
-    end: '—',
-    email: form.email.trim(),
-    mobile: form.mobile.trim(),
-    enrollAs: form.enrollAs,
-    orgName: form.enrollAs === 'organization' ? form.orgName : undefined,
-    orgLogo: form.enrollAs === 'organization' ? form.orgLogo : undefined,
-  }
-  saveDynamicEntry(licenseId, entry)
-  startSession(licenseId, entry)
-
-  issuedLicense.id = licenseId
-  issuedLicense.holder = holder.toUpperCase()
-  issuedLicense.classShort = CLASS_SHORT[cls]
-  issuedLicense.classFull = CLASS_FULL[cls]
-  issuedLicense.issued = issuedDate
-  issuedLicense.expires = expiresDate
-  showLicenseModal.value = true
-}
-
-// Closing the license card (✕ or the Close button) just dismisses it — the
-// account/session is already saved above, but the user stays on this page
-// instead of being sent to the dashboard.
-function onLicenseModalClose() {
-  showLicenseModal.value = false
-}
-
-// Senior sign-in goes through POST /api/auth/signin/. The portals still read
-// the local aidl-session (license ID + class), so on success we reuse the
-// license already stored for this email, or issue one on first sign-in.
-async function submitSeniorSignIn() {
-  if (signInSubmitting.value) return
-  signInError.value = ''
-  for (const key of Object.keys(signInFieldErrors)) delete signInFieldErrors[key]
-
-  const email = signInEmail.value.trim().toLowerCase()
-  if (!email) signInFieldErrors.email = 'Enter your email.'
-  if (!captchaAnswer.value.trim()) signInFieldErrors.captcha = 'Type the letters in the picture.'
-  if (!email || !captchaAnswer.value.trim()) return
-
-  signInSubmitting.value = true
-  let result
-  try {
-    result = await signin({
-      enroll_as: signInMode.value, email,
-      captcha_token: captchaToken.value, captcha_answer: captchaAnswer.value.trim(),
-    })
-  } catch (e) {
-    loadCaptcha()  // a picture code works once
-    if (e instanceof ApiError) {
-      if (e.fieldErrors.email?.[0]) signInFieldErrors.email = e.fieldErrors.email[0]
-      if (e.fieldErrors.password?.[0]) signInFieldErrors.password = e.fieldErrors.password[0]
-      if (e.fieldErrors.captcha?.[0]) signInFieldErrors.captcha = e.fieldErrors.captcha[0]
-      const other = Object.entries(e.fieldErrors).find(([key]) => !['email', 'password', 'captcha'].includes(key))
-      if (other) signInError.value = other[1][0] || ''
-      else if (!Object.keys(e.fieldErrors).length) signInError.value = e.message
-    } else {
-      signInError.value = 'Sign in failed. Please try again.'
-    }
-    return
-  } finally {
-    signInSubmitting.value = false
-  }
-
-  if (isOtpChallenge(result)) {
-    signInOpen.value = null
-    askForCode(result, 'signin')
-    return
-  }
-  afterSeniorSignIn(result.user)
-}
-
-function afterSeniorSignIn(user: ApiUser) {
-  let found = lookupLicenseByEmail(user.email)
-  if (user.licence_number && found?.id !== user.licence_number) found = undefined
-  if (!found || !found.entry.classCode || !SENIOR_CLASSES.includes(found.entry.classCode)) {
-    const now = user.licence_issued_at ? new Date(String(user.licence_issued_at)) : new Date()
-    const entry: RegistryEntry = {
-      holder: user.full_name || `${user.first_name} ${user.last_name}`.trim() || 'AIDL Member',
-      cls: CLASS_LABELS.L,
-      classCode: 'L',
-      iss: now.toLocaleDateString('en-US'),
-      exp: (user.licence_expires_at ? new Date(String(user.licence_expires_at))
-        : new Date(now.getTime() + 31536000000)).toLocaleDateString('en-US'),
-      hrs: '0 hrs · just enrolled',
-      end: '—',
-      email: user.email,
-      mobile: String(user.mobile_number || ''),
-      enrollAs: user.enroll_as,
-      orgName: user.organization_name || undefined,
-    }
-    const id = user.licence_number ? String(user.licence_number) : generateLicenseId('L')
-    saveDynamicEntry(id, entry)
-    found = { id, entry }
-  }
-  signInOpen.value = null
-  // Avatar already picked (after signup or an earlier sign-in) → straight to
-  // the license card. Otherwise pick one first, same as signup.
-  const savedAvatar = loadSavedAvatar(user)
-  if (savedAvatar) {
-    showSignedInLicense(found.id, found.entry, savedAvatar)
-    return
-  }
-  signedInLicense.value = found
-  showAvatarPicker.value = true
-}
-
-function submitSignIn(track: 'senior' | 'junior') {
-  signInError.value = ''
-
-  if (track === 'senior') {
-    submitSeniorSignIn()
-    return
-  }
-
-  const id = signInId.value.trim()
-  if (!id) {
-    signInError.value = 'Enter your license ID.'
-    return
-  }
-  const entry = lookupLicense(id)
-  if (!entry || !entry.classCode) {
-    signInError.value = 'No permit found with that ID.'
-    return
-  }
-  if (!JUNIOR_CLASSES.includes(entry.classCode)) {
-    signInError.value = `That's a Senior license (${entry.cls}) — try Sign In on the Senior side.`
-    return
-  }
-  startSession(id.trim().toUpperCase(), entry)
-  signInOpen.value = null
-  router.push('/junior-portal')
-}
-
-const licInput = ref('AIDL-L-1182-4421')
-
-const verifyResult = reactive({
-  status: 'VERIFIED · ACTIVE',
-  statusColor: '#2ec866',
-  time: 'Checked just now · Registry block #4,221,098',
-  holder: 'Jamie Okafor',
-  cls: 'CLASS L · LEARNER',
-  issued: '04/29/2026',
-  expires: '04/29/2027',
-  hours: '11 hrs · in progress',
-  end: '—'
-})
-
-function verify() {
-  const r = lookupLicense(licInput.value)
-  if (r) {
-    verifyResult.status = 'VERIFIED · ACTIVE'
-    verifyResult.statusColor = '#2ec866'
-    verifyResult.time = 'Checked just now · Registry block #' + (4221000 + Math.floor(Math.random() * 200))
-    verifyResult.holder = r.holder
-    verifyResult.cls = r.cls
-    verifyResult.issued = r.iss
-    verifyResult.expires = r.exp
-    verifyResult.hours = r.hrs
-    verifyResult.end = r.end
-  } else {
-    verifyResult.status = 'NOT FOUND'
-    verifyResult.statusColor = '#e23a2e'
-    verifyResult.time = 'No matching record in the registry.'
-    verifyResult.holder = '—'
-    verifyResult.cls = '—'
-    verifyResult.issued = '—'
-    verifyResult.expires = '—'
-    verifyResult.hours = '—'
-    verifyResult.end = '—'
-  }
-}
+const adminStep = ref(0)
+const userStep = ref(0)
+const adminCur = computed(() => ADMIN[adminStep.value]!)
+const userCur = computed(() => USER[userStep.value]!)
 </script>
 
 <style>
-:root {
-  --cream: #f5ecd2;
-  --cream-2: #f0e3bd;
-  --asphalt: #14140f;
-  --asphalt-2: #1f1e16;
-  --sign-yellow: #ffcc00;
-  --sign-amber: #ff9d00;
-  --signal-red: #e23a2e;
-  --signal-green: #2ec866;
-  --sky: #6fb3e0;
-  --line-white: #f6f1de;
-  --ink: #14140f;
-}
-* { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; background: var(--cream); color: var(--ink); font-family: "Space Grotesk", system-ui, sans-serif; }
-body { overflow-x: hidden; }
-
-.display { font-family: "Bungee", "Space Grotesk", sans-serif; letter-spacing: 0.02em; }
-.mono { font-family: "JetBrains Mono", monospace; }
-
-.wrap { max-width: 1440px; margin: 0 auto; padding: 0 56px; }
-
+/* Landing page — "AI Driving License v2" design. Every class is prefixed
+   lp- so the global portal / classic-site stylesheets can't leak in. */
+.lp-root{--cream:#f5ecd2;--cream-2:#f0e3bd;--cream-3:#e6d8a8;--asphalt:#14140f;--asphalt-2:#1f1e16;--yellow:#ffcc00;--amber:#ff9d00;--red:#e23a2e;--green:#2ec866;--green-ink:#0d6b38;--sky:#6fb3e0;--ink:#14140f;--muted:#5f5843;--line:#d8c98f}
+:where(.lp-root),:where(.lp-root) *,:where(.lp-root) *::before,:where(.lp-root) *::after{box-sizing:border-box}
+.lp-root{min-height:100vh;background:var(--cream);color:var(--ink);font-family:"Space Grotesk",system-ui,sans-serif}
+.lp-root{overflow-x:clip}
+:where(.lp-root) a{color:var(--ink)}
+:where(.lp-root) a:hover{color:var(--red)}
+.lp-wrap{max-width:1320px;margin:0 auto;padding:0 48px}
+.lp-d{font-family:"Bungee",sans-serif;font-weight:400;letter-spacing:.01em}
+.lp-m{font-family:"JetBrains Mono",monospace}
+.lp-btn{display:inline-flex;align-items:center;gap:10px;padding:13px 22px;background:var(--ink);color:var(--cream);border:3px solid var(--ink);font-family:"Bungee",sans-serif;font-size:14px;text-decoration:none;box-shadow:4px 4px 0 var(--yellow);transition:transform .12s,box-shadow .12s;cursor:pointer}
+.lp-btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--yellow);color:var(--cream)}
+.lp-btn.lp-y{background:var(--yellow);color:var(--ink);box-shadow:4px 4px 0 var(--ink)}
+.lp-btn.lp-y:hover{box-shadow:6px 6px 0 var(--ink);color:var(--ink)}
+.lp-btn.lp-ghost{background:transparent;color:var(--ink);box-shadow:none}
+.lp-btn.lp-ghost:hover{background:var(--cream-2)}
+.lp-eb{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.16em;background:var(--ink);color:var(--yellow);padding:6px 11px;margin-bottom:18px}
+.lp-h2{font-family:"Bungee",sans-serif;font-weight:400;font-size:clamp(34px,4.6vw,60px);line-height:1;margin:0 0 16px;text-wrap:balance}
+.lp-lede{font-size:19px;line-height:1.55;max-width:62ch;margin:0;text-wrap:pretty}
+.lp-band{padding:110px 0;border-bottom:4px solid var(--ink)}
+.lp-band.lp-dark{background:var(--asphalt);color:var(--cream)}
+.lp-band.lp-dark .lp-eb{background:var(--yellow);color:var(--ink)}
+.lp-band.lp-dark a{color:var(--yellow)}
 /* NAV */
-.nav { position: sticky; top: 0; z-index: 50; background: var(--cream); border-bottom: 3px solid var(--ink); }
-.nav-inner { display: flex; align-items: center; gap: 32px; height: 76px; }
-.nav .brand {
-  display: flex; align-items: center; gap: 12px;
-  font-family: "Bungee", sans-serif; font-size: 20px;
-  text-decoration: none; color: var(--ink);
-  border-bottom: none;
-  padding: 0;
-  cursor: default;
-}
-.brand-mark {
-  width: 44px; height: 44px; border-radius: 50%;
-  object-fit: cover;
-  box-shadow: 3px 3px 0 var(--ink);
-  text-decoration: none;
-}
-.brand-name {
-  font-family: "Bungee", sans-serif;
-  text-decoration: none;
-  color: var(--ink);
-}
-.nav-links { display: flex; gap: 28px; margin-left: 24px; }
-.nav-links a { color: var(--ink); text-decoration: none; font-weight: 600; font-size: 15px; }
-.nav-links a:hover { color: var(--signal-red); }
-.nav-links a.on { color: var(--signal-red); text-decoration: underline; text-underline-offset: 5px; }
-.nav-cta { margin-left: auto; display: flex; gap: 12px; align-items: center; }
-.cta-short { display: none; }
-
-.signin-wrap { position: relative; }
-body:not(.pre-choice) .signin-wrap .nav-auth-btn { display: inline-flex; width: 100%; }
-.signin-drop {
-  position: absolute;
-  top: calc(100% + 12px);
-  right: 0;
-  width: min(300px, calc(100vw - 32px));
-  max-height: calc(100vh - 110px);
-  overflow-y: auto;
-  background: var(--cream);
-  border: 3px solid var(--ink);
-  box-shadow: 8px 8px 0 var(--ink);
-  padding: 18px;
-  z-index: 60;
-  text-align: left;
-  box-sizing: border-box;
-}
-.signin-drop-head {
-  font-family: "Bungee", sans-serif;
-  font-size: 13px;
-  letter-spacing: 0.04em;
-  margin-bottom: 6px;
-}
-.signin-drop-senior .signin-drop-head { color: var(--signal-red); }
-.signin-drop-junior .signin-drop-head { color: var(--signal-green); }
-.signin-drop-sub { font-size: 12px; color: #6a624a; margin: 0 0 12px; line-height: 1.4; }
-.signin-drop-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
-.signin-drop-tab {
-  height: 34px;
-  border: 3px solid var(--ink);
-  background: var(--cream-2);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  cursor: pointer;
-}
-.signin-drop-tab.active { background: var(--sign-yellow); }
-.signin-drop input {
-  width: 100%;
-  height: 42px;
-  border: 3px solid var(--ink);
-  background: var(--cream-2);
-  padding: 0 12px;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 13px;
-  color: var(--ink);
-  outline: none;
-  box-sizing: border-box;
-}
-.signin-drop input + input, .signin-drop input + .password-field { margin-top: 10px; }
-.signin-drop input:focus { background: var(--sign-yellow); }
-.signin-drop-btn { width: 100%; justify-content: center; margin-top: 10px; }
-.signin-drop-error {
-  margin: 10px 0 0;
-  padding: 8px 10px;
-  background: var(--signal-red);
-  color: var(--cream);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
-  border: 2px solid var(--ink);
-}
-.field-error {
-  margin: 4px 0 0;
-  color: var(--signal-red);
-  font-family: "JetBrains Mono", monospace;
-  font-size: 11px;
-  white-space: pre-line;
-}
-.field-hint {
-  margin: 4px 0 0;
-  color: #6a624a;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
-  line-height: 1.5;
-}
-.password-rules { margin: 2px 0 0; padding: 0; list-style: none; }
-.password-rules li::before { content: "• "; }
-.form-foot .btn:disabled, .signin-drop-btn:disabled { opacity: 0.6; cursor: wait; }
-.signin-drop-foot { margin: 12px 0 0; font-size: 11px; color: #6a624a; }
-.signin-drop-foot a { color: var(--ink); font-weight: 700; }
-
-.btn {
-  display: inline-flex; align-items: center; gap: 10px;
-  padding: 12px 22px; background: var(--ink); color: var(--cream);
-  border: 3px solid var(--ink); font-family: "Bungee", sans-serif; font-size: 14px;
-  text-decoration: none; box-shadow: 4px 4px 0 var(--sign-yellow);
-  transition: transform .12s, box-shadow .12s; cursor: pointer;
-}
-.btn:hover { transform: translate(-2px,-2px); box-shadow: 6px 6px 0 var(--sign-yellow); }
-.btn.btn-yellow { background: var(--sign-yellow); color: var(--ink); box-shadow: 4px 4px 0 var(--ink); }
-.btn.btn-yellow:hover { box-shadow: 6px 6px 0 var(--ink); }
-.btn.btn-red { background: var(--signal-red); color: var(--cream); box-shadow: 4px 4px 0 var(--ink); }
-.btn.btn-red:hover { box-shadow: 6px 6px 0 var(--ink); }
-.btn:disabled { opacity: 0.5; cursor: not-allowed; pointer-events: none; }
-
-/* HERO */
-.hero {
-  position: relative; height: 880px; overflow: hidden;
-  background: linear-gradient(180deg, #98c8eb 0%, #c8e0f0 45%, #e9d398 60%, #c98c4a 75%, #4a3a25 100%);
-  border-bottom: 6px solid var(--ink);
-}
-.sun {
-  position: absolute; left: 50%; top: 38%; transform: translate(-50%, -50%);
-  width: 220px; height: 220px; border-radius: 50%;
-  background: radial-gradient(circle, #ffdd55 0%, #ff9d00 60%, transparent 70%);
-  filter: blur(2px);
-}
-.cloud { position: absolute; background: var(--cream); border: 3px solid var(--ink); border-radius: 40px; }
-.cloud.c1 { width: 120px; height: 40px; top: 80px; left: 12%; }
-.cloud.c2 { width: 90px;  height: 30px; top: 140px; left: 70%; }
-.cloud.c3 { width: 160px; height: 44px; top: 60px; left: 60%; }
-
-.mtn { position: absolute; bottom: 38%; width: 0; height: 0; border-style: solid; }
-.mtn.m1 { left: 8%;  border-width: 0 90px 80px 90px;  border-color: transparent transparent #6e5a3a transparent; }
-.mtn.m2 { left: 22%; border-width: 0 120px 110px 120px; border-color: transparent transparent #5a4830 transparent; }
-.mtn.m3 { right: 12%; border-width: 0 140px 130px 140px; border-color: transparent transparent #6e5a3a transparent; }
-
-.road {
-  position: absolute; left: 50%; bottom: 0; transform: translateX(-50%);
-  width: 100%; height: 55%; background: var(--asphalt);
-  clip-path: polygon(38% 0, 62% 0, 100% 100%, 0% 100%);
-}
-.road-dash { position: absolute; left: 0; right: 0; bottom: 0; height: 55%; pointer-events: none; }
-.road-dash svg { width: 100%; height: 100%; overflow: visible; }
-.dash-stroke {
-  stroke: var(--line-white); stroke-width: 14;
-  stroke-dasharray: 36 44; stroke-linecap: square; fill: none;
-  animation: dashmove 1.8s linear infinite;
-}
-@keyframes dashmove { from { stroke-dashoffset: 0; } to { stroke-dashoffset: -80; } }
-
-.road-sign { position: absolute; display: flex; flex-direction: column; align-items: center; }
-.road-sign .post { width: 5px; background: #6b5b3e; height: 60px; }
-.road-sign .plate {
-  background: var(--sign-yellow); color: var(--ink);
-  border: 4px solid var(--ink); padding: 10px 14px;
-  font-family: "Bungee", sans-serif; font-size: 13px;
-  box-shadow: 4px 4px 0 rgba(0,0,0,0.4);
-  text-align: center; line-height: 1.05;
-}
-.road-sign .plate.diamond { width: 100px; height: 100px; transform: rotate(45deg); display: grid; place-items: center; padding: 0; }
-.road-sign .plate.diamond > span { display: block; transform: rotate(-45deg); font-size: 11px; }
-.road-sign .plate.round { border-radius: 50%; width: 84px; height: 84px; display: grid; place-items: center; padding: 0; }
-.road-sign .plate.green { background: var(--signal-green); }
-.road-sign .plate.red   { background: var(--signal-red); color: var(--cream); }
-.road-sign .plate.white { background: var(--cream); }
-
-.rs-1 { left: 6%;  bottom: 30%; }
-.rs-1 .post { height: 80px; }
-.rs-2 { right: 7%; bottom: 26%; }
-.rs-2 .post { height: 100px; }
-.rs-3 { left: 16%; bottom: 18%; }
-.rs-3 .post { height: 110px; }
-.rs-4 { right: 18%; bottom: 14%; }
-.rs-4 .post { height: 130px; }
-
-.hero-headline {
-  position: absolute; left: 50%; top: 120px; transform: translateX(-50%);
-  text-align: center; z-index: 5; width: min(1100px, 92%);
-}
-.hero-eyebrow {
-  display: inline-flex; align-items: center; gap: 10px;
-  background: var(--ink); color: var(--sign-yellow);
-  padding: 8px 18px; font-family: "Bungee", sans-serif; font-size: 13px;
-  border: 3px solid var(--ink); box-shadow: 4px 4px 0 var(--signal-red);
-  margin-bottom: 22px;
-}
-.hero-eyebrow .blink {
-  width: 10px; height: 10px; border-radius: 50%; background: var(--signal-red);
-  animation: blink 1s steps(2) infinite;
-}
-@keyframes blink { 50% { opacity: 0.15; } }
-
-.hero-title {
-  font-family: "Bungee", sans-serif;
-  font-size: 115px; line-height: 0.92; color: var(--ink);
-  text-shadow: 6px 6px 0 var(--sign-yellow); margin: 0;
-}
-.hero-title .l2 { display: block; color: var(--signal-red); text-shadow: 6px 6px 0 var(--ink); }
-.hero-sub {
-  margin-top: 24px; font-size: 19px; max-width: 620px;
-  color: var(--ink); font-weight: 500;
-  background: rgba(245, 236, 210, 0.7);
-  padding: 10px 18px; border: 2px solid var(--ink); display: inline-block;
-}
-.hero-sub.v-adult { font-size: 18px; }
-
-.dashboard { position: absolute; left: 0; right: 0; bottom: 0; height: 280px; z-index: 8; }
-.dash-bg {
-  position: absolute; inset: 0;
-  background: linear-gradient(180deg, #2a2820 0%, #14140f 60%, #0a0a07 100%);
-  clip-path: polygon(0 30%, 12% 12%, 88% 12%, 100% 30%, 100% 100%, 0 100%);
-  border-top: 4px solid var(--ink);
-}
-.dash-inner {
-  position: absolute; inset: 0;
-  display: grid; grid-template-columns: 1fr auto 1fr;
-  align-items: center; padding: 70px 80px 30px;
-  color: var(--cream);
-}
-.gauge-cluster { display: flex; gap: 30px; align-items: center; }
-.gauge {
-  width: 110px; height: 110px; border-radius: 50%;
-  background: radial-gradient(circle at 50% 50%, #1e1c16, #0a0a07 70%);
-  border: 4px solid #3a3528; position: relative;
-  box-shadow: inset 0 0 18px rgba(0,0,0,0.7);
-}
-.gauge .tick { position: absolute; left: 50%; top: 6px; width: 2px; height: 8px; background: var(--cream-2); opacity: 0.6; transform-origin: 50% 49px; }
-.gauge .needle { position: absolute; left: 50%; bottom: 50%; width: 3px; height: 42px; background: var(--signal-red); transform-origin: 50% 100%; transform: translateX(-50%) rotate(-50deg); border-radius: 2px; }
-.gauge .center { position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%); width: 14px; height: 14px; border-radius: 50%; background: var(--sign-yellow); border: 2px solid var(--ink); }
-.gauge .label { position: absolute; left: 50%; bottom: -22px; transform: translateX(-50%); font-family: "JetBrains Mono", monospace; font-size: 10px; color: var(--cream-2); white-space: nowrap; }
-.gauge.kmh .needle { transform: translateX(-50%) rotate(35deg); }
-.gauge.lvl .needle { transform: translateX(-50%) rotate(-25deg); background: var(--signal-green); }
-
-.wheel {
-  width: 320px; height: 320px;
-  border-radius: 50%; border: 22px solid var(--asphalt);
-  background: radial-gradient(circle at 50% 50%, transparent 0 70px, #1a1810 71px 80px, transparent 81px);
-  position: relative;
-  box-shadow: 0 -10px 30px rgba(0,0,0,0.5), inset 0 0 20px rgba(0,0,0,0.6);
-  margin-top: -120px;
-}
-.wheel::before, .wheel::after {
-  content: ""; position: absolute; left: 50%; top: 50%;
-  background: var(--asphalt); transform: translate(-50%, -50%); border-radius: 8px;
-}
-.wheel::before { width: 16px; height: 200px; }
-.wheel::after  { width: 200px; height: 16px; }
-.wheel-hub {
-  position: absolute; left: 50%; top: 50%; transform: translate(-50%,-50%);
-  width: 110px; height: 110px; border-radius: 50%;
-  background: linear-gradient(145deg, #2a2820, #14140f);
-  border: 3px solid #3a3528;
-  display: grid; place-items: center;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.4); z-index: 2;
-}
-.wheel-hub-inner {
-  width: 84px; height: 84px; border-radius: 50%;
-  background: var(--sign-yellow); border: 3px solid var(--ink);
-  display: grid; place-items: center;
-  font-family: "Bungee", sans-serif; font-size: 22px; color: var(--ink);
-}
-
-.infotainment {
-  background: #0a0a07; border: 3px solid #3a3528; border-radius: 10px;
-  padding: 16px 18px; color: var(--signal-green);
-  font-family: "JetBrains Mono", monospace; width: 280px;
-  margin-left: auto; box-shadow: inset 0 0 20px rgba(0,0,0,0.8);
-}
-.infotainment .row { display: flex; justify-content: space-between; font-size: 11px; color: var(--cream-2); }
-.infotainment .big { font-family: "Bungee", sans-serif; color: var(--sign-yellow); font-size: 22px; margin: 6px 0 8px; }
-.infotainment .bar { height: 8px; background: #2a2820; border-radius: 4px; overflow: hidden; margin-top: 10px; }
-.infotainment .bar > i { display: block; height: 100%; width: 68%; background: var(--signal-green); }
-
-/* SECTIONS */
-section.band { position: relative; padding: 120px 0; border-bottom: 4px solid var(--ink); }
-.section-eyebrow { display: inline-block; background: var(--ink); color: var(--sign-yellow); padding: 6px 14px; font-family: "Bungee", sans-serif; font-size: 12px; margin-bottom: 18px; }
-.section-title { font-family: "Bungee", sans-serif; font-size: 64px; line-height: 1.0; margin: 0 0 16px; }
-.section-sub { font-size: 17px; max-width: 620px; color: #3a3528; }
-
-/* ROADMAP */
-.roadmap { background: var(--cream-2); padding-bottom: 0; }
-.roadmap-stage {
-  position: relative; height: 720px; margin-top: 60px;
-  background: var(--asphalt);
-  border-top: 6px solid var(--ink); border-bottom: 6px solid var(--ink);
-  overflow: hidden;
-}
-.lane-line { position: absolute; left: 0; right: 0; height: 6px; background: repeating-linear-gradient(90deg, var(--line-white) 0 40px, transparent 40px 80px); }
-.lane-line.top { top: 38%; }
-.lane-line.bot { bottom: 38%; }
-.lane-line.solid { height: 4px; background: var(--sign-yellow); }
-.lane-line.solid.top { top: 18%; }
-.lane-line.solid.bot { bottom: 22%; }
-
-.roadmap-signs {
-  position: relative; z-index: 3;
-  display: flex; justify-content: space-between;
-  padding: 60px 80px 28px; height: 100%; align-items: flex-end;
-}
-.feature-sign { width: 220px; display: flex; flex-direction: column; align-items: center; color: var(--cream); }
-.feature-sign .badge {
-  background: var(--sign-yellow); color: var(--ink);
-  border: 4px solid var(--ink); padding: 18px 16px;
-  text-align: center; box-shadow: 6px 6px 0 rgba(0,0,0,0.5);
-  font-family: "Bungee", sans-serif; font-size: 14px;
-  min-height: 100px; width: 100%;
-  display: grid; place-items: center; line-height: 1.1;
-}
-.feature-sign.shield .badge {
-  background: var(--cream);
-  clip-path: polygon(50% 0, 100% 18%, 100% 70%, 50% 100%, 0 70%, 0 18%);
-  padding: 22px 14px 32px;
-}
-.feature-sign.octagon .badge {
-  background: var(--signal-red); color: var(--cream);
-  clip-path: polygon(30% 0, 70% 0, 100% 30%, 100% 70%, 70% 100%, 30% 100%, 0 70%, 0 30%);
-  padding: 26px 14px;
-}
-.feature-sign.diamond .badge {
-  background: var(--sign-yellow);
-  width: 140px; height: 140px; transform: rotate(45deg);
-  padding: 0; display: grid; place-items: center; min-height: unset;
-}
-.feature-sign.diamond .badge > span { display: block; transform: rotate(-45deg); width: 95px; }
-.feature-sign.green .badge { background: var(--signal-green); color: var(--ink); }
-.feature-sign .post { width: 6px; background: #c8c0a8; height: 80px; margin-top: -2px; }
-.feature-sign .post::before { content: ""; display: block; width: 18px; height: 4px; background: #c8c0a8; margin: 8px 0 0 -6px; }
-.feature-sign .desc { margin-top: 36px; color: var(--cream); font-size: 13px; text-align: center; line-height: 1.4; max-width: 180px; position: relative; top: 22px; }
-.feature-sign .desc strong { color: var(--sign-yellow); font-family: "Bungee", sans-serif; font-size: 12px; display: block; margin-bottom: 4px; letter-spacing: 0.05em; }
-
-/* TRAININGS */
-.trainings { background: var(--cream); }
-.trainings .top { display: flex; justify-content: space-between; align-items: flex-start; gap: 40px; }
-.trainings .top .section-sub { margin: 8px 0 0; flex: 0 1 420px; }
-.training-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; margin-top: 60px; }
-.tr-card {
-  background: var(--cream-2); border: 4px solid var(--ink);
-  box-shadow: 10px 10px 0 var(--ink); padding: 32px; position: relative;
-  display: flex; flex-direction: column; min-height: 540px;
-}
-.tr-card.featured { background: var(--sign-yellow); }
-.tr-card.adv { background: var(--ink); color: var(--cream); box-shadow: 10px 10px 0 var(--signal-red); }
-
-.tr-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 18px; }
-.tr-level { font-family: "JetBrains Mono", monospace; font-size: 11px; padding: 4px 10px; background: var(--ink); color: var(--cream); border: 2px solid var(--ink); }
-.tr-card.adv .tr-level { background: var(--cream); color: var(--ink); }
-.tr-card.featured .tr-level { background: var(--ink); color: var(--sign-yellow); }
-.tr-stamp { font-family: "Bungee", sans-serif; font-size: 11px; color: var(--ink); border: 2px solid var(--ink); padding: 4px 8px; transform: rotate(-3deg); }
-.tr-card.adv .tr-stamp { color: var(--cream); border-color: var(--cream); }
-
-.tr-icon {
-  width: 100px; height: 100px;
-  border: 4px solid var(--ink); background: var(--cream);
-  display: grid; place-items: center;
-  margin: 8px 0 22px; box-shadow: 5px 5px 0 var(--ink);
-}
-.tr-card.adv .tr-icon { background: var(--sign-yellow); border-color: var(--sign-yellow); box-shadow: 5px 5px 0 var(--signal-red); }
-.tr-icon svg { width: 60px; height: 60px; }
-.tr-icon-row { display: flex; align-items: center; gap: 16px; margin: 8px 0 22px; }
-.tr-icon-row .tr-icon { margin: 0; flex-shrink: 0; }
-.tr-qual { font-family: "JetBrains Mono", monospace; font-size: 11px; line-height: 1.5; }
-.tr-qual-label { display: block; opacity: 0.7; letter-spacing: 0.04em; }
-.tr-qual-value { display: block; font-family: "Bungee", sans-serif; font-size: 13px; margin-top: 4px; }
-.tr-name { font-family: "Bungee", sans-serif; font-size: 30px; line-height: 0.95; margin: 0 0 10px; }
-.tr-desc { font-size: 15px; line-height: 1.45; margin-bottom: 22px; }
-.tr-meta { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; font-family: "JetBrains Mono", monospace; font-size: 11px; margin-bottom: 22px; padding: 14px 0; border-top: 2px dashed currentColor; border-bottom: 2px dashed currentColor; }
-.tr-meta b { font-family: "Bungee", sans-serif; font-weight: normal; font-size: 13px; display: block; }
-
-.tr-list { list-style: none; padding: 0; margin: 0 0 26px; font-size: 14px; }
-.tr-list li { padding: 6px 0; display: flex; gap: 10px; align-items: flex-start; }
-.tr-list li::before { content: ""; flex: 0 0 14px; height: 14px; margin-top: 4px; background: var(--ink); clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%); }
-.tr-card.adv .tr-list li::before { background: var(--sign-yellow); }
-.tr-card.featured .tr-list li::before { background: var(--signal-red); }
-
-.tr-card .btn { margin-top: auto; align-self: flex-start; }
-
-.lanes { background: var(--cream-2); }
-.lane-grid { margin-top: 56px; display: grid; grid-template-columns: 1fr 1.25fr; gap: 28px; align-items: start; }
-.lane { border: 4px solid var(--ink); box-shadow: 10px 10px 0 var(--ink); background: var(--cream); display: flex; flex-direction: column; }
-.lane.org { background: var(--asphalt); color: var(--cream); }
-.lane-head { border-bottom: 4px solid var(--ink); padding: 22px 26px; display: flex; align-items: center; gap: 14px; background: var(--sign-yellow); }
-.lane.org .lane-head { background: var(--signal-red); color: var(--cream); border-bottom-color: var(--ink); }
-.lane-sign { width: 46px; height: 46px; flex: none; border: 3px solid var(--ink); background: var(--cream); display: grid; place-items: center; font-family: "Bungee", sans-serif; font-size: 17px; color: var(--ink); border-radius: 50%; }
-.lane-head h3 { font-family: "Bungee", sans-serif; font-size: 20px; margin: 0; line-height: 1.1; }
-.lane-head p { margin: 4px 0 0; font-family: "JetBrains Mono", monospace; font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; opacity: .8; }
-.lane-body { padding: 10px 26px 26px; display: flex; flex-direction: column; }
-.lf { display: flex; gap: 16px; padding: 18px 0; border-bottom: 2px dashed rgba(20, 20, 15, .28); }
-.lane.org .lf { border-bottom-color: rgba(246, 241, 222, .22); }
-.lf:last-of-type { border-bottom: 0; }
-.lf-n { font-family: "Bungee", sans-serif; font-size: 13px; flex: none; width: 34px; height: 34px; display: grid; place-items: center; border: 2.5px solid var(--ink); background: var(--sign-yellow); color: var(--ink); }
-.lane.org .lf-n { border-color: var(--cream); background: var(--asphalt-2); color: var(--sign-yellow); }
-.lf-t { font-family: "Bungee", sans-serif; font-size: 14px; line-height: 1.2; margin: 0 0 5px; }
-.lf-d { margin: 0; font-size: 14.5px; line-height: 1.5; color: #3a3528; }
-.lane.org .lf-d { color: var(--cream-2); }
-.lane-foot { margin-top: auto; padding: 22px 26px; border-top: 4px solid var(--ink); display: flex; gap: 12px; flex-wrap: wrap; background: rgba(20, 20, 15, .04); }
-.lane.org .lane-foot { border-top-color: var(--cream); background: rgba(246, 241, 222, .06); }
-.lane-chips { display: flex; flex-wrap: wrap; gap: 8px; padding: 4px 0 18px; }
-.lane-chips span { font-family: "JetBrains Mono", monospace; font-size: 10px; letter-spacing: .05em; padding: 5px 9px; border: 2px solid var(--ink); background: var(--cream-2); color: var(--ink); }
-.lane.org .lane-chips span { border-color: var(--cream); background: var(--asphalt-2); color: var(--cream); }
-
-.agent { width: 110px; height: 130px; position: relative; filter: drop-shadow(3px 3px 0 var(--ink)); }
-.agent .head { position: absolute; left: 50%; top: 0; transform: translateX(-50%); width: 80px; height: 70px; background: var(--ink); border: 3px solid var(--ink); border-radius: 16px 16px 12px 12px; }
-.agent .head::before, .agent .head::after { content: ""; position: absolute; top: 22px; width: 14px; height: 14px; background: var(--sign-yellow); border-radius: 50%; }
-.agent .head::before { left: 14px; }
-.agent .head::after { right: 14px; }
-.agent .antenna { position: absolute; left: 50%; top: -16px; width: 3px; height: 16px; background: var(--ink); transform: translateX(-50%); }
-.agent .antenna::before { content: ""; position: absolute; left: 50%; top: -8px; width: 12px; height: 12px; background: var(--signal-red); border: 2px solid var(--ink); border-radius: 50%; transform: translateX(-50%); }
-.agent .body { position: absolute; left: 50%; bottom: 0; transform: translateX(-50%); width: 100px; height: 56px; background: var(--cream-2); border: 3px solid var(--ink); border-radius: 14px 14px 6px 6px; }
-.agent .a-badge { position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%); width: 28px; height: 28px; background: var(--sign-yellow); border: 2px solid var(--ink); border-radius: 50%; }
-
-/* ENROLL DROPDOWN — styled like the nav SIGN IN dropdown */
-.enroll-drop {
-  position: fixed;
-  top: 90px;
-  /* .wrap caps at 1440px and centers, so past that width its right edge
-     (and the CTA button inside it) drifts inward from the viewport edge —
-     track that drift instead of a flat offset, or this sits far right of
-     the button on wide screens. */
-  right: max(24px, calc((100vw - 1440px) / 2 + 24px));
-  z-index: 120;
-  width: min(460px, calc(100vw - 32px));
-  max-height: calc(100vh - 110px);
-  overflow-y: auto;
-}
-.enroll-drop-close {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  width: 28px;
-  height: 28px;
-  border: 2px solid var(--cream);
-  background: transparent;
-  color: var(--cream);
-  border-radius: 50%;
-  cursor: pointer;
-  font-family: "Bungee", sans-serif;
-  font-size: 12px;
-  z-index: 3;
-}
-.enroll-drop-close:hover { background: var(--signal-red); border-color: var(--signal-red); }
-
-/* ===== JOBS PAGE (/jobs) ===== */
-.jobs-page-content .mono { font-family: "JetBrains Mono", monospace; }
-.jobs-page-content .jh { background: var(--asphalt); color: var(--cream); border-bottom: 6px solid var(--ink); padding: 76px 0 68px; position: relative; overflow: hidden; }
-.jobs-page-content .jh:after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 14px; background: repeating-linear-gradient(90deg, var(--sign-yellow) 0 60px, transparent 60px 120px); }
-.jobs-page-content .tag { display: inline-flex; align-items: center; gap: 9px; font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .14em; background: var(--sign-yellow); color: var(--ink); border: 3px solid var(--ink); padding: 6px 12px; }
-.jobs-page-content .jh h1 { font-family: "Bungee", sans-serif; font-size: clamp(38px, 6.4vw, 86px); line-height: .98; margin: 22px 0 0; max-width: 16ch; color: var(--cream); }
-.jobs-page-content .jh h1 em { font-style: normal; color: var(--sign-yellow); }
-.jobs-page-content .jh p { max-width: 60ch; font-size: 19px; line-height: 1.55; color: #e6dcc0; margin: 22px 0 0; text-wrap: pretty; }
-.jobs-page-content .jh-meta { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 30px; }
-.jobs-page-content .chip { font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .08em; border: 2px solid var(--cream); padding: 8px 12px; color: var(--cream); }
-
-.jobs-page-content .jobs { padding: 80px 0 90px; }
-.jobs-page-content .sec-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; flex-wrap: wrap; border-bottom: 4px solid var(--ink); padding-bottom: 18px; margin-bottom: 44px; }
-.jobs-page-content .sec-head h2 { font-family: "Bungee", sans-serif; font-size: clamp(26px, 3.4vw, 42px); margin: 0; }
-.jobs-page-content .sec-head span { font-family: "JetBrains Mono", monospace; font-size: 13px; letter-spacing: .1em; }
-.jobs-page-content .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; }
-.jobs-page-content .job { background: var(--cream-2); border: 3px solid var(--ink); box-shadow: 8px 8px 0 var(--ink); padding: 0; display: flex; flex-direction: column; transition: transform .14s, box-shadow .14s; }
-.jobs-page-content .job:hover { transform: translate(-3px, -3px); box-shadow: 11px 11px 0 var(--ink); }
-.jobs-page-content .job-top { display: flex; align-items: center; gap: 16px; padding: 20px 24px; border-bottom: 3px solid var(--ink); background: var(--sign-yellow); }
-.jobs-page-content .job-no { width: 46px; height: 46px; flex: none; border-radius: 50%; border: 3px solid var(--ink); background: var(--cream); display: grid; place-items: center; font-family: "Bungee", sans-serif; font-size: 17px; }
-.jobs-page-content .job-top h3 { font-family: "Bungee", sans-serif; font-size: 19px; line-height: 1.25; margin: 0; }
-.jobs-page-content .job-body { padding: 24px; display: flex; flex-direction: column; gap: 18px; flex: 1; }
-.jobs-page-content .job-body .row { display: grid; grid-template-columns: 78px 1fr; gap: 14px; align-items: start; }
-.jobs-page-content .lab { font-family: "JetBrains Mono", monospace; font-size: 11px; letter-spacing: .12em; background: var(--ink); color: var(--cream); padding: 5px 7px; text-align: center; }
-.jobs-page-content .lab.skill { background: var(--signal-green); color: var(--ink); }
-.jobs-page-content .job-body .row p { margin: 0; font-size: 16px; line-height: 1.55; text-wrap: pretty; }
-.jobs-page-content .job-foot { border-top: 2px dashed var(--ink); padding: 16px 24px; display: flex; align-items: center; justify-content: space-between; gap: 14px; font-family: "JetBrains Mono", monospace; font-size: 12px; letter-spacing: .08em; }
-.jobs-page-content .job-foot a { font-family: "Bungee", sans-serif; font-size: 12px; letter-spacing: .04em; text-decoration: none; color: var(--ink); border-bottom: 3px solid var(--signal-red); }
-.jobs-page-content .job-foot a:hover { color: var(--signal-red); }
-
-.jobs-page-content .cta { background: var(--sign-yellow); border-top: 4px solid var(--ink); border-bottom: 4px solid var(--ink); padding: 64px 0; }
-.jobs-page-content .cta-in { display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap; }
-.jobs-page-content .cta h2 { font-family: "Bungee", sans-serif; font-size: clamp(26px, 3.6vw, 44px); margin: 0; max-width: 18ch; line-height: 1.05; }
-.jobs-page-content .cta p { margin: 14px 0 0; max-width: 52ch; font-size: 17px; line-height: 1.55; }
-.jobs-page-content .cta-actions { display: flex; gap: 14px; flex-wrap: wrap; }
-
-@media (max-width: 1100px) { .jobs-page-content .grid { gap: 22px; } }
-@media (max-width: 900px) {
-  .jobs-page-content .grid { grid-template-columns: 1fr; }
-  .jobs-page-content .jobs { padding: 56px 0 64px; }
-}
-@media (max-width: 600px) {
-  .jobs-page-content .jh { padding: 52px 0 48px; }
-  .jobs-page-content .job-body .row { grid-template-columns: 1fr; gap: 8px; }
-  .jobs-page-content .lab { justify-self: start; padding: 5px 10px; }
-}
-
-@media (max-width: 640px) {
-  .enroll-drop {
-    top: auto;
-    bottom: 12px;
-    left: 12px;
-    right: 12px;
-    width: auto;
-    max-height: calc(100vh - 90px);
-  }
-  .signin-drop {
-    position: fixed;
-    top: auto;
-    bottom: 12px;
-    left: 12px;
-    right: 12px;
-    width: auto;
-    max-height: calc(100vh - 90px);
-  }
-}
-
-.form-card { background: var(--cream); border: 4px solid var(--ink); box-shadow: 12px 12px 0 var(--ink); padding: 0; overflow: visible; max-width: 100%; min-width: 0; width: 100%; box-sizing: border-box; }
-.form-header { background: var(--ink); color: var(--cream); padding: 18px 24px; display: flex; justify-content: space-between; align-items: center; font-family: "Bungee", sans-serif; font-size: 16px; gap: 10px; flex-wrap: wrap; min-width: 0; }
-.form-header .stamp { background: var(--signal-red); color: var(--cream); padding: 4px 10px; font-size: 12px; transform: rotate(-4deg); border: 2px solid var(--cream); flex-shrink: 0; }
-.form-body { padding: 28px; min-width: 0; overflow-wrap: anywhere; }
-.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; min-width: 0; }
-.field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.field label { font-family: "JetBrains Mono", monospace; font-size: 10px; text-transform: uppercase; color: var(--ink); display: flex; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
-.field label span { color: var(--signal-red); font-weight: 700; }
-.field input, .field select { width: 100%; max-width: 100%; min-width: 0; box-sizing: border-box; height: 44px; border: 3px solid var(--ink); background: var(--cream-2); padding: 0 14px; font-family: "Space Grotesk", sans-serif; font-size: 15px; font-weight: 600; }
-.field input:focus, .field select:focus { outline: none; background: var(--sign-yellow); }
-body.mode-junior .field input:focus, body.mode-junior .field select:focus { background: rgb(46, 199, 99); }
-.field.full { grid-column: 1 / -1; }
-.password-field { position: relative; display: flex; }
-.captcha-row { display: flex; align-items: stretch; gap: 8px; margin-top: 10px; }
-.captcha-img { flex: 1; height: 50px; min-width: 0; object-fit: contain; border: 2px solid var(--ink); background: #f5ecd2; }
-.captcha-loading { display: grid; place-items: center; font-family: "JetBrains Mono", monospace; font-size: 11px; }
-.captcha-refresh { width: 46px; border: 2px solid var(--ink); background: var(--sign-yellow); font-size: 20px; cursor: pointer; }
-.signin-drop .captcha-row + input { margin-top: 8px; }
-.password-field input { padding-right: 44px !important; }
-.password-toggle {
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
-  width: 26px;
-  height: 26px;
-  display: grid;
-  place-items: center;
-  border: 0;
-  background: transparent;
-  color: var(--ink);
-  cursor: pointer;
-  padding: 0;
-}
-.signin-drop .password-field input { height: 42px; padding-right: 40px !important; }
-.choice-group { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; margin-top: 4px; min-width: 0; }
-.choice-group.two-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-.choice-group.one-col { grid-template-columns: 1fr; }
-.choice-group.one-col .choice { cursor: default; }
-.choice { border: 3px solid var(--ink); background: var(--cream-2); padding: 10px; text-align: center; cursor: pointer; font-family: "Bungee", sans-serif; font-size: 12px; user-select: none; min-width: 0; }
-.choice.active { background: var(--sign-yellow); box-shadow: inset 0 0 0 3px var(--ink); }
-body.mode-junior .choice.active { background: rgb(46, 199, 99); }
-.choice-auth { display: flex; align-items: center; justify-content: center; gap: 8px; }
-.choice-auth svg { flex-shrink: 0; }
-.choice-auth.locked { opacity: 0.45; filter: grayscale(1); }
-.policy-gate { margin: 4px 0 14px; }
-.policy-gate-hint { font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--ink); margin: 0 0 10px; }
-.policy-gate-hint.done { font-weight: 700; }
-.policy-gate-btn { width: 100%; border: 3px solid var(--ink); background: var(--sign-yellow); padding: 12px 10px; font-family: "Bungee", sans-serif; font-size: 12px; text-transform: uppercase; color: var(--ink); cursor: pointer; box-shadow: 3px 3px 0 var(--ink); }
-.policy-gate-btn:hover { filter: brightness(1.04); }
-.form-divider { display: flex; align-items: center; gap: 10px; margin: 4px 0 16px; font-family: "JetBrains Mono", monospace; font-size: 10px; text-transform: uppercase; color: var(--ink); opacity: 0.7; }
-.form-divider::before, .form-divider::after { content: ''; flex: 1; border-top: 2px dashed var(--ink); opacity: 0.4; }
-.form-foot { background: var(--cream-2); border-top: 3px dashed var(--ink); padding: 18px 28px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; min-width: 0; }
-.form-foot .tiny { font-family: "JetBrains Mono", monospace; font-size: 10px; }
-
-/* LICENSES */
-.licenses { background: var(--cream); }
-.lic-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px; margin-top: 50px; }
-.lic-card {
-  background: linear-gradient(135deg, #fff3c4 0%, #ffd60a 100%);
-  border: 4px solid var(--ink); box-shadow: 10px 10px 0 var(--ink);
-  padding: 26px; position: relative; overflow: hidden;
-}
-.lic-card.gold   { background: linear-gradient(135deg, #ffe27a 0%, #f5b800 100%); }
-.lic-card.red    { background: linear-gradient(135deg, #ffc8c0 0%, #e23a2e 100%); color: var(--cream); }
-.lic-card.green  { background: linear-gradient(135deg, #c0eecf 0%, #2ec866 100%); }
-
-.lic-card::before { content: ""; position: absolute; right: -40px; top: -40px; width: 200px; height: 200px; background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%); pointer-events: none; }
-.lic-top { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid currentColor; padding-bottom: 12px; margin-bottom: 16px; font-family: "JetBrains Mono", monospace; font-size: 11px; }
-.lic-top b { font-family: "Bungee", sans-serif; font-size: 14px; }
-.lic-main { display: grid; grid-template-columns: 90px 1fr; gap: 18px; align-items: center; }
-.lic-portrait { width: 90px; height: 110px; background: rgba(0,0,0,0.08); border: 2px solid currentColor; display: grid; place-items: center; position: relative; }
-.lic-portrait .agent { width: 70px; height: 90px; filter: drop-shadow(2px 2px 0 currentColor); }
-.lic-portrait .agent .head { width: 56px; height: 50px; }
-.lic-portrait .agent .head::before, .lic-portrait .agent .head::after { top: 16px; width: 10px; height: 10px; }
-.lic-portrait .agent .head::before { left: 10px; }
-.lic-portrait .agent .head::after { right: 10px; }
-.lic-portrait .agent .body { width: 68px; height: 36px; }
-.lic-portrait .agent .a-badge { width: 18px; height: 18px; bottom: 8px; }
-.lic-portrait .agent .antenna { top: -10px; height: 12px; }
-.lic-portrait .agent .antenna::before { width: 8px; height: 8px; }
-.lic-info { font-family: "JetBrains Mono", monospace; font-size: 12px; line-height: 1.5; }
-.lic-info b { font-family: "Bungee", sans-serif; font-size: 22px; display: block; line-height: 1; margin-bottom: 8px; }
-.lic-num { font-family: "JetBrains Mono", monospace; font-size: 18px; letter-spacing: 0.1em; margin-top: 12px; }
-.lic-stamps { margin-top: 16px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; border-top: 2px dashed currentColor; padding-top: 12px; }
-.lic-stamp { border: 2px solid currentColor; padding: 3px 8px; font-family: "JetBrains Mono", monospace; font-size: 9px; text-transform: uppercase; }
-.lic-dl-btn { margin-left: auto; background: transparent; color: inherit; cursor: pointer; transition: background .12s; }
-.lic-dl-btn:hover { background: rgba(0, 0, 0, 0.08); }
-
-/* VERIFY */
-.verify { margin-top: 60px; background: var(--ink); color: var(--cream); border: 4px solid var(--ink); box-shadow: 12px 12px 0 var(--signal-green); display: grid; grid-template-columns: 1fr 1.2fr; gap: 0; overflow: hidden; }
-.verify-left { padding: 40px; border-right: 3px dashed #3a3528; }
-.verify-left h3 { font-family: "Bungee", sans-serif; font-size: 36px; margin: 0 0 12px; line-height: 1; }
-.verify-left p { color: var(--cream-2); font-size: 15px; line-height: 1.5; }
-.verify-form { margin-top: 26px; display: flex; gap: 0; }
-.verify-form input { flex: 1; height: 56px; background: var(--asphalt-2); color: var(--cream); border: 3px solid var(--cream); border-right: none; padding: 0 16px; font-family: "JetBrains Mono", monospace; font-size: 16px; letter-spacing: 0.1em; }
-.verify-form input::placeholder { color: #6a624a; }
-.verify-form button { height: 56px; padding: 0 22px; background: var(--signal-green); color: var(--ink); border: 3px solid var(--cream); font-family: "Bungee", sans-serif; font-size: 14px; cursor: pointer; }
-.verify-right { padding: 40px; background: var(--asphalt-2); }
-.verify-status { display: flex; align-items: center; gap: 14px; margin-bottom: 22px; }
-.verify-dot { width: 16px; height: 16px; border-radius: 50%; background: var(--signal-green); box-shadow: 0 0 0 4px rgba(46, 200, 102, 0.25); animation: pulse 1.6s ease-in-out infinite; }
-@keyframes pulse {
-  0%, 100% { box-shadow: 0 0 0 4px rgba(46, 200, 102, 0.25); }
-  50% { box-shadow: 0 0 0 10px rgba(46, 200, 102, 0.05); }
-}
-.verify-status b { font-family: "Bungee", sans-serif; font-size: 18px; color: var(--signal-green); }
-.verify-status span { font-family: "JetBrains Mono", monospace; font-size: 12px; color: var(--cream-2); }
-
-.verify-result { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; font-family: "JetBrains Mono", monospace; font-size: 13px; }
-.verify-result .k { color: var(--cream-2); font-size: 10px; text-transform: uppercase; margin-bottom: 2px; }
-.verify-result .v { color: var(--cream); font-weight: 600; }
-.verify-result .v.acc { color: var(--sign-yellow); }
-.verify-result .v.ok { color: var(--signal-green); }
-.verify-hash { grid-column: 1 / -1; margin-top: 10px; padding-top: 14px; border-top: 2px dashed #3a3528; color: var(--cream-2); font-size: 11px; word-break: break-all; }
-
+.lp-nav{position:sticky;top:0;z-index:50;background:var(--cream);border-bottom:3px solid var(--ink)}
+.lp-nav-in{display:flex;align-items:center;gap:30px;height:74px}
+.lp-brand{display:flex;align-items:center;gap:11px;font-family:"Bungee",sans-serif;font-size:20px;text-decoration:none;color:var(--ink)}
+.lp-bm{width:46px;height:46px;display:block;object-fit:contain;flex:none}
+.lp-nl{display:flex;gap:26px}
+.lp-nl a{text-decoration:none;font-weight:600;font-size:15px}
+.lp-ncta{margin-left:auto;display:flex;gap:12px;align-items:center}
+/* HERO / WINDSHIELD */
+.lp-hero{position:relative;height:880px;overflow:hidden;background:linear-gradient(180deg,#98c8eb 0%,#c8e0f0 45%,#e9d398 60%,#c98c4a 75%,#4a3a25 100%);border-bottom:6px solid var(--ink)}
+.lp-sun{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,#ffdd55 0%,#ff9d00 60%,transparent 70%);filter:blur(2px)}
+.lp-cloud{position:absolute;background:var(--cream);border:3px solid var(--ink);border-radius:40px;animation:lp-drift 40s linear infinite alternate}
+.lp-cloud.lp-c1{width:120px;height:40px;top:80px;left:12%}
+.lp-cloud.lp-c2{width:90px;height:30px;top:140px;left:70%;animation-duration:52s}
+.lp-cloud.lp-c3{width:160px;height:44px;top:60px;left:60%;animation-duration:64s}
+@keyframes lp-drift{to{transform:translateX(60px)}}
+.lp-mtn{position:absolute;bottom:38%;width:0;height:0;border-style:solid}
+.lp-mtn.lp-m1{left:8%;border-width:0 90px 80px 90px;border-color:transparent transparent #6e5a3a transparent}
+.lp-mtn.lp-m2{left:22%;border-width:0 120px 110px 120px;border-color:transparent transparent #5a4830 transparent}
+.lp-mtn.lp-m3{right:12%;border-width:0 140px 130px 140px;border-color:transparent transparent #6e5a3a transparent}
+.lp-road{position:absolute;left:50%;bottom:0;transform:translateX(-50%);width:100%;height:55%;background:var(--asphalt);clip-path:polygon(38% 0,62% 0,100% 100%,0% 100%)}
+.lp-road-dash{position:absolute;left:0;right:0;bottom:0;height:55%;pointer-events:none}
+.lp-road-dash svg{width:100%;height:100%;overflow:visible}
+.lp-dash-stroke{stroke:#f6f1de;stroke-width:14;stroke-dasharray:36 44;stroke-linecap:square;fill:none;animation:lp-dashmove 1.8s linear infinite}
+@keyframes lp-dashmove{from{stroke-dashoffset:0}to{stroke-dashoffset:-80}}
+.lp-road-sign{position:absolute;display:flex;flex-direction:column;align-items:center}
+.lp-road-sign .lp-post{width:5px;background:#6b5b3e;height:60px}
+.lp-road-sign .lp-plate{background:var(--yellow);color:var(--ink);border:4px solid var(--ink);padding:10px 14px;font-family:"Bungee",sans-serif;font-size:13px;box-shadow:4px 4px 0 rgba(0,0,0,.4);text-align:center;line-height:1.05}
+.lp-road-sign .lp-plate.lp-diamond{width:100px;height:100px;transform:rotate(45deg);display:grid;place-items:center;padding:0}
+.lp-road-sign .lp-plate.lp-diamond>span{display:block;transform:rotate(-45deg);font-size:11px}
+.lp-road-sign .lp-plate.lp-round{border-radius:50%;width:84px;height:84px;display:grid;place-items:center;padding:0}
+.lp-road-sign .lp-plate.lp-green{background:var(--green)}
+.lp-road-sign .lp-plate.lp-red{background:var(--red);color:var(--cream)}
+.lp-road-sign .lp-plate.lp-white{background:var(--cream)}
+.lp-rs-1{left:6%;bottom:30%}
+.lp-rs-1 .lp-post{height:80px}
+.lp-rs-2{right:7%;bottom:26%}
+.lp-rs-2 .lp-post{height:100px}
+.lp-rs-3{left:16%;bottom:18%}
+.lp-rs-3 .lp-post{height:110px}
+.lp-rs-4{right:18%;bottom:14%}
+.lp-rs-4 .lp-post{height:130px}
+.lp-hero-headline{position:absolute;left:50%;top:96px;transform:translateX(-50%);text-align:center;z-index:9;width:min(1100px,92%)}
+.lp-hero-eyebrow{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:var(--yellow);padding:8px 18px;font-family:"Bungee",sans-serif;font-size:13px;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--red);margin-bottom:22px}
+.lp-hero-eyebrow .lp-blink{width:10px;height:10px;border-radius:50%;background:var(--red);animation:lp-blink 1s steps(2) infinite}
+@keyframes lp-blink{50%{opacity:.15}}
+.lp-hero-title{font-family:"Bungee",sans-serif;font-weight:400;font-size:clamp(56px,9vw,132px);line-height:.92;color:var(--ink);text-shadow:6px 6px 0 var(--yellow);margin:0}
+.lp-hero-title .lp-l2{display:block;color:var(--red);text-shadow:6px 6px 0 var(--ink)}
+.lp-hero-sub{margin-top:24px;font-size:19px;line-height:1.5;max-width:640px;color:var(--ink);font-weight:500;background:rgba(245,236,210,.82);padding:10px 18px;border:2px solid var(--ink);display:inline-block;text-wrap:pretty}
+.lp-dashboard{position:absolute;left:0;right:0;bottom:0;height:280px;z-index:8}
+.lp-dash-bg{position:absolute;inset:0;background:linear-gradient(180deg,#2a2820 0%,#14140f 60%,#0a0a07 100%);clip-path:polygon(0 30%,12% 12%,88% 12%,100% 30%,100% 100%,0 100%);border-top:4px solid var(--ink)}
+.lp-dash-inner{position:absolute;inset:0;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:70px 80px 30px;color:var(--cream)}
+.lp-gauge-cluster{display:flex;gap:30px;align-items:center}
+.lp-gauge{width:110px;height:110px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#1e1c16,#0a0a07 70%);border:4px solid #3a3528;position:relative;box-shadow:inset 0 0 18px rgba(0,0,0,.7)}
+.lp-gauge .lp-tick{position:absolute;left:50%;top:6px;width:2px;height:8px;background:var(--cream-2);opacity:.6;transform-origin:50% 49px}
+.lp-gauge .lp-needle{position:absolute;left:50%;bottom:50%;width:3px;height:42px;background:var(--red);transform-origin:50% 100%;transform:translateX(-50%) rotate(35deg);border-radius:2px;animation:lp-needle 3.2s ease-in-out infinite alternate}
+.lp-gauge.lp-lvl .lp-needle{background:var(--green);animation-duration:4.4s}
+@keyframes lp-needle{from{transform:translateX(-50%) rotate(-40deg)}to{transform:translateX(-50%) rotate(55deg)}}
+.lp-gauge .lp-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:var(--yellow);border:2px solid var(--ink)}
+.lp-gauge .lp-label{position:absolute;left:50%;bottom:-22px;transform:translateX(-50%);font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--cream-2);white-space:nowrap}
+.lp-wheel{width:320px;height:320px;border-radius:50%;border:22px solid var(--asphalt);background:radial-gradient(circle at 50% 50%,transparent 0 70px,#1a1810 71px 80px,transparent 81px);position:relative;box-shadow:0 -10px 30px rgba(0,0,0,.5),inset 0 0 20px rgba(0,0,0,.6);margin-top:-120px;animation:lp-steer 6s ease-in-out infinite}
+@keyframes lp-steer{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+.lp-wheel::before,.lp-wheel::after{content:"";position:absolute;left:50%;top:50%;background:var(--asphalt);transform:translate(-50%,-50%);border-radius:8px}
+.lp-wheel::before{width:16px;height:200px}
+.lp-wheel::after{width:200px;height:16px}
+.lp-wheel-hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:110px;height:110px;border-radius:50%;background:linear-gradient(145deg,#2a2820,#14140f);border:3px solid #3a3528;display:grid;place-items:center;box-shadow:0 4px 10px rgba(0,0,0,.4);z-index:2}
+.lp-wheel-hub-inner{width:84px;height:84px;border-radius:50%;background:var(--yellow);border:3px solid var(--ink);display:grid;place-items:center;font-family:"Bungee",sans-serif;font-size:22px;color:var(--ink)}
+.lp-infotainment{background:#0a0a07;border:3px solid #3a3528;border-radius:10px;padding:16px 18px;color:var(--green);font-family:"JetBrains Mono",monospace;width:290px;margin-left:auto;box-shadow:inset 0 0 20px rgba(0,0,0,.8)}
+.lp-infotainment .lp-row{display:flex;justify-content:space-between;font-size:11px;color:var(--cream-2)}
+.lp-infotainment .lp-big{font-family:"Bungee",sans-serif;color:var(--yellow);font-size:20px;margin:6px 0 8px}
+.lp-infotainment .lp-bar{height:8px;background:#2a2820;border-radius:4px;overflow:hidden;margin-top:10px}
+.lp-infotainment .lp-bar>i{display:block;height:100%;width:33%;background:var(--green);animation:lp-fill 6s ease-in-out infinite alternate}
+@keyframes lp-fill{to{width:83%}}
+.lp-hcta{display:flex;gap:14px;flex-wrap:wrap}
+.lp-acp{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:56px;align-items:center}
+.lp-hstats{display:flex;border:3px solid var(--ink);background:var(--cream);box-shadow:5px 5px 0 var(--ink);width:fit-content;max-width:100%;flex-wrap:wrap;margin-top:26px}
+.lp-hstats div{padding:12px 18px;border-right:3px solid var(--ink)}
+.lp-hstats div:last-child{border-right:0}
+.lp-hstats b{display:block;font-family:"Bungee",sans-serif;font-weight:400;font-size:24px;line-height:1}
+.lp-hstats span{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.1em;color:var(--muted)}
+@media(prefers-reduced-motion:reduce){.lp-dash-stroke,.lp-cloud,.lp-wheel,.lp-gauge .lp-needle,.lp-infotainment .lp-bar>i,.lp-hero-eyebrow .lp-blink{animation:none}}
+@media(max-width:1000px){.lp-rs-3,.lp-rs-4{display:none}.lp-gauge-cluster{visibility:hidden}.lp-dash-inner{grid-template-columns:1fr auto 1fr;padding:70px 24px 30px}.lp-infotainment{width:220px}.lp-wheel{width:240px;height:240px;margin-top:-60px}.lp-acp{grid-template-columns:1fr}}
+@media(max-width:640px){.lp-hero{height:820px}.lp-rs-1,.lp-rs-2,.lp-infotainment,.lp-gauge-cluster{display:none}.lp-dash-inner{grid-template-columns:1fr;justify-items:center}.lp-wheel{margin:-40px auto 0}.lp-hero-sub{font-size:16px}}
+/* SLACK WINDOW MOCK */
+.lp-win{background:#fff;border:3px solid var(--ink);box-shadow:10px 10px 0 var(--ink);display:grid;grid-template-columns:150px minmax(0,1fr);min-height:520px;font-size:13.5px;color:#1d1c1d}
+.lp-win-sb{background:#3f0e40;color:#cfc3cf;padding:14px 0;font-size:13px}
+.lp-win-sb .lp-ws{color:#fff;font-weight:700;padding:0 14px 12px;border-bottom:1px solid rgba(255,255,255,.12);margin-bottom:10px}
+.lp-win-sb .lp-ch{padding:4px 14px}
+.lp-win-sb .lp-ch.lp-on{background:#1164a3;color:#fff;font-weight:700}
+.lp-win-sb .lp-sec{padding:12px 14px 4px;font-size:11px;opacity:.7}
+.lp-win-main{display:flex;flex-direction:column;min-width:0}
+.lp-win-top{border-bottom:1px solid #e2e2e2;padding:11px 16px;font-weight:800;display:flex;align-items:center;gap:8px}
+.lp-win-top small{font-weight:400;color:#616061;font-size:12px}
+.lp-win-top .lp-pin{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.08em;background:#fff6cc;border:1px solid #e8d16a;padding:2px 6px;color:#5c4b00}
+.lp-msg{padding:16px;display:flex;gap:10px}
+.lp-av{width:36px;height:36px;flex:none;border-radius:6px;background:var(--yellow);border:2px solid var(--ink);display:grid;place-items:center;font-family:"Bungee",sans-serif;font-size:12px;color:var(--ink)}
+.lp-mh{display:flex;gap:7px;align-items:center;margin-bottom:6px}
+.lp-mh strong{font-weight:800}
+.lp-app{font-size:9.5px;font-weight:700;background:#e8e8e8;color:#616061;padding:1px 4px;border-radius:2px}
+.lp-mt{font-size:11.5px;color:#616061}
+.lp-ac{border:1px solid #e2e2e2;border-radius:8px;overflow:hidden}
+.lp-ac-hd{background:var(--asphalt);color:var(--cream);padding:12px 14px;display:flex;align-items:center;gap:10px}
+.lp-ac-hd .lp-d{font-size:14px;color:var(--yellow)}
+.lp-ac-hd .lp-m{font-size:10px;letter-spacing:.08em;margin-left:auto;opacity:.8}
+.lp-ac-plan{padding:10px 14px;background:#fafafa;border-bottom:1px solid #eee;font-size:12px;color:#454245;display:flex;gap:14px;flex-wrap:wrap}
+.lp-ac-plan b{color:#1d1c1d}
+.lp-prog{padding:10px 14px 4px}
+.lp-prog .lp-bar{height:8px;background:#eee;border-radius:4px;overflow:hidden}
+.lp-prog .lp-bar i{display:block;height:100%;background:var(--green);width:33%}
+.lp-prog .lp-lb{font-size:11.5px;color:#616061;margin-top:6px}
+.lp-steps{padding:4px 14px 12px}
+.lp-st{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid #f1f1f1}
+.lp-st:last-child{border-bottom:0}
+.lp-st .lp-dot{width:20px;height:20px;flex:none;border-radius:50%;border:2px solid #c9c9c9;display:grid;place-items:center;font-size:11px;font-weight:800;color:#fff}
+.lp-st.lp-done .lp-dot{background:var(--green-ink);border-color:var(--green-ink)}
+.lp-st.lp-now .lp-dot{border-color:#1264a3;background:#fff;color:#1264a3}
+.lp-st.lp-lock{color:#9b9b9b}
+.lp-st .lp-tx{flex:1;min-width:0}
+.lp-st .lp-tx small{display:block;font-size:11.5px;color:#616061}
+.lp-sb{font-size:12px;font-weight:700;padding:5px 10px;border-radius:4px;border:1px solid rgba(29,28,29,.3);background:#fff;color:#1d1c1d;white-space:nowrap}
+.lp-sb.lp-pri{background:#007a5a;border-color:#007a5a;color:#fff}
 /* MARQUEE */
-.marquee { background: var(--ink); color: var(--sign-yellow); border-top: 4px solid var(--ink); border-bottom: 4px solid var(--ink); overflow: hidden; padding: 18px 0; }
-.marquee-track { display: flex; gap: 50px; animation: scroll 30s linear infinite; white-space: nowrap; width: max-content; }
-.marquee-track span { font-family: "Bungee", sans-serif; font-size: 22px; }
-.marquee-track i { color: var(--signal-red); font-style: normal; }
-@keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
-
-/* FOOTER */
-footer.foot { background: var(--ink); color: var(--cream); padding: 70px 0 30px; border-top: 6px solid var(--sign-yellow); }
-.foot-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 50px; }
-.foot h5 { font-family: "Bungee", sans-serif; font-size: 14px; margin: 0 0 16px; color: var(--sign-yellow); }
-.foot ul { list-style: none; padding: 0; margin: 0; }
-.foot ul li { padding: 4px 0; font-size: 14px; }
-.foot ul li a { color: var(--cream); text-decoration: none; }
-.foot ul li a:hover { color: var(--sign-yellow); }
-.foot-bot { border-top: 1px solid #3a3528; margin-top: 50px; padding-top: 24px; display: flex; justify-content: space-between; font-family: "JetBrains Mono", monospace; font-size: 11px; color: var(--cream-2); }
-.foot-brand-blurb { font-size: 14px; line-height: 1.6; color: var(--cream-2); margin: 14px 0 0; }
-
-/* ── Responsive ─────────────────────────────────────────────────────────── */
-@media (max-width: 1100px) {
-  .wrap { padding: 0 28px; }
-  .nav-inner {
-    height: auto;
-    min-height: 68px;
-    flex-wrap: wrap;
-    gap: 10px 16px;
-    padding: 12px 0;
-    align-items: center;
-  }
-  .brand { order: 1; }
-  .nav-links {
-    order: 2;
-    width: 100%;
-    margin-left: 0;
-    gap: 8px 14px;
-    flex-wrap: wrap;
-  }
-  .nav-links a { font-size: 13px; }
-  .nav-cta {
-    order: 3;
-    width: 100%;
-    margin-left: 0;
-    display: flex;
-    flex-wrap: nowrap;
-    justify-content: stretch;
-    align-items: stretch;
-    gap: 8px;
-  }
-  .nav-cta .btn,
-  .nav-auth-btn,
-  .switch-path {
-    flex: 1 1 0;
-    min-width: 0;
-    width: auto;
-    max-width: none;
-    justify-content: center;
-    padding: 8px 10px;
-    font-size: 11px;
-    white-space: nowrap;
-    box-shadow: 3px 3px 0 var(--ink);
-  }
-  .nav-cta .btn.btn-yellow,
-  .nav-cta .btn.btn-green {
-    box-shadow: 3px 3px 0 var(--ink);
-  }
-  .trainings .top,
-  .juniors .top {
-    align-items: flex-start;
-    gap: 24px;
-  }
-  .trainings .top .section-sub,
-  .juniors .top .section-sub {
-    flex: 1 1 260px;
-    max-width: 360px;
-    margin-top: 4px;
-  }
-  .section-title { font-size: clamp(36px, 6vw, 52px); }
-  .hero { height: auto; min-height: 720px; padding-bottom: 24px; }
-  .hero-title { font-size: clamp(56px, 10vw, 96px); text-shadow: 4px 4px 0 var(--sign-yellow); }
-  .hero-title .l2 { text-shadow: 4px 4px 0 var(--ink); }
-  /* Stack headline text above the steering-wheel dashboard in normal flow
-     instead of absolute-overlapping it, so the wheel always lands below
-     the text no matter how many lines the copy wraps to. */
-  .hero-headline { position: relative; left: auto; top: auto; transform: none; margin: 100px auto 0; padding: 0 28px; }
-  .dashboard { position: relative; left: auto; right: auto; bottom: auto; width: 100%; margin-top: 30px; }
-  .training-grid { grid-template-columns: 1fr 1fr; }
-  .foot-grid { grid-template-columns: 1fr 1fr; gap: 32px; }
-  .form-row { grid-template-columns: 1fr; }
-}
-
-@media (max-width: 900px) {
-  .nav-inner {
-    gap: 10px 12px;
-  }
-  .nav-links {
-    order: 2;
-    width: 100%;
-    justify-content: flex-start;
-  }
-  .nav-cta {
-    order: 3;
-    width: 100%;
-    margin-left: 0;
-    flex-wrap: nowrap;
-    gap: 6px;
-  }
-  .nav-cta .btn,
-  .nav-auth-btn,
-  .switch-path {
-    flex: 1 1 0;
-    min-width: 0;
-    padding: 8px 6px;
-    font-size: 10px;
-    letter-spacing: -0.01em;
-  }
-  .cta-adult .cta-long,
-  .cta-junior .cta-long { display: none; }
-  .cta-adult .cta-short,
-  .cta-junior .cta-short { display: inline; }
-  .hero { min-height: 640px; }
-  .hero-headline { margin-top: 60px; padding: 0 20px; }
-  .hero-sub { font-size: 16px; }
-  .dashboard { height: 240px; margin-top: 24px; }
-  .dash-inner { padding: 50px 20px 20px; gap: 12px; grid-template-columns: 1fr; justify-items: center; }
-  .gauge-cluster { justify-content: center; flex-wrap: wrap; gap: 16px; }
-  .wheel { transform: scale(0.85); }
-  .trainings .top,
-  .juniors .top {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 14px;
-  }
-  .trainings .top .section-sub,
-  .juniors .top .section-sub {
-    flex: none;
-    max-width: none;
-    width: 100%;
-    margin: 0;
-  }
-  .training-grid,
-  .lic-grid,
-  .verify,
-  .foot-grid,
-  .jr-grid,
-  .lane-grid {
-    grid-template-columns: 1fr !important;
-  }
-  .tr-card { min-height: 0; }
-  .tr-card .btn { width: 100%; justify-content: center; align-self: stretch; }
-  .roadmap-stage {
-    height: auto;
-    min-height: 0;
-    margin-top: 40px;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    padding: 36px 0;
-  }
-  .roadmap-signs {
-    flex-wrap: nowrap;
-    justify-content: flex-start;
-    height: auto;
-    padding: 0 20px 24px;
-    gap: 20px;
-    min-width: min(100%, 1100px);
-    align-items: flex-end;
-  }
-  .feature-sign {
-    width: min(180px, 38vw);
-    flex: 0 0 auto;
-  }
-  .feature-sign .desc {
-    max-width: none;
-    font-size: 12px;
-  }
-  .form-card { box-shadow: 8px 8px 0 var(--ink); }
-  .form-row { grid-template-columns: 1fr !important; }
-  .form-body { padding: 20px 16px; }
-  .form-header { padding: 14px 16px; font-size: 14px; }
-  .form-foot {
-    flex-direction: column;
-    align-items: stretch;
-    gap: 12px;
-    padding: 16px;
-  }
-  .form-foot .btn { width: 100%; justify-content: center; }
-  .choice-group:not(.one-col) { grid-template-columns: repeat(2, minmax(0, 1fr)) !important; }
-  .verify-result { grid-template-columns: 1fr; }
-  .lic-main { grid-template-columns: 72px minmax(0, 1fr); }
-  .tr-meta { grid-template-columns: 1fr; }
-  .verify-left { border-right: 0; border-bottom: 3px dashed #3a3528; }
-  .verify-form { flex-direction: column; }
-  .verify-form input { border-right: 3px solid var(--cream); }
-  .foot-bot { flex-direction: column; gap: 10px; text-align: center; }
-  section.band { padding: 60px 0; }
-  .section-title { font-size: clamp(32px, 9vw, 48px); }
-}
-
-@media (max-width: 560px) {
-  .wrap { padding: 0 16px; }
-  .hero-title { font-size: clamp(42px, 14vw, 64px); }
-  .hero-eyebrow { font-size: 11px; padding: 6px 12px; }
-  .hero-headline { margin-top: 44px; }
-  .dashboard { height: 220px; margin-top: 20px; }
-  .wheel { transform: scale(0.75); margin-top: -100px; }
-  .nav-cta {
-    gap: 5px;
-  }
-  .nav-cta .btn,
-  .nav-auth-btn,
-  .switch-path {
-    padding: 8px 4px;
-    font-size: 9px;
-  }
-  .cta-adult .cta-long,
-  .cta-junior .cta-long { display: none; }
-  .cta-adult .cta-short,
-  .cta-junior .cta-short { display: inline; }
-  .band .btn:not(.nav-cta .btn) {
-    width: 100%;
-    justify-content: center;
-  }
-  .marquee-track span { font-size: 16px; }
-  .lic-info b { font-size: 18px; }
-  .lane-head { padding: 18px; }
-  .lane-body, .lane-foot { padding-left: 18px; padding-right: 18px; }
-  .lf-d { font-size: 13.5px; }
-  .roadmap-signs {
-    flex-direction: column;
-    align-items: center;
-    min-width: 0;
-    padding: 0 16px 20px;
-    gap: 28px;
-  }
-  .feature-sign {
-    width: 100%;
-    max-width: 280px;
-  }
-  .feature-sign .desc {
-    top: 0;
-    margin-top: 16px;
-  }
-}
-
-/* iPad Mini (~768px) — comfortable single-column cards, scrollable roadmaps */
-@media (min-width: 561px) and (max-width: 834px) {
-  .wrap { padding: 0 24px; }
-  .training-grid { grid-template-columns: 1fr !important; }
-  .roadmap-signs { min-width: 900px; }
-}
+.lp-mq{background:var(--yellow);border-bottom:4px solid var(--ink);overflow:hidden;white-space:nowrap}
+.lp-mq-t{display:inline-flex;gap:36px;padding:15px 0;animation:lp-mq 38s linear infinite;font-family:"Bungee",sans-serif;font-size:17px}
+.lp-mq-t i{font-style:normal;color:var(--red)}
+@keyframes lp-mq{to{transform:translateX(-50%)}}
+/* TWO SIDES */
+.lp-sides{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:52px}
+.lp-side{border:3px solid var(--ink);background:var(--cream-2);box-shadow:7px 7px 0 var(--ink);padding:30px}
+.lp-side.lp-k{background:var(--asphalt);color:var(--cream);box-shadow:7px 7px 0 var(--yellow)}
+.lp-side .lp-tag{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.14em;color:var(--muted)}
+.lp-side.lp-k .lp-tag{color:var(--yellow)}
+.lp-side h3{font-family:"Bungee",sans-serif;font-weight:400;font-size:28px;line-height:1.05;margin:8px 0 12px}
+.lp-side p{font-size:16px;line-height:1.55;margin:0 0 18px;text-wrap:pretty}
+.lp-side ol{margin:0;padding:0;list-style:none;display:grid;gap:8px;counter-reset:s}
+.lp-side li{counter-increment:s;display:flex;gap:12px;align-items:baseline;font-size:15px}
+.lp-side li::before{content:counter(s,decimal-leading-zero);font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;background:var(--yellow);color:var(--ink);border:2px solid var(--ink);padding:1px 5px;flex:none}
+/* STEPPERS */
+.lp-stp{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:44px;margin-top:52px;align-items:start}
+.lp-stl{display:grid;gap:10px}
+.lp-sbtn{all:unset;cursor:pointer;display:grid;grid-template-columns:56px minmax(0,1fr);gap:16px;align-items:center;border:3px solid var(--ink);background:var(--cream);padding:12px 16px 12px 12px;transition:transform .12s,box-shadow .12s}
+.lp-sbtn:hover{transform:translate(-2px,-2px);box-shadow:4px 4px 0 var(--ink)}
+.lp-sbtn .lp-n{width:56px;height:56px;display:grid;place-items:center;font-family:"Bungee",sans-serif;font-size:20px;background:var(--cream-2);border:3px solid var(--ink);transform:rotate(45deg) scale(.74)}
+.lp-sbtn .lp-n span{transform:rotate(-45deg)}
+.lp-sbtn b{font-family:"Bungee",sans-serif;font-weight:400;font-size:17px;display:block}
+.lp-sbtn small{font-size:13.5px;color:var(--muted)}
+.lp-sbtn[aria-selected="true"]{background:var(--yellow);box-shadow:6px 6px 0 var(--ink);transform:translate(-3px,-3px)}
+.lp-sbtn[aria-selected="true"] .lp-n{background:var(--ink);color:var(--yellow)}
+.lp-dark .lp-sbtn{background:var(--asphalt-2);border-color:var(--cream);color:var(--cream)}
+.lp-dark .lp-sbtn small{color:#cfc49c}
+.lp-dark .lp-sbtn .lp-n{background:var(--asphalt);border-color:var(--cream)}
+.lp-dark .lp-sbtn:hover{box-shadow:4px 4px 0 var(--yellow)}
+.lp-dark .lp-sbtn[aria-selected="true"]{background:var(--yellow);color:var(--ink);border-color:var(--ink);box-shadow:6px 6px 0 var(--cream)}
+.lp-dark .lp-sbtn[aria-selected="true"] small{color:var(--ink)}
+.lp-dark .lp-sbtn[aria-selected="true"] .lp-n{background:var(--ink);color:var(--yellow);border-color:var(--ink)}
+.lp-pane{position:sticky;top:100px}
+.lp-det{border:3px solid var(--ink);background:#fff;box-shadow:10px 10px 0 var(--ink);color:#1d1c1d}
+.lp-dark .lp-det{box-shadow:10px 10px 0 var(--yellow)}
+.lp-det-hd{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid #e2e2e2;font-weight:800;font-size:14px}
+.lp-det-hd .lp-m{margin-left:auto;font-size:10px;letter-spacing:.1em;color:#616061;font-weight:400}
+.lp-det-body{padding:18px}
+.lp-det-body h4{font-family:"Bungee",sans-serif;font-weight:400;font-size:19px;margin:0 0 6px;color:var(--ink)}
+.lp-det-body .lp-why{font-size:14.5px;line-height:1.5;color:#3a3a3a;margin:0 0 14px;text-wrap:pretty}
+.lp-card{border:1px solid #e2e2e2;border-radius:8px;padding:14px;background:#fff}
+.lp-card+.lp-card{margin-top:10px}
+.lp-ct{font-weight:800;font-size:14px;margin:0 0 4px}
+.lp-cs{font-size:12.5px;color:#616061;margin:0 0 10px}
+.lp-btns{display:flex;gap:7px;flex-wrap:wrap}
+.lp-row{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid #f2f2f2;font-size:13px}
+.lp-row:last-child{border-bottom:0}
+.lp-row .lp-r{margin-left:auto;font-size:12px;color:#616061}
+.lp-chips{display:flex;gap:6px;flex-wrap:wrap}
+.lp-chip{font-size:12px;border:1px solid #cfcfcf;border-radius:4px;padding:4px 8px;display:flex;gap:6px;align-items:center}
+.lp-chip.lp-on{border-color:#007a5a;background:#eaf6f1;color:#00573f;font-weight:700}
+.lp-chip.lp-on::before{content:"";width:9px;height:5px;border-left:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(-45deg) translateY(-2px)}
+.lp-bar2{height:8px;background:#eee;border-radius:4px;overflow:hidden;margin:6px 0 2px}
+.lp-bar2 i{display:block;height:100%;background:var(--green)}
+.lp-ok{color:#00573f;font-weight:700}
+.lp-no{color:#b3261e;font-weight:700}
+.lp-st-tag{font-size:10.5px;font-weight:700;padding:2px 6px;border-radius:3px;background:#f1f1f1;color:#454245}
+.lp-st-tag.lp-g{background:#eaf6f1;color:#00573f}
+.lp-st-tag.lp-a{background:#fff4d6;color:#7a5600}
+.lp-st-tag.lp-r{background:#fdecea;color:#8f1d16}
+.lp-facts{margin:16px 0 0;padding:0;list-style:none;display:grid;gap:7px}
+.lp-facts li{font-size:13.5px;line-height:1.45;display:flex;gap:9px;color:#3a3a3a}
+.lp-facts li::before{content:"";width:8px;height:8px;margin-top:6px;flex:none;background:var(--yellow);border:2px solid var(--ink)}
+.lp-tl{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.lp-tl div{border-radius:6px;padding:10px;font-size:12.5px;line-height:1.35}
+.lp-tl b{display:block;font-size:13px;margin-bottom:3px}
+.lp-tl .lp-g{background:#e5f6ec;border:1px solid #9fd7b5}
+.lp-tl .lp-a{background:#fff4d6;border:1px solid #ebcd7a}
+.lp-tl .lp-r{background:#fdecea;border:1px solid #ebaaa4}
+/* mini licence */
+.lp-lic{border:3px solid var(--ink);background:linear-gradient(150deg,#1b1710,#2b2318 50%,#15120c);color:#ffe9a8;padding:14px 16px;position:relative;overflow:hidden}
+.lp-lic::before{content:"";position:absolute;inset:0;background:repeating-linear-gradient(58deg,rgba(255,204,0,.07) 0 1px,transparent 1px 12px),repeating-linear-gradient(-58deg,rgba(255,204,0,.07) 0 1px,transparent 1px 12px)}
+.lp-lic>*{position:relative}
+.lp-lic-hd{display:flex;gap:9px;align-items:center;border-bottom:2px solid currentColor;padding-bottom:8px;margin-bottom:10px}
+.lp-lic-hd .lp-s{width:30px;height:30px;border-radius:50%;background:radial-gradient(circle at 34% 30%,#fff3c4,#f0c14b 52%,#a97612);color:#3a2c07;display:grid;place-items:center;font-family:"Bungee",sans-serif;font-size:11px;border:2px solid #f0c14b}
+.lp-lic-hd .lp-d{font-size:12px}
+.lp-lic-hd .lp-lg{margin-left:auto;font-family:"JetBrains Mono",monospace;font-size:9px;letter-spacing:.1em;border:2px solid #f0c14b;padding:3px 6px}
+.lp-lic-b{display:grid;grid-template-columns:62px minmax(0,1fr);gap:12px;align-items:center}
+.lp-lic-av{width:62px;height:62px;border-radius:50%;border:3px solid #f0c14b;background:#3a3020;display:grid;place-items:center;font-family:"Bungee",sans-serif;font-size:20px;color:#ffcc00}
+.lp-lic-b .lp-d{font-size:18px;line-height:1}
+.lp-lic-b .lp-m{font-size:10px;letter-spacing:.08em;opacity:.8;margin-top:5px;line-height:1.6}
+.lp-lic-strip{height:6px;margin:12px -16px -14px;background:linear-gradient(90deg,#f0c14b,#fff3c4,#c9931f,#ffcc00)}
+/* AFTER LICENCE */
+.lp-g3{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:52px}
+.lp-tile{border:3px solid var(--ink);background:var(--cream);box-shadow:6px 6px 0 var(--ink);padding:26px;display:flex;flex-direction:column;gap:12px}
+.lp-tile .lp-sign{width:58px;height:58px;background:var(--yellow);border:3px solid var(--ink);display:grid;place-items:center}
+.lp-tile h3{font-family:"Bungee",sans-serif;font-weight:400;font-size:22px;line-height:1.1;margin:0}
+.lp-tile p{margin:0;font-size:15.5px;line-height:1.55;text-wrap:pretty}
+.lp-tile ul{margin:4px 0 0;padding:0;list-style:none;display:grid;gap:7px;border-top:2px dashed var(--line);padding-top:12px}
+.lp-tile li{font-size:14px;line-height:1.45;display:flex;gap:9px}
+.lp-tile li::before{content:"\203A";font-weight:700;color:var(--red)}
+/* OVERSIGHT */
+.lp-ov{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:28px;margin-top:52px}
+.lp-panel{border:3px solid var(--cream);padding:26px;background:var(--asphalt-2)}
+.lp-panel h3{font-family:"Bungee",sans-serif;font-weight:400;font-size:21px;margin:0 0 4px;color:var(--yellow)}
+.lp-panel>p{margin:0 0 18px;font-size:15px;color:#d9d0b3;line-height:1.5}
+.lp-ev{display:grid;grid-template-columns:150px minmax(0,1fr);border-top:2px solid #3a3828}
+.lp-ev>div{padding:13px 0;font-size:14.5px;line-height:1.45}
+.lp-ev>div:first-child{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.08em;color:var(--yellow);padding-right:14px}
+.lp-ev>div:last-child{color:#efe7cc}
+.lp-flow{display:grid;gap:10px}
+.lp-fl{display:grid;grid-template-columns:34px minmax(0,1fr);gap:12px;align-items:start}
+.lp-fl .lp-k{width:34px;height:34px;border:2px solid var(--cream);display:grid;place-items:center;font-family:"Bungee",sans-serif;font-size:13px;background:var(--asphalt)}
+.lp-fl b{display:block;font-size:15px;color:#fff;margin-bottom:2px}
+.lp-fl span{font-size:13.5px;color:#d9d0b3;line-height:1.45}
+.lp-outs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
+.lp-outs div{border:2px solid var(--cream);padding:8px;font-size:12.5px;line-height:1.35;color:#efe7cc}
+.lp-outs b{display:block;font-family:"Bungee",sans-serif;font-weight:400;font-size:12px;color:var(--yellow);margin-bottom:3px}
+/* PLATFORMS + CTA */
+.lp-plat{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:48px}
+.lp-pl{border:3px solid var(--ink);padding:28px;background:var(--cream-2);box-shadow:7px 7px 0 var(--ink)}
+.lp-pl .lp-s{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.12em;padding:4px 9px;border:2px solid var(--ink);margin-bottom:12px}
+.lp-pl .lp-s.lp-live{background:var(--green);}
+.lp-pl .lp-s.lp-soon{background:var(--yellow)}
+.lp-pl h3{font-family:"Bungee",sans-serif;font-weight:400;font-size:28px;margin:0 0 10px}
+.lp-pl p{font-size:16px;line-height:1.55;margin:0;text-wrap:pretty}
+.lp-cta{background:var(--yellow);text-align:center;padding:100px 0;border-bottom:4px solid var(--ink)}
+.lp-cta .lp-h2{font-size:clamp(38px,5.4vw,72px)}
+.lp-cta .lp-lede{margin:0 auto 30px}
+.lp-cta .lp-hcta{justify-content:center;margin:0}
+.lp-foot{background:var(--asphalt);color:#cfc49c;padding:44px 0;font-size:14px}
+.lp-foot-in{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+.lp-foot a{color:var(--cream);text-decoration:none}
+.lp-foot a:hover{color:var(--yellow)}
+.lp-foot .lp-brand{color:var(--cream)}
+.lp-v-t{display:none}
+.lp-root.lp-pf-teams .lp-v-s{display:none}
+.lp-root.lp-pf-teams .lp-v-t{display:inline}
+.lp-pf{display:inline-flex;border:3px solid var(--ink);background:var(--cream);box-shadow:3px 3px 0 var(--ink)}
+.lp-pf button{all:unset;cursor:pointer;font-family:"Bungee",sans-serif;font-size:12px;padding:8px 13px;display:flex;align-items:center;gap:7px}
+.lp-pf button+button{border-left:3px solid var(--ink)}
+.lp-pf button[aria-pressed="true"]{background:var(--ink);color:var(--yellow)}
+.lp-pf i{width:10px;height:10px;border:2px solid currentColor;border-radius:2px}
+.lp-pf button:first-child i{background:#4a154b}
+.lp-pf button:last-child i{background:#5b5fc7}
+.lp-hero .lp-pf{margin-bottom:22px}
+.lp-root.lp-pf-teams .lp-win-sb{background:#ebebf5;color:#424242}
+.lp-root.lp-pf-teams .lp-win-sb .lp-ws{color:#242424;border-bottom-color:#d6d6e4}
+.lp-root.lp-pf-teams .lp-win-sb .lp-ch.lp-on{background:#fff;color:#4f52b2;font-weight:700;box-shadow:inset 3px 0 0 #5b5fc7}
+.lp-root.lp-pf-teams .lp-win,.lp-root.lp-pf-teams .lp-det{font-family:"Segoe UI",system-ui,sans-serif}
+.lp-root.lp-pf-teams .lp-win-top .lp-pin{background:#eef0ff;border-color:#c5c8f2;color:#3d3f8f}
+.lp-root.lp-pf-teams .lp-av{border-radius:50%}
+.lp-root.lp-pf-teams .lp-ac,.lp-root.lp-pf-teams .lp-card{border-radius:6px;box-shadow:0 1px 2px rgba(0,0,0,.1)}
+.lp-root.lp-pf-teams .lp-ac-hd{border-top:5px solid #5b5fc7}
+.lp-root.lp-pf-teams .lp-sb{border-radius:4px;border-color:#d1d1d1}
+.lp-root.lp-pf-teams .lp-sb.lp-pri{background:#5b5fc7;border-color:#5b5fc7}
+.lp-root.lp-pf-teams .lp-prog .lp-bar i,.lp-root.lp-pf-teams .lp-bar2 i{background:#5b5fc7}
+.lp-root.lp-pf-teams .lp-chip.lp-on{border-color:#5b5fc7;background:#eef0ff;color:#3d3f8f}
+.lp-root.lp-pf-teams .lp-st.lp-now .lp-dot{border-color:#5b5fc7;color:#5b5fc7}
+.lp-root.lp-pf-teams .lp-msg{background:#f5f5f5}
+.lp-pl .lp-s.lp-live{background:var(--green)}
+@media(max-width:1060px){.lp-hero-in,.lp-stp,.lp-ov,.lp-sides,.lp-plat{grid-template-columns:1fr}.lp-g3{grid-template-columns:1fr}.lp-pane{position:static}.lp-nl{display:none}}
+@media(max-width:640px){.lp-wrap{padding:0 20px}.lp-hero-in{padding:56px 20px 130px}.lp-win{grid-template-columns:1fr}.lp-win-sb{display:none}.lp-band{padding:76px 0}.lp-ev{grid-template-columns:1fr}.lp-ev>div:first-child{padding-bottom:0}.lp-outs{grid-template-columns:1fr}.lp-ncta .lp-ghost{display:none}}
+.lp-root [id]{scroll-margin-top:80px}
 </style>
