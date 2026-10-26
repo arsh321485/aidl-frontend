@@ -1,10 +1,14 @@
 <template>
 <div class="lp-root" :class="{ 'lp-pf-teams': platform === 'teams' }">
-<nav class="lp-nav">
+<nav class="lp-nav" ref="navEl">
 <div class="lp-wrap lp-nav-in">
 <a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a>
 <div class="lp-nl"><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id">{{ l.label }}</a><RouterLink to="/plans">Pricing</RouterLink></div>
 <div class="lp-ncta"><span class="lp-pf" role="group" aria-label="Platform"><button type="button" :aria-pressed="platform === 'slack'" @click="setPlatform('slack')"><i></i>Slack</button><button type="button" :aria-pressed="platform === 'teams'" @click="setPlatform('teams')"><i></i>Teams</button></span><a class="lp-btn lp-y" href="#start" @click.prevent="addTo(platform)"><span class="lp-v-s">Add to Slack</span><span class="lp-v-t">Add to Teams</span><span class="lp-arr">→</span></a></div>
+<button type="button" class="lp-burger" :class="{ 'lp-open': menuOpen }" :aria-expanded="menuOpen" aria-controls="lp-mnav" aria-label="Menu" @click="menuOpen = !menuOpen"><i></i><i></i><i></i></button>
+</div>
+<div v-show="menuOpen" id="lp-mnav" class="lp-mnav">
+<div class="lp-wrap"><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id; menuOpen = false">{{ l.label }}</a><RouterLink to="/plans" @click="menuOpen = false">Pricing</RouterLink></div>
 </div>
 </nav>
 
@@ -214,6 +218,20 @@ const navLinks = [
 ]
 const activeSection = ref('')
 
+// Phone / tablet menu — the inline nav links are hidden below 1060px.
+const menuOpen = ref(false)
+const navEl = ref<HTMLElement | null>(null)
+
+function onDocClick(e: MouseEvent) {
+  if (menuOpen.value && navEl.value && !navEl.value.contains(e.target as Node)) menuOpen.value = false
+}
+function onKeydown(e: KeyboardEvent) {
+  if (e.key === 'Escape') menuOpen.value = false
+}
+function onResize() {
+  if (window.innerWidth > 1060) menuOpen.value = false
+}
+
 function updateActiveSection() {
   // A section counts as open once its top passes just under the sticky nav.
   const line = 120
@@ -230,9 +248,17 @@ function updateActiveSection() {
 
 onMounted(() => {
   window.addEventListener('scroll', updateActiveSection, { passive: true })
+  window.addEventListener('resize', onResize)
+  document.addEventListener('click', onDocClick)
+  document.addEventListener('keydown', onKeydown)
   updateActiveSection()
 })
-onBeforeUnmount(() => window.removeEventListener('scroll', updateActiveSection))
+onBeforeUnmount(() => {
+  window.removeEventListener('scroll', updateActiveSection)
+  window.removeEventListener('resize', onResize)
+  document.removeEventListener('click', onDocClick)
+  document.removeEventListener('keydown', onKeydown)
+})
 
 // "See all 15 jurisdictions" — the full mandates page isn't built yet.
 function openMandates() {
@@ -357,6 +383,20 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-nl a{text-decoration:none;font-weight:600;font-size:15px}
 .lp-nl a.lp-active{color:var(--red);text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:6px}
 .lp-ncta{margin-left:auto;display:flex;gap:12px;align-items:center}
+.lp-burger{display:none;flex:none;width:44px;height:44px;padding:0;background:var(--yellow);border:3px solid var(--ink);box-shadow:3px 3px 0 var(--ink);cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px}
+.lp-burger i{display:block;width:20px;height:3px;background:var(--ink);transition:transform .15s,opacity .15s}
+.lp-burger.lp-open{background:var(--ink)}
+.lp-burger.lp-open i{background:var(--yellow)}
+.lp-burger.lp-open i:nth-child(1){transform:translateY(8px) rotate(45deg)}
+.lp-burger.lp-open i:nth-child(2){opacity:0}
+.lp-burger.lp-open i:nth-child(3){transform:translateY(-8px) rotate(-45deg)}
+.lp-mnav{position:absolute;left:0;right:0;top:100%;background:var(--cream);border-top:3px solid var(--ink);border-bottom:4px solid var(--ink);box-shadow:0 8px 0 rgba(20,20,15,.15);max-height:calc(100vh - 74px);overflow-y:auto}
+.lp-mnav .lp-wrap{display:flex;flex-direction:column;padding-top:8px;padding-bottom:12px}
+.lp-mnav a{display:block;padding:14px 0;font-family:"Bungee",sans-serif;font-size:17px;text-decoration:none;border-bottom:2px dashed var(--line)}
+.lp-mnav a:last-child{border-bottom:0}
+.lp-mnav a.lp-active{color:var(--red)}
+.lp-mnav a.lp-active::before{content:"▶ ";font-size:12px;vertical-align:2px}
+@media(min-width:1061px){.lp-mnav{display:none!important}}
 /* HERO / WINDSHIELD */
 .lp-hero{position:relative;height:880px;overflow:hidden;background:linear-gradient(180deg,#98c8eb 0%,#c8e0f0 45%,#e9d398 60%,#c98c4a 75%,#4a3a25 100%);border-bottom:6px solid var(--ink)}
 .lp-sun{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,#ffdd55 0%,#ff9d00 60%,transparent 70%);filter:blur(2px)}
@@ -634,7 +674,7 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-root.lp-pf-teams .lp-st.lp-now .lp-dot{border-color:#5b5fc7;color:#5b5fc7}
 .lp-root.lp-pf-teams .lp-msg{background:#f5f5f5}
 .lp-pl .lp-s.lp-live{background:var(--green)}
-@media(max-width:1060px){.lp-hero-in,.lp-stp,.lp-ov,.lp-sides,.lp-plat{grid-template-columns:1fr}.lp-g3{grid-template-columns:1fr}.lp-pane{position:static}.lp-nl{display:none}}
+@media(max-width:1060px){.lp-hero-in,.lp-stp,.lp-ov,.lp-sides,.lp-plat{grid-template-columns:1fr}.lp-g3{grid-template-columns:1fr}.lp-pane{position:static}.lp-nl{display:none}.lp-burger{display:flex}}
 @media(max-width:640px){.lp-wrap{padding:0 20px}.lp-hero-in{padding:56px 20px 130px}.lp-win{grid-template-columns:1fr}.lp-win-sb{display:none}.lp-band{padding:76px 0}.lp-ev{grid-template-columns:1fr}.lp-ev>div:first-child{padding-bottom:0}.lp-outs{grid-template-columns:1fr}.lp-ncta .lp-ghost{display:none}}
 .lp-root [id]{scroll-margin-top:80px}
 .lp-copy{margin-left:auto}
@@ -666,6 +706,11 @@ const userCur = computed(() => USER[userStep.value]!)
 /* Phones / small tablets */
 @media(max-width:640px){
 .lp-nav-in{height:64px;gap:10px}
+.lp-burger{width:38px;height:38px;border-width:2px;box-shadow:2px 2px 0 var(--ink);gap:4px}
+.lp-burger i{width:18px;height:2px}
+.lp-burger.lp-open i:nth-child(1){transform:translateY(6px) rotate(45deg)}
+.lp-burger.lp-open i:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
+.lp-mnav{max-height:calc(100vh - 64px)}
 .lp-nav .lp-bm{width:40px;height:40px}
 .lp-ncta{gap:8px}
 .lp-ncta .lp-pf{border-width:2px;box-shadow:2px 2px 0 var(--ink)}
