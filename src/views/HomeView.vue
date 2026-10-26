@@ -3,7 +3,7 @@
 <nav class="lp-nav">
 <div class="lp-wrap lp-nav-in">
 <a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a>
-<div class="lp-nl"><a href="#how">How it works</a><a href="#admins">For admins</a><a href="#drivers">For your team</a><a href="#control">Oversight</a><RouterLink to="/plans">Pricing</RouterLink></div>
+<div class="lp-nl"><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id">{{ l.label }}</a><RouterLink to="/plans">Pricing</RouterLink></div>
 <div class="lp-ncta"><span class="lp-pf" role="group" aria-label="Platform"><button type="button" :aria-pressed="platform === 'slack'" @click="setPlatform('slack')"><i></i>Slack</button><button type="button" :aria-pressed="platform === 'teams'" @click="setPlatform('teams')"><i></i>Teams</button></span><a class="lp-btn lp-y" href="#start" @click.prevent="addTo(platform)"><span class="lp-v-s">Add to Slack</span><span class="lp-v-t">Add to Teams</span><span class="lp-arr">→</span></a></div>
 </div>
 </nav>
@@ -153,6 +153,21 @@
 </div>
 </section>
 
+<section class="lp-band" id="compliance" style="background:var(--cream-2)">
+<div class="lp-wrap">
+<span class="lp-eb">▼ REGULATORY &amp; COMPLIANCE</span>
+<h2 class="lp-h2">Meet regulatory and compliance requirements.</h2>
+<p class="lp-lede">AI literacy is becoming a legal requirement. Every AIDL licence is a dated, per-person record of what each employee learned and agreed to, ready to show an auditor.</p>
+<div class="lp-rc">
+<div class="lp-rcc"><span class="lp-rct">EU · IN FORCE</span><h3>EU AI Act, Article 4</h3><p>Organisations that deploy AI must make sure staff using it have sufficient AI literacy. Applies since 2&nbsp;Feb&nbsp;2025.</p></div>
+<div class="lp-rcc"><span class="lp-rct">ITALY · IN FORCE</span><h3>Law 132/2025</h3><p>Employers must tell workers when AI is used in their work. Decrees extend AI training across public bodies and the professions.</p></div>
+<div class="lp-rcc"><span class="lp-rct">TEXAS · ANNUAL</span><h3>HB 3512</h3><p>Public employees who use a computer for 25%+ of their work complete certified AI training every year.</p></div>
+<div class="lp-rcc"><span class="lp-rct">AUSTRALIA · 2026</span><h3>APS AI policy v2.0</h3><p>Foundational AI training becomes mandatory for all Australian Public Service staff.</p></div>
+</div>
+<div class="lp-rcp"><div><b>What auditors ask for, already on file</b><span>Policy version agreed · date of each employee’s agreement · lessons and assessments completed · renewal history · list of approved apps</span></div><a class="lp-btn lp-y" href="#compliance" @click.prevent="openMandates">See all 15 jurisdictions →</a></div>
+</div>
+</section>
+
 <section class="lp-band">
 <div class="lp-wrap">
 <span class="lp-eb">▼ WHERE IT RUNS</span>
@@ -173,20 +188,56 @@
 </section>
 
 <footer class="lp-foot">
-<div class="lp-wrap lp-foot-in"><a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a><a href="#how">How it works</a><a href="#admins">For admins</a><a href="#drivers">For your team</a><a href="#control">Oversight</a><RouterLink to="/plans">Pricing</RouterLink><span class="lp-copy">© 2026 AI Driving License</span></div>
+<div class="lp-wrap lp-foot-in"><a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id">{{ l.label }}</a><RouterLink to="/plans">Pricing</RouterLink><span class="lp-copy">© 2026 AI Driving License</span></div>
 </footer>
 </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { RouterLink } from 'vue-router'
 import { startSlackLogin } from '../lib/slackAuth'
 import { startTeamsLogin } from '../lib/msTeamsAuth'
-import { notifyError, notifyLoading, notifyClose } from '../lib/notify.js'
+import { notifyError, notifyLoading, notifyClose, notifyInfo } from '../lib/notify.js'
 import aidlLogo from '../assets/images/aidl-logo-transparent.png'
 
 type Platform = 'slack' | 'teams'
+
+// Nav / footer section links. The one for the section in view (or the last
+// one clicked) is highlighted red.
+const navLinks = [
+  { id: 'how', label: 'How it works' },
+  { id: 'admins', label: 'For admins' },
+  { id: 'drivers', label: 'For your team' },
+  { id: 'control', label: 'Oversight' },
+  { id: 'compliance', label: 'Compliance' },
+]
+const activeSection = ref('')
+
+function updateActiveSection() {
+  // A section counts as open once its top passes just under the sticky nav.
+  const line = 120
+  let current = ''
+  for (const l of navLinks) {
+    const el = document.getElementById(l.id)
+    if (el && el.getBoundingClientRect().top <= line) current = l.id
+  }
+  // Past the last tracked section (platforms / CTA) — nothing is highlighted.
+  const last = document.getElementById(navLinks[navLinks.length - 1]!.id)
+  if (last && last.getBoundingClientRect().bottom <= line) current = ''
+  activeSection.value = current
+}
+
+onMounted(() => {
+  window.addEventListener('scroll', updateActiveSection, { passive: true })
+  updateActiveSection()
+})
+onBeforeUnmount(() => window.removeEventListener('scroll', updateActiveSection))
+
+// "See all 15 jurisdictions" — the full mandates page isn't built yet.
+function openMandates() {
+  notifyInfo('The full list of 15 AI training jurisdictions is coming soon.', 'AI Training Mandates')
+}
 
 // Slack / Teams switch — swaps the copy and the mock windows between the two.
 const PLATFORM_KEY = 'aidl-v2-pf'
@@ -304,6 +355,7 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-bm{width:46px;height:46px;display:block;object-fit:contain;flex:none}
 .lp-nl{display:flex;gap:26px}
 .lp-nl a{text-decoration:none;font-weight:600;font-size:15px}
+.lp-nl a.lp-active{color:var(--red);text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:6px}
 .lp-ncta{margin-left:auto;display:flex;gap:12px;align-items:center}
 /* HERO / WINDSHIELD */
 .lp-hero{position:relative;height:880px;overflow:hidden;background:linear-gradient(180deg,#98c8eb 0%,#c8e0f0 45%,#e9d398 60%,#c98c4a 75%,#4a3a25 100%);border-bottom:6px solid var(--ink)}
@@ -536,6 +588,16 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-pl .lp-s.lp-soon{background:var(--yellow)}
 .lp-pl h3{font-family:"Bungee",sans-serif;font-weight:400;font-size:28px;margin:0 0 10px}
 .lp-pl p{font-size:16px;line-height:1.55;margin:0;text-wrap:pretty}
+/* REGULATORY & COMPLIANCE */
+.lp-rc{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin-top:44px}
+@media(max-width:1000px){.lp-rc{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.lp-rc{grid-template-columns:1fr;margin-top:32px}}
+.lp-rcc{border:3px solid var(--ink);background:var(--cream);padding:20px;box-shadow:5px 5px 0 var(--ink)}
+.lp-rcc h3{margin:12px 0 8px;font-size:20px}.lp-rcc p{margin:0;font-size:15px;line-height:1.5;text-wrap:pretty}
+.lp-rct{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.1em;background:var(--red);color:var(--cream);padding:4px 8px;border:2px solid var(--ink)}
+.lp-rcp{margin-top:26px;display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between;background:var(--ink);color:var(--cream);padding:22px 26px}
+.lp-rcp b{display:block;color:var(--yellow);font-family:"Bungee",sans-serif;font-weight:400;font-size:16px;margin-bottom:6px}.lp-rcp span{font-size:15px;line-height:1.5}.lp-rcp>div{flex:1 1 380px}
+@media(max-width:560px){.lp-rcp{padding:18px}.lp-rcp>div{flex-basis:100%}}
 .lp-cta{background:var(--yellow);text-align:center;padding:100px 0;border-bottom:4px solid var(--ink)}
 .lp-cta .lp-h2{font-size:clamp(38px,5.4vw,72px)}
 .lp-cta .lp-lede{margin:0 auto 30px}
@@ -544,6 +606,7 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-foot-in{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
 .lp-foot a{color:var(--cream);text-decoration:none}
 .lp-foot a:hover{color:var(--yellow)}
+.lp-foot a.lp-active{color:var(--red)}
 .lp-foot .lp-brand{color:var(--cream)}
 .lp-v-t{display:none}
 .lp-root.lp-pf-teams .lp-v-s{display:none}
