@@ -873,6 +873,7 @@ const userCur = computed(() => USER[userStep.value]!)
 /* Phones / small tablets */
 @media(max-width:640px){
 .lp-mtn{bottom:40%}
+.lp-mtn.lp-m3{border-width:0 140px 100px}
 .lp-nav-in{height:64px;gap:10px}
 .lp-burger{width:38px;height:38px;border-width:2px;box-shadow:2px 2px 0 var(--ink);gap:4px}
 .lp-burger i{width:18px;height:2px}
