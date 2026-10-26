@@ -32,7 +32,7 @@
 <div class="lp-gauge lp-kmh"><div class="lp-tick" style="transform:rotate(0deg)"></div><div class="lp-tick" style="transform:rotate(30deg)"></div><div class="lp-tick" style="transform:rotate(60deg)"></div><div class="lp-tick" style="transform:rotate(90deg)"></div><div class="lp-tick" style="transform:rotate(-30deg)"></div><div class="lp-tick" style="transform:rotate(-60deg)"></div><div class="lp-tick" style="transform:rotate(-90deg)"></div><div class="lp-needle"></div><div class="lp-center"></div><div class="lp-label">AGREED · 8/12</div></div>
 <div class="lp-gauge lp-lvl"><div class="lp-tick" style="transform:rotate(-60deg)"></div><div class="lp-tick" style="transform:rotate(-30deg)"></div><div class="lp-tick" style="transform:rotate(0deg)"></div><div class="lp-tick" style="transform:rotate(30deg)"></div><div class="lp-tick" style="transform:rotate(60deg)"></div><div class="lp-needle"></div><div class="lp-center"></div><div class="lp-label">ACK · 81%</div></div>
 </div>
-<div class="lp-wheel"><div class="lp-wheel-hub"><div class="lp-wheel-hub-inner">AIDL</div></div></div>
+<div class="lp-wheel"><div class="lp-wheel-stitch"></div><div class="lp-wheel-hub"><div class="lp-wheel-hub-inner"><img :src="aidlLogo" alt="AIDL logo" /></div></div></div>
 <div class="lp-infotainment">
 <div class="lp-row"><span>ADMIN CENTER</span><span>● LIVE</span></div>
 <div class="lp-big">STEP 3 OF 6</div>
@@ -133,6 +133,37 @@
 </div>
 </section>
 
+<section class="lp-band" id="cards">
+<div class="lp-wrap">
+<span class="lp-eb">▼ THE CARDS</span>
+<h2 class="lp-h2">See the cards your team will get.</h2>
+<p class="lp-lede">{{ LIBRARY_SIZE }} short cards across {{ CARD_TOPICS.length }} topics. Pick a plan and your topics to preview what lands in Slack or Teams.</p>
+<div class="lp-pp" role="radiogroup" aria-label="Plan"><button v-for="p in PLANS" :key="p.key" type="button" role="radio" class="lp-pp-tab" :aria-checked="plan === p.key" @click="setPlan(p.key)"><b>{{ p.label }}</b><span class="lp-pp-n">{{ p.cards }} cards</span><span class="lp-pp-c">{{ p.cadence }}</span><span class="lp-pp-t">{{ p.topics }}</span></button></div>
+<div class="lp-tp-bar"><span class="lp-tp-lbl">{{ topicNote }}</span><template v-if="plan === 'basic'"><button type="button" class="lp-tp-act" @click="pickAllTopics">Pick all</button><button type="button" class="lp-tp-act" :disabled="!pickedTopics.length" @click="clearTopics">Clear</button></template></div>
+<div id="lp-topics" class="lp-tp" :class="{ 'lp-tp-locked': plan !== 'basic' }" role="group" aria-label="Card topics"><button v-for="t in CARD_TOPICS" :key="t.code" type="button" class="lp-tp-chip" :disabled="plan !== 'basic'" :aria-pressed="topicOn(t.title)" :title="t.covers" @click="toggleTopic(t.title)"><i aria-hidden="true">{{ topicOn(t.title) ? '✓' : '+' }}</i><span class="lp-tp-name">{{ t.title }}</span><span class="lp-tp-n">{{ t.count }}</span></button></div>
+<p class="lp-tp-swipe" aria-hidden="true">Swipe for all {{ CARD_TOPICS.length }} topics →</p>
+<p v-if="!previewCards.length" class="lp-tp-empty">Pick at least one topic to preview your cards.</p>
+<template v-else>
+<div class="lp-cg">
+<article v-for="c in visibleCards" :key="c.no" class="lp-xc">
+<div class="lp-xc-top"><span class="lp-xc-topic">{{ c.topic }}</span><span class="lp-xc-type">{{ c.type }}</span></div>
+<div class="lp-xc-body">
+<h3>{{ c.title }}</h3>
+<div class="lp-xc-veil">
+<div class="lp-xc-blur" aria-hidden="true"><span></span><span></span><span class="lp-short"></span><span></span><span></span><span class="lp-short"></span><span class="lp-do"></span></div>
+<span class="lp-xc-lock">🔒 Full card in Slack or Teams</span>
+</div>
+</div>
+<div class="lp-xc-foot">AIDL · Card {{ c.no }}</div>
+</article>
+</div>
+<div v-if="cardsShown < previewCards.length" class="lp-cg-more"><button type="button" class="lp-btn lp-ghost" @click="cardsShown += 6">Show more titles ({{ previewCards.length - cardsShown }} more) ↓</button></div>
+</template>
+<div class="lp-ap"><div class="lp-ap-b" aria-hidden="true"><span>✅ Approve</span><span>⏭ Skip</span><span>🔄 Swap</span></div><p><b>Nothing is sent until you approve.</b> Preview every card first, then approve it, skip it or swap it for another.</p></div>
+<div class="lp-xc-cta"><div><b>{{ planInfo.label }} · {{ planInfo.cards }} cards · {{ planInfo.cadence }}</b><span>{{ planLine }}</span></div><div class="lp-hcta"><a class="lp-btn lp-y" href="#start" @click.prevent="addTo(platform)"><span class="lp-v-s">Add to Slack →</span><span class="lp-v-t">Add to Teams →</span></a><RouterLink class="lp-btn" to="/plans">See plans</RouterLink></div></div>
+</div>
+</section>
+
 <section class="lp-band lp-dark" id="control">
 <div class="lp-wrap">
 <span class="lp-eb">▼ OVERSIGHT</span>
@@ -204,6 +235,7 @@ import { startSlackLogin } from '../lib/slackAuth'
 import { startTeamsLogin } from '../lib/msTeamsAuth'
 import { notifyError, notifyLoading, notifyClose, notifyInfo } from '../lib/notify.js'
 import aidlLogo from '../assets/images/aidl-logo-transparent.png'
+import { CARD_TOPICS, LIBRARY_SIZE, PLANS, STARTER_CARDS, type PlanKey } from '../lib/landingCards'
 
 type Platform = 'slack' | 'teams'
 
@@ -213,12 +245,13 @@ const navLinks = [
   { id: 'how', label: 'How it works' },
   { id: 'admins', label: 'For admins' },
   { id: 'drivers', label: 'For your team' },
+  { id: 'cards', label: 'The cards' },
   { id: 'control', label: 'Oversight' },
   { id: 'compliance', label: 'Compliance' },
 ]
 const activeSection = ref('')
 
-// Phone / tablet menu — the inline nav links are hidden below 1060px.
+// Phone / tablet menu — the inline nav links are hidden below 1240px.
 const menuOpen = ref(false)
 const navEl = ref<HTMLElement | null>(null)
 
@@ -229,7 +262,7 @@ function onKeydown(e: KeyboardEvent) {
   if (e.key === 'Escape') menuOpen.value = false
 }
 function onResize() {
-  if (window.innerWidth > 1060) menuOpen.value = false
+  if (window.innerWidth > 1240) menuOpen.value = false
 }
 
 function updateActiveSection() {
@@ -259,6 +292,70 @@ onBeforeUnmount(() => {
   document.removeEventListener('click', onDocClick)
   document.removeEventListener('keydown', onKeydown)
 })
+
+// "See the cards" — a plan switch (Trial / Basic / Enterprise), the 15 real
+// topics and blurred previews of real card titles, like /plans in the product.
+const plan = ref<PlanKey>('basic')
+const pickedTopics = ref<string[]>(['Data Protection & Confidentiality', 'Output Verification & Model Limits', 'AI-Enabled Security Threats'])
+const cardsShown = ref(6)
+const planInfo = computed(() => PLANS.find(p => p.key === plan.value)!)
+const STARTER_TOPICS = [...new Set(STARTER_CARDS.map(c => c.topic))]
+
+interface ShownCard { no: string; title: string; type: string; topic: string }
+
+// Trial is the fixed starter set; Basic uses the picked topics; Enterprise all of them.
+function topicOn(topic: string) {
+  if (plan.value === 'trial') return STARTER_TOPICS.includes(topic)
+  if (plan.value === 'enterprise') return true
+  return pickedTopics.value.includes(topic)
+}
+
+// Trial shows its 12 cards; otherwise titles are taken in turn from each topic.
+const previewCards = computed<ShownCard[]>(() => {
+  if (plan.value === 'trial') return STARTER_CARDS
+  const topics = CARD_TOPICS.filter(t => topicOn(t.title))
+  const out: ShownCard[] = []
+  const most = Math.max(0, ...topics.map(t => t.cards.length))
+  for (let i = 0; i < most; i++) {
+    for (const t of topics) {
+      const c = t.cards[i]
+      if (c) out.push({ ...c, topic: t.title })
+    }
+  }
+  return out
+})
+const visibleCards = computed(() => previewCards.value.slice(0, cardsShown.value))
+
+const topicNote = computed(() => {
+  if (plan.value === 'trial') return `Trial sends the 12-card starter set · ${STARTER_TOPICS.length} topics`
+  if (plan.value === 'enterprise') return `All ${CARD_TOPICS.length} topics included`
+  return `${pickedTopics.value.length} of ${CARD_TOPICS.length} topics picked`
+})
+const planLine = computed(() => {
+  if (plan.value === 'trial') return 'The 12-card starter set, one card a month. Pick your own topics on Basic.'
+  if (plan.value === 'enterprise') return `The starter set plus cards from all ${CARD_TOPICS.length} topics, on the days and time you choose.`
+  return 'The starter set plus cards from the topics you pick, every Monday and Thursday.'
+})
+
+function setPlan(p: PlanKey) {
+  plan.value = p
+  cardsShown.value = 6
+}
+function toggleTopic(topic: string) {
+  if (plan.value !== 'basic') return
+  const i = pickedTopics.value.indexOf(topic)
+  if (i >= 0) pickedTopics.value.splice(i, 1)
+  else pickedTopics.value.push(topic)
+  cardsShown.value = 6
+}
+function pickAllTopics() {
+  pickedTopics.value = CARD_TOPICS.map(t => t.title)
+  cardsShown.value = 6
+}
+function clearTopics() {
+  pickedTopics.value = []
+  cardsShown.value = 6
+}
 
 // "See all 15 jurisdictions" — the full mandates page isn't built yet.
 function openMandates() {
@@ -380,7 +477,7 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-brand{display:flex;align-items:center;gap:11px;font-family:"Bungee",sans-serif;font-size:20px;text-decoration:none;color:var(--ink)}
 .lp-bm{width:46px;height:46px;display:block;object-fit:contain;flex:none}
 .lp-nl{display:flex;gap:26px}
-.lp-nl a{text-decoration:none;font-weight:600;font-size:15px}
+.lp-nl a{text-decoration:none;font-weight:600;font-size:15px;white-space:nowrap}
 .lp-nl a.lp-active{color:var(--red);text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:6px}
 .lp-ncta{margin-left:auto;display:flex;gap:12px;align-items:center}
 .lp-burger{display:none;flex:none;width:44px;height:44px;padding:0;background:var(--yellow);border:3px solid var(--ink);box-shadow:3px 3px 0 var(--ink);cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px}
@@ -396,7 +493,9 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-mnav a:last-child{border-bottom:0}
 .lp-mnav a.lp-active{color:var(--red)}
 .lp-mnav a.lp-active::before{content:"▶ ";font-size:12px;vertical-align:2px}
-@media(min-width:1061px){.lp-mnav{display:none!important}}
+@media(min-width:1241px){.lp-mnav{display:none!important}}
+@media(max-width:1240px){.lp-nl{display:none}.lp-burger{display:flex}}
+@media(min-width:1241px) and (max-width:1400px){.lp-nav-in{gap:22px}.lp-nl{gap:18px}.lp-nl a{font-size:14px}}
 /* HERO / WINDSHIELD */
 .lp-hero{position:relative;height:880px;overflow:hidden;background:linear-gradient(180deg,#98c8eb 0%,#c8e0f0 45%,#e9d398 60%,#c98c4a 75%,#4a3a25 100%);border-bottom:6px solid var(--ink)}
 .lp-sun{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,#ffdd55 0%,#ff9d00 60%,transparent 70%);filter:blur(2px)}
@@ -449,13 +548,15 @@ const userCur = computed(() => USER[userStep.value]!)
 @keyframes lp-needle{from{transform:translateX(-50%) rotate(-40deg)}to{transform:translateX(-50%) rotate(55deg)}}
 .lp-gauge .lp-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:var(--yellow);border:2px solid var(--ink)}
 .lp-gauge .lp-label{position:absolute;left:50%;bottom:-22px;transform:translateX(-50%);font-family:"JetBrains Mono",monospace;font-size:10px;color:var(--cream-2);white-space:nowrap}
-.lp-wheel{width:320px;height:320px;border-radius:50%;border:22px solid var(--asphalt);background:radial-gradient(circle at 50% 50%,transparent 0 70px,#1a1810 71px 80px,transparent 81px);position:relative;box-shadow:0 -10px 30px rgba(0,0,0,.5),inset 0 0 20px rgba(0,0,0,.6);margin-top:-120px;animation:lp-steer 6s ease-in-out infinite}
+.lp-wheel{width:320px;height:320px;border-radius:50%;border:22px solid var(--yellow);background:radial-gradient(circle at 50% 50%,transparent 0 70px,var(--ink) 71px 75px,transparent 76px);position:relative;box-shadow:0 -10px 30px rgba(0,0,0,.5),0 0 0 4px var(--ink),inset 0 0 0 4px var(--ink),inset 0 0 22px rgba(0,0,0,.45);margin-top:-120px;animation:lp-steer 6s ease-in-out infinite}
+.lp-wheel-stitch{position:absolute;inset:-12px;border-radius:50%;border:2px dashed rgba(20,20,15,.45);pointer-events:none}
 @keyframes lp-steer{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
-.lp-wheel::before,.lp-wheel::after{content:"";position:absolute;left:50%;top:50%;background:var(--asphalt);transform:translate(-50%,-50%);border-radius:8px}
-.lp-wheel::before{width:16px;height:200px}
-.lp-wheel::after{width:200px;height:16px}
-.lp-wheel-hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:110px;height:110px;border-radius:50%;background:linear-gradient(145deg,#2a2820,#14140f);border:3px solid #3a3528;display:grid;place-items:center;box-shadow:0 4px 10px rgba(0,0,0,.4);z-index:2}
-.lp-wheel-hub-inner{width:84px;height:84px;border-radius:50%;background:var(--yellow);border:3px solid var(--ink);display:grid;place-items:center;font-family:"Bungee",sans-serif;font-size:22px;color:var(--ink)}
+.lp-wheel::before,.lp-wheel::after{content:"";position:absolute;left:50%;top:50%;background:var(--cream);border:3px solid var(--ink);transform:translate(-50%,-50%);border-radius:8px;box-shadow:0 3px 0 rgba(0,0,0,.35)}
+.lp-wheel::before{width:20px;height:204px}
+.lp-wheel::after{width:204px;height:20px}
+.lp-wheel-hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:116px;height:116px;border-radius:50%;background:var(--ink);border:3px solid var(--cream);display:grid;place-items:center;box-shadow:0 0 0 3px var(--ink),0 6px 14px rgba(0,0,0,.5);z-index:2}
+.lp-wheel-hub-inner{width:94px;height:94px;border-radius:50%;background:var(--yellow);border:3px solid var(--ink);display:grid;place-items:center;overflow:hidden}
+.lp-wheel-hub-inner img{width:100%;height:100%;object-fit:contain;display:block;transform:scale(1.12)}
 .lp-infotainment{background:#0a0a07;border:3px solid #3a3528;border-radius:10px;padding:16px 18px;color:var(--green);font-family:"JetBrains Mono",monospace;width:290px;margin-left:auto;box-shadow:inset 0 0 20px rgba(0,0,0,.8)}
 .lp-infotainment .lp-row{display:flex;justify-content:space-between;font-size:11px;color:var(--cream-2)}
 .lp-infotainment .lp-big{font-family:"Bungee",sans-serif;color:var(--yellow);font-size:20px;margin:6px 0 8px}
@@ -469,7 +570,6 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-hstats div:last-child{border-right:0}
 .lp-hstats b{display:block;font-family:"Bungee",sans-serif;font-weight:400;font-size:24px;line-height:1}
 .lp-hstats span{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.1em;color:var(--muted)}
-@media(prefers-reduced-motion:reduce){.lp-dash-stroke,.lp-cloud,.lp-wheel,.lp-gauge .lp-needle,.lp-infotainment .lp-bar>i,.lp-hero-eyebrow .lp-blink{animation:none}}
 @media(max-width:1000px){.lp-rs-3,.lp-rs-4{display:none}.lp-dash-inner{grid-template-columns:1fr auto 1fr;padding:70px 24px 30px}.lp-infotainment{width:220px}.lp-wheel{width:240px;height:240px;margin-top:-60px}.lp-acp{grid-template-columns:1fr}}
 @media(max-width:640px){.lp-hero{height:820px}.lp-rs-1,.lp-rs-2,.lp-infotainment,.lp-gauge-cluster{display:none}.lp-dash-inner{grid-template-columns:1fr;justify-items:center}.lp-wheel{margin:-40px auto 0}.lp-hero-sub{font-size:16px}}
 /* SLACK WINDOW MOCK */
@@ -628,6 +728,73 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-pl .lp-s.lp-soon{background:var(--yellow)}
 .lp-pl h3{font-family:"Bungee",sans-serif;font-weight:400;font-size:28px;margin:0 0 10px}
 .lp-pl p{font-size:16px;line-height:1.55;margin:0;text-wrap:pretty}
+/* THE CARDS — plan switch, topic picker, blurred card previews */
+.lp-pp{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin-top:40px}
+.lp-pp-tab{all:unset;box-sizing:border-box;cursor:pointer;display:flex;flex-direction:column;gap:3px;padding:16px 18px;border:3px solid var(--ink);background:var(--cream);box-shadow:4px 4px 0 var(--ink);transition:transform .12s,box-shadow .12s,background .12s}
+.lp-pp-tab b{font-family:"Bungee",sans-serif;font-weight:400;font-size:20px;line-height:1.1}
+.lp-pp-n{font-weight:700;font-size:16px}
+.lp-pp-c,.lp-pp-t{font-size:14px;color:var(--muted)}
+.lp-pp-t{font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;margin-top:6px}
+.lp-pp-tab:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--ink)}
+.lp-pp-tab[aria-checked="true"]{background:var(--ink);color:var(--cream);box-shadow:4px 4px 0 var(--yellow)}
+.lp-pp-tab[aria-checked="true"] b{color:var(--yellow)}
+.lp-pp-tab[aria-checked="true"] .lp-pp-c,.lp-pp-tab[aria-checked="true"] .lp-pp-t{color:#cfc49c}
+.lp-tp-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:32px}
+.lp-tp-lbl{font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.08em;text-transform:uppercase;margin-right:auto}
+.lp-tp-act{all:unset;cursor:pointer;font-weight:700;font-size:14px;text-decoration:underline;text-underline-offset:4px}
+.lp-tp-act:hover{color:var(--red)}
+.lp-tp-act:disabled{opacity:.4;cursor:default;color:inherit}
+.lp-tp{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr));gap:12px;margin-top:14px}
+.lp-tp-chip{all:unset;box-sizing:border-box;cursor:pointer;display:flex;width:100%;min-height:48px;align-items:center;gap:8px;padding:9px 14px;border:3px solid var(--ink);background:var(--cream);font-weight:600;font-size:14px;line-height:1.2;box-shadow:3px 3px 0 var(--ink);transition:transform .12s,box-shadow .12s,background .12s,opacity .12s}
+.lp-tp-chip i{font-style:normal;font-family:"JetBrains Mono",monospace;font-weight:700;width:18px;height:18px;display:grid;place-items:center;border:2px solid var(--ink);font-size:11px;flex:none}
+.lp-tp-name{flex:1}
+.lp-tp-n{flex:none;font-family:"JetBrains Mono",monospace;font-size:11px;padding:2px 6px;border:2px solid var(--ink);background:var(--cream-2)}
+.lp-tp-chip:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+.lp-tp-chip[aria-pressed="true"]{background:var(--yellow)}
+.lp-tp-chip[aria-pressed="true"] i{background:var(--ink);color:var(--yellow)}
+.lp-tp-locked .lp-tp-chip{cursor:default}
+.lp-tp-locked .lp-tp-chip:hover{transform:none;box-shadow:3px 3px 0 var(--ink)}
+.lp-tp-locked .lp-tp-chip[aria-pressed="false"]{opacity:.45}
+.lp-tp-chip:focus-visible,.lp-tp-act:focus-visible,.lp-pp-tab:focus-visible{outline:3px solid var(--red);outline-offset:2px}
+.lp-tp-swipe{display:none}
+@media(max-width:640px){
+.lp-tp{display:grid;grid-auto-flow:column;grid-template-rows:repeat(2,auto);grid-auto-columns:max-content;gap:8px;overflow-x:auto;scroll-snap-type:x proximity;scroll-padding:0 20px;margin:12px -20px 0;padding:2px 20px 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.lp-tp::-webkit-scrollbar{display:none}
+.lp-tp-chip{width:auto;min-height:0;padding:8px 11px;gap:6px;font-size:13px;border-width:2px;box-shadow:2px 2px 0 var(--ink);scroll-snap-align:start}
+.lp-tp-chip:hover,.lp-tp-locked .lp-tp-chip:hover{transform:none;box-shadow:2px 2px 0 var(--ink)}
+.lp-tp-chip i{width:15px;height:15px;font-size:9px;border-width:2px}
+.lp-tp-name{flex:none;white-space:nowrap}
+.lp-tp-n{padding:0 4px;font-size:10px;border-width:1.5px}
+.lp-tp-swipe{display:block;margin:6px 0 0;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+}
+.lp-tp-empty{margin:36px 0 0;padding:28px;border:3px dashed var(--ink);text-align:center;font-weight:600}
+.lp-cg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));grid-auto-rows:1fr;gap:24px;margin-top:36px}
+.lp-xc{border:3px solid var(--ink);background:#fffdf6;box-shadow:6px 6px 0 var(--ink);display:flex;flex-direction:column}
+.lp-xc-top{display:flex;justify-content:space-between;gap:10px;align-items:center;background:var(--ink);color:var(--yellow);padding:9px 14px;font-family:"JetBrains Mono",monospace;font-size:11px;letter-spacing:.06em;text-transform:uppercase}
+.lp-xc-topic{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.lp-xc-type{flex:none;background:var(--yellow);color:var(--ink);padding:2px 7px}
+.lp-xc-body{padding:18px 18px 16px;flex:1;display:flex;flex-direction:column}
+.lp-xc h3{font-family:"Bungee",sans-serif;font-weight:400;font-size:21px;line-height:1.1;margin:0}
+.lp-xc-veil{position:relative;margin-top:16px;flex:1;display:flex;flex-direction:column;justify-content:center}
+.lp-xc-blur{display:flex;flex-direction:column;gap:9px;filter:blur(3px);opacity:.75;user-select:none}
+.lp-xc-blur span{display:block;height:11px;background:var(--muted);border-radius:2px}
+.lp-xc-blur span.lp-short{width:60%}
+.lp-xc-blur span.lp-do{height:40px;margin-top:6px;background:var(--cream-3)}
+.lp-xc-lock{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);max-width:calc(100% - 16px);width:max-content;text-align:center;line-height:1.3;background:var(--ink);color:var(--cream);font-family:"Bungee",sans-serif;font-size:12px;padding:8px 12px;box-shadow:3px 3px 0 var(--yellow)}
+.lp-xc-foot{border-top:2px dashed var(--line);padding:9px 18px;font-family:"JetBrains Mono",monospace;font-size:11px;color:var(--muted)}
+.lp-cg-more{margin-top:28px;text-align:center}
+.lp-ap{margin-top:32px;display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;border:3px solid var(--ink);background:var(--yellow);padding:16px 20px;box-shadow:5px 5px 0 var(--ink)}
+.lp-ap-b{display:flex;gap:8px;flex-wrap:wrap}
+.lp-ap-b span{font-family:"Bungee",sans-serif;font-size:12px;background:var(--cream);border:2px solid var(--ink);padding:6px 10px}
+.lp-ap p{margin:0;font-size:15px;line-height:1.5;flex:1 1 320px}
+.lp-xc-cta{margin-top:26px;display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between;background:var(--ink);color:var(--cream);padding:22px 26px}
+.lp-xc-cta b{display:block;color:var(--yellow);font-family:"Bungee",sans-serif;font-weight:400;font-size:16px;margin-bottom:6px}
+.lp-xc-cta>div:first-child>span{font-size:15px;line-height:1.5}
+.lp-xc-cta>div:first-child{flex:1 1 380px}
+.lp-xc-cta .lp-hcta{margin:0;display:flex;gap:12px;flex-wrap:wrap}
+.lp-xc-cta .lp-btn:not(.lp-y){background:var(--cream);color:var(--ink);border-color:var(--cream)}
+@media(max-width:1000px){.lp-cg{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:640px){.lp-pp{grid-template-columns:1fr;gap:10px;margin-top:28px}.lp-pp-tab{flex-direction:row;align-items:baseline;flex-wrap:wrap;gap:4px 10px;padding:12px 14px;box-shadow:3px 3px 0 var(--ink)}.lp-pp-tab b{font-size:16px;min-width:108px}.lp-pp-n{font-size:14px}.lp-pp-c{font-size:13px}.lp-pp-c::before{content:"· "}.lp-pp-t{display:none}.lp-cg{grid-template-columns:minmax(0,1fr);gap:20px}.lp-tp-chip{font-size:13px;padding:8px 11px}.lp-ap{padding:14px 16px}.lp-xc-cta{padding:18px}.lp-xc-cta>div:first-child{flex-basis:100%}.lp-xc-cta .lp-hcta{flex-direction:column;align-items:stretch;width:100%}.lp-xc-cta .lp-btn{justify-content:center}.lp-xc h3{font-size:19px}}
 /* REGULATORY & COMPLIANCE */
 .lp-rc{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px;margin-top:44px}
 @media(max-width:1000px){.lp-rc{grid-template-columns:repeat(2,minmax(0,1fr))}}
@@ -705,6 +872,7 @@ const userCur = computed(() => USER[userStep.value]!)
 
 /* Phones / small tablets */
 @media(max-width:640px){
+.lp-mtn{bottom:40%}
 .lp-nav-in{height:64px;gap:10px}
 .lp-burger{width:38px;height:38px;border-width:2px;box-shadow:2px 2px 0 var(--ink);gap:4px}
 .lp-burger i{width:18px;height:2px}
@@ -766,6 +934,7 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-ac-plan{gap:6px 12px}
 }
 @media(max-width:360px){
+.lp-tp{margin-left:-14px;margin-right:-14px;padding-left:14px;padding-right:14px;scroll-padding:0 14px}
 .lp-wrap{padding:0 14px}
 .lp-nav .lp-bm{width:36px;height:36px}
 .lp-ncta .lp-pf i,.lp-arr{display:none}
