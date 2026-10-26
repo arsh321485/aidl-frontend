@@ -570,8 +570,8 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-hstats div:last-child{border-right:0}
 .lp-hstats b{display:block;font-family:"Bungee",sans-serif;font-weight:400;font-size:24px;line-height:1}
 .lp-hstats span{font-family:"JetBrains Mono",monospace;font-size:10.5px;letter-spacing:.1em;color:var(--muted)}
-@media(max-width:1000px){.lp-rs-3,.lp-rs-4{display:none}.lp-dash-inner{grid-template-columns:1fr auto 1fr;padding:70px 24px 30px}.lp-infotainment{width:220px}.lp-wheel{width:240px;height:240px;margin-top:-60px}.lp-acp{grid-template-columns:1fr}}
-@media(max-width:640px){.lp-hero{height:820px}.lp-rs-1,.lp-rs-2,.lp-infotainment,.lp-gauge-cluster{display:none}.lp-dash-inner{grid-template-columns:1fr;justify-items:center}.lp-wheel{margin:-40px auto 0}.lp-hero-sub{font-size:16px}}
+@media(max-width:1000px){.lp-rs-3,.lp-rs-4{display:none}.lp-dash-inner{grid-template-columns:1fr auto 1fr;padding:70px 24px 30px}.lp-infotainment{width:220px}.lp-wheel{width:200px;height:200px;margin-top:-60px}.lp-acp{grid-template-columns:1fr}}
+@media(max-width:640px){.lp-hero{height:820px}.lp-rs-1,.lp-rs-2,.lp-infotainment,.lp-gauge-cluster{display:none}.lp-dash-inner{grid-template-columns:1fr;justify-items:center}.lp-wheel{margin:-15px auto 0}.lp-hero-sub{font-size:16px}}
 /* SLACK WINDOW MOCK */
 .lp-win{background:#fff;border:3px solid var(--ink);box-shadow:10px 10px 0 var(--ink);display:grid;grid-template-columns:150px minmax(0,1fr);min-height:520px;font-size:13.5px;color:#1d1c1d}
 .lp-win-sb{background:#3f0e40;color:#cfc3cf;padding:14px 0;font-size:13px}
@@ -873,6 +873,7 @@ const userCur = computed(() => USER[userStep.value]!)
 /* Phones / small tablets */
 @media(max-width:640px){
 .lp-mtn{bottom:40%}
+.lp-mtn.lp-m2{border-width:0 120px 95px 120px}
 .lp-mtn.lp-m3{border-width:0 140px 100px}
 .lp-nav-in{height:64px;gap:10px}
 .lp-burger{width:38px;height:38px;border-width:2px;box-shadow:2px 2px 0 var(--ink);gap:4px}
