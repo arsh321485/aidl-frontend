@@ -945,4 +945,45 @@ const userCur = computed(() => USER[userStep.value]!)
 @media(max-width:340px){
 .lp-stl{grid-template-columns:1fr}
 }
+
+/* Mobile hero: road + wheel, then gauge card and Admin Center card stacked (aidl-design mobile mock).
+   Headline and dashboard flow, so the hero grows with however many lines the headline wraps to;
+   the scenery is anchored from the bottom, --lp-scene px above it is the horizon (just under the text box). */
+@media(max-width:640px){
+.lp-hero{--lp-wheel-y:0px;--lp-scene:648px;height:auto;background:linear-gradient(0deg,#2a2218 0,#2a2218 calc(var(--lp-scene) - 270px),#7a5a32 calc(var(--lp-scene) - 190px),#c98c4a calc(var(--lp-scene) - 100px),#e2b26a calc(var(--lp-scene) - 30px),#efe0b0 calc(var(--lp-scene) + 40px),#c8e0f0 calc(var(--lp-scene) + 160px),#98c8eb 100%)}
+.lp-sun{top:auto;bottom:calc(var(--lp-scene) - 60px);transform:translateX(-50%);width:180px;height:180px;opacity:.75}
+.lp-mtn{bottom:calc(var(--lp-scene) - 62px)}
+.lp-mtn.lp-m1{left:calc(19% - 52px);border-width:0 52px 48px}
+.lp-mtn.lp-m2{display:none}
+.lp-mtn.lp-m3{right:calc(19% - 52px);border-width:0 52px 48px}
+.lp-road{height:var(--lp-scene);clip-path:polygon(48% 0,52% 0,100% 192px,100% 100%,0 100%,0 192px)}
+.lp-road-dash{height:220px;bottom:calc(var(--lp-scene) - 220px)}
+.lp-hero-headline{position:relative;left:auto;top:auto;transform:none;width:auto;margin:0 auto;padding:44px 16px 0}
+.lp-rs-1,.lp-rs-2{display:flex;zoom:.55;bottom:calc((var(--lp-scene) - 117px) / .55)}
+.lp-rs-1{left:3%}
+.lp-rs-2{right:3%}
+.lp-dashboard{position:relative;top:auto;bottom:auto;height:auto;margin-top:36px}
+.lp-dash-bg{top:72px;clip-path:polygon(0 56px,12% 0,88% 0,100% 56px,100% 100%,0 100%)}
+.lp-dash-inner{position:relative;inset:auto;display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:0 16px 20px}
+.lp-wheel{order:-1;width:250px;height:250px;zoom:.71;align-self:center;margin:0 auto 6px;top:calc(var(--lp-wheel-y) / .71)}
+.lp-wheel::before{width:20px;height:175px}
+.lp-wheel::after{width:180px;height:20px}
+.lp-gauge-cluster{display:flex;zoom:1;justify-content:center;gap:clamp(28px,12vw,64px);padding:16px 12px 38px;background:#14130e;border:2px solid #3a3528;border-radius:16px}
+.lp-gauge{width:96px;height:96px;border-width:3px}
+.lp-gauge .lp-tick{transform-origin:50% 42px}
+.lp-gauge .lp-needle{height:36px}
+.lp-gauge.lp-lvl{display:block}
+.lp-gauge .lp-label{bottom:-28px;font-size:12px;letter-spacing:.06em;color:var(--cream)}
+.lp-infotainment{display:block;width:auto;margin:0;padding:16px 18px;border:2px solid #3a3528;border-radius:16px;background:#14130e}
+.lp-infotainment .lp-row{font-size:12.5px;letter-spacing:.05em;color:var(--cream)}
+.lp-infotainment .lp-row:first-child{padding-bottom:10px;border-bottom:1px solid #4a4434}
+.lp-infotainment .lp-row:first-child span:last-child{color:var(--green)}
+.lp-infotainment .lp-big{font-size:22px;margin:10px 0 4px}
+.lp-infotainment .lp-bar{height:10px;margin-top:12px}
+}
+@media(max-width:360px){
+.lp-rs-1,.lp-rs-2{zoom:.46;bottom:calc((var(--lp-scene) - 100px) / .46)}
+.lp-rs-1{left:1.5%}
+.lp-rs-2{right:1.5%}
+}
 </style>
