@@ -219,6 +219,11 @@
 <h2 class="lp-h2">Your team, road-ready this week.</h2>
 <p class="lp-lede">Add AIDL to Slack or Teams, approve your policy and three starter cards, and press Start.</p>
 <div class="lp-hcta"><a class="lp-btn" href="#start" @click.prevent="addTo('slack')">Add to Slack →</a><a class="lp-btn" href="#start" @click.prevent="addTo('teams')">Add to Teams →</a><RouterLink class="lp-btn lp-ghost" to="/plans">See plans</RouterLink></div>
+<form class="lp-wl" novalidate @submit.prevent="submitWaitlist">
+<label for="lp-wl-email">Not a company? Join the waitlist</label>
+<div class="lp-wl-row"><input id="lp-wl-email" v-model.trim="wlEmail" type="email" placeholder="you@example.com" autocomplete="email" :disabled="wlState === 'sending' || wlState === 'done'" /><button type="submit" class="lp-btn" :disabled="wlState === 'sending' || wlState === 'done'">{{ wlState === 'sending' ? 'Joining…' : wlState === 'done' ? 'Joined ✓' : 'Join' }}</button></div>
+<p class="lp-wl-msg" :class="{ 'lp-err': wlState === 'error' }" role="status" aria-live="polite">{{ wlMsg }}</p>
+</form>
 </div>
 </section>
 
@@ -236,6 +241,7 @@ import { startTeamsLogin } from '../lib/msTeamsAuth'
 import { notifyError, notifyLoading, notifyClose, notifyInfo } from '../lib/notify.js'
 import aidlLogo from '../assets/images/aidl-logo-transparent.png'
 import { CARD_TOPICS, LIBRARY_SIZE, PLANS, STARTER_CARDS, type PlanKey } from '../lib/landingCards'
+import { joinWaitlist } from '../lib/waitlistApi'
 
 type Platform = 'slack' | 'teams'
 
@@ -250,6 +256,30 @@ const navLinks = [
   { id: 'compliance', label: 'Compliance' },
 ]
 const activeSection = ref('')
+
+// "Not a company? Join the waitlist" box (bottom CTA) — individuals only;
+// the old individual pages stay on /classic but aren't linked from here.
+const wlEmail = ref('')
+const wlState = ref<'idle' | 'sending' | 'done' | 'error'>('idle')
+const wlMsg = ref('')
+
+async function submitWaitlist() {
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(wlEmail.value)) {
+    wlState.value = 'error'
+    wlMsg.value = 'Please enter a valid email address.'
+    return
+  }
+  wlState.value = 'sending'
+  wlMsg.value = ''
+  try {
+    await joinWaitlist(wlEmail.value)
+    wlState.value = 'done'
+    wlMsg.value = "You're on the list — we'll email you when personal licences open."
+  } catch (e) {
+    wlState.value = 'error'
+    wlMsg.value = e instanceof Error ? e.message : 'Could not join the waitlist. Please try again later.'
+  }
+}
 
 // Phone / tablet menu — the inline nav links are hidden below 1240px.
 const menuOpen = ref(false)
@@ -809,6 +839,16 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-cta .lp-h2{font-size:clamp(38px,5.4vw,72px)}
 .lp-cta .lp-lede{margin:0 auto 30px}
 .lp-cta .lp-hcta{justify-content:center;margin:0}
+.lp-wl{max-width:460px;margin:48px auto 0;padding-top:26px;border-top:2px dashed rgba(20,20,15,.35)}
+.lp-wl label{display:block;font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
+.lp-wl-row{display:flex;gap:10px}
+.lp-wl input{flex:1;min-width:0;padding:11px 14px;font:inherit;font-size:15px;color:var(--ink);background:var(--cream);border:3px solid var(--ink);border-radius:0;outline:none}
+.lp-wl input:focus-visible{box-shadow:3px 3px 0 var(--ink)}
+.lp-wl input:disabled{opacity:.7}
+.lp-wl .lp-btn{padding:11px 20px;box-shadow:3px 3px 0 var(--cream);flex:none}
+.lp-wl .lp-btn:disabled{opacity:.7;cursor:default;transform:none}
+.lp-wl-msg{min-height:1.4em;margin:12px 0 0;font-size:14px;font-weight:600}
+.lp-wl-msg.lp-err{color:#a3150b}
 .lp-foot{background:var(--asphalt);color:#cfc49c;padding:44px 0;font-size:14px}
 .lp-foot-in{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
 .lp-foot a{color:var(--cream);text-decoration:none}

@@ -55,7 +55,8 @@ const router = createRouter({
     },
     {
       // Previous landing page (individual / junior enroll, licence sign-in,
-      // verify) — linked as "Classic site" from the new landing's footer.
+      // verify) — kept running for individuals, but deliberately not linked
+      // from the new B2B landing page; reachable by direct link only.
       path: '/classic',
       name: 'classic',
       component: ClassicHomeView,
