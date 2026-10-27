@@ -12,9 +12,20 @@ import FleetOfficeView from '../views/FleetOfficeView.vue'
 import TeamsCallbackView from '../views/TeamsCallbackView.vue'
 import AvatarView from '../views/AvatarView.vue'
 import PlansView from '../views/PlansView.vue'
+import PrivacyView from '../views/PrivacyView.vue'
+import SupportView from '../views/SupportView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
+  // Section links like /home#how (from the Privacy / Support nav) jump to that
+  // section; Privacy and Support always open at the top. Other routes keep
+  // the old behaviour (no scrolling).
+  scrollBehavior(to, _from, savedPosition) {
+    if (savedPosition) return savedPosition
+    if (to.hash) return { el: to.hash, top: 80 }
+    if (to.name === 'privacy' || to.name === 'support') return { top: 0 }
+    return false
+  },
   routes: [
     {
       // The site opens straight on the website (no sign-in page first).
@@ -128,6 +139,19 @@ const router = createRouter({
       path: '/plans',
       name: 'plans',
       component: PlansView,
+      meta: { public: true },
+    },
+    {
+      // Privacy policy + Support pages — also the URLs given to the Slack Marketplace.
+      path: '/privacy',
+      name: 'privacy',
+      component: PrivacyView,
+      meta: { public: true },
+    },
+    {
+      path: '/support',
+      name: 'support',
+      component: SupportView,
       meta: { public: true },
     },
     {

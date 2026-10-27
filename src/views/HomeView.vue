@@ -228,7 +228,7 @@
 </section>
 
 <footer class="lp-foot">
-<div class="lp-wrap lp-foot-in"><a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id">{{ l.label }}</a><RouterLink to="/plans">Pricing</RouterLink><span class="lp-copy">© 2026 AI Driving License</span></div>
+<div class="lp-wrap lp-foot-in"><a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id">{{ l.label }}</a><RouterLink to="/plans">Pricing</RouterLink><RouterLink to="/privacy">Privacy</RouterLink><RouterLink to="/support">Support</RouterLink><span class="lp-copy">© 2026 AI Driving License</span></div>
 </footer>
 </div>
 </template>
@@ -242,19 +242,13 @@ import { notifyError, notifyLoading, notifyClose, notifyInfo } from '../lib/noti
 import aidlLogo from '../assets/images/aidl-logo-transparent.png'
 import { CARD_TOPICS, LIBRARY_SIZE, PLANS, STARTER_CARDS, type PlanKey } from '../lib/landingCards'
 import { joinWaitlist } from '../lib/waitlistApi'
+import { NAV_LINKS } from '../lib/landingNav'
 
 type Platform = 'slack' | 'teams'
 
 // Nav / footer section links. The one for the section in view (or the last
 // one clicked) is highlighted red.
-const navLinks = [
-  { id: 'how', label: 'How it works' },
-  { id: 'admins', label: 'For admins' },
-  { id: 'drivers', label: 'For your team' },
-  { id: 'cards', label: 'The cards' },
-  { id: 'control', label: 'Oversight' },
-  { id: 'compliance', label: 'Compliance' },
-]
+const navLinks = NAV_LINKS
 const activeSection = ref('')
 
 // "Not a company? Join the waitlist" box (bottom CTA) — individuals only;
@@ -921,7 +915,7 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-burger.lp-open i:nth-child(1){transform:translateY(6px) rotate(45deg)}
 .lp-burger.lp-open i:nth-child(3){transform:translateY(-6px) rotate(-45deg)}
 .lp-mnav{max-height:calc(100vh - 64px)}
-.lp-nav .lp-bm{width:40px;height:40px}
+.lp-nav .lp-bm,.lp-foot .lp-bm{width:40px;height:40px}
 .lp-ncta{gap:8px}
 .lp-ncta .lp-pf{border-width:2px;box-shadow:2px 2px 0 var(--ink)}
 .lp-ncta .lp-pf button{font-size:10px;padding:6px 7px;gap:5px}
@@ -978,7 +972,7 @@ const userCur = computed(() => USER[userStep.value]!)
 @media(max-width:360px){
 .lp-tp{margin-left:-14px;margin-right:-14px;padding-left:14px;padding-right:14px;scroll-padding:0 14px}
 .lp-wrap{padding:0 14px}
-.lp-nav .lp-bm{width:36px;height:36px}
+.lp-nav .lp-bm,.lp-foot .lp-bm{width:36px;height:36px}
 .lp-ncta .lp-pf i,.lp-arr{display:none}
 .lp-hstats b{font-size:16px}
 }
