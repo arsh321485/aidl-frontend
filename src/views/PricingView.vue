@@ -155,6 +155,7 @@ const plans = [
       '4 awareness cards a week',
       'Choose the days and the time they arrive',
       '208 cards over the year, from all 15 topics',
+      'Upload your own AI policy (AUP) if you already have one, instead of building it in AIDL',
     ],
   },
 ]
@@ -175,6 +176,7 @@ const compare = [
   ] },
   { group: 'ONBOARDING & LICENCE', rows: [
     ['📄 AI Acceptable Use Policy', '✓', '✓', '✓'],
+    ['Upload your own AI policy (AUP)', '—', '—', '✓'],
     ['🚦 Traffic Light Check', '✓', '✓', '✓'],
     ['📖 The Highway Code', '✓', '✓', '✓'],
     ['AI Driving Licence (1 year)', '✓', '✓', '✓'],
