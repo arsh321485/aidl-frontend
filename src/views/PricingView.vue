@@ -296,9 +296,6 @@ async function addTo(p: 'slack' | 'teams') {
 .pr-feats li{display:flex;gap:10px;font-size:14.5px;line-height:1.45}
 .pr-feats li::before{content:"";width:9px;height:9px;margin-top:6px;flex:none;background:var(--yellow);border:2px solid var(--ink)}
 .pr-ent .pr-feats li::before{border-color:var(--cream)}
-.pr-feats li.pr-base{color:var(--muted)}
-.pr-ent .pr-feats li.pr-base{color:#b9af8d}
-.pr-feats li.pr-base::before{background:transparent}
 .pr-seats{margin:28px 0 0;font-size:15px;line-height:1.55;max-width:80ch}
 
 /* EVERY PLAN */
