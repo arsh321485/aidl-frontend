@@ -717,7 +717,7 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-tl .lp-r{background:#fdecea;border:1px solid #ebaaa4}
 /* mini licence */
 .lp-lic-av{width:62px;height:62px;border-radius:50%;border:3px solid #f0c14b;background:#3a3020;display:block;object-fit:cover;font-family:"Bungee",sans-serif;font-size:20px;color:#ffcc00}
-.lp-lic-img svg{display:block;width:100%;height:auto}
+.lp-lic-img svg{display:block;width:100%;max-width:300px;height:auto}
 /* Admin step 1: the AI policy builder popup header */
 .lp-aupb{background:#1d1c16;border-radius:8px;padding:12px 14px;color:#f5ecd2;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.08em}
 .lp-aupb-r{display:flex;justify-content:space-between;align-items:center;gap:10px}
