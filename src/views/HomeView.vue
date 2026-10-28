@@ -3,12 +3,12 @@
 <nav class="lp-nav" ref="navEl">
 <div class="lp-wrap lp-nav-in">
 <a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a>
-<div class="lp-nl"><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id">{{ l.label }}</a><RouterLink to="/plans">Pricing</RouterLink></div>
+<div class="lp-nl"><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id">{{ l.label }}</a><RouterLink to="/pricing">Pricing</RouterLink></div>
 <div class="lp-ncta"><span class="lp-pf" role="group" aria-label="Platform"><button type="button" :aria-pressed="platform === 'slack'" @click="setPlatform('slack')"><i></i>Slack</button><button type="button" :aria-pressed="platform === 'teams'" @click="setPlatform('teams')"><i></i>Teams</button></span><a class="lp-btn lp-y" href="#start" @click.prevent="addTo(platform)"><span class="lp-v-s">Add to Slack</span><span class="lp-v-t">Add to Teams</span><span class="lp-arr">→</span></a></div>
 <button type="button" class="lp-burger" :class="{ 'lp-open': menuOpen }" :aria-expanded="menuOpen" aria-controls="lp-mnav" aria-label="Menu" @click="menuOpen = !menuOpen"><i></i><i></i><i></i></button>
 </div>
 <div v-show="menuOpen" id="lp-mnav" class="lp-mnav">
-<div class="lp-wrap"><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id; menuOpen = false">{{ l.label }}</a><RouterLink to="/plans" @click="menuOpen = false">Pricing</RouterLink></div>
+<div class="lp-wrap"><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id; menuOpen = false">{{ l.label }}</a><RouterLink to="/pricing" @click="menuOpen = false">Pricing</RouterLink></div>
 </div>
 </nav>
 
@@ -160,7 +160,7 @@
 <div v-if="cardsShown < previewCards.length" class="lp-cg-more"><button type="button" class="lp-btn lp-ghost" @click="cardsShown += 6">Show more titles ({{ previewCards.length - cardsShown }} more) ↓</button></div>
 </template>
 <div class="lp-ap"><div class="lp-ap-b" aria-hidden="true"><span>✅ Approve</span><span>⏭ Skip</span><span>🔄 Swap</span></div><p><b>Nothing is sent until you approve.</b> Preview every card first, then approve it, skip it or swap it for another.</p></div>
-<div class="lp-xc-cta"><div><b>{{ planInfo.label }} · {{ planInfo.cards }} cards · {{ planInfo.cadence }}</b><span>{{ planLine }}</span></div><div class="lp-hcta"><a class="lp-btn lp-y" href="#start" @click.prevent="addTo(platform)"><span class="lp-v-s">Add to Slack →</span><span class="lp-v-t">Add to Teams →</span></a><RouterLink class="lp-btn" to="/plans">See plans</RouterLink></div></div>
+<div class="lp-xc-cta"><div><b>{{ planInfo.label }} · {{ planInfo.cards }} cards · {{ planInfo.cadence }}</b><span>{{ planLine }}</span></div><div class="lp-hcta"><a class="lp-btn lp-y" href="#start" @click.prevent="addTo(platform)"><span class="lp-v-s">Add to Slack →</span><span class="lp-v-t">Add to Teams →</span></a><RouterLink class="lp-btn" to="/pricing">See plans</RouterLink></div></div>
 </div>
 </section>
 
@@ -218,7 +218,7 @@
 <div class="lp-wrap">
 <h2 class="lp-h2">Your team, road-ready this week.</h2>
 <p class="lp-lede">Add AIDL to Slack or Teams, approve your policy and three starter cards, and press Start.</p>
-<div class="lp-hcta"><a class="lp-btn" href="#start" @click.prevent="addTo('slack')">Add to Slack →</a><a class="lp-btn" href="#start" @click.prevent="addTo('teams')">Add to Teams →</a><RouterLink class="lp-btn lp-ghost" to="/plans">See plans</RouterLink></div>
+<div class="lp-hcta"><a class="lp-btn" href="#start" @click.prevent="addTo('slack')">Add to Slack →</a><a class="lp-btn" href="#start" @click.prevent="addTo('teams')">Add to Teams →</a><RouterLink class="lp-btn lp-ghost" to="/pricing">See plans</RouterLink></div>
 <form class="lp-wl" novalidate @submit.prevent="submitWaitlist">
 <label for="lp-wl-email">Not a company? Join the waitlist</label>
 <div class="lp-wl-row"><input id="lp-wl-email" v-model.trim="wlEmail" type="email" placeholder="you@example.com" autocomplete="email" :disabled="wlState === 'sending' || wlState === 'done'" /><button type="submit" class="lp-btn" :disabled="wlState === 'sending' || wlState === 'done'">{{ wlState === 'sending' ? 'Joining…' : wlState === 'done' ? 'Joined ✓' : 'Join' }}</button></div>
@@ -228,7 +228,7 @@
 </section>
 
 <footer class="lp-foot">
-<div class="lp-wrap lp-foot-in"><a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id">{{ l.label }}</a><RouterLink to="/plans">Pricing</RouterLink><RouterLink to="/privacy">Privacy</RouterLink><RouterLink to="/support">Support</RouterLink><span class="lp-copy">© 2026 AI Driving License</span></div>
+<div class="lp-wrap lp-foot-in"><a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id">{{ l.label }}</a><RouterLink to="/pricing">Pricing</RouterLink><RouterLink to="/privacy">Privacy</RouterLink><RouterLink to="/support">Support</RouterLink><span class="lp-copy">© 2026 AI Driving License</span></div>
 </footer>
 </div>
 </template>
@@ -504,6 +504,8 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-nl a{text-decoration:none;font-weight:600;font-size:15px;white-space:nowrap}
 .lp-nl a.lp-active{color:var(--red);text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:6px}
 .lp-ncta{margin-left:auto;display:flex;gap:12px;align-items:center}
+.lp-ncta .lp-btn{padding:9px 14px;font-size:12px;gap:8px;white-space:nowrap;box-shadow:3px 3px 0 var(--ink)}
+.lp-ncta .lp-btn:hover{box-shadow:5px 5px 0 var(--ink)}
 .lp-burger{display:none;flex:none;width:44px;height:44px;padding:0;background:var(--yellow);border:3px solid var(--ink);box-shadow:3px 3px 0 var(--ink);cursor:pointer;flex-direction:column;align-items:center;justify-content:center;gap:5px}
 .lp-burger i{display:block;width:20px;height:3px;background:var(--ink);transition:transform .15s,opacity .15s}
 .lp-burger.lp-open{background:var(--ink)}

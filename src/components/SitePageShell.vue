@@ -5,19 +5,19 @@
 <nav ref="navEl" class="lp-nav">
 <div class="lp-wrap lp-nav-in">
 <RouterLink class="lp-brand" to="/home"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></RouterLink>
-<div class="lp-nl"><RouterLink v-for="l in NAV_LINKS" :key="l.id" :to="{ path: '/home', hash: '#' + l.id }">{{ l.label }}</RouterLink><RouterLink to="/plans">Pricing</RouterLink></div>
+<div class="lp-nl"><RouterLink v-for="l in NAV_LINKS" :key="l.id" :to="{ path: '/home', hash: '#' + l.id }">{{ l.label }}</RouterLink><RouterLink to="/pricing" exact-active-class="sp-on">Pricing</RouterLink></div>
 <div class="lp-ncta"><span class="lp-pf" role="group" aria-label="Platform"><button type="button" :aria-pressed="platform === 'slack'" @click="setPlatform('slack')"><i></i>Slack</button><button type="button" :aria-pressed="platform === 'teams'" @click="setPlatform('teams')"><i></i>Teams</button></span><a class="lp-btn lp-y" href="#" @click.prevent="addTo(platform)"><span class="lp-v-s">Add to Slack</span><span class="lp-v-t">Add to Teams</span><span class="lp-arr">→</span></a></div>
 <button type="button" class="lp-burger" :class="{ 'lp-open': menuOpen }" :aria-expanded="menuOpen" aria-controls="sp-mnav" aria-label="Menu" @click="menuOpen = !menuOpen"><i></i><i></i><i></i></button>
 </div>
 <div v-show="menuOpen" id="sp-mnav" class="lp-mnav">
-<div class="lp-wrap"><RouterLink v-for="l in NAV_LINKS" :key="l.id" :to="{ path: '/home', hash: '#' + l.id }" @click="menuOpen = false">{{ l.label }}</RouterLink><RouterLink to="/plans" @click="menuOpen = false">Pricing</RouterLink></div>
+<div class="lp-wrap"><RouterLink v-for="l in NAV_LINKS" :key="l.id" :to="{ path: '/home', hash: '#' + l.id }" @click="menuOpen = false">{{ l.label }}</RouterLink><RouterLink to="/pricing" @click="menuOpen = false">Pricing</RouterLink></div>
 </div>
 </nav>
 
 <slot />
 
 <footer class="lp-foot">
-<div class="lp-wrap lp-foot-in"><RouterLink class="lp-brand" to="/home"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></RouterLink><RouterLink v-for="l in NAV_LINKS" :key="l.id" :to="{ path: '/home', hash: '#' + l.id }">{{ l.label }}</RouterLink><RouterLink to="/plans">Pricing</RouterLink><RouterLink to="/privacy" exact-active-class="sp-on">Privacy</RouterLink><RouterLink to="/support" exact-active-class="sp-on">Support</RouterLink><span class="lp-copy">© 2026 AI Driving License</span></div>
+<div class="lp-wrap lp-foot-in"><RouterLink class="lp-brand" to="/home"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></RouterLink><RouterLink v-for="l in NAV_LINKS" :key="l.id" :to="{ path: '/home', hash: '#' + l.id }">{{ l.label }}</RouterLink><RouterLink to="/pricing" exact-active-class="sp-on">Pricing</RouterLink><RouterLink to="/privacy" exact-active-class="sp-on">Privacy</RouterLink><RouterLink to="/support" exact-active-class="sp-on">Support</RouterLink><span class="lp-copy">© 2026 AI Driving License</span></div>
 </footer>
 </div>
 </template>
@@ -96,6 +96,8 @@ onBeforeUnmount(() => {
 .sp-root main a:hover{color:var(--red)}
 /* Current page in the footer: the yellow of the footer link hover. */
 .lp-foot a.sp-on{color:var(--yellow)}
+/* Current page in the nav (Pricing): same look as the active section on /home. */
+.lp-nl a.sp-on{color:var(--red);text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:6px}
 .sp-wrap{max-width:1120px;margin:0 auto;padding:0 28px;width:100%}
 .sp-hero{background:var(--yellow);border-bottom:4px solid var(--ink);padding:60px 0 48px}
 .sp-eb{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;background:var(--ink);color:var(--yellow);padding:5px 12px}
