@@ -4,7 +4,7 @@
 <div class="sp-wrap">
 <span class="sp-eb">Privacy &amp; data governance</span>
 <h1 class="sp-h1">Privacy Policy</h1>
-<p class="sp-lede">How AIDL (AI Driving License) collects, stores, keeps and removes information when your organization uses it in Slack.</p>
+<p class="sp-lede">How AIDL (AI Driving Licence) collects, stores, keeps and removes information when your organization uses it in Slack.</p>
 <p class="pv-updated">Last updated: {{ PRIVACY_UPDATED }}</p>
 </div>
 </header>
@@ -20,8 +20,8 @@
 <section class="pv-summary sp-card">
 <h2 class="sp-h2">The short version</h2>
 <ul>
-<li>We store only the Slack data AIDL needs to run your AI policy, training and licenses.</li>
-<li>AIDL <strong>does not read, index or store your Slack channels or conversations</strong>. It only sees its own messages and the buttons people press on them.</li>
+<li>We store only the Slack data AIDL needs to run your AI policy, training and licences.</li>
+<li>AIDL <strong>only reads its own messages to each person; it never reads channels or other conversations</strong>. It only sees those messages and the buttons people press on them.</li>
 <li>We <strong>do not sell</strong> your data and <strong>do not use it to train AI models</strong>.</li>
 <li>Workspace admins can ask us to delete their workspace's data at any time; we do it within 30 days.</li>
 </ul>
@@ -38,14 +38,15 @@
 <div class="pv-table"><table>
 <thead><tr><th>Permission</th><th>Why AIDL needs it</th></tr></thead>
 <tbody>
-<tr><td><code>channels:manage</code> <code>channels:join</code> <code>channels:read</code></td><td>Create and join the #aidl channel and see who is in it — channel membership decides who gets a license.</td></tr>
+<tr><td><code>channels:manage</code> <code>channels:join</code> <code>channels:read</code> <code>groups:read</code> <code>groups:write</code></td><td>Create and join the #aidl channel and see who is in it — channel membership decides who gets a licence.</td></tr>
 <tr><td><code>chat:write</code> <code>im:write</code></td><td>Post the Admin Center and send each person their private Welcome, policy and learning-card messages.</td></tr>
-<tr><td><code>users:read</code> <code>users:read.email</code></td><td>Show people's names, match them to their license, and use their time zone so cards arrive at a sensible hour.</td></tr>
-<tr><td><code>files:write</code> <code>files:read</code></td><td>Send license and card images inside Slack.</td></tr>
+<tr><td><code>im:history</code></td><td>Read AIDL's own direct messages with each person, to find the cards it sent them. It is not used to read channels or any other conversations.</td></tr>
+<tr><td><code>users:read</code> <code>users:read.email</code></td><td>Show people's names, match them to their licence, and use their time zone so cards arrive at a sensible hour.</td></tr>
+<tr><td><code>files:write</code> <code>files:read</code></td><td>Send licence and card images inside Slack.</td></tr>
 <tr><td><code>openid</code> <code>email</code> <code>profile</code></td><td>"Sign in with Slack" on AIDL web pages.</td></tr>
 </tbody>
 </table></div>
-<p>AIDL does not request permission to read channel history or message content.</p>
+<p>AIDL only reads its own messages to each person; it never reads channels or other conversations.</p>
 </section>
 
 <section id="storage">
@@ -55,21 +56,21 @@
 <li><strong>Workspace:</strong> Slack workspace ID and name, the #aidl channel ID, the ID of the Admin Center message, and the workspace's bot access token (stored encrypted).</li>
 <li><strong>People in #aidl:</strong> Slack user ID, display name, email address (where the scope is granted), time zone and profile picture.</li>
 <li><strong>What admins set up:</strong> answers to the AI policy questions, each published policy version, co-admins and their rights, card approvals, allowed apps and plan choices.</li>
-<li><strong>What employees do in AIDL:</strong> agreement to each policy point (with date and policy version), "Got it" acknowledgements of learning cards, Traffic Light votes and ratings, the avatar they create, and their license number and validity.</li>
+<li><strong>What employees do in AIDL:</strong> agreement to each policy point (with date and policy version), "Got it" acknowledgements of learning cards, Traffic Light votes and ratings, the avatar they create, and their licence number and validity.</li>
 <li><strong>App requests:</strong> the app or website named, what it is for and what data it would use, plus the admin's decision and reply.</li>
 <li><strong>Billing:</strong> plan, seat count and payment status. Card payments are handled by Stripe — we never see or store full card numbers.</li>
 <li><strong>Interactions:</strong> the button clicks and form entries people make on AIDL's own messages, used only to carry out that action.</li>
 </ul>
-<p><strong>What we don't store:</strong> AIDL does not read, index or store messages in your channels or direct messages between people, files people share with each other, or any Slack data outside the permissions listed above.</p>
+<p><strong>What we don't store:</strong> AIDL only reads its own messages to each person; it never reads channels or other conversations. It does not index or store messages in your channels or direct messages between people, files people share with each other, or any Slack data outside the permissions listed above.</p>
 <p><strong>Where it is stored:</strong> AIDL's database runs on MongoDB, the application on Render and the website on Vercel. Data travels over HTTPS, and workspace access tokens are encrypted before they are saved.</p>
 </section>
 
 <section id="retention">
 <h2 class="sp-h2">4. Data retention policy</h2>
 <ul>
-<li><strong>While AIDL is installed:</strong> workspace and member data is kept for as long as the workspace uses AIDL, so the Admin Center, licenses and compliance records keep working.</li>
-<li><strong>When someone leaves #aidl:</strong> their license is paused and cards stop. Their agreement and learning history is kept so the organization keeps its compliance record, until the workspace's data is deleted or the person asks us to delete it.</li>
-<li><strong>Licenses</strong> are valid for one year from issue and are renewed as people keep up with their cards.</li>
+<li><strong>While AIDL is installed:</strong> workspace and member data is kept for as long as the workspace uses AIDL, so the Admin Center, licences and compliance records keep working.</li>
+<li><strong>When someone leaves #aidl:</strong> their licence is paused and cards stop. Their agreement and learning history is kept so the organization keeps its compliance record, until the workspace's data is deleted or the person asks us to delete it.</li>
+<li><strong>Licences</strong> are valid for one year from issue and are renewed as people keep up with their cards.</li>
 <li><strong>Sign-in codes and sign-in state</strong> are short-lived and expire shortly after they are issued.</li>
 <li><strong>Server logs</strong> are kept by our hosting provider for a limited period and used only to run and fix the service.</li>
 <li><strong>Billing records</strong> are kept only as long as tax and accounting law requires.</li>
@@ -81,7 +82,7 @@
 <ul>
 <li><strong>Uninstalling AIDL:</strong> a Slack admin can remove AIDL at any time from <em>Slack → Settings → Manage apps → AIDL → Remove app</em>. Slack revokes AIDL's access token immediately, so AIDL can no longer read from or post to the workspace.</li>
 <li><strong>Deleting a workspace's data:</strong> workspace admins or account owners can email <a :href="'mailto:' + PRIVACY_EMAIL">{{ PRIVACY_EMAIL }}</a>. We delete the workspace's tokens, member data, policies, acknowledgements and app requests within 30 days and confirm by email. Billing records we must keep by law are retained only for that purpose.</li>
-<li><strong>Deleting one person's data:</strong> employees can ask their organization's AIDL admin, or email us directly. We delete it within 30 days. Their license then stops verifying.</li>
+<li><strong>Deleting one person's data:</strong> employees can ask their organization's AIDL admin, or email us directly. We delete it within 30 days. Their licence then stops verifying.</li>
 <li><strong>Archiving:</strong> AIDL does not archive workspace data after deletion. Copies held in our providers' backups are removed as those backups expire on their normal schedule.</li>
 </ul>
 </section>
@@ -89,7 +90,7 @@
 <section id="use">
 <h2 class="sp-h2">6. How we use information</h2>
 <ul>
-<li>To run AIDL: build and publish your AI policy, deliver Welcome and learning-card messages, issue and renew licenses and keep the Admin Center up to date.</li>
+<li>To run AIDL: build and publish your AI policy, deliver Welcome and learning-card messages, issue and renew licences and keep the Admin Center up to date.</li>
 <li>To give admins oversight of their own organization: progress, acknowledgements, app requests and coverage exports.</li>
 <li>To keep the records an auditor may ask for — which policy version each person agreed to and when, and what they completed.</li>
 <li>To send sign-in codes and service emails, answer support requests, prevent abuse and fix problems.</li>
@@ -100,8 +101,8 @@
 <section id="sharing">
 <h2 class="sp-h2">7. Who can see it</h2>
 <ul>
-<li><strong>Your organization's AIDL admins</strong> see their team's agreements, license status, card acknowledgements and app requests.</li>
-<li><strong>License holders choose who sees their license.</strong> A license shows the holder's name, avatar, license number and validity; anyone it is shared with can view and verify it.</li>
+<li><strong>Your organization's AIDL admins</strong> see their team's agreements, licence status, card acknowledgements and app requests.</li>
+<li><strong>Licence holders choose who sees their licence.</strong> A licence shows the holder's name, avatar, licence number and validity; anyone it is shared with can view and verify it.</li>
 <li><strong>Sub-processors</strong> who host and run AIDL for us, only for that purpose:</li>
 </ul>
 <div class="pv-table"><table>
@@ -126,7 +127,7 @@
 
 <section id="rights">
 <h2 class="sp-h2">9. Your rights</h2>
-<p>Depending on where you live (for example under the GDPR in the EU and UK), you can ask to access, correct, export or delete your personal data, or object to how it is used. Email <a :href="'mailto:' + PRIVACY_EMAIL">{{ PRIVACY_EMAIL }}</a> or ask your organization's AIDL admin. We reply within 30 days.</p>
+<p>Depending on where you live (for example under the GDPR in the EU and UK), you can ask to access, correct, export or delete your personal data, or object to how it is used. Email <a :href="'mailto:' + PRIVACY_EMAIL">{{ PRIVACY_EMAIL }}</a> or ask your organization's AIDL admin. We reply within 5 business days.</p>
 </section>
 
 <section id="other">

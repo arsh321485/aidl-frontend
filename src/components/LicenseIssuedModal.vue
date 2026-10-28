@@ -48,7 +48,7 @@
             </div>
             <div class="lc-foot">
               <div class="lc-no">{{ licenseId }}</div>
-              <div class="lc-sig">VERIFY AT AIDL.ORG/VERIFY<br />AUTHORISED SIGNATORY</div>
+              <div class="lc-sig">VERIFY AT AIDRIVINGLICENCE.AI<br />AUTHORISED SIGNATORY</div>
             </div>
             <div class="lc-strip" :style="{ background: activeDesign.strip }"></div>
           </div>
@@ -524,7 +524,7 @@ function drawLicenseCard(ctx: CanvasRenderingContext2D, w: number, h: number) {
   ctx.textAlign = 'right'
   ctx.font = '600 11px "Courier New", monospace'
   ctx.fillStyle = hexToRgba(d.ink, 0.7)
-  ctx.fillText('VERIFY AT AIDL.ORG/VERIFY', w - pad, footerY + 16)
+  ctx.fillText('VERIFY AT AIDRIVINGLICENCE.AI', w - pad, footerY + 16)
   ctx.fillText('AUTHORISED SIGNATORY', w - pad, footerY + 32)
 }
 

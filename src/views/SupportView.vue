@@ -23,7 +23,7 @@
 <span class="su-ico" aria-hidden="true">{{ c.icon }}</span>
 <b>{{ c.title }}</b>
 <span class="su-desc">{{ c.desc }}</span>
-<span class="su-mail">{{ c.email }}</span>
+<span class="su-mail"><span>{{ c.email.split('@')[0] }}</span><wbr /><span>@{{ c.email.split('@')[1] }}</span></span>
 </a>
 </div>
 <p class="su-note">We reply within 1 business day. When you write, include your Slack workspace name and a screenshot if you can — never send passwords or card details.</p>
@@ -57,7 +57,7 @@ import { BILLING_EMAIL, PRIVACY_EMAIL, SUPPORT_EMAIL } from '../lib/siteContact'
 
 const channels = [
   { icon: '🛠️', title: 'Setup & admin help', desc: 'Adding AIDL to Slack, the Admin Center, your AI policy, co-admins and approving cards.', email: SUPPORT_EMAIL },
-  { icon: '🚗', title: 'Employees & licenses', desc: 'Welcome messages, agreeing to the policy, avatars, and downloading or sharing a license.', email: SUPPORT_EMAIL },
+  { icon: '🚗', title: 'Employees & licences', desc: 'Welcome messages, agreeing to the policy, avatars, and downloading or sharing a licence.', email: SUPPORT_EMAIL },
   { icon: '💳', title: 'Plans & billing', desc: 'Trial, Basic and Enterprise plans, seats, upgrades and invoices.', email: BILLING_EMAIL },
   { icon: '🛡️', title: 'Privacy & data requests', desc: 'See, export or delete your data, or your workspace’s data in AIDL.', email: PRIVACY_EMAIL },
 ]
@@ -66,21 +66,21 @@ const channels = [
 interface Faq { q: string; a: string; tags?: string; link?: { to: string; label: string } }
 
 const faqs: Faq[] = [
-  { q: 'How do I add AIDL to Slack?', tags: 'install setup get started', a: 'Click “Add to Slack” on the AIDL website. AIDL creates an #aidl channel, makes you the Main admin and posts the Admin Center. Some workspaces need an owner or admin to approve new apps first.', link: { to: '/home', label: 'Go to the website' } },
+  { q: 'How do I add AIDL to Slack?', tags: 'install setup get started', a: 'Click “Add to Slack” on the AIDL website. AIDL creates an #aidl channel, makes you the Master admin and posts the Admin Center. Some workspaces need an owner or admin to approve new apps first.', link: { to: '/home', label: 'Go to the website' } },
   { q: 'What do admins need to do?', a: 'Follow the six steps in the Admin Center: create your AI policy, add co-admins, add your team, approve the cards, then press Start. Everyone in #aidl then gets their Welcome message.' },
-  { q: 'Can more than one person be an admin?', tags: 'co-admin permissions rights main admin', a: 'Yes. The Main admin can add co-admins with only the rights they need, and is told about every change another admin makes — policy changes, card approvals and app decisions.' },
-  { q: 'How do I add or remove people?', a: 'Channel membership is the switch. Add someone to #aidl and AIDL sets them up automatically. Remove them and their license is paused and cards stop. Add them back and everything continues where it stopped.' },
-  { q: 'Why was someone removed from #aidl automatically?', a: 'Your plan has no free seats left. AIDL tells both the person and the Main admin. Upgrade your plan from the Admin Center or free a seat, then add them again.' },
+  { q: 'Can more than one person be an admin?', tags: 'co-admin permissions rights master admin', a: 'Yes. The Master admin can add co-admins with only the rights they need, and is told about every change another admin makes — policy changes, card approvals and app decisions.' },
+  { q: 'How do I add or remove people?', a: 'Channel membership is the switch. Add someone to #aidl and AIDL sets them up automatically. Remove them and their licence is paused and cards stop. Add them back and everything continues where it stopped.' },
+  { q: 'Why was someone removed from #aidl automatically?', a: 'Your plan has no free seats left. AIDL tells both the person and the Master admin. Upgrade your plan from the Admin Center or free a seat, then add them again.' },
   { q: 'A team member didn’t get their Welcome message.', a: 'Check they are in #aidl and that Start was pressed in the Admin Center, then ask them to look under Apps → AIDL in Slack. Still missing? Email support with their Slack name.' },
-  { q: 'How long does it take to get a license?', a: 'About ten minutes. Each person agrees to the 14 policy points, learns the Traffic Light rule and the 5-rule Highway Code, creates an avatar and receives their AI Driving License.' },
-  { q: 'How long is a license valid? How do I share it?', a: 'Licenses are valid for one year. Open the license message from AIDL in Slack to download or share it — anyone you share it with can verify it.' },
+  { q: 'How long does it take to get a licence?', a: 'About ten minutes. Each person agrees to the 14 policy points, learns the Traffic Light rule and the 5-rule Highway Code, creates an avatar and receives their AI Driving Licence.' },
+  { q: 'How long is a licence valid? How do I share it?', a: 'Licences are valid for one year. Open the licence message from AIDL in Slack to download or share it — anyone you share it with can verify it.' },
   { q: 'How do I change our AI policy?', a: 'Open the Admin Center in #aidl and choose the policy step, edit and publish the new version. AIDL keeps a record of which version each person agreed to.' },
   { q: 'Can we choose which learning cards are sent?', a: 'Yes. Nothing is sent until an admin approves it. Preview every card in the Admin Center, then approve, skip or swap it.' },
   { q: 'Will employees get lots of reminders?', tags: 'notifications nudge spam got it acknowledge', a: 'No. Cards arrive on your plan’s schedule in each person’s own time zone. If a card isn’t acknowledged with “Got it”, AIDL sends one reminder after 7 days — never more.' },
   { q: 'How do employees request a new AI app?', a: 'Use “Request an app” in AIDL. If the app is already allowed, AIDL answers straight away; otherwise an admin approves, rejects or asks a question, and the reply comes back by message.' },
   { q: 'Which plans are there?', tags: 'trial free basic enterprise price', a: 'Trial covers up to 5 users with the 12-card starter set (1 card a month). Basic adds more seats and 2 cards a week on topics you pick; Enterprise gets 4 cards a week across all 15 topics.', link: { to: '/pricing', label: 'See plans' } },
   { q: 'How do I upgrade, change or cancel my plan?', tags: 'subscription invoice payment refund seats pricing', a: 'Admins can upgrade from the Admin Center (Upgrade plan). To change or cancel a plan, or for invoices, email billing. Payments are processed securely by Stripe.' },
-  { q: 'Does AIDL read our Slack messages?', a: 'No. AIDL cannot read channel history or conversations. It only sees its own messages and the buttons people press on them.' },
+  { q: 'Does AIDL read our Slack messages?', a: 'No. AIDL only reads its own messages to each person; it never reads channels or other conversations. It only sees those messages and the buttons people press on them.' },
   { q: 'How is our data stored and protected?', a: 'Data travels over HTTPS and workspace tokens are encrypted. We store only what AIDL needs and never sell data or use it to train AI models.', link: { to: '/privacy', label: 'Read the Privacy Policy' } },
   { q: 'How do I remove AIDL and delete our data?', a: 'A Slack admin can remove AIDL from Slack → Settings → Manage apps → AIDL → Remove app. To delete your workspace’s data, email privacy from an admin account — we do it within 30 days.', tags: 'uninstall delete erase gdpr', link: { to: '/privacy', label: 'Data removal policy' } },
   { q: 'Does AIDL work in Microsoft Teams too?', a: 'Yes. The same admin and employee flow runs in Microsoft Teams as Adaptive Cards in an AIDL team channel and bot chats.' },
@@ -90,8 +90,8 @@ const query = ref('')
 const shown = computed(() => {
   const q = query.value.trim().toLowerCase()
   if (!q) return faqs
-  // British and US spelling both find the license answers.
-  const terms = q.replace(/licence/g, 'license').split(/\s+/)
+  // British and US spelling both find the licence answers.
+  const terms = q.replace(/license/g, 'licence').split(/\s+/)
   return faqs.filter((f) => {
     const text = (f.q + ' ' + f.a + ' ' + (f.tags || '')).toLowerCase()
     return terms.every((t) => text.includes(t))
@@ -119,7 +119,8 @@ function goTo(id: string) {
 .su-ico{font-size:28px;line-height:1}
 .su-channel b{font-size:18px}
 .su-desc{font-size:15px;color:var(--muted);flex:1}
-.su-mail{font-weight:700;font-size:14.5px;word-break:break-word;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+.su-mail{margin-top:auto;padding-top:6px;font-weight:700;font-size:13.5px;text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:3px}
+.su-mail span{white-space:nowrap}
 .su-note{margin:22px 0 0;font-size:15px;color:var(--muted)}
 .su-faq{margin-top:64px;scroll-margin-top:90px}
 .su-count{margin:0 0 16px;font-size:15px}

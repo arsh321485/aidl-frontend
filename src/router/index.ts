@@ -1,20 +1,22 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import ClassicHomeView from '../views/ClassicHomeView.vue'
-import SeniorPortalView from '../views/SeniorPortalView.vue'
-import JuniorDriverPortalView from '../views/JuniorDriverPortalView.vue'
-import SeniorLessonPlayerView from '../views/SeniorLessonPlayerView.vue'
-import JuniorLessonPlayerView from '../views/JuniorLessonPlayerView.vue'
-import RoadTestView from '../views/RoadTestView.vue'
-import SignInView from '../views/SignInView.vue'
-import SignUpView from '../views/SignUpView.vue'
-import FleetOfficeView from '../views/FleetOfficeView.vue'
-import TeamsCallbackView from '../views/TeamsCallbackView.vue'
-import AvatarView from '../views/AvatarView.vue'
-import PlansView from '../views/PlansView.vue'
-import PricingView from '../views/PricingView.vue'
-import PrivacyView from '../views/PrivacyView.vue'
-import SupportView from '../views/SupportView.vue'
+// The landing page loads with the app; every other page is its own file,
+// downloaded only when someone opens it.
+const ClassicHomeView = () => import('../views/ClassicHomeView.vue')
+const SeniorPortalView = () => import('../views/SeniorPortalView.vue')
+const JuniorDriverPortalView = () => import('../views/JuniorDriverPortalView.vue')
+const SeniorLessonPlayerView = () => import('../views/SeniorLessonPlayerView.vue')
+const JuniorLessonPlayerView = () => import('../views/JuniorLessonPlayerView.vue')
+const RoadTestView = () => import('../views/RoadTestView.vue')
+const SignInView = () => import('../views/SignInView.vue')
+const SignUpView = () => import('../views/SignUpView.vue')
+const FleetOfficeView = () => import('../views/FleetOfficeView.vue')
+const TeamsCallbackView = () => import('../views/TeamsCallbackView.vue')
+const AvatarView = () => import('../views/AvatarView.vue')
+const PlansView = () => import('../views/PlansView.vue')
+const PricingView = () => import('../views/PricingView.vue')
+const PrivacyView = () => import('../views/PrivacyView.vue')
+const SupportView = () => import('../views/SupportView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

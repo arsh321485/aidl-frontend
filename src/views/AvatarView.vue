@@ -4,7 +4,7 @@
       <img :src="aidlLogo" alt="AIDL" class="av-logo" />
       <div>
         <h1>Your licence avatar</h1>
-        <p v-if="info">{{ info.name }} · it goes on your AI Driving License</p>
+        <p v-if="info">{{ info.name }} · it goes on your AI Driving Licence</p>
       </div>
     </header>
 

@@ -118,13 +118,13 @@ const plans = [
     key: 'trial', name: 'Trial', sign: 'round', signText: 'START', flag: '',
     tag: 'Try AIDL with a small group and get everyone licensed.',
     price: 'Free', per: '', note: 'NO CARD NEEDED',
-    dash: [['1', 'Admin'], ['1', 'Card a week'], ['5', 'Users'], ['12', 'Default cards']],
+    dash: [['1', 'Admin'], ['1', 'Card a month'], ['5', 'Users'], ['12', 'Default cards']],
     cta: 'Start free', inc: 'INCLUDED', base: [] as string[],
     feats: [
       '3 onboarding cards: 📄 AI Acceptable Use Policy, 🚦 Traffic Light Check, 📖 The Highway Code',
       'AI policy built in 15 guided pages, agreed point by point',
-      'AI Driving License for each person, valid for 1 year',
-      'Default package: 12 awareness cards, 1 a week',
+      'AI Driving Licence for each person, valid for 1 year',
+      'Default package: 12 awareness cards, 1 a month',
       'Admin Center in one channel message',
       'My cards and Request an app for everyone',
     ],
@@ -132,7 +132,7 @@ const plans = [
   {
     key: 'basic', name: 'Basic', sign: 'diamond', signText: '2×<br>WEEK', flag: 'FOR GROWING TEAMS',
     tag: 'Keep the learning going all year, on the topics you choose.',
-    price: 'Per user', per: '/ month', note: 'BILLED PER LEARNER SEAT · ADMINS ARE FREE',
+    price: '$2', per: 'USD / user / month', note: 'BILLED PER LEARNER SEAT · ADMINS ARE FREE',
     dash: [['Any', 'Admins'], ['2', 'Cards a week'], ['Any', 'Number of users'], ['104', 'Cards a year']],
     cta: 'Get Basic', inc: 'EVERYTHING IN TRIAL, PLUS',
     base: ['Onboarding cards, AI policy and licences'],
@@ -147,7 +147,7 @@ const plans = [
   {
     key: 'ent', name: 'Enterprise', sign: 'oct', signText: '4×<br>WEEK', flag: '',
     tag: 'The full library on your schedule, run by as many admins as you need.',
-    price: 'Per user', per: '/ month', note: 'BILLED PER LEARNER SEAT · ADMINS ARE FREE',
+    price: '$8', per: 'USD / user / month', note: 'BILLED PER LEARNER SEAT · ADMINS ARE FREE',
     dash: [['Any', 'Admins'], ['4', 'Cards a week'], ['Any', 'Number of users'], ['208', 'Cards a year']],
     cta: 'Get Enterprise', inc: 'EVERYTHING IN TRIAL + BASIC, PLUS',
     base: ['Onboarding cards, AI policy and licences', 'Topic picks, a year of cards and any number of admins'],
@@ -163,7 +163,7 @@ const every = [
   { icon: '📄', label: 'ONBOARDING CARD 1', title: 'AI Acceptable Use Policy', text: 'Your policy, agreed point by point. Every agreement is time-stamped.' },
   { icon: '🚦', label: 'ONBOARDING CARD 2', title: 'Traffic Light Check', text: "Green, amber or red: what's safe to paste into AI, decided in a second." },
   { icon: '📖', label: 'ONBOARDING CARD 3', title: 'The Highway Code', text: 'Five everyday rules for using AI at work.' },
-  { icon: '🎫', label: 'THEN', title: 'AI Driving License', text: 'Issued the moment the cards are done. Valid for one year, ready to download or share.' },
+  { icon: '🎫', label: 'THEN', title: 'AI Driving Licence', text: 'Issued the moment the cards are done. Valid for one year, ready to download or share.' },
 ]
 
 // Cells: '✓' / '—' are styled; 'text|small note' adds a second line.
@@ -177,10 +177,10 @@ const compare = [
     ['📄 AI Acceptable Use Policy', '✓', '✓', '✓'],
     ['🚦 Traffic Light Check', '✓', '✓', '✓'],
     ['📖 The Highway Code', '✓', '✓', '✓'],
-    ['AI Driving License (1 year)', '✓', '✓', '✓'],
+    ['AI Driving Licence (1 year)', '✓', '✓', '✓'],
   ] },
   { group: 'AWARENESS CARDS', rows: [
-    ['Cards a week', '1', '2|Mon, Thu · 10:00', '4|Your days and time'],
+    ['How often', '1 a month', '2 a week|Mon, Thu · 10:00', '4 a week|Your days and time'],
     ['Cards included', '12|Default package', '104|A year', '208|A year'],
     ['Topics', 'Default package', 'The topics you pick', 'All 15 topics'],
     ['My cards & Request an app', '✓', '✓', '✓'],
@@ -195,7 +195,7 @@ const compare = [
 
 const faqs = [
   { q: 'Who counts as a user?', a: "Every learner in the AIDL channel uses a seat. Admins never do, so they're always free." },
-  { q: 'What happens when the plan is full?', a: 'Anyone added to the channel after that is taken out again, and both they and the Main admin are told why. Buy more seats or upgrade to make room.' },
+  { q: 'What happens when the plan is full?', a: 'Anyone added to the channel after that is taken out again, and both they and the Master admin are told why. Buy more seats or upgrade to make room.' },
   { q: 'Does a licence keep its seat?', a: 'Yes. Someone who earned a licence keeps holding their seat, even after they leave the channel. Removing someone who never earned one frees their seat.' },
   { q: 'How do I upgrade?', a: 'From your Admin Center: press Upgrade plan, pick Basic or Enterprise and the number of users. Your cards switch over automatically.' },
   { q: 'What happens to the onboarding cards when I upgrade?', a: 'Nothing changes. The AI policy, Traffic Light Check and Highway Code stay, licences stay valid, and the new weekly cards start on top.' },

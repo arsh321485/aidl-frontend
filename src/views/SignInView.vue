@@ -77,7 +77,7 @@
       </div>
 
       <div class="signin-foot">
-        <span>AIDL · AI DRIVING LICENSE</span>
+        <span>AIDL · AI DRIVING LICENCE</span>
         <span>v2.6 — COHORT 06</span>
       </div>
     </div>

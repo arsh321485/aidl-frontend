@@ -19,12 +19,12 @@
 <div class="lp-road-dash"><svg viewBox="0 0 1440 484" preserveAspectRatio="none"><path class="lp-dash-stroke" d="M 720 0 L 720 484"></path><path class="lp-dash-stroke" d="M 720 0 L 200 484" style="animation-duration:1.4s"></path><path class="lp-dash-stroke" d="M 720 0 L 1240 484" style="animation-duration:1.4s"></path></svg></div>
 <div class="lp-road-sign lp-rs-1"><div class="lp-plate lp-diamond"><span>NEXT EXIT<br>AI POLICY</span></div><div class="lp-post"></div></div>
 <div class="lp-road-sign lp-rs-2"><div class="lp-plate lp-round lp-green">START</div><div class="lp-post"></div></div>
-<div class="lp-road-sign lp-rs-3"><div class="lp-plate lp-white">AGREE<br>LEARN<br>LICENSE</div><div class="lp-post"></div></div>
+<div class="lp-road-sign lp-rs-3"><div class="lp-plate lp-white">AGREE<br>LEARN<br>LICENCE</div><div class="lp-post"></div></div>
 <div class="lp-road-sign lp-rs-4"><div class="lp-plate lp-red">10 MIN<br>AHEAD</div><div class="lp-post"></div></div>
 <div class="lp-hero-headline">
 <div class="lp-hero-eyebrow"><span class="lp-blink"></span><span class="lp-v-s">NOW LIVE IN SLACK</span><span class="lp-v-t">NOW LIVE IN MICROSOFT TEAMS</span></div>
-<h1 class="lp-hero-title">LICENSE TO<span class="lp-l2">DRIVE&nbsp;AI</span></h1>
-<p class="lp-hero-sub">Write your AI policy, get every employee to agree to it point by point, and issue each one a verifiable AI Driving License — about ten minutes per person, without leaving <span class="lp-v-s">Slack</span><span class="lp-v-t">Teams</span>.</p>
+<h1 class="lp-hero-title">LICENCE TO<span class="lp-l2">DRIVE&nbsp;AI</span></h1>
+<p class="lp-hero-sub">Write your AI policy, get every employee to agree to it point by point, and issue each one a verifiable AI Driving Licence — about ten minutes per person, without leaving <span class="lp-v-s">Slack</span><span class="lp-v-t">Teams</span>.</p>
 </div>
 <div class="lp-dashboard"><div class="lp-dash-bg"></div>
 <div class="lp-dash-inner">
@@ -58,7 +58,7 @@
 <div class="lp-msg"><span class="lp-av">AI</span><div style="flex:1;min-width:0">
 <div class="lp-mh"><strong>AIDL</strong><span class="lp-app"><span class="lp-v-s">APP</span><span class="lp-v-t">BOT</span></span><span class="lp-mt">9:02 AM · edited</span></div>
 <div class="lp-ac">
-<div class="lp-ac-hd"><span class="lp-d">AIDL ADMIN CENTER</span><span class="lp-m">MAIN ADMIN</span></div>
+<div class="lp-ac-hd"><span class="lp-d">AIDL ADMIN CENTER</span><span class="lp-m">MASTER ADMIN</span></div>
 <div class="lp-ac-plan"><span>Plan <b>Team</b></span><span><b>48</b> cards</span><span><b>2</b> / week</span><span><b>12 of 15</b> users</span></div>
 <div class="lp-prog"><div class="lp-bar"><i style="width:33%"></i></div><div class="lp-lb">2 of 6 setup steps done</div></div>
 <div class="lp-steps">
@@ -78,7 +78,7 @@
 <h2 class="lp-h2">One channel. Two seats in the car.</h2>
 <p class="lp-lede">Admins steer from a single Admin Center message that keeps updating instead of flooding the channel. Employees get everything privately, one card at a time.</p>
 <div class="lp-sides">
-<div class="lp-side lp-k"><span class="lp-tag">ADMIN · THE INSTRUCTOR</span><h3>Set the rules, then watch the road.</h3><p>Click <span class="lp-v-s">“Add to Slack”</span><span class="lp-v-t">“Add to Teams”</span> and AIDL creates its own <span class="lp-v-s">#aidl channel</span><span class="lp-v-t">AIDL team and channel</span>, makes you Main admin and posts your Admin Center. Six steps unlock one after another.</p>
+<div class="lp-side lp-k"><span class="lp-tag">ADMIN · THE INSTRUCTOR</span><h3>Set the rules, then watch the road.</h3><p>Click <span class="lp-v-s">“Add to Slack”</span><span class="lp-v-t">“Add to Teams”</span> and AIDL creates its own <span class="lp-v-s">#aidl channel</span><span class="lp-v-t">AIDL team and channel</span>, makes you Master admin and posts your Admin Center. Six steps unlock one after another.</p>
 <ol><li>Create and approve your AI policy</li><li>Add co-admins with only the rights they need</li><li>Add your team, up to your seats</li><li>Approve the cards before anything is sent</li><li>Start — everyone gets their Welcome</li><li>Track licences and card reads</li></ol></div>
 <div class="lp-side"><span class="lp-tag">EMPLOYEE · THE DRIVER</span><h3>Ten minutes to road-ready.</h3><p>A private Welcome message walks each person through three cards. Finish them, save an avatar, and the licence arrives — valid for one year.</p>
 <ol><li>Open the Welcome card</li><li>Agree to the 14 policy points</li><li>Learn the Traffic Light rule</li><li>Learn the 5-rule Highway Code</li><li>Create an avatar</li><li>Download or share the licence</li></ol></div>
@@ -168,14 +168,14 @@
 <div class="lp-wrap">
 <span class="lp-eb">▼ OVERSIGHT</span>
 <h2 class="lp-h2">Runs itself. Reports to you.</h2>
-<p class="lp-lede" style="color:#e9e0c4">Team changes are handled automatically, app requests arrive as one-tap decisions, and the Main admin hears about every change another admin makes.</p>
+<p class="lp-lede" style="color:#e9e0c4">Team changes are handled automatically, app requests arrive as one-tap decisions, and the Master admin hears about every change another admin makes.</p>
 <div class="lp-ov">
 <div class="lp-panel"><h3>When the team changes</h3><p>Channel membership is the switch. No spreadsheets to keep in sync.</p>
 <div class="lp-ev"><div>JOINS #AIDL</div><div>Set up automatically and sent their Welcome message.</div></div>
-<div class="lp-ev"><div>LEAVES OR REMOVED</div><div>Licence paused, future cards stop, Main admin notified.</div></div>
+<div class="lp-ev"><div>LEAVES OR REMOVED</div><div>Licence paused, future cards stop, Master admin notified.</div></div>
 <div class="lp-ev"><div>ADDED BACK</div><div>Licence returns; cards continue from where they stopped.</div></div>
-<div class="lp-ev"><div>PLAN IS FULL</div><div>Taken back out of the channel — both they and the Main admin are told why.</div></div>
-<div class="lp-ev"><div>OTHER ADMIN ACTS</div><div>Main admin gets a message: new admin, policy change, card approval, app decision.</div></div>
+<div class="lp-ev"><div>PLAN IS FULL</div><div>Taken back out of the channel — both they and the Master admin are told why.</div></div>
+<div class="lp-ev"><div>OTHER ADMIN ACTS</div><div>Master admin gets a message: new admin, policy change, card approval, app decision.</div></div>
 </div>
 <div class="lp-panel"><h3>App requests, decided in Slack</h3><p>No ticket queue. The request arrives with everything needed to decide.</p>
 <div class="lp-flow">
@@ -227,8 +227,51 @@
 </div>
 </section>
 
+<section class="lp-band lp-vf" id="verify">
+<div class="lp-wrap lp-vf-in">
+<div>
+<span class="lp-eb">▼ VERIFY A LICENCE</span>
+<h2 class="lp-h2">Is this licence real?</h2>
+<p class="lp-lede">Someone shared their AI Driving Licence with you? Enter the number from the card to check it was issued through AIDL and is still valid. No account needed.</p>
+<form class="lp-vf-form" novalidate @submit.prevent="checkLicence()">
+<label for="lp-vf-lic">Licence number</label>
+<div class="lp-vf-row"><input id="lp-vf-lic" v-model="vfInput" placeholder="AIDL-L-0000-0000" autocomplete="off" spellcheck="false" :disabled="vfState === 'checking'" /><button type="submit" class="lp-btn" :disabled="vfState === 'checking'">{{ vfState === 'checking' ? 'Checking…' : 'Verify →' }}</button></div>
+<p class="lp-vf-hint" :class="{ 'lp-err': vfError }" role="status" aria-live="polite">{{ vfError || 'The number is printed in red on the card, under “5. Licence no.”' }}</p>
+</form>
+<ul class="lp-vf-pts">
+<li>🔒 Only what’s printed on the card is shown, never an email or any other personal data.</li>
+<li>🗓️ Each licence is valid for one year from the day it was issued.</li>
+</ul>
+</div>
+<div class="lp-vf-res" aria-live="polite">
+<template v-if="vfResult?.kind === 'found'">
+<div class="lp-vf-ban" :class="vfResult.licence.status === 'active' ? 'lp-ok' : 'lp-bad'"><span>{{ vfResult.licence.status === 'active' ? '✓' : '!' }}</span><div><b>{{ vfResult.licence.status === 'active' ? 'Valid licence' : vfResult.licence.status === 'expired' ? 'Licence expired' : 'Licence suspended' }}</b>{{ vfResult.licence.status === 'active' ? `${vfResult.licence.name} holds an active AI Driving Licence.` : vfResult.licence.status === 'expired' ? `This licence was real but ran out on ${vfDate(vfResult.licence.expires)}.` : 'This licence was issued but is not valid at the moment.' }}</div></div>
+<div v-if="vfResult.licence.status === 'active'" class="lp-vf-card" v-html="licenceSvg({ name: vfResult.licence.name, org: vfResult.licence.org.toUpperCase(), number: vfResult.number, issued: vfShort(vfResult.licence.issued), expires: vfShort(vfResult.licence.expires), logo: aidlLogo })"></div>
+<dl class="lp-vf-rec">
+<div><dt>Holder</dt><dd>{{ vfResult.licence.name }}</dd></div>
+<div><dt>Issued for</dt><dd>{{ vfResult.licence.org }}</dd></div>
+<div><dt>Licence no.</dt><dd class="lp-vf-no">{{ vfResult.number }}</dd></div>
+<div><dt>Issued</dt><dd>{{ vfDate(vfResult.licence.issued) }}</dd></div>
+<div><dt>Valid until</dt><dd>{{ vfDate(vfResult.licence.expires) }}</dd></div>
+</dl>
+</template>
+<template v-else-if="vfResult?.kind === 'not-found'">
+<div class="lp-vf-ban lp-none"><span>?</span><div><b>No licence found</b>There’s no AI Driving Licence with the number {{ vfResult.number }}. Check it against the red number on the card, or ask the holder to send it again.</div></div>
+</template>
+<template v-else-if="vfResult?.kind === 'unavailable'">
+<div class="lp-vf-ban lp-none"><span>!</span><div><b>We couldn’t check right now</b>Please try again in a few minutes, or email <a :href="'mailto:' + SUPPORT_EMAIL">{{ SUPPORT_EMAIL }}</a> with the number {{ vfResult.number }} and we’ll confirm it for you.</div></div>
+</template>
+<template v-else>
+<span class="lp-vf-ex">EXAMPLE</span>
+<div class="lp-vf-card" v-html="vfSample"></div>
+<p class="lp-vf-cap">A valid licence shows the holder, the organization it was issued for, the dates and an <b>ACTIVE</b> status.</p>
+</template>
+</div>
+</div>
+</section>
+
 <footer class="lp-foot">
-<div class="lp-wrap lp-foot-in"><a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id">{{ l.label }}</a><RouterLink to="/pricing">Pricing</RouterLink><RouterLink to="/privacy">Privacy</RouterLink><RouterLink to="/support">Support</RouterLink><span class="lp-copy">© 2026 AI Driving License</span></div>
+<div class="lp-wrap lp-foot-in"><a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id">{{ l.label }}</a><RouterLink to="/pricing">Pricing</RouterLink><RouterLink to="/privacy">Privacy</RouterLink><RouterLink to="/support">Support</RouterLink><a href="#verify">Verify a licence</a><span class="lp-copy">© 2026 AI Driving Licence</span></div>
 </footer>
 </div>
 </template>
@@ -245,6 +288,8 @@ import { licenceSvg } from '../lib/licenceSvg'
 import { CARD_TOPICS, LIBRARY_SIZE, PLANS, STARTER_CARDS, type PlanKey } from '../lib/landingCards'
 import { joinWaitlist } from '../lib/waitlistApi'
 import { NAV_LINKS } from '../lib/landingNav'
+import { LICENCE_NUMBER, verifyLicence, type VerifyResult } from '../lib/licenceVerifyApi'
+import { SUPPORT_EMAIL } from '../lib/siteContact'
 
 type Platform = 'slack' | 'teams'
 
@@ -275,6 +320,41 @@ async function submitWaitlist() {
     wlState.value = 'error'
     wlMsg.value = e instanceof Error ? e.message : 'Could not join the waitlist. Please try again later.'
   }
+}
+
+// "Verify a licence" (above the footer). Shared licence links open
+// /home#verify?lic=AIDL-L-…, which fills the box and checks straight away.
+const vfInput = ref('')
+const vfState = ref<'idle' | 'checking'>('idle')
+const vfError = ref('')
+const vfResult = ref<VerifyResult | null>(null)
+const vfSample = licenceSvg({ name: 'Priya Raman', org: 'NORTHWIND', number: 'AIDL-L-4417-0932', issued: '22/10/2026', expires: '22/10/2027', logo: aidlLogo, avatar: licenceAvatar })
+
+function vfParse(s: string) {
+  const d = new Date(s)
+  return isNaN(d.getTime()) ? null : d
+}
+const vfDate = (s: string) => vfParse(s)?.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) ?? s
+const vfShort = (s: string) => vfParse(s)?.toLocaleDateString('en-GB') ?? s
+
+async function checkLicence(raw = vfInput.value) {
+  const number = raw.trim().toUpperCase()
+  vfInput.value = number
+  if (!LICENCE_NUMBER.test(number)) {
+    vfError.value = 'That doesn’t look like a licence number. It looks like AIDL-L-0000-0000.'
+    return
+  }
+  vfError.value = ''
+  vfState.value = 'checking'
+  vfResult.value = await verifyLicence(number)
+  vfState.value = 'idle'
+}
+
+function verifyFromHash() {
+  if (!location.hash.startsWith('#verify')) return
+  const lic = new URLSearchParams(location.hash.split('?')[1] || '').get('lic')
+  document.getElementById('verify')?.scrollIntoView()
+  if (lic) checkLicence(lic)
 }
 
 // Phone / tablet menu — the inline nav links are hidden below 1240px.
@@ -311,6 +391,7 @@ onMounted(() => {
   document.addEventListener('click', onDocClick)
   document.addEventListener('keydown', onKeydown)
   updateActiveSection()
+  verifyFromHash()
 })
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', updateActiveSection)
@@ -437,7 +518,7 @@ const ADMIN: Step[] = [
  f:['Generate, view, then Approve AUP','AI apps and IT apps lists show what is allowed or blocked, and what data each may use','Add a new app at any time']},
 {t:'Add admins',s:'Optional &middot; scoped rights',h:'Co-admins with only the keys they need',w:'Pick a person and tick what they may do. They join the channel and get their own Admin Center showing only those rights.',
  m:'<div class="lp-card"><p class="lp-ct">Add another admin &middot; Dan Okafor</p><p class="lp-cs">Permissions (optional)</p><div class="lp-perms"><span class="lp-perm lp-on"><b>Approve Apps</b> &mdash; change the AI / IT app lists</span><span class="lp-perm lp-on"><b>Access Cards</b> &mdash; view and send reference cards</span><span class="lp-perm"><b>Request New Cards</b> &mdash; request new awareness cards for review</span><span class="lp-perm"><b>Manage admins</b> &mdash; add, edit and remove admins</span><span class="lp-perm"><b>Manage plan &amp; billing</b> &mdash; upgrade the plan</span><span class="lp-perm lp-on"><b>Approve cards</b> &mdash; approve the cards sent to the team</span></div><p class="lp-cs" style="margin:10px 0 0">You can only give the permissions you have yourself. &middot; 5 of 50 admin seats used</p><div class="lp-btns" style="margin-top:12px">'+B('Send Admin Invite',1)+'</div></div>',
- f:['Edit or Remove next to any admin','A removed admin is taken out of AIDL completely','The Main admin can never be removed']},
+ f:['Edit or Remove next to any admin','A removed admin is taken out of AIDL completely','The Master admin can never be removed']},
 {t:'Add team',s:'Invite up to your seats',h:'Bring people into #aidl',w:'AIDL lists Slack people not yet in the channel. Select some or all &mdash; never more than your free seats.',
  m:'<div class="lp-card"><p class="lp-ct">Add your team</p><p class="lp-cs">Pick the people who should earn an AI licence</p><div class="lp-row"><span class="lp-chip">&#9989; Select all people (4)</span></div><div class="lp-row"><span class="lp-chip lp-on">Priya Raman</span></div><div class="lp-row"><span class="lp-chip lp-on">Marcus Webb</span></div><div class="lp-row"><span class="lp-chip lp-on">Lena Fischer</span></div><div class="lp-row"><span class="lp-chip">Sam Ortiz</span></div><p class="lp-cs" style="margin:10px 0 0">3 seats left on your Trial plan (2 of 5 used)</p><div class="lp-btns" style="margin-top:10px">'+B('Add people',1)+'</div></div>',
  f:['Each person gets an AIDL account and a private Welcome message','If AIDL can&rsquo;t message someone, you get a private warning','Plan full? Anyone added to the channel is taken out again, and told why']},
@@ -452,18 +533,18 @@ const ADMIN: Step[] = [
  f:['Export coverage as CSV &mdash; a copy also arrives by message','Remind tells the person the admin asked','Alerts: none, one a day, or every Got it &mdash; plus late-person alerts']}
 ];
 const USER: Step[] = [
-{t:'Welcome',s:'About 10 minutes',h:'&ldquo;Hi Priya, welcome to your AI Driving License&rdquo;',w:'A private message with the three steps ahead. If the admin hasn&rsquo;t started yet, it says the first card arrives soon.',
- m:'<div class="lp-card"><p class="lp-ct">Welcome to your AI Driving License</p><p class="lp-cs">About 10 minutes &middot; 3 cards</p><div class="lp-row">1 &middot; AI policy</div><div class="lp-row">2 &middot; Traffic Light</div><div class="lp-row">3 &middot; Highway Code</div><div class="lp-btns" style="margin-top:10px">'+B('Let&rsquo;s go',1)+'</div></div>'},
+{t:'Welcome',s:'About 10 minutes',h:'&ldquo;Hi Priya, welcome to your AI Driving Licence&rdquo;',w:'A private message with the three steps ahead. If the admin hasn&rsquo;t started yet, it says the first card arrives soon.',
+ m:'<div class="lp-card"><p class="lp-ct">Welcome to your AI Driving Licence</p><p class="lp-cs">About 10 minutes &middot; 3 cards</p><div class="lp-row">1 &middot; AI policy</div><div class="lp-row">2 &middot; Traffic Light</div><div class="lp-row">3 &middot; Highway Code</div><div class="lp-btns" style="margin-top:10px">'+B('Let&rsquo;s go',1)+'</div></div>'},
 {t:'AI policy',s:'Card 1 of 3 &middot; 14 points',h:'Agree to the policy, point by point',w:'Each point is a picture in the same message, with a progress bar. One tap per point.',
  m:'<div class="lp-card"><p class="lp-ct">Card 1 of 3 &middot; AI policy</p><p class="lp-cs">Point 6 of 14 &middot; Only use approved apps</p><div class="lp-bar2"><i style="width:43%"></i></div><div class="lp-btns" style="margin-top:10px">'+B('I agree to point 6',1)+'</div></div><div class="lp-card"><p class="lp-ct"><span class="lp-ok">&#10003;</span> I agreed to all 14 points</p><p class="lp-cs" style="margin:0">Card turns green &middot; AGREED</p></div>'},
 {t:'Traffic Light',s:'Card 2 of 3',h:'What&rsquo;s safe to share with AI',w:'Three colours, one decision before every prompt.',
  m:'<div class="lp-card"><p class="lp-ct">Card 2 of 3 &middot; Traffic Light</p><div class="lp-tl" style="margin:8px 0 12px"><div class="lp-g"><b>Green</b>Safe to share</div><div class="lp-a"><b>Amber</b>Be careful</div><div class="lp-r"><b>Red</b>Never share with AI</div></div><div class="lp-btns">'+B('Got it. Next: The Highway Code &rarr;',1)+'</div></div>'},
 {t:'Highway Code',s:'Card 3 of 3 &middot; 5 rules',h:'The five learner rules',w:'The rules every new driver follows when using AI at work.',
- m:'<div class="lp-card"><p class="lp-ct">Card 3 of 3 &middot; Highway Code</p><p class="lp-cs">5 learner rules for using AI</p><div class="lp-bar2"><i style="width:100%"></i></div><div class="lp-btns" style="margin-top:10px">'+B('Got it. Get my license',1)+'</div></div><div class="lp-card"><p class="lp-ct">Your next card is on its way</p><p class="lp-cs" style="margin:0">Shown if the admin hasn&rsquo;t approved the next card yet &mdash; it arrives by itself.</p></div>'},
+ m:'<div class="lp-card"><p class="lp-ct">Card 3 of 3 &middot; Highway Code</p><p class="lp-cs">5 learner rules for using AI</p><div class="lp-bar2"><i style="width:100%"></i></div><div class="lp-btns" style="margin-top:10px">'+B('Got it. Get my licence',1)+'</div></div><div class="lp-card"><p class="lp-ct">Your next card is on its way</p><p class="lp-cs" style="margin:0">Shown if the admin hasn&rsquo;t approved the next card yet &mdash; it arrives by itself.</p></div>'},
 {t:'Avatar',s:'One quick step',h:'Create your avatar',w:'It goes on your licence. Make it from the Welcome message or after the cards &mdash; your licence arrives as soon as it&rsquo;s saved.',
  m:'<div class="lp-card" style="display:flex;gap:14px;align-items:center"><img class="lp-lic-av" style="flex:none" src="'+licenceAvatar+'" alt="" /><div><p class="lp-ct">Create my avatar</p><p class="lp-cs">Shown on your licence</p><div class="lp-btns">'+B('Create my avatar',1)+'</div></div></div><div class="lp-card"><p class="lp-ct">Almost there</p><p class="lp-cs" style="margin:0">No free seat? The licence is issued as soon as one opens.</p></div>'},
 {t:'Licence',s:'Valid for 1 year',h:'&ldquo;You&rsquo;re road-ready!&rdquo;',w:'Name, avatar, licence number, company and logo &mdash; ready to download or post. The same message says when your next card arrives.',
- m:'<div class="lp-card"><p class="lp-ct">&#127881; You&rsquo;re road-ready, Priya!</p><p class="lp-cs">All three cards done and the policy agreed &middot; <b style="color:#1a7f37">ISSUED</b> &middot; valid till <b>22 October 2027</b></p><div class="lp-lic-img">'+licenceSvg({name:'Priya Raman',org:'NORTHWIND',number:'AIDL-L-4417-0932',issued:'22/10/2026',expires:'22/10/2027',logo:aidlLogo,avatar:licenceAvatar})+'</div><div class="lp-row" style="margin-top:10px">&#9989; Northwind AUP agreed &middot; &#9989; Traffic Light Check &middot; &#9989; The Highway Code</div><p class="lp-cs" style="margin:6px 0 0">&#128467;&#65039; Your next card arrives <b>Tuesday, 27 October</b>.</p><div class="lp-btns" style="margin-top:12px">'+B('Download license',1)+B('Change avatar')+B('Share on LinkedIn')+'</div><div class="lp-btns" style="margin-top:8px">'+B('My cards')+B('Request an app')+'</div></div>'}
+ m:'<div class="lp-card"><p class="lp-ct">&#127881; You&rsquo;re road-ready, Priya!</p><p class="lp-cs">All three cards done and the policy agreed &middot; <b style="color:#1a7f37">ISSUED</b> &middot; valid till <b>22 October 2027</b></p><div class="lp-lic-img">'+licenceSvg({name:'Priya Raman',org:'NORTHWIND',number:'AIDL-L-4417-0932',issued:'22/10/2026',expires:'22/10/2027',logo:aidlLogo,avatar:licenceAvatar})+'</div><div class="lp-row" style="margin-top:10px">&#9989; Northwind AUP agreed &middot; &#9989; Traffic Light Check &middot; &#9989; The Highway Code</div><p class="lp-cs" style="margin:6px 0 0">&#128467;&#65039; Your next card arrives <b>Tuesday, 27 October</b>.</p><div class="lp-btns" style="margin-top:12px">'+B('Download licence',1)+B('Change avatar')+B('Share on LinkedIn')+'</div><div class="lp-btns" style="margin-top:8px">'+B('My cards')+B('Request an app')+'</div></div>'}
 ];
 
 const adminStep = ref(0)
@@ -473,7 +554,7 @@ const userCur = computed(() => USER[userStep.value]!)
 </script>
 
 <style>
-/* Landing page — "AI Driving License v2" design. Every class is prefixed
+/* Landing page — "AI Driving Licence v2" design. Every class is prefixed
    lp- so the global portal / classic-site stylesheets can't leak in. */
 .lp-root{--cream:#f5ecd2;--cream-2:#f0e3bd;--cream-3:#e6d8a8;--asphalt:#14140f;--asphalt-2:#1f1e16;--yellow:#ffcc00;--amber:#ff9d00;--red:#e23a2e;--green:#2ec866;--green-ink:#0d6b38;--sky:#6fb3e0;--ink:#14140f;--muted:#5f5843;--line:#d8c98f}
 :where(.lp-root),:where(.lp-root) *,:where(.lp-root) *::before,:where(.lp-root) *::after{box-sizing:border-box}
@@ -854,6 +935,38 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-wl .lp-btn:disabled{opacity:.7;cursor:default;transform:none}
 .lp-wl-msg{min-height:1.4em;margin:12px 0 0;font-size:14px;font-weight:600}
 .lp-wl-msg.lp-err{color:#a3150b}
+.lp-vf{background:var(--cream-2)}
+.lp-vf-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:center}
+.lp-vf-form{margin-top:30px;max-width:520px}
+.lp-vf-form label{display:block;font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
+.lp-vf-row{display:flex;gap:10px}
+.lp-vf-row input{flex:1;min-width:0;padding:12px 14px;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:16px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink);background:#fff;border:3px solid var(--ink);border-radius:0;outline:none}
+.lp-vf-row input::placeholder{color:#a69d7e;font-weight:500}
+.lp-vf-row input:focus-visible{box-shadow:3px 3px 0 var(--ink)}
+.lp-vf-row .lp-btn{flex:none;padding:12px 20px}
+.lp-vf-row .lp-btn:disabled{opacity:.7;cursor:default;transform:none}
+.lp-vf-hint{min-height:1.4em;margin:12px 0 0;font-size:14px;color:var(--muted)}
+.lp-vf-hint.lp-err{color:#a3150b;font-weight:600}
+.lp-vf-pts{list-style:none;margin:26px 0 0;padding:0;display:grid;gap:10px;font-size:15px;line-height:1.5}
+.lp-vf-res{position:relative;display:grid;gap:18px;align-content:start}
+.lp-vf-card svg{display:block;width:100%;height:auto;filter:drop-shadow(7px 7px 0 var(--ink))}
+.lp-vf-ex{justify-self:start;font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.14em;padding:4px 9px;border:2px dashed var(--ink);background:var(--cream)}
+.lp-vf-cap{margin:6px 0 0;font-size:14px;color:var(--muted)}
+.lp-vf-ban{display:flex;align-items:flex-start;gap:14px;padding:16px 18px;border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);color:#fff;font-size:15px;line-height:1.45}
+.lp-vf-ban>span{flex:none;width:38px;height:38px;border-radius:50%;border:3px solid var(--ink);background:#fff;color:var(--ink);display:grid;place-items:center;font-weight:700;font-size:18px}
+.lp-vf-ban b{display:block;font-family:"Bungee",sans-serif;font-weight:400;font-size:22px;line-height:1.1;margin-bottom:4px}
+.lp-vf-ban.lp-ok{background:#1a7f37}
+.lp-vf-ban.lp-bad{background:var(--red)}
+.lp-vf-ban.lp-none{background:var(--asphalt);color:var(--cream)}
+.lp-vf-ban a{color:var(--yellow)}
+.lp-vf-rec{margin:0;border:3px solid var(--ink);background:var(--cream);box-shadow:5px 5px 0 var(--ink);padding:4px 18px}
+.lp-vf-rec>div{display:grid;grid-template-columns:120px minmax(0,1fr);gap:10px;padding:10px 0;border-bottom:2px dashed var(--line)}
+.lp-vf-rec>div:last-child{border-bottom:0}
+.lp-vf-rec dt{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:2px}
+.lp-vf-rec dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+.lp-vf-rec .lp-vf-no{font-family:"JetBrains Mono",monospace;font-weight:700;color:#c62f24}
+@media(max-width:1060px){.lp-vf-in{grid-template-columns:minmax(0,1fr);gap:40px}.lp-vf-res{max-width:620px}}
+@media(max-width:640px){.lp-vf-row{flex-direction:column}.lp-vf-row .lp-btn{justify-content:center}.lp-vf-rec>div{grid-template-columns:minmax(0,1fr);gap:2px}.lp-vf-card svg{filter:drop-shadow(4px 4px 0 var(--ink))}}
 .lp-foot{background:var(--asphalt);color:#cfc49c;padding:44px 0;font-size:14px}
 .lp-foot-in{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
 .lp-foot a{color:var(--cream);text-decoration:none}

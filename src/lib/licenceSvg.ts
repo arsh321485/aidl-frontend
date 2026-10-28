@@ -1,4 +1,4 @@
-// The AI Driving License card as inline SVG — the same design the AIDL server
+// The AI Driving Licence card as inline SVG — the same design the AIDL server
 // renders as a PNG for Slack / Teams (aidl-design/teams-cards.html,
 // licenseImage). Inline (not an <img>) so the logo and avatar URLs load.
 
@@ -37,7 +37,7 @@ export function licenceSvg(o: LicenceData): string {
   const mrz = ('AIDL<' + o.number.replace(/^AIDL-/, '').replace(/-/g, '<') + '<<' +
     o.name.toUpperCase().split(' ').reverse().join('<<') + '<'.repeat(40)).slice(0, 44)
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="AI Driving License for ${esc(o.name)}, ${esc(o.number)}">` +
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="AI Driving Licence for ${esc(o.name)}, ${esc(o.number)}">` +
     '<defs>' +
       `<clipPath id="lpl-card"><rect x="3" y="3" width="${W - 6}" height="${H - 6}" rx="24"/></clipPath>` +
       '<clipPath id="lpl-ph"><rect x="40" y="148" width="150" height="188" rx="10"/></clipPath>' +
@@ -54,7 +54,7 @@ export function licenceSvg(o: LicenceData): string {
       `<circle cx="64" cy="56" r="40" fill="${yellow}"/>` +
       (o.logo ? `<image href="${esc(o.logo)}" x="28" y="20" width="72" height="72" clip-path="url(#lpl-lg)"/>`
         : text(64, 64, 22, heavy, ink, 'AI', 'text-anchor="middle"')) +
-      text(122, 54, 32, heavy, yellow, 'AI DRIVING LICENSE', 'letter-spacing="1"') +
+      text(122, 54, 32, heavy, yellow, 'AI DRIVING LICENCE', 'letter-spacing="1"') +
       text(124, 84, 15, sans + ' font-weight="700"', '#F5ECD2', 'ISSUED FOR ' + esc(o.org), 'letter-spacing="2"') +
       // photo + signature
       photo +
@@ -73,7 +73,7 @@ export function licenceSvg(o: LicenceData): string {
       `<rect x="560" y="260" width="110" height="30" rx="15" fill="${green}"/>` +
       '<circle cx="578" cy="275" r="5" fill="#fff"/>' +
       text(590, 281, 16, sans + ' font-weight="700"', '#fff', 'ACTIVE', 'letter-spacing="1"') +
-      label(220, 326, '5. LICENSE NO.') +
+      label(220, 326, '5. LICENCE NO.') +
       text(220, 356, 26, mono, red, esc(o.number), 'letter-spacing="1"') +
       // road footer: centre line + machine-readable line
       `<rect y="410" width="${W}" height="${H - 410}" fill="${ink}"/>` +

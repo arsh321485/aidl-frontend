@@ -17,7 +17,7 @@
 <slot />
 
 <footer class="lp-foot">
-<div class="lp-wrap lp-foot-in"><RouterLink class="lp-brand" to="/home"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></RouterLink><RouterLink v-for="l in NAV_LINKS" :key="l.id" :to="{ path: '/home', hash: '#' + l.id }">{{ l.label }}</RouterLink><RouterLink to="/pricing" exact-active-class="sp-on">Pricing</RouterLink><RouterLink to="/privacy" exact-active-class="sp-on">Privacy</RouterLink><RouterLink to="/support" exact-active-class="sp-on">Support</RouterLink><span class="lp-copy">© 2026 AI Driving License</span></div>
+<div class="lp-wrap lp-foot-in"><RouterLink class="lp-brand" to="/home"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></RouterLink><RouterLink v-for="l in NAV_LINKS" :key="l.id" :to="{ path: '/home', hash: '#' + l.id }">{{ l.label }}</RouterLink><RouterLink to="/pricing" exact-active-class="sp-on">Pricing</RouterLink><RouterLink to="/privacy" exact-active-class="sp-on">Privacy</RouterLink><RouterLink to="/support" exact-active-class="sp-on">Support</RouterLink><span class="lp-copy">© 2026 AI Driving Licence</span></div>
 </footer>
 </div>
 </template>
