@@ -133,14 +133,14 @@ const plans = [
     key: 'basic', name: 'Basic', sign: 'diamond', signText: '2×<br>WEEK', flag: 'FOR GROWING TEAMS',
     tag: 'Keep the learning going all year, on the topics you choose.',
     price: 'Per user', per: '/ month', note: 'BILLED PER LEARNER SEAT · ADMINS ARE FREE',
-    dash: [['2', 'Admins'], ['2', 'Cards a week'], ['Any', 'Number of users'], ['104', 'Cards a year']],
+    dash: [['Any', 'Admins'], ['2', 'Cards a week'], ['Any', 'Number of users'], ['104', 'Cards a year']],
     cta: 'Get Basic', inc: 'EVERYTHING IN TRIAL, PLUS',
     base: ['Onboarding cards, AI policy and licences'],
     feats: [
       '2 awareness cards a week (Mon, Thu, 10:00)',
       '104 cards over the year',
       'Pick the card topics that matter to your team',
-      'A second admin to share the work',
+      'Add as many admins as you like, each with only the rights they need',
       'As many users as you buy seats for',
     ],
   },
@@ -150,12 +150,11 @@ const plans = [
     price: 'Per user', per: '/ month', note: 'BILLED PER LEARNER SEAT · ADMINS ARE FREE',
     dash: [['Any', 'Admins'], ['4', 'Cards a week'], ['Any', 'Number of users'], ['208', 'Cards a year']],
     cta: 'Get Enterprise', inc: 'EVERYTHING IN TRIAL + BASIC, PLUS',
-    base: ['Onboarding cards, AI policy and licences', 'Topic picks and a year of cards'],
+    base: ['Onboarding cards, AI policy and licences', 'Topic picks, a year of cards and any number of admins'],
     feats: [
       '4 awareness cards a week',
       'Choose the days and the time they arrive',
       '208 cards over the year, from all 15 topics',
-      'Add as many admins as you like, each with only the rights they need',
     ],
   },
 ]
@@ -170,7 +169,7 @@ const every = [
 // Cells: '✓' / '—' are styled; 'text|small note' adds a second line.
 const compare = [
   { group: 'TEAM', rows: [
-    ['Admins', '1', '2', 'As many as you need'],
+    ['Admins', '1', 'As many as you need', 'As many as you need'],
     ['Users', 'Up to 5', 'Per seat you buy', 'Per seat you buy'],
     ['Admin rights per person', '—', '✓', '✓'],
   ] },
