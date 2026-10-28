@@ -671,7 +671,7 @@
 import { ref, reactive, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { getCurrentAdminEmail, getAdminOrgBranding } from '../lib/authAccounts'
-import aidlLogo from '../assets/images/aidl-logo.png'
+import aidlLogo from '../assets/images/aidl-logo-licence.png'
 
 /*
  * Fleet Office — Org Admin dashboard.

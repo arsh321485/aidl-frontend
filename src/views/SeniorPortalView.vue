@@ -255,7 +255,7 @@
 import { onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { initSeniorPortal } from '../lib/senior-portal.js'
-import aidlLogo from '../assets/images/aidl-logo.png'
+import aidlLogo from '../assets/images/aidl-logo-licence.png'
 import '../styles/senior-driver-portal.css'
 import '../styles/portal-responsive.css'
 

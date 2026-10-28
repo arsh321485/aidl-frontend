@@ -23,7 +23,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import aidlLogo from '../assets/images/aidl-logo.png'
+import aidlLogo from '../assets/images/aidl-logo-licence.png'
 import { notifyError } from '../lib/notify.js'
 import { consumeTeamsAuthCallback, getCurrentTeamsUser } from '../lib/msTeamsAuth'
 import AvatarPickerModal from '../components/AvatarPickerModal.vue'

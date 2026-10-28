@@ -25,7 +25,7 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
-import aidlLogo from '../assets/images/aidl-logo-transparent.png'
+import aidlLogo from '../assets/images/aidl-logo-licence.png'
 import { NAV_LINKS } from '../lib/landingNav'
 import { startSlackLogin } from '../lib/slackAuth'
 import { startTeamsLogin } from '../lib/msTeamsAuth'

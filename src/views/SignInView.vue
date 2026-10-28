@@ -88,7 +88,7 @@
 import { computed, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { verifyCredentials, setCurrentAdminEmail } from '../lib/authAccounts'
-import aidlLogo from '../assets/images/aidl-logo.png'
+import aidlLogo from '../assets/images/aidl-logo-licence.png'
 
 const router = useRouter()
 const route = useRoute()

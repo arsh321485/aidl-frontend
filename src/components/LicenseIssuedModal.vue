@@ -162,7 +162,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import aidlLogo from '../assets/images/aidl-logo.png'
+import aidlLogo from '../assets/images/aidl-logo-licence.png'
 import AvatarBuilder from './AvatarBuilder.vue'
 import type { AvatarConfig } from '../lib/avatar-parts'
 

@@ -124,7 +124,7 @@
 import { onMounted } from 'vue'
 import { RouterLink } from 'vue-router'
 import { initJuniorPortal } from '../lib/junior-portal.js'
-import aidlLogo from '../assets/images/aidl-logo.png'
+import aidlLogo from '../assets/images/aidl-logo-licence.png'
 import '../styles/junior-driver-portal.css'
 import '../styles/portal-responsive.css'
 

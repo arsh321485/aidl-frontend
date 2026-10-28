@@ -44,7 +44,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import aidlLogo from '../assets/images/aidl-logo.png'
+import aidlLogo from '../assets/images/aidl-logo-licence.png'
 import AvatarBuilder from '../components/AvatarBuilder.vue'
 import AvatarPickerModal from '../components/AvatarPickerModal.vue'
 import type { AvatarConfig } from '../lib/avatar-parts'

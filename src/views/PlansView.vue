@@ -150,7 +150,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
-import aidlLogo from '../assets/images/aidl-logo.png'
+import aidlLogo from '../assets/images/aidl-logo-licence.png'
 import {
   BillingError, checkout, getPlans, hasToken, previewCards, saveToken,
   type CheckoutResult, type PlanInfo, type PlansData, type PreviewCard,

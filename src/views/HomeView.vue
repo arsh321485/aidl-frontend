@@ -271,7 +271,7 @@
 </section>
 
 <footer class="lp-foot">
-<div class="lp-wrap lp-foot-in"><a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id">{{ l.label }}</a><RouterLink to="/pricing">Pricing</RouterLink><RouterLink to="/privacy">Privacy</RouterLink><RouterLink to="/support">Support</RouterLink><a href="#verify">Verify a licence</a><span class="lp-copy">© 2026 AI Driving Licence</span></div>
+<div class="lp-wrap lp-foot-in"><a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id">{{ l.label }}</a><RouterLink to="/pricing">Pricing</RouterLink><RouterLink to="/privacy">Privacy</RouterLink><RouterLink to="/support">Support</RouterLink><span class="lp-copy">© 2026 AI Driving Licence</span></div>
 </footer>
 </div>
 </template>
@@ -282,7 +282,7 @@ import { RouterLink } from 'vue-router'
 import { startSlackLogin } from '../lib/slackAuth'
 import { startTeamsLogin } from '../lib/msTeamsAuth'
 import { notifyError, notifyLoading, notifyClose, notifyInfo } from '../lib/notify.js'
-import aidlLogo from '../assets/images/aidl-logo-transparent.png'
+import aidlLogo from '../assets/images/aidl-logo-licence.png'
 import licenceAvatar from '../assets/images/licence-avatar.svg'
 import { licenceSvg } from '../lib/licenceSvg'
 import { CARD_TOPICS, LIBRARY_SIZE, PLANS, STARTER_CARDS, type PlanKey } from '../lib/landingCards'
