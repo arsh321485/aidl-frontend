@@ -16,6 +16,7 @@ const AvatarView = () => import('../views/AvatarView.vue')
 const PlansView = () => import('../views/PlansView.vue')
 const PricingView = () => import('../views/PricingView.vue')
 const PrivacyView = () => import('../views/PrivacyView.vue')
+const AiRequirementsView = () => import('../views/AiRequirementsView.vue')
 const SupportView = () => import('../views/SupportView.vue')
 
 const router = createRouter({
@@ -26,7 +27,7 @@ const router = createRouter({
   scrollBehavior(to, _from, savedPosition) {
     if (savedPosition) return savedPosition
     if (to.hash) return { el: to.hash, top: 80 }
-    if (to.name === 'privacy' || to.name === 'support' || to.name === 'pricing') return { top: 0 }
+    if (to.name === 'privacy' || to.name === 'support' || to.name === 'pricing' || to.name === 'ai-requirements') return { top: 0 }
     return false
   },
   routes: [
@@ -156,6 +157,13 @@ const router = createRouter({
       path: '/privacy',
       name: 'privacy',
       component: PrivacyView,
+      meta: { public: true },
+    },
+    {
+      // Global AI literacy / training requirements ("See all 15 jurisdictions" on /home).
+      path: '/ai-requirements',
+      name: 'ai-requirements',
+      component: AiRequirementsView,
       meta: { public: true },
     },
     {

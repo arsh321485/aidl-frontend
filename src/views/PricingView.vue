@@ -142,6 +142,7 @@ const plans = [
       'Pick the card topics that matter to your team',
       'Add as many admins as you like, each with only the rights they need',
       'As many users as you buy seats for',
+      'Upload your own AI policy (AUP) if you already have one, instead of building it in AIDL',
     ],
   },
   {
@@ -150,12 +151,11 @@ const plans = [
     price: '$8', per: 'USD / user / month', note: 'BILLED PER LEARNER SEAT · ADMINS ARE FREE',
     dash: [['Any', 'Admins'], ['4', 'Cards a week'], ['Any', 'Number of users'], ['208', 'Cards a year']],
     cta: 'Get Enterprise', inc: 'EVERYTHING IN TRIAL + BASIC, PLUS',
-    base: ['Onboarding cards, AI policy and licences', 'Topic picks, a year of cards and any number of admins'],
+    base: ['Onboarding cards, AI policy and licences', 'Topic picks, a year of cards, any number of admins and your own uploaded AI policy'],
     feats: [
       '4 awareness cards a week',
       'Choose the days and the time they arrive',
       '208 cards over the year, from all 15 topics',
-      'Upload your own AI policy (AUP) if you already have one, instead of building it in AIDL',
     ],
   },
 ]
@@ -176,7 +176,7 @@ const compare = [
   ] },
   { group: 'ONBOARDING & LICENCE', rows: [
     ['📄 AI Acceptable Use Policy', '✓', '✓', '✓'],
-    ['Upload your own AI policy (AUP)', '—', '—', '✓'],
+    ['Upload your own AI policy (AUP)', '—', '✓', '✓'],
     ['🚦 Traffic Light Check', '✓', '✓', '✓'],
     ['📖 The Highway Code', '✓', '✓', '✓'],
     ['AI Driving Licence (1 year)', '✓', '✓', '✓'],

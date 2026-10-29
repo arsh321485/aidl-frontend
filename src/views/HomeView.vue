@@ -199,7 +199,7 @@
 <div class="lp-rcc"><span class="lp-rct">TEXAS · ANNUAL</span><h3>HB 3512</h3><p>Public employees who use a computer for 25%+ of their work complete certified AI training every year.</p></div>
 <div class="lp-rcc"><span class="lp-rct">AUSTRALIA · 2026</span><h3>APS AI policy v2.0</h3><p>Foundational AI training becomes mandatory for all Australian Public Service staff.</p></div>
 </div>
-<div class="lp-rcp"><div><b>What auditors ask for, already on file</b><span>Policy version agreed · date of each employee’s agreement · lessons and assessments completed · renewal history · list of approved apps</span></div><a class="lp-btn lp-y" href="#compliance" @click.prevent="openMandates">See all 15 jurisdictions →</a></div>
+<div class="lp-rcp"><div><b>What auditors ask for, already on file</b><span>Policy version agreed · date of each employee’s agreement · lessons and assessments completed · renewal history · list of approved apps</span></div><RouterLink class="lp-btn lp-y" to="/ai-requirements">See all requirements →</RouterLink></div>
 </div>
 </section>
 
@@ -227,45 +227,13 @@
 </div>
 </section>
 
-<section class="lp-band lp-vf" id="verify">
-<div class="lp-wrap lp-vf-in">
-<div>
-<span class="lp-eb">▼ VERIFY A LICENCE</span>
-<h2 class="lp-h2">Is this licence real?</h2>
-<p class="lp-lede">Someone shared their AI Driving Licence with you? Enter the number from the card to check it was issued through AIDL and is still valid. No account needed.</p>
-<form class="lp-vf-form" novalidate @submit.prevent="checkLicence()">
-<label for="lp-vf-lic">Licence number</label>
-<div class="lp-vf-row"><input id="lp-vf-lic" v-model="vfInput" placeholder="AIDL-L-0000-0000" autocomplete="off" spellcheck="false" :disabled="vfState === 'checking'" /><button type="submit" class="lp-btn" :disabled="vfState === 'checking'">{{ vfState === 'checking' ? 'Checking…' : 'Verify →' }}</button></div>
-<p class="lp-vf-hint" :class="{ 'lp-err': vfError }" role="status" aria-live="polite">{{ vfError || 'The number is printed in red on the card, under “5. Licence no.”' }}</p>
-</form>
-<ul class="lp-vf-pts">
-<li>🔒 Only what’s printed on the card is shown, never an email or any other personal data.</li>
-<li>🗓️ Each licence is valid for one year from the day it was issued.</li>
-</ul>
-</div>
-<div class="lp-vf-res" aria-live="polite">
-<template v-if="vfResult?.kind === 'found'">
-<div class="lp-vf-ban" :class="vfResult.licence.status === 'active' ? 'lp-ok' : 'lp-bad'"><span>{{ vfResult.licence.status === 'active' ? '✓' : '!' }}</span><div><b>{{ vfResult.licence.status === 'active' ? 'Valid licence' : vfResult.licence.status === 'expired' ? 'Licence expired' : 'Licence suspended' }}</b>{{ vfResult.licence.status === 'active' ? `${vfResult.licence.name} holds an active AI Driving Licence.` : vfResult.licence.status === 'expired' ? `This licence was real but ran out on ${vfDate(vfResult.licence.expires)}.` : 'This licence was issued but is not valid at the moment.' }}</div></div>
-<div v-if="vfResult.licence.status === 'active'" class="lp-vf-card" v-html="licenceSvg({ name: vfResult.licence.name, org: vfResult.licence.org.toUpperCase(), number: vfResult.number, issued: vfShort(vfResult.licence.issued), expires: vfShort(vfResult.licence.expires), logo: aidlLogo })"></div>
-<dl class="lp-vf-rec">
-<div><dt>Holder</dt><dd>{{ vfResult.licence.name }}</dd></div>
-<div><dt>Issued for</dt><dd>{{ vfResult.licence.org }}</dd></div>
-<div><dt>Licence no.</dt><dd class="lp-vf-no">{{ vfResult.number }}</dd></div>
-<div><dt>Issued</dt><dd>{{ vfDate(vfResult.licence.issued) }}</dd></div>
-<div><dt>Valid until</dt><dd>{{ vfDate(vfResult.licence.expires) }}</dd></div>
-</dl>
-</template>
-<template v-else-if="vfResult?.kind === 'not-found'">
-<div class="lp-vf-ban lp-none"><span>?</span><div><b>No licence found</b>There’s no AI Driving Licence with the number {{ vfResult.number }}. Check it against the red number on the card, or ask the holder to send it again.</div></div>
-</template>
-<template v-else-if="vfResult?.kind === 'unavailable'">
-<div class="lp-vf-ban lp-none"><span>!</span><div><b>We couldn’t check right now</b>Please try again in a few minutes, or email <a :href="'mailto:' + SUPPORT_EMAIL">{{ SUPPORT_EMAIL }}</a> with the number {{ vfResult.number }} and we’ll confirm it for you.</div></div>
-</template>
-<template v-else>
-<span class="lp-vf-ex">EXAMPLE</span>
-<div class="lp-vf-card" v-html="vfSample"></div>
-<p class="lp-vf-cap">A valid licence shows the holder, the organization it was issued for, the dates and an <b>ACTIVE</b> status.</p>
-</template>
+<section class="lp-band lp-vf" id="licences">
+<div class="lp-wrap">
+<span class="lp-eb">▼ THE LICENCE</span>
+<h2 class="lp-h2">One licence, your colours</h2>
+<p class="lp-lede">Every person who finishes the onboarding cards gets an AI Driving Licence with their name, your organization and a unique licence number, valid for one year.</p>
+<div class="lp-vf-grid">
+<div v-for="(c, i) in licenceSamples" :key="i" class="lp-vf-card" v-html="c"></div>
 </div>
 </div>
 </section>
@@ -281,15 +249,16 @@ import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
 import { RouterLink } from 'vue-router'
 import { startSlackLogin } from '../lib/slackAuth'
 import { startTeamsLogin } from '../lib/msTeamsAuth'
-import { notifyError, notifyLoading, notifyClose, notifyInfo } from '../lib/notify.js'
+import { notifyError, notifyLoading, notifyClose } from '../lib/notify.js'
 import aidlLogo from '../assets/images/aidl-logo-licence.png'
 import licenceAvatar from '../assets/images/licence-avatar.svg'
+import licenceAvatar2 from '../assets/images/licence-avatar-2.svg'
+import licenceAvatar3 from '../assets/images/licence-avatar-3.svg'
+import { PRESETS, buildAvatarLayers, type ShapeNode } from '../lib/avatar-parts'
 import { licenceSvg } from '../lib/licenceSvg'
 import { CARD_TOPICS, LIBRARY_SIZE, PLANS, STARTER_CARDS, type PlanKey } from '../lib/landingCards'
 import { joinWaitlist } from '../lib/waitlistApi'
 import { NAV_LINKS } from '../lib/landingNav'
-import { LICENCE_NUMBER, verifyLicence, type VerifyResult } from '../lib/licenceVerifyApi'
-import { SUPPORT_EMAIL } from '../lib/siteContact'
 
 type Platform = 'slack' | 'teams'
 
@@ -322,40 +291,19 @@ async function submitWaitlist() {
   }
 }
 
-// "Verify a licence" (above the footer). Shared licence links open
-// /home#verify?lic=AIDL-L-…, which fills the box and checks straight away.
-const vfInput = ref('')
-const vfState = ref<'idle' | 'checking'>('idle')
-const vfError = ref('')
-const vfResult = ref<VerifyResult | null>(null)
-const vfSample = licenceSvg({ name: 'Priya Raman', org: 'NORTHWIND', number: 'AIDL-L-4417-0932', issued: '22/10/2026', expires: '22/10/2027', logo: aidlLogo, avatar: licenceAvatar })
-
-function vfParse(s: string) {
-  const d = new Date(s)
-  return isNaN(d.getTime()) ? null : d
-}
-const vfDate = (s: string) => vfParse(s)?.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' }) ?? s
-const vfShort = (s: string) => vfParse(s)?.toLocaleDateString('en-GB') ?? s
-
-async function checkLicence(raw = vfInput.value) {
-  const number = raw.trim().toUpperCase()
-  vfInput.value = number
-  if (!LICENCE_NUMBER.test(number)) {
-    vfError.value = 'That doesn’t look like a licence number. It looks like AIDL-L-0000-0000.'
-    return
-  }
-  vfError.value = ''
-  vfState.value = 'checking'
-  vfResult.value = await verifyLicence(number)
-  vfState.value = 'idle'
-}
-
-function verifyFromHash() {
-  if (!location.hash.startsWith('#verify')) return
-  const lic = new URLSearchParams(location.hash.split('?')[1] || '').get('lic')
-  document.getElementById('verify')?.scrollIntoView()
-  if (lic) checkLicence(lic)
-}
+// Sample licences in the licence designs (LicenseIssuedModal) other than
+// Road Sign, each with a different avatar (above the footer).
+const svgNode = (n: ShapeNode): string =>
+  `<${n.tag}${Object.entries(n.attrs ?? {}).map(([k, v]) => ` ${k}="${v}"`).join('')}>${(n.children ?? []).map(svgNode).join('')}</${n.tag}>`
+const owen = PRESETS.find(p => p.name === 'Owen')!
+const owenAvatar = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
+  `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220">${buildAvatarLayers(owen).map(svgNode).join('')}</svg>`)
+const licenceSamples = [
+  { bg: '#16233a', ink: '#e8eef7', accent: '#ffcc00', numColor: '#ffcc00', number: 'AIDL-L-4417-0932', avatar: owenAvatar },
+  { bg: ['#f7f6f2', '#d9d7cd', '#f2f0e9'], ink: '#14140f', accent: '#e23a2e', numColor: '#c62f24', number: 'AIDL-L-5120-1187', avatar: licenceAvatar },
+  { bg: ['#ff9d00', '#e23a2e', '#7a1f2b'], ink: '#fff4dd', accent: '#ff9d00', numColor: '#fff4dd', number: 'AIDL-L-6083-2245', avatar: licenceAvatar2 },
+  { bg: '#12613c', ink: '#f2f7f2', accent: '#f5ecd2', numColor: '#f5ecd2', number: 'AIDL-L-7391-3306', avatar: licenceAvatar3 },
+].map(t => licenceSvg({ name: 'Your Name', org: 'YOUR ORG NAME', issued: '22/10/2026', expires: '22/10/2027', logo: aidlLogo, ...t }))
 
 // Phone / tablet menu — the inline nav links are hidden below 1240px.
 const menuOpen = ref(false)
@@ -391,7 +339,6 @@ onMounted(() => {
   document.addEventListener('click', onDocClick)
   document.addEventListener('keydown', onKeydown)
   updateActiveSection()
-  verifyFromHash()
 })
 onBeforeUnmount(() => {
   window.removeEventListener('scroll', updateActiveSection)
@@ -462,11 +409,6 @@ function pickAllTopics() {
 function clearTopics() {
   pickedTopics.value = []
   cardsShown.value = 6
-}
-
-// "See all 15 jurisdictions" — the full mandates page isn't built yet.
-function openMandates() {
-  notifyInfo('The full list of 15 AI training jurisdictions is coming soon.', 'AI Training Mandates')
 }
 
 // Slack / Teams switch — swaps the copy and the mock windows between the two.
@@ -544,7 +486,7 @@ const USER: Step[] = [
 {t:'Avatar',s:'One quick step',h:'Create your avatar',w:'It goes on your licence. Make it from the Welcome message or after the cards &mdash; your licence arrives as soon as it&rsquo;s saved.',
  m:'<div class="lp-card" style="display:flex;gap:14px;align-items:center"><img class="lp-lic-av" style="flex:none" src="'+licenceAvatar+'" alt="" /><div><p class="lp-ct">Create my avatar</p><p class="lp-cs">Shown on your licence</p><div class="lp-btns">'+B('Create my avatar',1)+'</div></div></div><div class="lp-card"><p class="lp-ct">Almost there</p><p class="lp-cs" style="margin:0">No free seat? The licence is issued as soon as one opens.</p></div>'},
 {t:'Licence',s:'Valid for 1 year',h:'&ldquo;You&rsquo;re road-ready!&rdquo;',w:'Name, avatar, licence number, company and logo &mdash; ready to download or post. The same message says when your next card arrives.',
- m:'<div class="lp-card"><p class="lp-ct">&#127881; You&rsquo;re road-ready, Priya!</p><p class="lp-cs">All three cards done and the policy agreed &middot; <b style="color:#1a7f37">ISSUED</b> &middot; valid till <b>22 October 2027</b></p><div class="lp-lic-img">'+licenceSvg({name:'Priya Raman',org:'NORTHWIND',number:'AIDL-L-4417-0932',issued:'22/10/2026',expires:'22/10/2027',logo:aidlLogo,avatar:licenceAvatar})+'</div><div class="lp-row" style="margin-top:10px">&#9989; Northwind AUP agreed &middot; &#9989; Traffic Light Check &middot; &#9989; The Highway Code</div><p class="lp-cs" style="margin:6px 0 0">&#128467;&#65039; Your next card arrives <b>Tuesday, 27 October</b>.</p><div class="lp-btns" style="margin-top:12px">'+B('Download licence',1)+B('Change avatar')+B('Share on LinkedIn')+'</div><div class="lp-btns" style="margin-top:8px">'+B('My cards')+B('Request an app')+'</div></div>'}
+ m:'<div class="lp-card"><p class="lp-ct">&#127881; You&rsquo;re road-ready, Priya!</p><p class="lp-cs">All three cards done and the policy agreed &middot; <b style="color:#1a7f37">ISSUED</b> &middot; valid till <b>22 October 2027</b></p><div class="lp-lic-img">'+licenceSvg({name:'Your Name',org:'YOUR ORG NAME',number:'AIDL-L-4417-0932',issued:'22/10/2026',expires:'22/10/2027',logo:aidlLogo,avatar:licenceAvatar})+'</div><div class="lp-row" style="margin-top:10px">&#9989; Northwind AUP agreed &middot; &#9989; Traffic Light Check &middot; &#9989; The Highway Code</div><p class="lp-cs" style="margin:6px 0 0">&#128467;&#65039; Your next card arrives <b>Tuesday, 27 October</b>.</p><div class="lp-btns" style="margin-top:12px">'+B('Download licence',1)+B('Change avatar')+B('My cards')+B('Request an app')+'</div><div class="lp-share">Share:<span class="lp-share-i" role="img" aria-label="LinkedIn" title="LinkedIn"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><rect width="24" height="24" rx="5" fill="#0A66C2"/><path fill="#fff" d="M8.1 18.3H5.4V9.7h2.7v8.6zM6.75 8.5a1.56 1.56 0 1 1 0-3.12 1.56 1.56 0 0 1 0 3.12zM18.6 18.3h-2.7v-4.2c0-1-.02-2.3-1.4-2.3-1.4 0-1.62 1.1-1.62 2.22v4.28h-2.7V9.7h2.58v1.18h.04c.36-.68 1.24-1.4 2.55-1.4 2.73 0 3.25 1.8 3.25 4.13v4.69z"/></svg></span><span class="lp-share-i" role="img" aria-label="Instagram" title="Instagram"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><defs><linearGradient id="lp-ig-g" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#FEDA75"/><stop offset=".3" stop-color="#FA7E1E"/><stop offset=".55" stop-color="#D62976"/><stop offset=".8" stop-color="#962FBF"/><stop offset="1" stop-color="#4F5BD5"/></linearGradient></defs><rect width="24" height="24" rx="6" fill="url(#lp-ig-g)"/><rect x="5.5" y="5.5" width="13" height="13" rx="4" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="12" cy="12" r="3.1" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="15.9" cy="8.1" r="1" fill="#fff"/></svg></span><span class="lp-share-i" role="img" aria-label="Facebook" title="Facebook"><svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true"><circle cx="12" cy="12" r="12" fill="#1877F2"/><path fill="#fff" d="M13.4 24v-8.5h2.6l.4-3.2h-3V10.3c0-.9.25-1.55 1.57-1.55h1.6V5.9c-.28-.04-1.24-.12-2.35-.12-2.32 0-3.92 1.42-3.92 4.03v2.5H7.7v3.2h2.6V24z"/></svg></span></div></div>'}
 ];
 
 const adminStep = ref(0)
@@ -799,6 +741,9 @@ const userCur = computed(() => USER[userStep.value]!)
 /* mini licence */
 .lp-lic-av{width:62px;height:62px;border-radius:50%;border:3px solid #f0c14b;background:#3a3020;display:block;object-fit:cover;font-family:"Bungee",sans-serif;font-size:20px;color:#ffcc00}
 .lp-lic-img svg{display:block;width:100%;max-width:300px;height:auto}
+.lp-share{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:10px;font-weight:700;font-size:13px}
+.lp-share-i{display:inline-flex}
+.lp-share-i svg{display:block}
 /* Admin step 1: the AI policy builder popup header */
 .lp-aupb{background:#1d1c16;border-radius:8px;padding:12px 14px;color:#f5ecd2;font-family:"JetBrains Mono",monospace;font-size:10px;letter-spacing:.08em}
 .lp-aupb-r{display:flex;justify-content:space-between;align-items:center;gap:10px}
@@ -936,37 +881,9 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-wl-msg{min-height:1.4em;margin:12px 0 0;font-size:14px;font-weight:600}
 .lp-wl-msg.lp-err{color:#a3150b}
 .lp-vf{background:var(--cream-2)}
-.lp-vf-in{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:center}
-.lp-vf-form{margin-top:30px;max-width:520px}
-.lp-vf-form label{display:block;font-family:"JetBrains Mono",monospace;font-size:13px;letter-spacing:.08em;text-transform:uppercase;margin-bottom:12px}
-.lp-vf-row{display:flex;gap:10px}
-.lp-vf-row input{flex:1;min-width:0;padding:12px 14px;font-family:"JetBrains Mono",monospace;font-weight:700;font-size:16px;letter-spacing:.05em;text-transform:uppercase;color:var(--ink);background:#fff;border:3px solid var(--ink);border-radius:0;outline:none}
-.lp-vf-row input::placeholder{color:#a69d7e;font-weight:500}
-.lp-vf-row input:focus-visible{box-shadow:3px 3px 0 var(--ink)}
-.lp-vf-row .lp-btn{flex:none;padding:12px 20px}
-.lp-vf-row .lp-btn:disabled{opacity:.7;cursor:default;transform:none}
-.lp-vf-hint{min-height:1.4em;margin:12px 0 0;font-size:14px;color:var(--muted)}
-.lp-vf-hint.lp-err{color:#a3150b;font-weight:600}
-.lp-vf-pts{list-style:none;margin:26px 0 0;padding:0;display:grid;gap:10px;font-size:15px;line-height:1.5}
-.lp-vf-res{position:relative;display:grid;gap:18px;align-content:start}
+.lp-vf-grid{margin:36px auto 0;max-width:860px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
 .lp-vf-card svg{display:block;width:100%;height:auto;filter:drop-shadow(7px 7px 0 var(--ink))}
-.lp-vf-ex{justify-self:start;font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.14em;padding:4px 9px;border:2px dashed var(--ink);background:var(--cream)}
-.lp-vf-cap{margin:6px 0 0;font-size:14px;color:var(--muted)}
-.lp-vf-ban{display:flex;align-items:flex-start;gap:14px;padding:16px 18px;border:3px solid var(--ink);box-shadow:5px 5px 0 var(--ink);color:#fff;font-size:15px;line-height:1.45}
-.lp-vf-ban>span{flex:none;width:38px;height:38px;border-radius:50%;border:3px solid var(--ink);background:#fff;color:var(--ink);display:grid;place-items:center;font-weight:700;font-size:18px}
-.lp-vf-ban b{display:block;font-family:"Bungee",sans-serif;font-weight:400;font-size:22px;line-height:1.1;margin-bottom:4px}
-.lp-vf-ban.lp-ok{background:#1a7f37}
-.lp-vf-ban.lp-bad{background:var(--red)}
-.lp-vf-ban.lp-none{background:var(--asphalt);color:var(--cream)}
-.lp-vf-ban a{color:var(--yellow)}
-.lp-vf-rec{margin:0;border:3px solid var(--ink);background:var(--cream);box-shadow:5px 5px 0 var(--ink);padding:4px 18px}
-.lp-vf-rec>div{display:grid;grid-template-columns:120px minmax(0,1fr);gap:10px;padding:10px 0;border-bottom:2px dashed var(--line)}
-.lp-vf-rec>div:last-child{border-bottom:0}
-.lp-vf-rec dt{font-family:"JetBrains Mono",monospace;font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);padding-top:2px}
-.lp-vf-rec dd{margin:0;font-weight:600;overflow-wrap:anywhere}
-.lp-vf-rec .lp-vf-no{font-family:"JetBrains Mono",monospace;font-weight:700;color:#c62f24}
-@media(max-width:1060px){.lp-vf-in{grid-template-columns:minmax(0,1fr);gap:40px}.lp-vf-res{max-width:620px}}
-@media(max-width:640px){.lp-vf-row{flex-direction:column}.lp-vf-row .lp-btn{justify-content:center}.lp-vf-rec>div{grid-template-columns:minmax(0,1fr);gap:2px}.lp-vf-card svg{filter:drop-shadow(4px 4px 0 var(--ink))}}
+@media(max-width:760px){.lp-vf-grid{grid-template-columns:minmax(0,1fr);gap:24px}.lp-vf-card svg{filter:drop-shadow(4px 4px 0 var(--ink))}}
 .lp-foot{background:var(--asphalt);color:#cfc49c;padding:44px 0;font-size:14px}
 .lp-foot-in{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
 .lp-foot a{color:var(--cream);text-decoration:none}
