@@ -17,7 +17,14 @@
 <slot />
 
 <footer class="lp-foot">
-<div class="lp-wrap lp-foot-in"><RouterLink class="lp-brand" to="/home"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></RouterLink><RouterLink v-for="l in NAV_LINKS" :key="l.id" :to="{ path: '/home', hash: '#' + l.id }">{{ l.label }}</RouterLink><RouterLink to="/pricing" exact-active-class="sp-on">Pricing</RouterLink><RouterLink to="/privacy" exact-active-class="sp-on">Privacy</RouterLink><RouterLink to="/support" exact-active-class="sp-on">Support</RouterLink><span class="lp-copy">© 2026 AI Driving Licence</span></div>
+<div class="lp-wrap">
+<div class="lp-foot-in">
+<div class="lp-foot-about"><RouterLink class="lp-brand" to="/home"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></RouterLink><p class="lp-foot-tag">AI onboarding cards for Slack and Microsoft Teams, and a licence for everyone who finishes them.</p><div class="lp-soc"><a v-for="s in SOCIAL_LINKS" :key="s.id" :href="s.url" target="_blank" rel="noopener noreferrer" :aria-label="'AIDL on ' + s.label" :title="s.label"><svg viewBox="0 0 24 24" aria-hidden="true" v-html="s.icon"></svg></a></div></div>
+<nav class="lp-foot-col" aria-label="Product"><h3>Product</h3><RouterLink v-for="l in NAV_LINKS" :key="l.id" :to="{ path: '/home', hash: '#' + l.id }">{{ l.label }}</RouterLink></nav>
+<nav class="lp-foot-col" aria-label="Company"><h3>Company</h3><RouterLink to="/pricing" exact-active-class="sp-on">Pricing</RouterLink><RouterLink :to="{ path: '/home', hash: '#waitlist' }">Join the waitlist</RouterLink><RouterLink :to="{ path: '/home', hash: '#licences' }">Sample licences</RouterLink><RouterLink to="/privacy" exact-active-class="sp-on">Privacy</RouterLink><RouterLink to="/support" exact-active-class="sp-on">Support</RouterLink></nav>
+</div>
+<div class="lp-foot-bot"><span class="lp-copy">© 2026 AI Driving Licence</span><span>Built for Slack &amp; Microsoft Teams</span></div>
+</div>
 </footer>
 </div>
 </template>
@@ -26,7 +33,7 @@
 import { onBeforeUnmount, onMounted, ref } from 'vue'
 import { RouterLink } from 'vue-router'
 import aidlLogo from '../assets/images/aidl-logo-licence.png'
-import { NAV_LINKS } from '../lib/landingNav'
+import { NAV_LINKS, SOCIAL_LINKS } from '../lib/landingNav'
 import { startSlackLogin } from '../lib/slackAuth'
 import { startTeamsLogin } from '../lib/msTeamsAuth'
 import { notifyError, notifyLoading, notifyClose } from '../lib/notify.js'

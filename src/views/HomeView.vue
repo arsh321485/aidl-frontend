@@ -219,7 +219,7 @@
 <h2 class="lp-h2">Your team, road-ready this week.</h2>
 <p class="lp-lede">Add AIDL to Slack or Teams, approve your policy and three starter cards, and press Start.</p>
 <div class="lp-hcta"><a class="lp-btn" href="#start" @click.prevent="addTo('slack')">Add to Slack →</a><a class="lp-btn" href="#start" @click.prevent="addTo('teams')">Add to Teams →</a><RouterLink class="lp-btn lp-ghost" to="/pricing">See plans</RouterLink></div>
-<form class="lp-wl" novalidate @submit.prevent="submitWaitlist">
+<form id="waitlist" class="lp-wl" novalidate @submit.prevent="submitWaitlist">
 <label for="lp-wl-email">Not a company? Join the waitlist</label>
 <div class="lp-wl-row"><input id="lp-wl-email" v-model.trim="wlEmail" type="email" placeholder="you@example.com" autocomplete="email" :disabled="wlState === 'sending' || wlState === 'done'" /><button type="submit" class="lp-btn" :disabled="wlState === 'sending' || wlState === 'done'">{{ wlState === 'sending' ? 'Joining…' : wlState === 'done' ? 'Joined ✓' : 'Join' }}</button></div>
 <p class="lp-wl-msg" :class="{ 'lp-err': wlState === 'error' }" role="status" aria-live="polite">{{ wlMsg }}</p>
@@ -229,7 +229,7 @@
 
 <section class="lp-band lp-vf" id="licences">
 <div class="lp-wrap">
-<span class="lp-eb">▼ THE LICENCE</span>
+<span class="lp-eb">▼ SAMPLE LICENCE</span>
 <h2 class="lp-h2">One licence, your colours</h2>
 <p class="lp-lede">Every person who finishes the onboarding cards gets an AI Driving Licence with their name, your organization and a unique licence number, valid for one year.</p>
 <div class="lp-vf-grid">
@@ -239,7 +239,14 @@
 </section>
 
 <footer class="lp-foot">
-<div class="lp-wrap lp-foot-in"><a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id">{{ l.label }}</a><RouterLink to="/pricing">Pricing</RouterLink><RouterLink to="/privacy">Privacy</RouterLink><RouterLink to="/support">Support</RouterLink><span class="lp-copy">© 2026 AI Driving Licence</span></div>
+<div class="lp-wrap">
+<div class="lp-foot-in">
+<div class="lp-foot-about"><a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a><p class="lp-foot-tag">AI onboarding cards for Slack and Microsoft Teams, and a licence for everyone who finishes them.</p><div class="lp-soc"><a v-for="s in socialLinks" :key="s.id" :href="s.url" target="_blank" rel="noopener noreferrer" :aria-label="'AIDL on ' + s.label" :title="s.label"><svg viewBox="0 0 24 24" aria-hidden="true" v-html="s.icon"></svg></a></div></div>
+<nav class="lp-foot-col" aria-label="Product"><h3>Product</h3><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id">{{ l.label }}</a></nav>
+<nav class="lp-foot-col" aria-label="Company"><h3>Company</h3><RouterLink to="/pricing">Pricing</RouterLink><a href="#waitlist">Join the waitlist</a><a href="#licences">Sample licences</a><RouterLink to="/privacy">Privacy</RouterLink><RouterLink to="/support">Support</RouterLink></nav>
+</div>
+<div class="lp-foot-bot"><span class="lp-copy">© 2026 AI Driving Licence</span><span>Built for Slack &amp; Microsoft Teams</span></div>
+</div>
 </footer>
 </div>
 </template>
@@ -258,13 +265,14 @@ import { PRESETS, buildAvatarLayers, type ShapeNode } from '../lib/avatar-parts'
 import { licenceSvg } from '../lib/licenceSvg'
 import { CARD_TOPICS, LIBRARY_SIZE, PLANS, STARTER_CARDS, type PlanKey } from '../lib/landingCards'
 import { joinWaitlist } from '../lib/waitlistApi'
-import { NAV_LINKS } from '../lib/landingNav'
+import { NAV_LINKS, SOCIAL_LINKS } from '../lib/landingNav'
 
 type Platform = 'slack' | 'teams'
 
 // Nav / footer section links. The one for the section in view (or the last
 // one clicked) is highlighted red.
 const navLinks = NAV_LINKS
+const socialLinks = SOCIAL_LINKS
 const activeSection = ref('')
 
 // "Not a company? Join the waitlist" box (bottom CTA) — individuals only;
@@ -884,12 +892,22 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-vf-grid{margin:36px auto 0;max-width:860px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
 .lp-vf-card svg{display:block;width:100%;height:auto;filter:drop-shadow(7px 7px 0 var(--ink))}
 @media(max-width:760px){.lp-vf-grid{grid-template-columns:minmax(0,1fr);gap:24px}.lp-vf-card svg{filter:drop-shadow(4px 4px 0 var(--ink))}}
-.lp-foot{background:var(--asphalt);color:#cfc49c;padding:44px 0;font-size:14px}
-.lp-foot-in{display:flex;gap:28px;align-items:center;flex-wrap:wrap}
+.lp-foot{background:var(--asphalt);color:#cfc49c;padding:56px 0 0;font-size:14px;border-top:6px solid var(--yellow)}
+.lp-foot-in{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,.8fr);gap:36px 48px;padding-bottom:40px}
 .lp-foot a{color:var(--cream);text-decoration:none}
 .lp-foot a:hover{color:var(--yellow)}
 .lp-foot a.lp-active{color:var(--red)}
-.lp-foot .lp-brand{color:var(--cream)}
+.lp-foot .lp-brand{color:var(--cream);width:fit-content}
+.lp-foot-tag{margin:16px 0 22px;max-width:38ch;line-height:1.6}
+.lp-foot-col h3{margin:0 0 12px;font-family:"JetBrains Mono",monospace;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--yellow)}
+.lp-foot-col a{display:block;width:fit-content;padding:5px 0}
+.lp-soc{display:flex;flex-wrap:wrap;gap:12px}
+.lp-soc a{width:42px;height:42px;display:grid;place-items:center;border:2px solid var(--cream);color:var(--cream);box-shadow:3px 3px 0 var(--yellow);transition:transform .15s,box-shadow .15s,background-color .15s,color .15s}
+.lp-soc a:hover,.lp-soc a:focus-visible{background:var(--yellow);border-color:var(--yellow);color:var(--ink);transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--cream)}
+.lp-soc svg{width:20px;height:20px;display:block}
+.lp-foot-bot{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 24px;border-top:1px solid #3a3726;padding:20px 0 26px;font-size:13px}
+@media(max-width:860px){.lp-foot-in{grid-template-columns:repeat(2,minmax(0,1fr))}.lp-foot-about{grid-column:1/-1}}
+@media(prefers-reduced-motion:reduce){.lp-soc a{transition:none}.lp-soc a:hover,.lp-soc a:focus-visible{transform:none}}
 .lp-v-t{display:none}
 .lp-root.lp-pf-teams .lp-v-s{display:none}
 .lp-root.lp-pf-teams .lp-v-t{display:inline}
@@ -919,7 +937,6 @@ const userCur = computed(() => USER[userStep.value]!)
 @media(max-width:1060px){.lp-hero-in,.lp-stp,.lp-ov,.lp-sides,.lp-plat{grid-template-columns:1fr}.lp-g3{grid-template-columns:1fr}.lp-pane{position:static}.lp-nl{display:none}.lp-burger{display:flex}}
 @media(max-width:640px){.lp-wrap{padding:0 20px}.lp-hero-in{padding:56px 20px 130px}.lp-win{grid-template-columns:1fr}.lp-win-sb{display:none}.lp-band{padding:76px 0}.lp-ev{grid-template-columns:1fr}.lp-ev>div:first-child{padding-bottom:0}.lp-outs{grid-template-columns:1fr}.lp-ncta .lp-ghost{display:none}}
 .lp-root [id]{scroll-margin-top:80px}
-.lp-copy{margin-left:auto}
 
 /* Tablets: steps sit above the detail pane, so lay them out 2-up */
 @media(max-width:1060px){
@@ -999,10 +1016,9 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-cta{padding:72px 0}
 .lp-cta .lp-hcta{flex-direction:column;align-items:stretch;max-width:300px;margin:0 auto}
 .lp-cta .lp-hcta .lp-btn{justify-content:center}
-.lp-foot{padding:32px 0}
-.lp-foot-in{gap:12px 22px}
-.lp-foot .lp-brand{flex-basis:100%;margin-bottom:6px}
-.lp-copy{margin-left:0;flex-basis:100%;margin-top:6px;font-size:13px}
+.lp-foot{padding:40px 0 0}
+.lp-foot-in{gap:28px 20px;padding-bottom:32px}
+.lp-foot-bot{flex-direction:column;padding:18px 0 22px}
 }
 @media(max-width:480px){
 .lp-nav .lp-brand span{display:none}
