@@ -890,8 +890,8 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-wl-msg.lp-err{color:#a3150b}
 .lp-vf{background:var(--cream-2)}
 .lp-vf-grid{margin:36px auto 0;max-width:860px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:28px}
-.lp-vf-card svg{display:block;width:100%;height:auto;filter:drop-shadow(7px 7px 0 var(--ink))}
-@media(max-width:760px){.lp-vf-grid{grid-template-columns:minmax(0,1fr);gap:24px}.lp-vf-card svg{filter:drop-shadow(4px 4px 0 var(--ink))}}
+.lp-vf-card svg{display:block;width:100%;height:auto}
+@media(max-width:760px){.lp-vf-grid{grid-template-columns:minmax(0,1fr);gap:24px}}
 .lp-foot{background:var(--asphalt);color:#cfc49c;padding:56px 0 0;font-size:14px;border-top:6px solid var(--yellow)}
 .lp-foot-in{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,.8fr);gap:36px 48px;padding-bottom:40px}
 .lp-foot a{color:var(--cream);text-decoration:none}

@@ -15,7 +15,7 @@ describe('licenceSvg', () => {
 
   it('uses the avatar when there is one, else a silhouette', () => {
     expect(licenceSvg({ ...base, avatar: 'data:image/png;base64,AAA' })).toContain('data:image/png;base64,AAA')
-    expect(licenceSvg(base)).not.toContain('clip-path="url(#lc-photo)"')
+    expect(licenceSvg(base)).toContain('#E9E2C6')
   })
 
   it('escapes what people typed', () => {
@@ -30,7 +30,7 @@ describe('licenceSvg', () => {
 
   it('shrinks a very long name and shortens a very long organisation', () => {
     const long = 'Maximiliana Featherstonehaugh-Cholmondeley De La Cruz'
-    expect(licenceSvg({ ...base, name: long })).not.toMatch(/font-size="36"[^>]*>MAXIMILIANA/)
+    expect(licenceSvg({ ...base, name: long })).not.toMatch(/font-size="38"[^>]*>MAXIMILIANA/)
     expect(licenceSvg({ ...base, org: 'O'.repeat(80) })).toContain('…')
   })
 })

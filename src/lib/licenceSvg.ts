@@ -1,6 +1,7 @@
-// The AI Driving License as inline SVG (design E:\licence_latest.png) — the same
+// The AI Driving Licence as inline SVG (design E:\licence_latest.png) — the same
 // card the AIDL server draws as a PNG for Slack and Teams
-// (aidl-backend/api/licence_image.py): change both together.
+// (aidl-backend/api/licence_image.py): change both together. The licence shows
+// no status; that's kept on the account (licensing.licence_status).
 
 import aidlLogoUrl from '../assets/images/aidl-logo-licence.png'
 
@@ -13,15 +14,16 @@ export interface LicenceData {
   logo?: string
   avatar?: string | null
   // Panel colour (default navy; several colours = a gradient), text colour,
-  // accent (title, road line) and licence-number colour.
+  // accent (title, seal, road line) and licence-number colour.
   bg?: string | string[]
   ink?: string
   accent?: string
   numColor?: string
 }
 
-export const LICENCE_WIDTH = 800
-export const LICENCE_HEIGHT = 468
+const CARD_W = 800, CARD_H = 470, SHADOW = 13
+export const LICENCE_WIDTH = CARD_W + SHADOW
+export const LICENCE_HEIGHT = CARD_H + SHADOW
 
 function esc(s: string) {
   return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
@@ -33,21 +35,21 @@ function fitted(content: string, size: number, perChar: number, room: number) {
 }
 
 export function licenceSvg(o: LicenceData): string {
-  const dark = '#14140F', cream = '#F5ECD2', photoBg = '#D1D8E2', silhouette = '#7E8898'
-  const pale = o.ink || '#E8EEF7', accent = o.accent || '#FFCC00', numColor = o.numColor || accent
-  const gradId = 'lc-bg-' + o.number.replace(/[^\w-]/g, '')
-  const panel = Array.isArray(o.bg) ? `url(#${gradId})` : o.bg || '#16233A'
+  const W = CARD_W, H = CARD_H
+  const dark = '#14140F', ink = o.ink || '#E8EEF7', accent = o.accent || '#FFCC00', numColor = o.numColor || accent
+  const gradId = 'lpl-bg-' + o.number.replace(/[^\w-]/g, '')
+  const bgFill = Array.isArray(o.bg) ? `url(#${gradId})` : o.bg || '#16233A'
   const gradient = Array.isArray(o.bg)
     ? `<linearGradient id="${gradId}" x1="0" y1="0" x2="1" y2="1">` +
       o.bg.map((c, i, a) => `<stop offset="${i / (a.length - 1)}" stop-color="${c}"/>`).join('') + '</linearGradient>'
     : ''
-  const sans = 'font-family="Arial, Helvetica, sans-serif" font-weight="700"'
-  const heavy = 'font-family="Arial Black, Arial, Helvetica, sans-serif" font-weight="900"'
-  const mono = 'font-family="Courier New, Courier, monospace" font-weight="700"'
-  const text = (x: number, y: number, size: number, font: string, fill: string, content: string, extra = '') =>
-    `<text x="${x}" y="${y}" ${font} font-size="${size}" fill="${fill}"${extra ? ' ' + extra : ''}>${esc(content)}</text>`
-  const label = (x: number, y: number, content: string) =>
-    text(x, y, 12, sans, pale, content, 'letter-spacing=".6" fill-opacity=".62"')
+  const sans = 'font-family="Arial, Helvetica, sans-serif"'
+  const heavy = 'font-family="Arial Black, Arial, sans-serif" font-weight="900"'
+  const mono = 'font-family="Courier New, monospace" font-weight="700"'
+  const text = (px: number, py: number, size: number, font: string, fill: string, content: string, extra = '') =>
+    `<text x="${px}" y="${py}" ${font} font-size="${size}" fill="${fill}"${extra ? ' ' + extra : ''}>${esc(content)}</text>`
+  const label = (px: number, py: number, content: string) =>
+    text(px, py, 13, sans + ' font-weight="700"', ink, content, 'fill-opacity=".62" letter-spacing="1.2"')
 
   const name = o.name.toUpperCase()
   let who = o.org ? `ISSUED FOR ${o.org.toUpperCase()}` : 'ISSUED UNDER THE AIDL PUBLIC REGISTRY'
@@ -55,46 +57,46 @@ export function licenceSvg(o: LicenceData): string {
 
   // Holder photo: the avatar, otherwise a passport-style silhouette.
   const photo = o.avatar
-    ? `<image href="${esc(o.avatar)}" x="27.6" y="144" width="171.8" height="189" preserveAspectRatio="xMidYMid slice" clip-path="url(#lc-photo)"/>`
-    : `<circle cx="113.5" cy="212" r="34" fill="${silhouette}"/><path d="M51.5 333 C 53 280, 80 256, 113.5 256 C 147 256, 174 280, 175.5 333 Z" fill="${silhouette}"/>`
-
-  let hazard = ''
-  for (let x = 8; x < 778; x += 19) {
-    hazard += `<path d="M${x} 123 h10 l10 -13 h-10 Z" fill="${panel}"/>`
-  }
+    ? `<image href="${esc(o.avatar)}" x="40" y="148" width="150" height="188" clip-path="url(#lpl-ph)"/>`
+    : '<rect x="40" y="148" width="150" height="188" fill="#E9E2C6" clip-path="url(#lpl-ph)"/><circle cx="115" cy="222" r="38" fill="#8a8468"/>' +
+      '<path d="M50 336 C 54 280, 84 268, 115 268 C 146 268, 176 280, 180 336 Z" fill="#8a8468"/>'
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${LICENCE_WIDTH} ${LICENCE_HEIGHT}" role="img" aria-label="AI Driving Licence for ${esc(o.name)}, ${esc(o.number)}">` +
     '<defs>' +
+      `<clipPath id="lpl-card"><rect x="3" y="3" width="${W - 6}" height="${H - 6}" rx="24"/></clipPath>` +
+      '<clipPath id="lpl-ph"><rect x="40" y="148" width="150" height="188" rx="10"/></clipPath>' +
+      '<clipPath id="lpl-lg"><circle cx="64" cy="56" r="36"/></clipPath>' +
+      `<pattern id="lpl-hz" width="22" height="22" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="11" height="22" fill="${dark}"/></pattern>` +
       gradient +
-      '<clipPath id="lc-card"><rect width="787" height="456" rx="26"/></clipPath>' +
-      '<clipPath id="lc-band"><rect x="8" y="110" width="770" height="13"/></clipPath>' +
-      '<clipPath id="lc-photo"><rect x="38" y="144" width="151" height="189" rx="9"/></clipPath>' +
+      `<pattern id="lpl-gl-${gradId}" width="18" height="18" patternUnits="userSpaceOnUse" patternTransform="rotate(30)"><circle cx="9" cy="9" r="7" fill="none" stroke="${ink}" stroke-opacity=".06" stroke-width="1"/></pattern>` +
     '</defs>' +
-    `<rect x="11" y="10" width="787" height="456" rx="26" fill="${dark}"/>` +
-    '<g clip-path="url(#lc-card)">' +
-      `<rect width="787" height="456" fill="${dark}"/>` +
-      // header
-      `<image href="${esc(o.logo || aidlLogoUrl)}" x="20" y="13" width="84" height="84"/>` +
-      text(121, 56, 33, heavy, accent, 'AI DRIVING LICENCE') +
-      text(122, 85, 13, sans, cream, who, 'letter-spacing="1.8"') +
-      // hazard stripe + navy panel
-      `<g clip-path="url(#lc-band)">${hazard}</g>` +
-      `<rect x="8" y="123" width="770" height="280" fill="${panel}"/>` +
-      // road: centre line
-      `<line x1="8" y1="432" x2="778" y2="432" stroke="${accent}" stroke-width="3" stroke-dasharray="23 16"/>` +
+    `<rect x="${3 + SHADOW}" y="${3 + SHADOW}" width="${W - 6}" height="${H - 6}" rx="24" fill="${dark}"/>` +
+    '<g clip-path="url(#lpl-card)">' +
+      `<rect width="${W}" height="${H}" fill="${bgFill}"/>` +
+      `<rect width="${W}" height="${H}" fill="url(#lpl-gl-${gradId})"/>` +
+      // header band
+      `<rect width="${W}" height="112" fill="${dark}"/>` +
+      `<rect y="112" width="${W}" height="12" fill="url(#lpl-hz)"/>` +
+      `<circle cx="64" cy="56" r="40" fill="${accent}"/>` +
+      `<image href="${esc(o.logo || aidlLogoUrl)}" x="28" y="20" width="72" height="72" clip-path="url(#lpl-lg)"/>` +
+      text(122, 54, 32, heavy, accent, 'AI DRIVING LICENCE', 'letter-spacing="1"') +
+      text(124, 84, 15, sans + ' font-weight="700"', '#F5ECD2', who, 'letter-spacing="2"') +
       // photo
-      `<rect x="38" y="144" width="151" height="189" rx="9" fill="${photoBg}"/>` +
       photo +
-      `<rect x="38" y="144" width="151" height="189" rx="9" fill="none" stroke="${pale}" stroke-width="4"/>` +
+      `<rect x="40" y="148" width="150" height="188" rx="10" fill="none" stroke="${ink}" stroke-width="4"/>` +
       // holder details
-      label(217, 164, '1. NAME') +
-      text(217, 204, fitted(name, 36, 0.76, 530), heavy, pale, name) +
-      label(217, 248, '2. ISSUED') +
-      text(217, 276, fitted(o.issued, 22, 0.58, 145), sans, pale, o.issued) +
-      label(372, 248, '3. VALID UNTIL') +
-      text(372, 276, fitted(o.expires, 22, 0.58, 390), sans, pale, o.expires) +
-      label(217, 321, '4. LICENCE NO.') +
-      text(217, 352, 25, mono, numColor, o.number, 'letter-spacing="1"') +
+      label(220, 168, '1. NAME') +
+      text(220, 208, fitted(name, 38, 0.8, 556), heavy, ink, name) +
+      label(220, 252, '2. ISSUED') +
+      text(220, 280, fitted(o.issued, 22, 0.58, 150), sans + ' font-weight="700"', ink, o.issued) +
+      label(380, 252, '3. VALID UNTIL') +
+      text(380, 280, fitted(o.expires, 22, 0.58, 390), sans + ' font-weight="700"', ink, o.expires) +
+      label(220, 326, '4. LICENCE NO.') +
+      text(220, 356, 26, mono, numColor, o.number, 'letter-spacing="1"') +
+      // road footer: centre line
+      `<rect y="410" width="${W}" height="${H - 410}" fill="${dark}"/>` +
+      `<line x1="0" y1="440" x2="${W}" y2="440" stroke="${accent}" stroke-width="3" stroke-dasharray="26 16"/>` +
     '</g>' +
+    `<rect x="3" y="3" width="${W - 6}" height="${H - 6}" rx="24" fill="none" stroke="${dark}" stroke-width="6"/>` +
     '</svg>'
 }
