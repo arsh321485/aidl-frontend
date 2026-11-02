@@ -2,6 +2,8 @@
    Two tracks: cadet = Junior Cadet (8–12), crew = Road Crew (12–16) */
 
 import { downloadLicenseCertificate } from './downloadLicense.js';
+import { storedAvatarUrl } from './licenceImage';
+import { licenceSvg } from './licenceSvg';
 import { notifySuccess, notifyWarning } from './notify.js';
 
 const STRANDS = [
@@ -352,17 +354,12 @@ function T() { return TIERS[CURRENT]; }
 /* ================================================= DOWNLOAD */
 function downloadLicense() {
   const t = T();
-  const lic = LADDER[t.licenceIdx];
   downloadLicenseCertificate({
     holder: t.learner,
     licenseId: t.licId,
-    classLabel: lic.name + ' · ' + t.label,
-    issued: t.identity,
+    issued: '—',
     expires: t.renewal,
-    rows: [
-      { label: 'Ages', value: t.age },
-      { label: 'Grown-up', value: t.grownup },
-    ],
+    avatar: storedAvatarUrl(),
   });
 }
 function chip(s) { return `<span class="strand-chip ${s}">${s}</span>`; }
@@ -409,18 +406,13 @@ function renderDashboard() {
     </div>
     <div class="dash-grid">
       <div class="license-card">
-        <div class="lic-head"><span><b>${lic.name.toUpperCase()}</b> · ${t.label.toUpperCase()}</span><span>${t.identity}</span></div>
-        <div class="lic-body">
-          <div class="lic-portrait"><div class="agent"><div class="antenna"></div><div class="head"></div><div class="body"></div><div class="a-badge"></div></div></div>
-          <div class="lic-info">
-            <div class="name">${t.learner.toUpperCase()}</div>
-            AGES ${t.age} TRACK<br/>
-            GROWN-UP · ${t.grownup}<br/>
-            RENEWS · ${t.renewal} · REVOCABLE<br/>
-            <div class="num">${t.licId}</div>
-          </div>
-          <div class="lic-qr"><div class="corner"></div></div>
-        </div>
+        <div class="lic-full">${licenceSvg({
+          name: t.learner,
+          number: t.licId,
+          issued: '—',
+          expires: t.renewal,
+          avatar: storedAvatarUrl(),
+        })}</div>
         <div class="lic-stamps">${stamps}</div>
         <div class="lic-actions"><button type="button" class="btn sm btn-ghost" onclick="downloadLicense()">⬇ DOWNLOAD LICENSE</button></div>
       </div>
@@ -554,7 +546,7 @@ function renderLadder() {
     const lbl = state === 'held' ? 'HELD ✓' : state === 'current' ? 'CURRENT' : 'LOCKED';
     return `
     <div class="ladder-row ${state}">
-      <div class="lic-plate" style="background: ${l.color};${l.name === 'Crew Chief' ? ' color: var(--cream);' : ''}">${l.name.toUpperCase()}</div>
+      <div class="lic-full" style="background: ${l.color};${l.name === 'Crew Chief' ? ' color: var(--cream);' : ''}">${l.name.toUpperCase()}</div>
       <div class="ladder-meta"><small>${l.who}</small><b>${l.name}</b><p>${l.unlocks}</p></div>
       <div class="ladder-gate"><span class="hk">Gate — must demonstrate</span>${l.gate}</div>
       <div class="ladder-state ${state}">${lbl}</div>

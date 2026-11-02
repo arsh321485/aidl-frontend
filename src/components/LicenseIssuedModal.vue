@@ -12,49 +12,7 @@
 
       <div class="iss-body">
         <div class="iss-stage">
-          <div class="lic-card" :style="{ background: activeDesign.bg, color: activeDesign.ink }">
-            <div class="lc-pattern" :style="{ backgroundImage: activeDesign.pat }"></div>
-            <div class="lc-gloss"></div>
-            <div class="lc-watermark">AIDL</div>
-            <div class="lc-head">
-              <span class="lc-seal-wrap">
-                <span class="lc-seal" :style="{ background: activeDesign.seal, borderColor: activeDesign.ink }">
-                  <img :src="aidlLogo" alt="AIDL" class="lc-seal-img" />
-                </span>
-              </span>
-              <div>
-                <h5>AI DRIVING LICENSE</h5>
-                <small>ISSUED UNDER THE AIDL PUBLIC REGISTRY</small>
-              </div>
-              <span class="lc-cls" :style="{ borderColor: activeDesign.ink }">{{ classShort }}</span>
-            </div>
-            <div class="lc-main">
-              <div>
-                <h6 class="lc-name">{{ holder.toUpperCase() }}</h6>
-                <div class="lc-rows">
-                  <div><span>CLASS</span><b>{{ classFull }}</b></div>
-                  <div><span>ISSUED</span><b>{{ issued }}</b></div>
-                  <div><span>EXPIRES</span><b>{{ expires }}</b></div>
-                  <div><span>STATUS</span><b>ACTIVE</b></div>
-                </div>
-              </div>
-              <div v-if="avatar" ref="photoEl" class="lc-photo lc-photo-avatar" :style="{ borderColor: activeDesign.ink }">
-                <AvatarBuilder :config="avatar" />
-              </div>
-              <div v-else class="lc-photo" :style="{ borderColor: activeDesign.ink }">
-                <svg viewBox="0 0 24 24" class="lc-photo-icon" fill="currentColor"><path d="M12 12.4a5.2 5.2 0 1 0 0-10.4 5.2 5.2 0 0 0 0 10.4Zm0 2.4c-4.4 0-9 2.2-9 5v2.6h18v-2.6c0-2.8-4.6-5-9-5Z" /></svg>
-                <span class="lc-photo-cap">DRIVER PHOTO</span>
-              </div>
-            </div>
-            <div class="lc-foot">
-              <div class="lc-no">{{ licenseId }}</div>
-              <div class="lc-sig">VERIFY AT AIDL.ORG/VERIFY<br />AUTHORISED SIGNATORY</div>
-            </div>
-            <div class="lc-strip" :style="{ background: activeDesign.strip }"></div>
-          </div>
-          <p class="iss-hint" style="text-align:center;max-width:46ch">
-            Pick a design — it's how your license appears in your portal, on the public registry, and anywhere you share it. You can change it any time from your Driver Portal.
-          </p>
+          <div class="lic-full" v-html="cardSvg"></div>
         </div>
 
         <div class="iss-side">
@@ -67,29 +25,14 @@
           </div>
 
           <div>
-            <h4>1 · Choose a design</h4>
-            <div class="dz">
-              <b
-                v-for="d in DESIGNS"
-                :key="d.id"
-                :class="{ on: d.id === design }"
-                :style="{ background: d.bg }"
-                :title="d.name"
-                @click="selectDesign(d.id)"
-              ><i>{{ d.name }}</i></b>
-            </div>
-            <p class="iss-hint">Six official plate designs. All carry the same seal, number and verification link.</p>
-          </div>
-
-          <div>
-            <h4>2 · Message</h4>
+            <h4>1 · Message</h4>
             <div class="cap-row">
               <textarea v-model="caption"></textarea>
             </div>
           </div>
 
           <div>
-            <h4>3 · Share it</h4>
+            <h4>2 · Share it</h4>
             <div class="share-grid">
               <a class="sh" :href="linkedinHref" target="_blank" rel="noopener">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="#0A66C2"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9h4v12H3zM9 9h3.8v1.7h.05c.53-.95 1.83-1.95 3.76-1.95 4.02 0 4.76 2.5 4.76 5.76V21h-4v-5.6c0-1.34-.03-3.07-1.9-3.07-1.9 0-2.2 1.46-2.2 2.97V21H9z" /></svg>
@@ -163,7 +106,8 @@
 <script setup lang="ts">
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import aidlLogo from '../assets/images/aidl-logo.png'
-import AvatarBuilder from './AvatarBuilder.vue'
+import { avatarDataUrl, licencePng, saveBlob as saveFile } from '../lib/licenceImage'
+import { licenceSvg } from '../lib/licenceSvg'
 import type { AvatarConfig } from '../lib/avatar-parts'
 
 const props = defineProps<{
@@ -179,64 +123,22 @@ const props = defineProps<{
 
 const emit = defineEmits<{ close: [] }>()
 
-interface Design {
-  id: string
-  name: string
-  bg: string
-  ink: string
-  seal: string
-  sealInk: string
-  strip: string
-  pat: string
-  /** Flat colour stops used when redrawing the card on a <canvas> for
-   * download — a single hex draws solid, more than one draws a diagonal
-   * gradient. Kept separate from `bg` (a CSS background value) because
-   * canvas gradients can't be built from an arbitrary CSS string. */
-  stops: string[]
-}
-
-const DESIGNS: Design[] = [
-  { id: 'sign', name: 'ROAD SIGN', bg: '#ffcc00', ink: '#14140f', seal: '#14140f', sealInk: '#ffcc00', strip: '#14140f',
-    pat: 'repeating-linear-gradient(135deg,rgba(20,20,15,.07) 0 10px,transparent 10px 20px)', stops: ['#ffcc00'] },
-  { id: 'night', name: 'NIGHT DRIVE', bg: '#16233a', ink: '#e8eef7', seal: '#ffcc00', sealInk: '#14140f', strip: '#ffcc00',
-    pat: 'radial-gradient(circle at 78% 22%,rgba(255,204,0,.22),transparent 46%)', stops: ['#16233a'] },
-  { id: 'green', name: 'HIGHWAY', bg: '#12613c', ink: '#f2f7f2', seal: '#f2f7f2', sealInk: '#12613c', strip: '#f5ecd2',
-    pat: 'repeating-linear-gradient(90deg,rgba(255,255,255,.07) 0 3px,transparent 3px 26px)', stops: ['#12613c'] },
-  { id: 'sunset', name: 'SUNSET RUN', bg: 'linear-gradient(160deg,#ff9d00 0%,#e23a2e 62%,#7a1f2b 100%)', ink: '#fff4dd', seal: '#14140f', sealInk: '#ff9d00', strip: '#14140f',
-    pat: 'repeating-linear-gradient(180deg,rgba(255,255,255,.08) 0 2px,transparent 2px 16px)', stops: ['#ff9d00', '#e23a2e', '#7a1f2b'] },
-  { id: 'blue', name: 'BLUEPRINT', bg: '#0f4c81', ink: '#dbe9f7', seal: '#dbe9f7', sealInk: '#0f4c81', strip: '#6fb3e0',
-    pat: 'repeating-linear-gradient(0deg,rgba(255,255,255,.11) 0 1px,transparent 1px 22px),repeating-linear-gradient(90deg,rgba(255,255,255,.11) 0 1px,transparent 1px 22px)', stops: ['#0f4c81'] },
-  { id: 'plate', name: 'CHROME', bg: 'linear-gradient(180deg,#f7f6f2 0%,#d9d7cd 52%,#f2f0e9 100%)', ink: '#14140f', seal: '#e23a2e', sealInk: '#fff', strip: '#e23a2e',
-    pat: 'repeating-linear-gradient(135deg,rgba(20,20,15,.05) 0 2px,transparent 2px 9px)', stops: ['#f7f6f2', '#d9d7cd', '#f2f0e9'] },
-]
-
-const design = ref('sign')
-const activeDesign = computed(() => DESIGNS.find((d) => d.id === design.value) ?? DESIGNS[0]!)
-
-function selectDesign(id: string) {
-  design.value = id
-  try { localStorage.setItem('aidl.license.design', id) } catch (e) {}
-  const d = DESIGNS.find((x) => x.id === id)
-  if (d) showToast(`DESIGN: ${d.name}`)
-}
+const licence = computed(() => ({
+  name: props.holder,
+  number: props.licenseId,
+  issued: props.issued,
+  expires: props.expires,
+  avatar: avatarDataUrl(props.avatar),
+}))
+const cardSvg = computed(() => licenceSvg(licence.value))
 
 function onKeydown(e: KeyboardEvent) {
   if (e.key === 'Escape') emit('close')
 }
 
 onMounted(() => {
-  try {
-    const saved = localStorage.getItem('aidl.license.design')
-    if (saved && DESIGNS.some((d) => d.id === saved)) design.value = saved
-  } catch (e) {}
   document.addEventListener('keydown', onKeydown)
 
-  // Preloaded so the download canvas can draw the real logo into the seal
-  // instead of falling back to a plain circle.
-  const img = new Image()
-  img.onload = () => { logoImg.value = img }
-  loadAvatarImage()
-  img.src = aidlLogo
 })
 onUnmounted(() => document.removeEventListener('keydown', onKeydown))
 
@@ -283,269 +185,22 @@ async function copySlack() {
   showToast('COPIED — PASTE INTO SLACK')
 }
 
-const logoImg = ref<HTMLImageElement | null>(null)
-const photoEl = ref<HTMLElement | null>(null)
-const avatarImg = ref<HTMLImageElement | null>(null)
-
-// The PNG download is drawn on a <canvas>, so turn the rendered avatar <svg>
-// into an image once, up front, for drawLicenseCard to use.
-function loadAvatarImage() {
-  const svg = photoEl.value?.querySelector('svg')
-  if (!svg) return
-  const clone = svg.cloneNode(true) as SVGSVGElement
-  clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg')
-  clone.setAttribute('width', '200')
-  clone.setAttribute('height', '220')
-  const img = new Image()
-  img.onload = () => { avatarImg.value = img }
-  img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(new XMLSerializer().serializeToString(clone))
-}
-
 const firstName = computed(() => {
   const first = props.holder.trim().split(/\s+/)[0] || 'DRIVER'
   return first.charAt(0).toUpperCase() + first.slice(1).toLowerCase()
 })
 
-function hexToRgba(hex: string, alpha: number): string {
-  const h = hex.replace('#', '')
-  const full = h.length === 3 ? h.split('').map((c) => c + c).join('') : h
-  const n = parseInt(full, 16)
-  return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${alpha})`
-}
-
-// Draws the card straight onto a canvas instead of rasterising the live DOM
-// (e.g. via an SVG <foreignObject>) — that route loads the result through
-// `new Image()`, which browsers treat as tainting the canvas whenever the
-// foreignObject contains HTML, so `canvas.toBlob` silently fails. Drawing
-// with the 2D API directly has no such restriction.
-function drawLicenseCard(ctx: CanvasRenderingContext2D, w: number, h: number) {
-  const d = activeDesign.value
-
-  if (d.stops.length === 1) {
-    ctx.fillStyle = d.stops[0]!
-  } else {
-    const grad = ctx.createLinearGradient(0, 0, w, h)
-    d.stops.forEach((c, i) => grad.addColorStop(i / (d.stops.length - 1), c))
-    ctx.fillStyle = grad
+async function licenseBlob(): Promise<Blob | null> {
+  try {
+    return await licencePng(licence.value)
+  } catch (e) {
+    showToast('COULD NOT DRAW THE LICENSE — TRY AGAIN')
+    return null
   }
-  ctx.fillRect(0, 0, w, h)
-
-  // Diagonal watermark, behind everything else drawn below.
-  ctx.save()
-  ctx.globalAlpha = 0.05
-  ctx.fillStyle = d.ink
-  ctx.font = '700 240px Arial, sans-serif'
-  ctx.textAlign = 'center'
-  ctx.textBaseline = 'middle'
-  ctx.translate(w / 2, h / 2)
-  ctx.rotate((-18 * Math.PI) / 180)
-  ctx.fillText('AIDL', 0, 0)
-  ctx.restore()
-  ctx.textBaseline = 'alphabetic'
-
-  // Laminate sheen, matching the CSS `.lc-gloss` soft-light diagonal.
-  ctx.save()
-  ctx.globalCompositeOperation = 'soft-light'
-  const gloss = ctx.createLinearGradient(0, 0, w * 0.85, h)
-  gloss.addColorStop(0, 'rgba(255,255,255,.55)')
-  gloss.addColorStop(0.24, 'rgba(255,255,255,0)')
-  gloss.addColorStop(0.66, 'rgba(255,255,255,0)')
-  gloss.addColorStop(0.76, 'rgba(255,255,255,.3)')
-  gloss.addColorStop(0.9, 'rgba(255,255,255,0)')
-  ctx.fillStyle = gloss
-  ctx.fillRect(0, 0, w, h)
-  ctx.restore()
-
-  const border = 8
-  ctx.strokeStyle = d.ink
-  ctx.lineWidth = border
-  ctx.strokeRect(border / 2, border / 2, w - border, h - border)
-
-  const stripH = 14
-  ctx.fillStyle = d.strip
-  ctx.fillRect(0, h - stripH, w, stripH)
-  // Faint barcode texture over the base strip colour.
-  ctx.save()
-  ctx.globalCompositeOperation = 'multiply'
-  ctx.globalAlpha = 0.45
-  ctx.fillStyle = '#000'
-  for (let x = 0; x < w; x += 14) {
-    ctx.fillRect(x, h - stripH, 1, stripH)
-    ctx.fillRect(x + 3, h - stripH, 1, stripH)
-    ctx.fillRect(x + 8, h - stripH, 1, stripH)
-  }
-  ctx.restore()
-
-  const pad = 46
-  const sealR = 34
-  const sealCx = pad + sealR
-  const sealCy = pad + sealR
-  ctx.beginPath()
-  ctx.arc(sealCx, sealCy, sealR, 0, Math.PI * 2)
-  ctx.fillStyle = d.seal
-  ctx.fill()
-  ctx.lineWidth = 3
-  ctx.strokeStyle = d.ink
-  ctx.stroke()
-  if (logoImg.value) {
-    ctx.save()
-    ctx.beginPath()
-    ctx.arc(sealCx, sealCy, sealR - 2, 0, Math.PI * 2)
-    ctx.clip()
-    ctx.drawImage(logoImg.value, sealCx - sealR, sealCy - sealR, sealR * 2, sealR * 2)
-    ctx.restore()
-  }
-  // Dashed halo ring, matching the CSS `.lc-seal-wrap::after`.
-  ctx.save()
-  ctx.setLineDash([4, 3])
-  ctx.globalAlpha = 0.55
-  ctx.lineWidth = 1.5
-  ctx.strokeStyle = d.ink
-  ctx.beginPath()
-  ctx.arc(sealCx, sealCy, sealR + 6, 0, Math.PI * 2)
-  ctx.stroke()
-  ctx.restore()
-
-  const titleX = sealCx + sealR + 20
-  ctx.textAlign = 'left'
-  ctx.fillStyle = d.ink
-  ctx.font = '700 26px Arial, sans-serif'
-  ctx.fillText('AI DRIVING LICENSE', titleX, pad + 22)
-  ctx.font = '600 12px "Courier New", monospace'
-  ctx.fillStyle = hexToRgba(d.ink, 0.75)
-  ctx.fillText('ISSUED UNDER THE AIDL PUBLIC REGISTRY', titleX, pad + 42)
-
-  ctx.font = '700 16px Arial, sans-serif'
-  ctx.fillStyle = d.ink
-  const badgeW = ctx.measureText(props.classShort).width + 28
-  const badgeH = 34
-  const badgeX = w - pad - badgeW
-  const badgeY = pad
-  ctx.lineWidth = 3
-  ctx.strokeStyle = d.ink
-  ctx.strokeRect(badgeX, badgeY, badgeW, badgeH)
-  ctx.textAlign = 'center'
-  ctx.fillText(props.classShort, badgeX + badgeW / 2, badgeY + badgeH / 2 + 6)
-
-  const headerBottom = pad + sealR * 2 + 22
-  ctx.strokeStyle = d.ink
-  ctx.lineWidth = 3
-  ctx.beginPath()
-  ctx.moveTo(pad, headerBottom)
-  ctx.lineTo(w - pad, headerBottom)
-  ctx.stroke()
-
-  ctx.textAlign = 'left'
-  ctx.fillStyle = d.ink
-  ctx.font = '700 44px Arial, sans-serif'
-  const nameY = headerBottom + 58
-  ctx.fillText(props.holder.toUpperCase(), pad, nameY)
-
-  const photoW = 150
-  const photoH = 200
-  const photoX = w - pad - photoW
-  const photoY = headerBottom + 20
-
-  const rows: [string, string][] = [
-    ['CLASS', props.classFull],
-    ['ISSUED', props.issued],
-    ['EXPIRES', props.expires],
-    ['STATUS', 'ACTIVE'],
-  ]
-  const rowColW = (photoX - 24 - pad) / 2
-  const rowStartY = nameY + 34
-  rows.forEach(([label, val], i) => {
-    const col = i % 2
-    const line = Math.floor(i / 2)
-    const x = pad + col * (rowColW + 24)
-    const y = rowStartY + line * 56
-    ctx.font = '600 12px "Courier New", monospace'
-    ctx.fillStyle = hexToRgba(d.ink, 0.68)
-    ctx.fillText(label, x, y)
-    ctx.font = '700 18px "Courier New", monospace'
-    ctx.fillStyle = d.ink
-    ctx.fillText(val, x, y + 22)
-  })
-
-  ctx.fillStyle = hexToRgba('#7f7f7f', 0.14)
-  ctx.fillRect(photoX, photoY, photoW, photoH)
-  ctx.strokeStyle = d.ink
-  ctx.lineWidth = 3
-  ctx.strokeRect(photoX, photoY, photoW, photoH)
-  if (avatarImg.value) {
-    // Cover-fit the 200x220 avatar into the photo box, like the SVG's
-    // preserveAspectRatio="xMidYMid slice" does on screen.
-    const scale = Math.max(photoW / 200, photoH / 220)
-    const dw = 200 * scale
-    const dh = 220 * scale
-    ctx.save()
-    ctx.beginPath()
-    ctx.rect(photoX + 1.5, photoY + 1.5, photoW - 3, photoH - 3)
-    ctx.clip()
-    ctx.drawImage(avatarImg.value, photoX + (photoW - dw) / 2, photoY + (photoH - dh) / 2, dw, dh)
-    ctx.restore()
-  } else {
-    // Simple person-silhouette placeholder (head circle + shoulders arc),
-    // matching the CSS `.lc-photo-icon`. Clipped to the photo box so the
-    // shoulders arc can't spill past the border.
-    ctx.save()
-    ctx.beginPath()
-    ctx.rect(photoX, photoY, photoW, photoH)
-    ctx.clip()
-    const iconCx = photoX + photoW / 2
-    const iconCy = photoY + photoH / 2 - 14
-    ctx.fillStyle = hexToRgba(d.ink, 0.55)
-    ctx.beginPath()
-    ctx.arc(iconCx, iconCy - 14, 22, 0, Math.PI * 2)
-    ctx.fill()
-    ctx.beginPath()
-    ctx.arc(iconCx, iconCy + 46, 42, Math.PI, 0)
-    ctx.fill()
-    ctx.restore()
-    ctx.fillStyle = hexToRgba(d.ink, 0.8)
-    ctx.font = '600 11px "Courier New", monospace'
-    ctx.textAlign = 'center'
-    ctx.fillText('DRIVER PHOTO', photoX + photoW / 2, photoY + photoH - 14)
-  }
-
-  const footerY = h - stripH - 46
-  ctx.strokeStyle = d.ink
-  ctx.lineWidth = 3
-  ctx.beginPath()
-  ctx.moveTo(pad, footerY)
-  ctx.lineTo(w - pad, footerY)
-  ctx.stroke()
-
-  ctx.textAlign = 'left'
-  ctx.fillStyle = d.ink
-  ctx.font = '700 22px "Courier New", monospace'
-  ctx.fillText(props.licenseId, pad, footerY + 32)
-
-  ctx.textAlign = 'right'
-  ctx.font = '600 11px "Courier New", monospace'
-  ctx.fillStyle = hexToRgba(d.ink, 0.7)
-  ctx.fillText('VERIFY AT AIDL.ORG/VERIFY', w - pad, footerY + 16)
-  ctx.fillText('AUTHORISED SIGNATORY', w - pad, footerY + 32)
-}
-
-function licenseBlob(): Promise<Blob | null> {
-  const w = 1120
-  const h = Math.round(w / 1.586)
-  const cv = document.createElement('canvas')
-  cv.width = w
-  cv.height = h
-  const ctx = cv.getContext('2d')
-  if (!ctx) return Promise.resolve(null)
-  drawLicenseCard(ctx, w, h)
-  return new Promise((resolve) => cv.toBlob(resolve))
 }
 
 function saveBlob(b: Blob) {
-  const a = document.createElement('a')
-  a.href = URL.createObjectURL(b)
-  a.download = `${props.licenseId}.png`
-  a.click()
-  setTimeout(() => URL.revokeObjectURL(a.href), 4000)
+  saveFile(b, `${props.licenseId}.png`)
 }
 
 async function downloadImage() {
@@ -580,6 +235,8 @@ async function shareToApp(app: string, url: string) {
 </script>
 
 <style scoped>
+.lic-full { width: 100%; }
+.lic-full :deep(svg) { display: block; width: 100%; height: auto; }
 .iss-ov { position: fixed; inset: 0; z-index: 400; background: rgba(12, 12, 9, .86); backdrop-filter: blur(3px); overflow: auto; padding: 34px 20px; }
 .iss { max-width: 1120px; margin: 0 auto; background: var(--cream, #f5ecd2); border: 4px solid var(--ink, #14140f); box-shadow: 14px 14px 0 var(--sign-yellow, #ffcc00); }
 .iss-top { display: flex; align-items: center; gap: 16px; padding: 20px 26px; background: var(--asphalt, #14140f); color: var(--cream, #f5ecd2); border-bottom: 4px solid var(--ink, #14140f); flex-wrap: wrap; }
@@ -600,62 +257,6 @@ async function shareToApp(app: string, url: string) {
 .iss-welcome h4 { font-family: "Bungee", sans-serif; font-size: 19px; margin: 0 0 3px; letter-spacing: .01em; }
 .iss-welcome p { margin: 0; font-family: "JetBrains Mono", monospace; font-size: 11.5px; line-height: 1.45; color: #3a3528; }
 
-.dz { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-.dz b { display: block; border: 3px solid var(--ink, #14140f); height: 52px; cursor: pointer; position: relative; transition: transform .12s; }
-.dz b:hover { transform: translateY(-2px); }
-.dz b.on { outline: 4px solid var(--signal-red, #e23a2e); outline-offset: 2px; }
-.dz b i { position: absolute; left: 0; right: 0; bottom: 0; font-family: "JetBrains Mono", monospace; font-style: normal; font-size: 8px; letter-spacing: .06em; text-align: center; padding: 2px 0; background: rgba(20, 20, 15, .82); color: #f5ecd2; }
-
-.lic-card {
-  container-type: inline-size; width: 100%; max-width: 560px; min-width: 0; aspect-ratio: 1.586;
-  border: 4px solid var(--ink, #14140f);
-  box-shadow: 10px 10px 0 rgba(20, 20, 15, .35), inset 0 0 0 3px rgba(0, 0, 0, .07);
-  position: relative; overflow: hidden; display: flex; flex-direction: column;
-  padding: clamp(11px, 3.4cqw, 20px) clamp(12px, 3.8cqw, 22px);
-  transition: opacity .18s;
-}
-.lc-pattern { content: ""; position: absolute; inset: 0; pointer-events: none; opacity: .5; }
-/* Laminate-style diagonal sheen — a soft-light blend keeps it looking like
-   light on glossy card stock rather than washing the design colour out. */
-.lc-gloss {
-  position: absolute; inset: 0; pointer-events: none; z-index: 1;
-  background: linear-gradient(115deg, rgba(255, 255, 255, .4) 0%, rgba(255, 255, 255, 0) 24%, rgba(255, 255, 255, 0) 66%, rgba(255, 255, 255, .22) 76%, rgba(255, 255, 255, 0) 90%);
-  mix-blend-mode: soft-light;
-}
-.lc-watermark {
-  position: absolute; inset: 0; z-index: 1; pointer-events: none;
-  display: flex; align-items: center; justify-content: center;
-  font-family: "Bungee", sans-serif; font-size: 30cqw; color: currentColor; opacity: .05;
-  transform: rotate(-18deg); white-space: nowrap;
-}
-.lc-head { display: flex; align-items: center; gap: clamp(6px, 1.9cqw, 11px); min-width: 0; border-bottom: clamp(2px, .7cqw, 3px) solid currentColor; padding-bottom: clamp(4px, 2cqw, 10px); position: relative; z-index: 2; }
-.lc-seal-wrap { position: relative; flex: none; }
-.lc-seal-wrap::after { content: ""; position: absolute; inset: clamp(-6px, -1.6cqw, -4px); border-radius: 50%; border: 1.5px dashed currentColor; opacity: .55; pointer-events: none; }
-.lc-seal { width: clamp(24px, 7cqw, 40px); height: clamp(24px, 7cqw, 40px); border-radius: 50%; border: 3px solid var(--ink, #14140f); display: grid; place-items: center; overflow: hidden; box-shadow: 0 2px 4px rgba(0, 0, 0, .3); }
-.lc-seal-img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; display: block; }
-.lc-head h5 { font-family: "Bungee", sans-serif; font-size: clamp(11px, 2.9cqw, 15px); white-space: nowrap; margin: 0; line-height: 1.1; }
-.lc-head small { display: block; font-family: "JetBrains Mono", monospace; font-size: clamp(6px, 1.5cqw, 8px); white-space: nowrap; letter-spacing: .16em; margin-top: 3px; opacity: .75; }
-.lc-cls { margin-left: auto; white-space: nowrap; font-family: "Bungee", sans-serif; font-size: clamp(8px, 2.1cqw, 11px); border: clamp(2px, .6cqw, 3px) solid var(--ink, #14140f); padding: clamp(2px, 1cqw, 5px) clamp(4px, 1.7cqw, 9px); box-shadow: 2px 2px 0 rgba(0, 0, 0, .18); }
-.lc-main { display: grid; grid-template-columns: minmax(0, 1fr) clamp(52px, 17cqw, 96px); gap: clamp(7px, 2.9cqw, 16px); flex: 1; min-height: 0; padding-top: clamp(5px, 2.6cqw, 14px); position: relative; z-index: 2; }
-.lc-name { font-family: "Bungee", sans-serif; font-size: clamp(13px, 4.8cqw, 26px); line-height: 1.05; margin: 0 0 clamp(5px, 2.2cqw, 12px); word-break: break-word; }
-.lc-rows { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(3px, 1.4cqw, 9px) clamp(7px, 2.6cqw, 14px); font-family: "JetBrains Mono", monospace; font-size: 9px; letter-spacing: .08em; }
-.lc-rows span { display: block; opacity: .68; font-size: clamp(6px, 1.4cqw, 8px); margin-bottom: 2px; }
-.lc-rows b { font-size: clamp(8px, 2cqw, 11px); letter-spacing: .04em; white-space: nowrap; }
-.lc-photo { align-self: start; aspect-ratio: 3 / 4; max-height: 100%; border: clamp(2px, .6cqw, 3px) solid var(--ink, #14140f); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: clamp(3px, 1.4cqw, 7px); background: rgba(127, 127, 127, .14); }
-.lc-photo-avatar { padding: 0; overflow: hidden; background: none; }
-.lc-photo-icon { width: 42%; height: auto; opacity: .55; }
-.lc-photo-cap { font-family: "JetBrains Mono", monospace; font-size: clamp(5px, 1.3cqw, 7px); letter-spacing: .1em; text-align: center; opacity: .8; }
-.lc-foot { display: flex; align-items: flex-end; justify-content: space-between; gap: clamp(6px, 2cqw, 12px); flex: none; border-top: clamp(2px, .7cqw, 3px) solid currentColor; padding-top: clamp(4px, 1.8cqw, 9px); margin-top: clamp(4px, 2cqw, 10px); position: relative; z-index: 2; }
-.lc-no { font-family: "JetBrains Mono", monospace; font-size: clamp(8px, 2.4cqw, 13px); font-weight: 700; letter-spacing: .08em; white-space: nowrap; }
-.lc-sig { font-family: "JetBrains Mono", monospace; font-size: clamp(5px, 1.4cqw, 8px); letter-spacing: .08em; white-space: nowrap; opacity: .7; text-align: right; }
-/* A faint barcode texture over the base colour strip — a small realism cue
-   that reads as a document/ID feature rather than a plain colour bar. */
-.lc-strip { position: absolute; left: 0; right: 0; bottom: 0; height: clamp(4px, 1.7cqw, 9px); overflow: hidden; }
-.lc-strip::before {
-  content: ""; position: absolute; inset: 0;
-  background-image: repeating-linear-gradient(90deg, rgba(0, 0, 0, .55) 0 1px, transparent 1px 3px, rgba(0, 0, 0, .55) 3px 4px, transparent 4px 8px, rgba(0, 0, 0, .55) 8px 9px, transparent 9px 14px);
-  mix-blend-mode: multiply; opacity: .45;
-}
 
 .share-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
 .sh { display: flex; align-items: center; gap: 9px; padding: 11px 12px; border: 3px solid var(--ink, #14140f); background: var(--cream-2, #f0e3bd); font-family: "Bungee", sans-serif; font-size: 10px; letter-spacing: .03em; cursor: pointer; text-decoration: none; color: var(--ink, #14140f); transition: transform .1s, box-shadow .1s; text-align: left; }

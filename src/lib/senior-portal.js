@@ -8,6 +8,8 @@
    ============================================================ */
 
 import { downloadLicenseCertificate } from './downloadLicense.js';
+import { storedAvatarUrl } from './licenceImage';
+import { licenceSvg } from './licenceSvg';
 import { notifySuccess, notifyWarning } from './notify.js';
 
 const PORTALS = {
@@ -490,10 +492,7 @@ function downloadLicense() {
     classLabel: t.cls,
     issued: t.dash.issued.replace(/^ISSUED\s*/i, ''),
     expires: t.expires,
-    rows: [
-      { label: 'Date of Birth', value: t.dob },
-      { label: 'Role', value: t.role },
-    ],
+    avatar: storedAvatarUrl(),
   });
 }
 
@@ -538,21 +537,13 @@ function renderDashboard() {
 
     <div class="dash-grid">
       <div class="license-card">
-        <div class="lic-head">
-          <span><b>AI DRIVING LICENCE</b> · ${t.cls}</span>
-          <span>${d.issued}</span>
-        </div>
-        <div class="lic-body">
-          <div class="lic-portrait"><div class="agent"><div class="antenna"></div><div class="head"></div><div class="body"></div><div class="a-badge"></div></div></div>
-          <div class="lic-info">
-            <div class="name">${t.name.toUpperCase()}</div>
-            DOB ${t.dob}<br/>
-            ROLE · ${t.role}<br/>
-            EXPIRES ${t.expires}<br/>
-            <div class="num">${t.licId}</div>
-          </div>
-          <div class="lic-qr"><div class="corner"></div></div>
-        </div>
+        <div class="lic-full">${licenceSvg({
+          name: t.name,
+          number: t.licId,
+          issued: d.issued.replace(/^ISSUED\s*/i, ''),
+          expires: t.expires,
+          avatar: storedAvatarUrl(),
+        })}</div>
         <div class="lic-stamps">${stamps}</div>
         <div class="lic-actions"><button type="button" class="btn sm btn-ghost" onclick="downloadLicense()">⬇ DOWNLOAD LICENSE</button></div>
       </div>
