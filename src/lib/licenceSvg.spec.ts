@@ -4,17 +4,13 @@ import { licenceSvg, LICENCE_HEIGHT, LICENCE_WIDTH } from './licenceSvg'
 const base = { name: 'Your Name', org: 'Your Org', number: 'AIDL-L-4417-0932', issued: '22/10/2026', expires: '22/10/2027' }
 
 describe('licenceSvg', () => {
-  it('shows the holder, licence number, dates and status', () => {
+  it('shows the holder, licence number and dates, and no status', () => {
     const svg = licenceSvg(base)
-    for (const text of ['YOUR NAME', 'ISSUED FOR YOUR ORG', 'AIDL-L-4417-0932', '22/10/2026', '22/10/2027', 'ACTIVE']) {
+    for (const text of ['YOUR NAME', 'ISSUED FOR YOUR ORG', 'AIDL-L-4417-0932', '22/10/2026', '22/10/2027']) {
       expect(svg).toContain(text)
     }
+    expect(svg).not.toMatch(/STATUS|ACTIVE/)
     expect(svg).toContain(`viewBox="0 0 ${LICENCE_WIDTH} ${LICENCE_HEIGHT}"`)
-  })
-
-  it('shows any status it is given', () => {
-    expect(licenceSvg({ ...base, status: 'expired' })).toContain('EXPIRED')
-    expect(licenceSvg({ ...base, status: 'SUSPENDED' })).toContain('SUSPENDED')
   })
 
   it('uses the avatar when there is one, else a silhouette', () => {

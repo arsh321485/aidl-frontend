@@ -11,7 +11,6 @@ export interface LicenseCertificateDetails {
   expires: string
   rows?: LicenseCertificateRow[]
   org?: string
-  status?: string
   avatar?: string | null
 }
 

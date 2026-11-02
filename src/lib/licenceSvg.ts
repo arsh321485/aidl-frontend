@@ -10,7 +10,6 @@ export interface LicenceData {
   number: string
   issued: string
   expires: string
-  status?: string
   logo?: string
   avatar?: string | null
   // Panel colour (default navy; several colours = a gradient), text colour,
@@ -51,10 +50,6 @@ export function licenceSvg(o: LicenceData): string {
     text(x, y, 12, sans, pale, content, 'letter-spacing=".6" fill-opacity=".62"')
 
   const name = o.name.toUpperCase()
-  const status = (o.status || 'ACTIVE').toUpperCase()
-  const pill = status === 'ACTIVE' ? '#1A7F37' : status === 'EXPIRED' ? '#C62F24' : '#FFB000'
-  const pillInk = status === 'ACTIVE' || status === 'EXPIRED' ? '#FFFFFF' : dark
-  const pillWidth = status.length * 11 + 44
   let who = o.org ? `ISSUED FOR ${o.org.toUpperCase()}` : 'ISSUED UNDER THE AIDL PUBLIC REGISTRY'
   if (who.length > 44) who = who.slice(0, 43).trimEnd() + '…'
 
@@ -68,7 +63,7 @@ export function licenceSvg(o: LicenceData): string {
     hazard += `<path d="M${x} 123 h10 l10 -13 h-10 Z" fill="${panel}"/>`
   }
 
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${LICENCE_WIDTH} ${LICENCE_HEIGHT}" role="img" aria-label="AI Driving Licence for ${esc(o.name)}, ${esc(o.number)}, status ${esc(status)}">` +
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${LICENCE_WIDTH} ${LICENCE_HEIGHT}" role="img" aria-label="AI Driving Licence for ${esc(o.name)}, ${esc(o.number)}">` +
     '<defs>' +
       gradient +
       '<clipPath id="lc-card"><rect width="787" height="456" rx="26"/></clipPath>' +
@@ -100,10 +95,6 @@ export function licenceSvg(o: LicenceData): string {
       text(372, 276, fitted(o.expires, 22, 0.58, 390), sans, pale, o.expires) +
       label(217, 321, '4. LICENCE NO.') +
       text(217, 352, 25, mono, numColor, o.number, 'letter-spacing="1"') +
-      label(540, 321, '5. STATUS') +
-      `<rect x="540" y="331" width="${pillWidth}" height="28" rx="14" fill="${pill}"/>` +
-      `<circle cx="556" cy="345" r="4" fill="${pillInk}"/>` +
-      text(568, 350, 14, sans, pillInk, status, 'letter-spacing=".6"') +
     '</g>' +
     '</svg>'
 }
