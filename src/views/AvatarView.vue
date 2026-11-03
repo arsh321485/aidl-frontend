@@ -17,14 +17,15 @@
         <div>
           <h2>✅ Avatar saved</h2>
           <p>{{ message }}</p>
-          <p class="av-hint">You can close this page and go back to Slack.</p>
+          <a v-if="info.return_url" class="av-btn av-back" :href="info.return_url">Back to AIDL →</a>
+          <p v-else class="av-hint">You can close this page and go back to Slack.</p>
           <button type="button" class="av-btn av-ghost" @click="picking = true">Change it</button>
         </div>
       </section>
 
       <section v-else class="av-box">
         <h2>Pick the avatar for your licence</h2>
-        <p class="av-hint">Choose a ready-made one or build your own. Your licence arrives in Slack as soon as it's saved.</p>
+        <p class="av-hint">Choose a ready-made one or build your own.{{ info.return_url ? '' : " Your licence arrives in Slack as soon as it's saved." }}</p>
         <p v-if="error" class="av-err-line">{{ error }}</p>
         <button type="button" class="av-btn" :disabled="busy" @click="picking = true">
           {{ busy ? 'Saving…' : 'Choose my avatar →' }}
@@ -83,7 +84,7 @@ onMounted(async () => {
     router.replace({ path: '/avatar', query: {} }) // keep the token out of the address bar
   }
   if (route.query.error || !hasToken()) {
-    error.value = 'This link has expired. Open “Create my avatar” in Slack again.'
+    error.value = 'This link has expired. Open “Create my avatar” again.'
     loading.value = false
     return
   }
@@ -115,5 +116,6 @@ onMounted(async () => {
 .av-btn { border: 3px solid var(--ink, #14140f); background: #e3342f; color: #fff; padding: 12px 22px; cursor: pointer;
   font-family: "Bungee", sans-serif; font-size: 14px; }
 .av-btn:disabled { opacity: 0.6; cursor: wait; }
+.av-back { display: inline-block; margin: 0 8px 10px 0; text-decoration: none; }
 .av-ghost { background: #fff; color: var(--ink, #14140f); padding: 8px 14px; font-size: 12px; }
 </style>

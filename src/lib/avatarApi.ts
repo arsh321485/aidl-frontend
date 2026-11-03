@@ -11,6 +11,7 @@ export interface AvatarInfo {
   has_avatar: boolean
   config: AvatarConfig | null
   licensed: boolean
+  return_url?: string
 }
 
 export class AvatarError extends Error {}
