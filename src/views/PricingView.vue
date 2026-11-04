@@ -126,7 +126,7 @@ const plans = [
       'AI Driving Licence for each person, valid for 1 year',
       'Default package: 12 awareness cards, 1 a month',
       'Admin Center in one channel message',
-      'My cards and Request an app for everyone',
+      'Request an app for everyone',
     ],
   },
   {
@@ -185,7 +185,7 @@ const compare = [
     ['How often', '1 a month', '2 a week|Mon, Thu · 10:00', '4 a week|Your days and time'],
     ['Cards included', '12|Default package', '104|A year', '208|A year'],
     ['Topics', 'Default package', 'The topics you pick', 'All 15 topics'],
-    ['My cards & Request an app', '✓', '✓', '✓'],
+    ['Request an app', '✓', '✓', '✓'],
   ] },
   { group: 'OVERSIGHT', rows: [
     ['Admin Center & team progress', '✓', '✓', '✓'],

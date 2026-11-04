@@ -13,7 +13,6 @@ export interface AvatarInfo {
   licensed: boolean
   return_url?: string
   locked?: boolean
-  one_change_only?: boolean
 }
 
 export class AvatarError extends Error {}

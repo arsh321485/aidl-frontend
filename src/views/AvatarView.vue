@@ -29,7 +29,7 @@
           <p>{{ message }}</p>
           <a v-if="info.return_url" class="av-btn av-back" :href="info.return_url">Back to AIDL →</a>
           <p v-else class="av-hint">You can close this page and go back to Slack.</p>
-          <p v-if="info.one_change_only && !info.locked" class="av-hint">You can change your avatar once.</p>
+          <p v-if="!info.locked" class="av-hint">You can change your avatar once.</p>
           <button v-if="!info.locked" type="button" class="av-btn av-ghost" @click="picking = true">Change it</button>
         </div>
       </section>
@@ -37,7 +37,7 @@
       <section v-else class="av-box">
         <h2>Pick the avatar for your licence</h2>
         <p class="av-hint">Choose a ready-made one or build your own.{{ info.return_url ? '' : " Your licence arrives in Slack as soon as it's saved." }}</p>
-        <p v-if="info.has_avatar && info.one_change_only" class="av-hint">You can only change your avatar once. After that, it stays on your licence.</p>
+        <p v-if="info.has_avatar" class="av-hint">You can only change your avatar once. After that, it stays on your licence.</p>
         <p v-if="error" class="av-err-line">{{ error }}</p>
         <button type="button" class="av-btn" :disabled="busy" @click="picking = true">
           {{ busy ? 'Saving…' : 'Choose my avatar →' }}
