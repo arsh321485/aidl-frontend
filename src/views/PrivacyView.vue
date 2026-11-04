@@ -56,6 +56,7 @@
 <li><strong>Workspace:</strong> Slack workspace ID and name, the #aidl channel ID, the ID of the Admin Center message, and the workspace's bot access token (stored encrypted).</li>
 <li><strong>People in #aidl:</strong> Slack user ID, display name, email address (where the scope is granted), time zone and profile picture.</li>
 <li><strong>What admins set up:</strong> answers to the AI policy questions, each published policy version, co-admins and their rights, card approvals, allowed apps and plan choices.</li>
+<li><strong>Uploaded Acceptable Use Policy (optional):</strong> if an admin uploads their own AUP (PDF, Word or text file), AIDL keeps the file name, type and size, the text read from it and the policy cards drafted from it. The text is sent to NVIDIA's AI service only to draft those cards, which admins review before anything is sent. The original file is not kept, and the text is not used to train AI models.</li>
 <li><strong>What employees do in AIDL:</strong> agreement to each policy point (with date and policy version), "Got it" acknowledgements of learning cards, Traffic Light votes and ratings, the avatar they create, and their licence number and validity.</li>
 <li><strong>App requests:</strong> the app or website named, what it is for and what data it would use, plus the admin's decision and reply.</li>
 <li><strong>Billing:</strong> plan, seat count and payment status. Card payments are handled by Stripe — we never see or store full card numbers.</li>
@@ -115,6 +116,7 @@
 <tr><td>MongoDB</td><td>Database</td></tr>
 <tr><td>SendGrid</td><td>Sign-in code and service emails</td></tr>
 <tr><td>Stripe</td><td>Payments</td></tr>
+<tr><td>NVIDIA</td><td>AI drafting of policy cards from an Acceptable Use Policy an admin uploads (not used to train AI models)</td></tr>
 </tbody>
 </table></div>
 <p>We may also share information if the law requires it or to protect people's rights and safety.</p>

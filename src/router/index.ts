@@ -16,6 +16,7 @@ const AvatarView = () => import('../views/AvatarView.vue')
 const PlansView = () => import('../views/PlansView.vue')
 const PricingView = () => import('../views/PricingView.vue')
 const PrivacyView = () => import('../views/PrivacyView.vue')
+const TermsView = () => import('../views/TermsView.vue')
 const AiRequirementsView = () => import('../views/AiRequirementsView.vue')
 const SupportView = () => import('../views/SupportView.vue')
 
@@ -27,7 +28,7 @@ const router = createRouter({
   scrollBehavior(to, _from, savedPosition) {
     if (savedPosition) return savedPosition
     if (to.hash) return { el: to.hash, top: 80 }
-    if (to.name === 'privacy' || to.name === 'support' || to.name === 'pricing' || to.name === 'ai-requirements') return { top: 0 }
+    if (to.name === 'privacy' || to.name === 'terms' || to.name === 'support' || to.name === 'pricing' || to.name === 'ai-requirements') return { top: 0 }
     return false
   },
   routes: [
@@ -157,6 +158,13 @@ const router = createRouter({
       path: '/privacy',
       name: 'privacy',
       component: PrivacyView,
+      meta: { public: true },
+    },
+    {
+      // Terms of Service — the URL given to the Slack Marketplace.
+      path: '/terms',
+      name: 'terms',
+      component: TermsView,
       meta: { public: true },
     },
     {

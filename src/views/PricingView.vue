@@ -122,7 +122,7 @@ const plans = [
     cta: 'Start free', inc: 'INCLUDED', base: [] as string[],
     feats: [
       '3 onboarding cards: 📄 AI Acceptable Use Policy, 🚦 Traffic Light Check, 📖 The Highway Code',
-      'AI policy built in 15 guided pages, agreed point by point',
+      'AI policy built from 14 short policy cards, agreed point by point',
       'AI Driving Licence for each person, valid for 1 year',
       'Default package: 12 awareness cards, 1 a month',
       'Admin Center in one channel message',
