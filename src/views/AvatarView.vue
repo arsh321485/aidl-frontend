@@ -12,20 +12,32 @@
     <div v-else-if="error && !info" class="av-msg av-err">{{ error }}</div>
 
     <template v-else-if="info">
-      <section v-if="saved" class="av-box av-done">
+      <section v-if="info.locked && !saved" class="av-box av-done">
+        <div v-if="info.config" class="av-preview"><AvatarBuilder :config="info.config" /></div>
+        <div>
+          <h2>Your avatar is set</h2>
+          <p>You've already changed your avatar once, so it can't be changed again.</p>
+          <a v-if="info.return_url" class="av-btn av-back" :href="info.return_url">Back to AIDL →</a>
+          <p v-else class="av-hint">You can close this page and go back to Slack.</p>
+        </div>
+      </section>
+
+      <section v-else-if="saved" class="av-box av-done">
         <div class="av-preview"><AvatarBuilder :config="saved" /></div>
         <div>
           <h2>✅ Avatar saved</h2>
           <p>{{ message }}</p>
           <a v-if="info.return_url" class="av-btn av-back" :href="info.return_url">Back to AIDL →</a>
           <p v-else class="av-hint">You can close this page and go back to Slack.</p>
-          <button type="button" class="av-btn av-ghost" @click="picking = true">Change it</button>
+          <p v-if="info.one_change_only && !info.locked" class="av-hint">You can change your avatar once.</p>
+          <button v-if="!info.locked" type="button" class="av-btn av-ghost" @click="picking = true">Change it</button>
         </div>
       </section>
 
       <section v-else class="av-box">
         <h2>Pick the avatar for your licence</h2>
         <p class="av-hint">Choose a ready-made one or build your own.{{ info.return_url ? '' : " Your licence arrives in Slack as soon as it's saved." }}</p>
+        <p v-if="info.has_avatar && info.one_change_only" class="av-hint">You can only change your avatar once. After that, it stays on your licence.</p>
         <p v-if="error" class="av-err-line">{{ error }}</p>
         <button type="button" class="av-btn" :disabled="busy" @click="picking = true">
           {{ busy ? 'Saving…' : 'Choose my avatar →' }}
@@ -70,6 +82,7 @@ async function onPicked(avatar: AvatarConfig & { name?: string }) {
     const r = await saveAvatar(await avatarPng(cfg), cfg)
     saved.value = cfg
     message.value = r.message
+    if (info.value) info.value.locked = !!r.locked
   } catch (e) {
     error.value = e instanceof AvatarError ? e.message : 'Something went wrong. Please try again.'
   } finally {

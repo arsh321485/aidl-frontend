@@ -12,6 +12,8 @@ export interface AvatarInfo {
   config: AvatarConfig | null
   licensed: boolean
   return_url?: string
+  locked?: boolean
+  one_change_only?: boolean
 }
 
 export class AvatarError extends Error {}
@@ -44,7 +46,7 @@ async function call<T>(init?: RequestInit, query = ''): Promise<T> {
 export const getAvatar = () => call<AvatarInfo>(undefined, `?token=${encodeURIComponent(token())}`)
 
 export const saveAvatar = (png: string, config: AvatarConfig) =>
-  call<{ ok: boolean; licensed: boolean; message: string }>({
+  call<{ ok: boolean; licensed: boolean; message: string; locked?: boolean }>({
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ token: token(), png, config }),
