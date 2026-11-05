@@ -42,6 +42,7 @@ export interface PlansData {
   preview_cards: number
   weekdays: string[]
   can_upgrade: boolean
+  promo_available: boolean
 }
 
 export interface PreviewCard {
@@ -109,4 +110,5 @@ export const checkout = (payload: {
   topics: string[]
   schedule?: { days: number[]; hour: number }
   seats?: number
+  promo_code?: string
 }) => call<CheckoutResult>('/api/billing/checkout/', payload)

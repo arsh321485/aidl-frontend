@@ -129,6 +129,11 @@
             <span>{{ targetPlan.label }} plan</span>
             <b>{{ targetPlan.price }}</b>
           </div>
+          <label v-if="data.promo_available" class="pl-seats">
+            Internal promo code
+            <input v-model.trim="promoCode" type="text" autocomplete="off" />
+          </label>
+          <p v-if="fieldErrors.promo_code" class="pl-field-err">{{ fieldErrors.promo_code }}</p>
           <p v-if="error" class="pl-field-err">{{ error }}</p>
           <p v-if="!data.can_upgrade" class="pl-hint">Only the master admin, or admins allowed to manage the plan, can upgrade.</p>
           <button
@@ -137,7 +142,8 @@
             :disabled="busy || !data.can_upgrade || needsTopics"
             @click="submit"
           >{{ busy ? 'Please wait…' : buttonLabel }}</button>
-          <p v-if="paymentReady" class="pl-hint">You'll pay securely on Stripe's checkout page. Billed monthly per user.</p>
+          <p v-if="promoCode" class="pl-hint">No payment is taken with a valid code.</p>
+          <p v-else-if="paymentReady" class="pl-hint">You'll pay securely on Stripe's checkout page. Billed monthly per user.</p>
           <p v-else-if="data.test_mode" class="pl-hint">Test mode is on: the upgrade is activated without payment.</p>
           <p v-if="data.sales_email" class="pl-hint">Questions about plans? Email
             <a :href="`mailto:${data.sales_email}`">{{ data.sales_email }}</a>.</p>
@@ -169,6 +175,7 @@ const topics = ref<string[]>([])
 const days = ref<number[]>([0, 1, 3, 4])
 const hour = ref(10)
 const seats = ref(0)
+const promoCode = ref('')
 const preview = ref<PreviewCard[]>([])
 const previewTotal = ref(0)
 const hours = Array.from({ length: 15 }, (_, i) => i + 6)
@@ -184,7 +191,8 @@ function step(name: 'topics' | 'schedule' | 'cards') {
   return order.indexOf(name) + 1
 }
 const paymentReady = computed(() => !!(target.value && data.value?.payment_ready?.[target.value]))
-const buttonLabel = computed(() => paymentReady.value ? 'Continue to payment →'
+const buttonLabel = computed(() => promoCode.value ? 'Activate with code →'
+  : paymentReady.value ? 'Continue to payment →'
   : data.value?.test_mode ? 'Activate (test mode — no payment) →' : 'Request upgrade →')
 
 // A higher plan, or Enterprise again to change its topics / schedule.
@@ -237,12 +245,14 @@ async function submit() {
       topics: topics.value,
       schedule: targetPlan.value.custom_schedule ? { days: days.value, hour: hour.value } : undefined,
       seats: seats.value || undefined,
+      promo_code: promoCode.value || undefined,
     })
     if (r.status === 'redirect' && r.url) {
       window.location.href = r.url
       return
     }
     result.value = r
+    promoCode.value = ''
     data.value = await getPlans()
     window.scrollTo({ top: 0, behavior: 'smooth' })
   } catch (e) {
