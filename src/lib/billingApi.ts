@@ -42,6 +42,8 @@ export interface PlansData {
   preview_cards: number
   weekdays: string[]
   can_upgrade: boolean
+  // Only present for our own testers (the server decides from the signed link): ordinary customers never get it.
+  promo_available?: boolean
 }
 
 export interface PreviewCard {
@@ -55,6 +57,11 @@ export interface CheckoutResult {
   status: 'redirect' | 'activated' | 'pending'
   url?: string
   message?: string
+}
+
+export interface PromoResult {
+  status: 'activated'
+  message: string
 }
 
 export class BillingError extends Error {
@@ -103,6 +110,10 @@ export const getPlans = () => call<PlansData>('/api/billing/plans/')
 
 export const previewCards = (plan: string, topics: string[]) =>
   call<{ cards: PreviewCard[]; total: number }>('/api/billing/preview/', { plan, topics })
+
+// Internal testing only. The server works out who you are and which workspace you belong to from the
+// signed link; nothing about the workspace is sent from here.
+export const applyPromoCode = (code: string) => call<PromoResult>('/api/billing/promo/', { code })
 
 export const checkout = (payload: {
   plan: string

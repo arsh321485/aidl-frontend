@@ -50,6 +50,26 @@
         </button>
       </section>
 
+      <section v-if="data.promo_available" class="pl-box pl-promo">
+        <h2>Have a promo code?</h2>
+        <p class="pl-hint">For AIDL internal testing. The plan turns on straight away and nothing is charged.</p>
+        <form class="pl-promo-row" @submit.prevent="applyPromo">
+          <input
+            v-model="promoCode"
+            type="text"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Enter your code"
+            aria-label="Promo code"
+            :disabled="promoBusy"
+          />
+          <button type="submit" class="pl-go pl-apply" :disabled="promoBusy || !promoCode.trim()">
+            {{ promoBusy ? 'Checking…' : 'Apply' }}
+          </button>
+        </form>
+        <p v-if="promoError" class="pl-field-err" role="alert">{{ promoError }}</p>
+      </section>
+
       <template v-if="targetPlan">
         <section v-if="targetPlan.picks_topics" class="pl-box">
           <h2>{{ step('topics') }} · Pick your topics</h2>
@@ -152,7 +172,7 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import aidlLogo from '../assets/images/aidl-logo-licence.png'
 import {
-  BillingError, checkout, getPlans, hasToken, previewCards, saveToken,
+  applyPromoCode, BillingError, checkout, getPlans, hasToken, previewCards, saveToken,
   type CheckoutResult, type PlanInfo, type PlansData, type PreviewCard,
 } from '../lib/billingApi'
 
@@ -164,6 +184,9 @@ const busy = ref(false)
 const error = ref('')
 const fieldErrors = ref<Record<string, string>>({})
 const result = ref<CheckoutResult | null>(null)
+const promoCode = ref('')
+const promoBusy = ref(false)
+const promoError = ref('')
 const target = ref<PlanInfo['key'] | ''>('')
 const topics = ref<string[]>([])
 const days = ref<number[]>([0, 1, 3, 4])
@@ -225,6 +248,28 @@ watch([target, topics], () => {
     }
   }, 250)
 })
+
+async function applyPromo() {
+  const code = promoCode.value.trim()
+  if (!code || promoBusy.value) return
+  promoBusy.value = true
+  promoError.value = ''
+  try {
+    const r = await applyPromoCode(code)
+    result.value = { status: 'activated', message: r.message }
+    promoCode.value = ''
+    const d = await getPlans() // the plan has changed: show it, and drop the box
+    data.value = d
+    const next = d.plans.find((p) => selectable(p))
+    if (next) choose(next.key)
+    else target.value = ''
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  } catch (e) {
+    promoError.value = e instanceof BillingError ? e.message : 'Something went wrong. Please try again.'
+  } finally {
+    promoBusy.value = false
+  }
+}
 
 async function submit() {
   if (!targetPlan.value) return
@@ -340,6 +385,9 @@ onMounted(async () => {
 .pl-go { justify-self: start; border: 3px solid var(--ink, #14140f); background: #e3342f; color: #fff; padding: 12px 22px; cursor: pointer;
   font-family: "Bungee", sans-serif; font-size: 14px; box-shadow: 4px 4px 0 var(--ink, #14140f); }
 .pl-go:disabled { opacity: .5; cursor: default; }
+.pl-promo-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.pl-promo-row input { flex: 1 1 220px; max-width: 340px; border: 2px solid var(--ink, #14140f); padding: 10px; font: inherit; background: #fff; }
+.pl-apply { padding: 10px 22px; font-size: 13px; }
 @media (max-width: 760px) {
   .pl-plans { grid-template-columns: 1fr; }
   .pl-go { justify-self: stretch; }
