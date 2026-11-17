@@ -40,7 +40,8 @@ export async function startTeamsLogin(enrollAs: EnrollAs): Promise<void> {
   window.location.href = data.auth_url
 }
 
-export type LandedOn = 'channel' | 'chat'
+// 'space' = Google Chat organization login landed in the AIDL space.
+export type LandedOn = 'channel' | 'chat' | 'space'
 
 export interface TeamsProfile {
   email: string
@@ -58,6 +59,9 @@ export interface TeamsAuthResult extends TeamsProfile {
   // Slack organization login (mode=slack): link to the #aidl channel.
   slackUrl: string
   openSlack: boolean
+  // Google Chat organization login (mode=google_chat): link to the AIDL space ('' if none).
+  googleChatUrl: string
+  openGoogleChat: boolean
   // Slack org login: '0' when the organization has no saved policy answers.
   policyCompleted: string | null
 }
@@ -89,6 +93,8 @@ export function consumeTeamsAuthCallback(): TeamsAuthResult | null {
   const openTeams = params.get('open_teams') === '1'
   const slackUrl = params.get('slack_url') || ''
   const openSlack = params.get('open_slack') === '1'
+  const googleChatUrl = params.get('google_chat_url') || ''
+  const openGoogleChat = params.get('open_google_chat') === '1'
   const policyCompleted = params.get('policy_completed')
   console.log('[TeamsAuth] consumeTeamsAuthCallback: parsed profile =', profile, 'openTeams =', openTeams)
 
@@ -112,7 +118,7 @@ export function consumeTeamsAuthCallback(): TeamsAuthResult | null {
   // block a popup opened at this point almost every time, with no reliable
   // way to detect the block synchronously. TeamsCallbackView opens Teams
   // from a real button click instead, which browsers never block.
-  return { accessToken, refreshToken, openTeams, slackUrl, openSlack, policyCompleted, ...profile }
+  return { accessToken, refreshToken, openTeams, slackUrl, openSlack, googleChatUrl, openGoogleChat, policyCompleted, ...profile }
 }
 
 export function getStoredAccessToken(): string | null {

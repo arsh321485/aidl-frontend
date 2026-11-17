@@ -64,7 +64,6 @@ export const PLATFORMS: PlatformInfo[] = [
     name: 'Google Chat',
     short: 'Google Chat',
     group: 'chat',
-    soon: true,
     color: '#00ac47',
     icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#00AC47" d="M4 2.5h16A2.5 2.5 0 0 1 22.5 5v11a2.5 2.5 0 0 1-2.5 2.5H9.5L4.5 22v-3.5H4A2.5 2.5 0 0 1 1.5 16V5A2.5 2.5 0 0 1 4 2.5z"/><rect x="6.5" y="7.5" width="11" height="2.2" rx="1.1" fill="#fff"/><rect x="6.5" y="11.5" width="7" height="2.2" rx="1.1" fill="#fff"/></svg>',
     start: startGoogleChatLogin,
