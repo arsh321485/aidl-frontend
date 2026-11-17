@@ -43,9 +43,35 @@
                   </svg>
                   TEAMS
                 </div>
+                <div class="choice choice-auth" @click="signInWithGoogleChat()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 3h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" fill="#00AC47" />
+                    <rect x="7" y="8" width="10" height="2" rx="1" fill="#fff" />
+                    <rect x="7" y="12" width="6" height="2" rx="1" fill="#fff" />
+                  </svg>
+                  GOOGLE CHAT
+                </div>
+                <div class="choice choice-auth" @click="signInWithMoodle()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                    <rect width="24" height="24" rx="4" fill="#F98012" />
+                    <text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#fff">m</text>
+                  </svg>
+                  MOODLE
+                </div>
               </div>
             </template>
             <template v-else>
+              <div class="choice-group one-col gchat-individual">
+                <div class="choice choice-auth" @click="signInWithGoogleChat('individual')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 3h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" fill="#00AC47" />
+                    <rect x="7" y="8" width="10" height="2" rx="1" fill="#fff" />
+                    <rect x="7" y="12" width="6" height="2" rx="1" fill="#fff" />
+                  </svg>
+                  CONTINUE WITH GOOGLE CHAT
+                </div>
+              </div>
+              <div class="form-divider">OR USE YOUR EMAIL</div>
               <p class="signin-drop-sub">Enter your email — we'll email you a sign-in code.</p>
               <input
                 type="email"
@@ -136,11 +162,39 @@
                     </svg>
                     TEAMS
                   </div>
+                  <div class="choice choice-auth" @click="signInWithGoogleChat()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M4 3h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" fill="#00AC47" />
+                      <rect x="7" y="8" width="10" height="2" rx="1" fill="#fff" />
+                      <rect x="7" y="12" width="6" height="2" rx="1" fill="#fff" />
+                    </svg>
+                    GOOGLE CHAT
+                  </div>
+                  <div class="choice choice-auth" @click="signInWithMoodle()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                      <rect width="24" height="24" rx="4" fill="#F98012" />
+                      <text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#fff">m</text>
+                    </svg>
+                    MOODLE
+                  </div>
                 </div>
               </div>
             </template>
           </template>
           <template v-if="form.enrollAs !== 'organization'">
+            <div class="field full" style="margin-bottom: 16px;">
+              <div class="choice-group one-col gchat-individual">
+                <div class="choice choice-auth" @click="signInWithGoogleChat('individual')">
+                  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 3h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" fill="#00AC47" />
+                    <rect x="7" y="8" width="10" height="2" rx="1" fill="#fff" />
+                    <rect x="7" y="12" width="6" height="2" rx="1" fill="#fff" />
+                  </svg>
+                  CONTINUE WITH GOOGLE CHAT
+                </div>
+              </div>
+            </div>
+            <div class="form-divider">OR SIGN UP WITH EMAIL</div>
             <div class="form-row">
               <div class="field">
                 <label>First Name <span>*</span></label>
@@ -853,6 +907,8 @@ import { notifyError, notifyLoading, notifyClose } from '../lib/notify.js'
 import { downloadLicenseCertificate } from '../lib/downloadLicense.js'
 import { startTeamsLogin, consumeTeamsAuthCallback } from '../lib/msTeamsAuth'
 import { startSlackLogin } from '../lib/slackAuth'
+import { startGoogleChatLogin } from '../lib/googleChatAuth'
+import { startMoodleLogin } from '../lib/moodleAuth'
 import {
   signup, signin, verifySignup, verifySignin, resendCode, getCaptcha, isOtpChallenge,
   ApiError, type ApiUser, type OtpChallenge,
@@ -1480,6 +1536,38 @@ async function signInWithTeams() {
     notifyError(
       e instanceof Error ? e.message : 'Could not start Microsoft Teams sign-in.',
       'Teams Sign-In Failed'
+    )
+  }
+}
+
+// GOOGLE CHAT buttons — GET /api/google-chat/auth/login/ (lib/googleChatAuth.ts),
+// then Google. Organization tabs: Workspace setup + AIDL space; individual
+// tabs ("Continue with Google Chat"): sign-in only. Google's redirect back
+// goes through the backend to /auth/callback (TeamsCallbackView, mode=google_chat).
+async function signInWithGoogleChat(enrollAs: 'individual' | 'organization' = 'organization') {
+  notifyLoading('Opening Google…', 'One moment')
+  try {
+    await startGoogleChatLogin(enrollAs)
+  } catch (e) {
+    notifyClose()
+    notifyError(
+      e instanceof Error ? e.message : 'Could not start Google Chat sign-in.',
+      'Google Chat Sign-In Failed'
+    )
+  }
+}
+
+// MOODLE button (sign-in dropdown and the org enroll form) — see
+// lib/moodleAuth.ts for the backend endpoint it expects.
+async function signInWithMoodle() {
+  notifyLoading('Opening Moodle…', 'One moment')
+  try {
+    await startMoodleLogin('organization')
+  } catch (e) {
+    notifyClose()
+    notifyError(
+      e instanceof Error ? e.message : 'Could not start Moodle sign-in.',
+      'Moodle Sign-In Failed'
     )
   }
 }
@@ -2360,6 +2448,7 @@ body.mode-junior .field input:focus, body.mode-junior .field select:focus { back
 .choice-group.two-cols { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .choice-group.one-col { grid-template-columns: 1fr; }
 .choice-group.one-col .choice { cursor: default; }
+.choice-group.one-col.gchat-individual .choice { cursor: pointer; }
 .choice { border: 3px solid var(--ink); background: var(--cream-2); padding: 10px; text-align: center; cursor: pointer; font-family: "Bungee", sans-serif; font-size: 12px; user-select: none; min-width: 0; }
 .choice.active { background: var(--sign-yellow); box-shadow: inset 0 0 0 3px var(--ink); }
 body.mode-junior .choice.active { background: rgb(46, 199, 99); }
