@@ -119,6 +119,8 @@ const props = defineProps<{
   expires: string
   // The avatar picked just before issuing — shown in the photo slot.
   avatar?: AvatarConfig | null
+  // The public licence page to share (from the server; carries the licence picture in link previews).
+  shareUrl?: string
 }>()
 
 const emit = defineEmits<{ close: [] }>()
@@ -144,8 +146,12 @@ onUnmounted(() => document.removeEventListener('keydown', onKeydown))
 
 const caption = ref(`I just got licensed to drive AI. ${props.classFull} — license ${props.licenseId}, verifiable on the AIDL public registry. #AIDrivingLicense #AIDL`)
 
+const API_BASE = (import.meta.env.VITE_API_BASE || 'http://localhost:8000').replace(/\/$/, '')
+
+// The server's public licence page. Without the server's link (an old session) the plain page still
+// confirms the licence; it just has no picture in the preview.
 function verifyUrl() {
-  return `${location.origin}/home#verify?lic=${props.licenseId}`
+  return props.shareUrl || `${API_BASE}/api/licenses/${encodeURIComponent(props.licenseId)}/`
 }
 
 const linkedinHref = computed(() => `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(verifyUrl())}`)

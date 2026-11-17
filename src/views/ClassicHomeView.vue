@@ -274,6 +274,7 @@
     :class-full="issuedLicense.classFull"
     :issued="issuedLicense.issued"
     :expires="issuedLicense.expires"
+    :share-url="issuedLicense.shareUrl"
     :avatar="issuedAvatar"
     @close="onLicenseModalClose"
   />
@@ -1338,6 +1339,7 @@ const issuedLicense = reactive({
   classFull: '',
   issued: '',
   expires: '',
+  shareUrl: '',
 })
 
 type ClassCode = 'L' | 'O' | 'S' | 'J' | 'T'
@@ -1620,6 +1622,7 @@ function onAvatarConfirmed(avatar: AvatarConfig) {
   issuedLicense.classFull = CLASS_FULL[cls]
   issuedLicense.issued = issuedDate
   issuedLicense.expires = expiresDate
+  issuedLicense.shareUrl = server ? String(server.licence_share_url || '') : ''
   showLicenseModal.value = true
 }
 
