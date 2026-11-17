@@ -1,12 +1,12 @@
 <template>
 <!-- Same nav and footer as the landing page (HomeView): it reuses HomeView's
      global lp- styles, so the markup here must stay in step with HomeView. -->
-<div class="lp-root sp-root" :class="{ 'lp-pf-teams': platform === 'teams' }">
+<div class="lp-root sp-root" :class="{ 'lp-pf-teams': platform === 'teams', 'lp-pf-gchat': platform === 'gchat' }">
 <nav ref="navEl" class="lp-nav">
 <div class="lp-wrap lp-nav-in">
 <RouterLink class="lp-brand" to="/home"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></RouterLink>
 <div class="lp-nl"><RouterLink v-for="l in NAV_LINKS" :key="l.id" :to="{ path: '/home', hash: '#' + l.id }">{{ l.label }}</RouterLink><RouterLink to="/pricing" exact-active-class="sp-on">Pricing</RouterLink></div>
-<div class="lp-ncta"><span class="lp-pf" role="group" aria-label="Platform"><button type="button" :aria-pressed="platform === 'slack'" @click="setPlatform('slack')"><i></i>Slack</button><button type="button" :aria-pressed="platform === 'teams'" @click="setPlatform('teams')"><i></i>Teams</button></span><a class="lp-btn lp-y" href="#" @click.prevent="addTo(platform)"><span class="lp-v-s">Add to Slack</span><span class="lp-v-t">Add to Teams</span><span class="lp-arr">→</span></a></div>
+<div class="lp-ncta"><PlatformPicker v-model="target" @add="addToPlatform" /></div>
 <button type="button" class="lp-burger" :class="{ 'lp-open': menuOpen }" :aria-expanded="menuOpen" aria-controls="sp-mnav" aria-label="Menu" @click="menuOpen = !menuOpen"><i></i><i></i><i></i></button>
 </div>
 <div v-show="menuOpen" id="sp-mnav" class="lp-mnav">
@@ -30,40 +30,33 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import aidlLogo from '../assets/images/aidl-logo-licence.png'
 import { NAV_LINKS, SOCIAL_LINKS } from '../lib/landingNav'
-import { startSlackLogin } from '../lib/slackAuth'
-import { startTeamsLogin } from '../lib/msTeamsAuth'
-import { notifyError, notifyLoading, notifyClose } from '../lib/notify.js'
+import PlatformPicker from './PlatformPicker.vue'
+import {
+  addToPlatform, isChatPlatform, loadSavedPlatform, savePlatform,
+  type ChatPlatformId, type PlatformId,
+} from '../lib/platforms'
 
-type Platform = 'slack' | 'teams'
-
-// Slack / Teams switch — shares its saved choice with the landing page.
+// Navbar platform picker — shares its saved choice with the landing page.
+// `platform` (chat apps only) drives the .lp-pf-* theme classes.
 const PLATFORM_KEY = 'aidl-v2-pf'
-const platform = ref<Platform>('slack')
+const platform = ref<ChatPlatformId>('slack')
 try {
-  if (localStorage.getItem(PLATFORM_KEY) === 'teams') platform.value = 'teams'
+  const saved = localStorage.getItem(PLATFORM_KEY)
+  if (saved === 'teams' || saved === 'gchat') platform.value = saved
 } catch (e) {}
 
-function setPlatform(p: Platform) {
-  platform.value = p
-  try { localStorage.setItem(PLATFORM_KEY, p) } catch (e) {}
-}
-
-// "Add to Slack" / "Add to Teams" — same organization sign-in as the landing page.
-async function addTo(p: Platform) {
-  const name = p === 'slack' ? 'Slack' : 'Microsoft Teams'
-  notifyLoading(`Opening ${name}…`, 'One moment')
-  try {
-    if (p === 'slack') await startSlackLogin('organization')
-    else await startTeamsLogin('organization')
-  } catch (e) {
-    notifyClose()
-    notifyError(e instanceof Error ? e.message : `Could not start ${name} sign-in.`, `${name} Sign-In Failed`)
-  }
-}
+const target = ref<PlatformId>(loadSavedPlatform(platform.value))
+if (isChatPlatform(target.value)) platform.value = target.value
+watch(target, (id) => {
+  savePlatform(id)
+  if (!isChatPlatform(id)) return
+  platform.value = id
+  try { localStorage.setItem(PLATFORM_KEY, id) } catch (e) {}
+})
 
 // Phone / tablet menu — the inline nav links are hidden below 1240px.
 const menuOpen = ref(false)

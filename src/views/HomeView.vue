@@ -1,10 +1,10 @@
 <template>
-<div class="lp-root" :class="{ 'lp-pf-teams': platform === 'teams' }">
+<div class="lp-root" :class="{ 'lp-pf-teams': platform === 'teams', 'lp-pf-gchat': platform === 'gchat' }">
 <nav class="lp-nav" ref="navEl">
 <div class="lp-wrap lp-nav-in">
 <a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a>
 <div class="lp-nl"><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id">{{ l.label }}</a><RouterLink to="/pricing">Pricing</RouterLink></div>
-<div class="lp-ncta"><span class="lp-pf" role="group" aria-label="Platform"><button type="button" :aria-pressed="platform === 'slack'" @click="setPlatform('slack')"><i></i>Slack</button><button type="button" :aria-pressed="platform === 'teams'" @click="setPlatform('teams')"><i></i>Teams</button></span><a class="lp-btn lp-y" href="#start" @click.prevent="addTo(platform)"><span class="lp-v-s">Add to Slack</span><span class="lp-v-t">Add to Teams</span><span class="lp-arr">→</span></a></div>
+<div class="lp-ncta"><PlatformPicker v-model="target" add-href="#start" @add="addTo" /></div>
 <button type="button" class="lp-burger" :class="{ 'lp-open': menuOpen }" :aria-expanded="menuOpen" aria-controls="lp-mnav" aria-label="Menu" @click="menuOpen = !menuOpen"><i></i><i></i><i></i></button>
 </div>
 <div v-show="menuOpen" id="lp-mnav" class="lp-mnav">
@@ -22,9 +22,9 @@
 <div class="lp-road-sign lp-rs-3"><div class="lp-plate lp-white">AGREE<br>LEARN<br>LICENCE</div><div class="lp-post"></div></div>
 <div class="lp-road-sign lp-rs-4"><div class="lp-plate lp-red">10 MIN<br>AHEAD</div><div class="lp-post"></div></div>
 <div class="lp-hero-headline">
-<div class="lp-hero-eyebrow"><span class="lp-blink"></span><span class="lp-v-s">NOW LIVE IN SLACK</span><span class="lp-v-t">NOW LIVE IN MICROSOFT TEAMS</span></div>
+<div class="lp-hero-eyebrow"><span class="lp-blink"></span><span class="lp-v-s">NOW LIVE IN SLACK</span><span class="lp-v-t">NOW LIVE IN MICROSOFT TEAMS</span><span class="lp-v-g">COMING SOON TO GOOGLE CHAT</span></div>
 <h1 class="lp-hero-title">LICENCE TO<span class="lp-l2">DRIVE&nbsp;AI</span></h1>
-<p class="lp-hero-sub">Write your AI policy, get every employee to agree to it point by point, and issue each one a verifiable AI Driving Licence — about ten minutes per person, without leaving <span class="lp-v-s">Slack</span><span class="lp-v-t">Teams</span>.</p>
+<p class="lp-hero-sub">Write your AI policy, get every employee to agree to it point by point, and issue each one a verifiable AI Driving Licence — about ten minutes per person, without leaving <span class="lp-v-s">Slack</span><span class="lp-v-t">Teams</span><span class="lp-v-g">Google Chat</span>.</p>
 </div>
 <div class="lp-dashboard"><div class="lp-dash-bg"></div>
 <div class="lp-dash-inner">
@@ -52,11 +52,11 @@
 <div class="lp-hstats"><div><b>10 MIN</b><span>TO LICENSED</span></div><div><b>14</b><span>POLICY POINTS</span></div><div><b>1</b><span>CHANNEL MESSAGE</span></div></div>
 </div>
 <div class="lp-win" aria-label="AIDL Admin Center">
-<div class="lp-win-sb"><div class="lp-ws">Northwind</div><div class="lp-sec"><span class="lp-v-s">Channels</span><span class="lp-v-t">Teams › AIDL</span></div><div class="lp-ch"><span class="lp-v-s"># general</span><span class="lp-v-t">Announcements</span></div><div class="lp-ch lp-on"><span class="lp-v-s"># aidl</span><span class="lp-v-t">General</span></div><div class="lp-ch"><span class="lp-v-s"># design</span><span class="lp-v-t">Design</span></div><div class="lp-ch"><span class="lp-v-s"># sales</span><span class="lp-v-t">Sales</span></div><div class="lp-sec">Apps</div><div class="lp-ch">AIDL</div></div>
+<div class="lp-win-sb"><div class="lp-ws">Northwind</div><div class="lp-sec"><span class="lp-v-s">Channels</span><span class="lp-v-t">Teams › AIDL</span><span class="lp-v-g">Spaces</span></div><div class="lp-ch"><span class="lp-v-s"># general</span><span class="lp-v-t">Announcements</span><span class="lp-v-g">General</span></div><div class="lp-ch lp-on"><span class="lp-v-s"># aidl</span><span class="lp-v-t">General</span><span class="lp-v-g">AIDL</span></div><div class="lp-ch"><span class="lp-v-s"># design</span><span class="lp-v-t">Design</span><span class="lp-v-g">Design</span></div><div class="lp-ch"><span class="lp-v-s"># sales</span><span class="lp-v-t">Sales</span><span class="lp-v-g">Sales</span></div><div class="lp-sec">Apps</div><div class="lp-ch">AIDL</div></div>
 <div class="lp-win-main">
-<div class="lp-win-top"><span class="lp-v-s"># aidl</span><span class="lp-v-t">AIDL › General</span> <small>· 14 members</small><span class="lp-pin"><span class="lp-v-s">PINNED</span><span class="lp-v-t">ADAPTIVE CARD</span> · UPDATES IN PLACE</span></div>
+<div class="lp-win-top"><span class="lp-v-s"># aidl</span><span class="lp-v-t">AIDL › General</span><span class="lp-v-g">AIDL</span> <small>· 14 members</small><span class="lp-pin"><span class="lp-v-s">PINNED</span><span class="lp-v-t">ADAPTIVE CARD</span><span class="lp-v-g">CARD</span> · UPDATES IN PLACE</span></div>
 <div class="lp-msg"><span class="lp-av">AI</span><div style="flex:1;min-width:0">
-<div class="lp-mh"><strong>AIDL</strong><span class="lp-app"><span class="lp-v-s">APP</span><span class="lp-v-t">BOT</span></span><span class="lp-mt">9:02 AM · edited</span></div>
+<div class="lp-mh"><strong>AIDL</strong><span class="lp-app"><span class="lp-v-s">APP</span><span class="lp-v-t">BOT</span><span class="lp-v-g">APP</span></span><span class="lp-mt">9:02 AM · edited</span></div>
 <div class="lp-ac">
 <div class="lp-ac-hd"><span class="lp-d">AIDL ADMIN CENTER</span><span class="lp-m">MASTER ADMIN</span></div>
 <div class="lp-ac-plan"><span>Plan <b>Team</b></span><span><b>48</b> cards</span><span><b>2</b> / week</span><span><b>12 of 15</b> users</span></div>
@@ -78,7 +78,7 @@
 <h2 class="lp-h2">One channel. Two seats in the car.</h2>
 <p class="lp-lede">Admins steer from a single Admin Center message that keeps updating instead of flooding the channel. Employees get everything privately, one card at a time.</p>
 <div class="lp-sides">
-<div class="lp-side lp-k"><span class="lp-tag">ADMIN · THE INSTRUCTOR</span><h3>Set the rules, then watch the road.</h3><p>Click <span class="lp-v-s">“Add to Slack”</span><span class="lp-v-t">“Add to Teams”</span> and AIDL creates its own <span class="lp-v-s">#aidl channel</span><span class="lp-v-t">AIDL team and channel</span>, makes you Master admin and posts your Admin Center. Six steps unlock one after another.</p>
+<div class="lp-side lp-k"><span class="lp-tag">ADMIN · THE INSTRUCTOR</span><h3>Set the rules, then watch the road.</h3><p>Click <span class="lp-v-s">“Add to Slack”</span><span class="lp-v-t">“Add to Teams”</span><span class="lp-v-g">“Add to Google Chat”</span> and AIDL creates its own <span class="lp-v-s">#aidl channel</span><span class="lp-v-t">AIDL team and channel</span><span class="lp-v-g">AIDL space</span>, makes you Master admin and posts your Admin Center. Six steps unlock one after another.</p>
 <ol><li>Create and approve your AI policy</li><li>Add co-admins with only the rights they need</li><li>Add your team, up to your seats</li><li>Approve the cards before anything is sent</li><li>Start — everyone gets their Welcome</li><li>Track licences and card reads</li></ol></div>
 <div class="lp-side"><span class="lp-tag">EMPLOYEE · THE DRIVER</span><h3>Ten minutes to road-ready.</h3><p>A private Welcome message walks each person through three cards. Finish them, save an avatar, and the licence arrives — valid for one year.</p>
 <ol><li>Open the Welcome card</li><li>Agree to the 14 policy points</li><li>Learn the Traffic Light rule</li><li>Learn the 5-rule Highway Code</li><li>Create an avatar</li><li>Download or share the licence</li></ol></div>
@@ -112,7 +112,7 @@
 <div class="lp-stl" role="tablist">
 <button v-for="(d, i) in USER" :key="i" type="button" class="lp-sbtn" role="tab" :aria-selected="i === userStep" @click="userStep = i"><span class="lp-n"><span>{{ i + 1 }}</span></span><span><b v-html="d.t"></b><small v-html="d.s"></small></span></button>
 </div>
-<div class="lp-pane"><div class="lp-det"><div class="lp-det-hd"><span class="lp-av" style="width:24px;height:24px;font-size:9px;border-radius:4px">AI</span>AIDL · <span class="lp-v-s">direct message</span><span class="lp-v-t">bot chat</span><span class="lp-m">STOP {{ userStep + 1 }} OF {{ USER.length }}</span></div><div class="lp-det-body">
+<div class="lp-pane"><div class="lp-det"><div class="lp-det-hd"><span class="lp-av" style="width:24px;height:24px;font-size:9px;border-radius:4px">AI</span>AIDL · <span class="lp-v-s">direct message</span><span class="lp-v-t">bot chat</span><span class="lp-v-g">direct message</span><span class="lp-m">STOP {{ userStep + 1 }} OF {{ USER.length }}</span></div><div class="lp-det-body">
 <h4 v-html="userCur.h"></h4><p class="lp-why" v-html="userCur.w"></p><div v-html="userCur.m"></div>
 <ul v-if="userCur.f" class="lp-facts"><li v-for="x in userCur.f" :key="x" v-html="x"></li></ul>
 </div></div></div>
@@ -160,7 +160,7 @@
 <div v-if="cardsShown < previewCards.length" class="lp-cg-more"><button type="button" class="lp-btn lp-ghost" @click="cardsShown += 6">Show more titles ({{ previewCards.length - cardsShown }} more) ↓</button></div>
 </template>
 <div class="lp-ap"><div class="lp-ap-b" aria-hidden="true"><span>✅ Approve</span><span>⏭ Skip</span><span>🔄 Swap</span></div><p><b>Nothing is sent until you approve.</b> Preview every card first, then approve it, skip it or swap it for another.</p></div>
-<div class="lp-xc-cta"><div><b>{{ planInfo.label }} · {{ planInfo.cards }} cards · {{ planInfo.cadence }}</b><span>{{ planLine }}</span></div><div class="lp-hcta"><a class="lp-btn lp-y" href="#start" @click.prevent="addTo(platform)"><span class="lp-v-s">Add to Slack →</span><span class="lp-v-t">Add to Teams →</span></a><RouterLink class="lp-btn" to="/pricing">See plans</RouterLink></div></div>
+<div class="lp-xc-cta"><div><b>{{ planInfo.label }} · {{ planInfo.cards }} cards · {{ planInfo.cadence }}</b><span>{{ planLine }}</span></div><div class="lp-hcta"><a class="lp-btn lp-y" href="#start" @click.prevent="addTo(platform)"><span class="lp-v-s">Add to Slack →</span><span class="lp-v-t">Add to Teams →</span><span class="lp-v-g">Add to Google Chat →</span></a><RouterLink class="lp-btn" to="/pricing">See plans</RouterLink></div></div>
 </div>
 </section>
 
@@ -210,6 +210,8 @@
 <div class="lp-plat">
 <div class="lp-pl"><span class="lp-s lp-live">LIVE</span><h3>Slack</h3><p>Block Kit messages in a dedicated #aidl channel and private DMs from the AIDL app. Admin Center pinned and updated in place.</p><div class="lp-hcta" style="margin:18px 0 0"><a class="lp-btn lp-y" href="#start" @click.prevent="addTo('slack')">Add to Slack →</a></div></div>
 <div class="lp-pl"><span class="lp-s lp-live">LIVE</span><h3>Microsoft Teams</h3><p>The same admin and employee flow as Adaptive Cards in an AIDL team channel and bot chats. Follows light, dark and high-contrast themes; signs in with Microsoft Entra.</p><div class="lp-hcta" style="margin:18px 0 0"><a class="lp-btn lp-y" href="#start" @click.prevent="addTo('teams')">Add to Teams →</a></div></div>
+<div class="lp-pl"><span class="lp-s lp-soon">COMING SOON</span><h3>Google Chat</h3><p>The same admin and employee flow as interactive cards in an AIDL space and direct messages from the AIDL app. Signs in with Google Workspace.</p><div class="lp-hcta" style="margin:18px 0 0"><a class="lp-btn lp-y" href="#start" @click.prevent="addTo('gchat')">Add to Google Chat →</a></div></div>
+<div class="lp-pl"><span class="lp-s lp-soon">COMING SOON</span><h3>Moodle</h3><p>AIDL as an activity inside your Moodle course. Learners sign in from Moodle, work through the policy and lessons, and earn their licence without a separate login.</p><div class="lp-hcta" style="margin:18px 0 0"><a class="lp-btn lp-y" href="#start" @click.prevent="addTo('moodle')">Add to Moodle →</a></div></div>
 </div>
 </div>
 </section>
@@ -217,8 +219,8 @@
 <section class="lp-cta" id="start">
 <div class="lp-wrap">
 <h2 class="lp-h2">Your team, road-ready this week.</h2>
-<p class="lp-lede">Add AIDL to Slack or Teams, approve your policy and three starter cards, and press Start.</p>
-<div class="lp-hcta"><a class="lp-btn" href="#start" @click.prevent="addTo('slack')">Add to Slack →</a><a class="lp-btn" href="#start" @click.prevent="addTo('teams')">Add to Teams →</a><RouterLink class="lp-btn lp-ghost" to="/pricing">See plans</RouterLink></div>
+<p class="lp-lede">Add AIDL to Slack, Teams, Google Chat or Moodle, approve your policy and three starter cards, and press Start.</p>
+<div class="lp-hcta"><a class="lp-btn" href="#start" @click.prevent="addTo('slack')">Add to Slack →</a><a class="lp-btn" href="#start" @click.prevent="addTo('teams')">Add to Teams →</a><a class="lp-btn" href="#start" @click.prevent="addTo('gchat')">Add to Google Chat →</a><a class="lp-btn" href="#start" @click.prevent="addTo('moodle')">Add to Moodle →</a><RouterLink class="lp-btn lp-ghost" to="/pricing">See plans</RouterLink></div>
 <form id="waitlist" class="lp-wl" novalidate @submit.prevent="submitWaitlist">
 <label for="lp-wl-email">Not a company? Join the waitlist</label>
 <div class="lp-wl-row"><input id="lp-wl-email" v-model.trim="wlEmail" type="email" placeholder="you@example.com" autocomplete="email" :disabled="wlState === 'sending' || wlState === 'done'" /><button type="submit" class="lp-btn" :disabled="wlState === 'sending' || wlState === 'done'">{{ wlState === 'sending' ? 'Joining…' : wlState === 'done' ? 'Joined ✓' : 'Join' }}</button></div>
@@ -252,11 +254,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { RouterLink } from 'vue-router'
-import { startSlackLogin } from '../lib/slackAuth'
-import { startTeamsLogin } from '../lib/msTeamsAuth'
-import { notifyError, notifyLoading, notifyClose } from '../lib/notify.js'
+import PlatformPicker from '../components/PlatformPicker.vue'
+import {
+  addToPlatform, isChatPlatform, loadSavedPlatform, savePlatform,
+  type ChatPlatformId, type PlatformId,
+} from '../lib/platforms'
 import aidlLogo from '../assets/images/aidl-logo-licence.png'
 import licenceAvatar from '../assets/images/licence-avatar.svg'
 import licenceAvatar2 from '../assets/images/licence-avatar-2.svg'
@@ -267,7 +271,7 @@ import { CARD_TOPICS, LIBRARY_SIZE, PLANS, STARTER_CARDS, type PlanKey } from '.
 import { joinWaitlist } from '../lib/waitlistApi'
 import { NAV_LINKS, SOCIAL_LINKS } from '../lib/landingNav'
 
-type Platform = 'slack' | 'teams'
+type Platform = ChatPlatformId
 
 // Nav / footer section links. The one for the section in view (or the last
 // one clicked) is highlighted red.
@@ -419,11 +423,15 @@ function clearTopics() {
   cardsShown.value = 6
 }
 
-// Slack / Teams switch — swaps the copy and the mock windows between the two.
+// Navbar platform picker. `target` is any platform (what "Add" signs in to);
+// `platform` is the chat app whose look the page previews (.lp-pf-* classes
+// and the .lp-v-s / .lp-v-t / .lp-v-g text spans). Picking a learning
+// platform (Moodle, …) keeps the last chat preview.
 const PLATFORM_KEY = 'aidl-v2-pf'
 const platform = ref<Platform>('slack')
 try {
-  if (localStorage.getItem(PLATFORM_KEY) === 'teams') platform.value = 'teams'
+  const saved = localStorage.getItem(PLATFORM_KEY)
+  if (saved === 'teams' || saved === 'gchat') platform.value = saved
 } catch (e) {}
 
 function setPlatform(p: Platform) {
@@ -431,18 +439,17 @@ function setPlatform(p: Platform) {
   try { localStorage.setItem(PLATFORM_KEY, p) } catch (e) {}
 }
 
-// "Add to Slack" / "Add to Teams" — the same organization sign-in the old
-// landing page used; the backend redirects back to /auth/callback.
-async function addTo(p: Platform) {
-  const name = p === 'slack' ? 'Slack' : 'Microsoft Teams'
-  notifyLoading(`Opening ${name}…`, 'One moment')
-  try {
-    if (p === 'slack') await startSlackLogin('organization')
-    else await startTeamsLogin('organization')
-  } catch (e) {
-    notifyClose()
-    notifyError(e instanceof Error ? e.message : `Could not start ${name} sign-in.`, `${name} Sign-In Failed`)
-  }
+const target = ref<PlatformId>(loadSavedPlatform(platform.value))
+if (isChatPlatform(target.value)) platform.value = target.value
+watch(target, (id) => {
+  savePlatform(id)
+  if (isChatPlatform(id)) setPlatform(id)
+})
+
+// "Add to …" — the navbar picker, the "Where it runs" cards and the bottom
+// CTA all use the same organization sign-in (lib/platforms.ts).
+function addTo(p: PlatformId) {
+  return addToPlatform(p)
 }
 
 const heroSteps = [
@@ -926,7 +933,27 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-pf button[aria-pressed="true"]{background:var(--ink);color:var(--yellow)}
 .lp-pf i{width:10px;height:10px;border:2px solid currentColor;border-radius:2px}
 .lp-pf button:first-child i{background:#4a154b}
-.lp-pf button:last-child i{background:#5b5fc7}
+.lp-pf button:nth-child(2) i{background:#5b5fc7}
+.lp-pf button:nth-child(3) i{background:#00ac47}
+/* Google Chat theme for the switch (.lp-pf-gchat on .lp-root) */
+.lp-v-g{display:none}
+.lp-root.lp-pf-gchat .lp-v-s{display:none}
+.lp-root.lp-pf-gchat .lp-v-g{display:inline}
+.lp-root.lp-pf-gchat .lp-perm.lp-on::before{border-color:#0b57d0;background-color:#0b57d0}
+.lp-root.lp-pf-gchat .lp-win-sb{background:#f6f8fc;color:#444746}
+.lp-root.lp-pf-gchat .lp-win-sb .lp-ws{color:#1f1f1f;border-bottom-color:#e0e3e7}
+.lp-root.lp-pf-gchat .lp-win-sb .lp-ch.lp-on{background:#d3e3fd;color:#041e49;font-weight:700;border-radius:0 16px 16px 0}
+.lp-root.lp-pf-gchat .lp-win,.lp-root.lp-pf-gchat .lp-det{font-family:Roboto,Arial,system-ui,sans-serif}
+.lp-root.lp-pf-gchat .lp-win-top .lp-pin{background:#e6f4ea;border-color:#a8dab5;color:#137333}
+.lp-root.lp-pf-gchat .lp-av{border-radius:50%}
+.lp-root.lp-pf-gchat .lp-ac,.lp-root.lp-pf-gchat .lp-card{border-radius:12px;box-shadow:0 1px 3px rgba(60,64,67,.15)}
+.lp-root.lp-pf-gchat .lp-ac-hd{border-top:5px solid #00ac47}
+.lp-root.lp-pf-gchat .lp-sb{border-radius:18px;border-color:#c4c7c5}
+.lp-root.lp-pf-gchat .lp-sb.lp-pri{background:#0b57d0;border-color:#0b57d0}
+.lp-root.lp-pf-gchat .lp-prog .lp-bar i,.lp-root.lp-pf-gchat .lp-bar2 i{background:#00ac47}
+.lp-root.lp-pf-gchat .lp-chip.lp-on{border-color:#0b57d0;background:#d3e3fd;color:#041e49}
+.lp-root.lp-pf-gchat .lp-st.lp-now .lp-dot{border-color:#00ac47;color:#00ac47}
+.lp-root.lp-pf-gchat .lp-msg{background:#f2f2f2}
 .lp-hero .lp-pf{margin-bottom:22px}
 .lp-root.lp-pf-teams .lp-win-sb{background:#ebebf5;color:#424242}
 .lp-root.lp-pf-teams .lp-win-sb .lp-ws{color:#242424;border-bottom-color:#d6d6e4}
