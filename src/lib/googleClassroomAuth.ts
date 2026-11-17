@@ -13,6 +13,12 @@ import type { EnrollAs } from './msTeamsAuth'
 const API_BASE = ((import.meta.env.VITE_API_BASE as string | undefined) || 'http://localhost:8000').replace(/\/$/, '')
 const LOGIN_PATH = '/api/google-classroom/login/'
 
+// The Admin Center link the backend sends admins back with (admin_center_url):
+// only ever our own backend's Google Classroom pages, never another site.
+export function isAdminCenterUrl(url: string): boolean {
+  return url.startsWith(`${API_BASE}/api/google-classroom/`)
+}
+
 // Redirects the browser to Google's sign-in page, or throws an Error with a message to show.
 export async function startGoogleClassroomLogin(enrollAs: EnrollAs): Promise<void> {
   let res: Response
