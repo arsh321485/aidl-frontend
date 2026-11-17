@@ -13,6 +13,12 @@
       <button type="button" class="teams-callback__btn" @click="openSlack">Open Slack</button>
       <button type="button" class="teams-callback__link" @click="router.replace('/home')">Continue to AIDL</button>
     </template>
+    <template v-else-if="googleChatUrl">
+      <h1 class="teams-callback__title">You're signed in with Google Chat</h1>
+      <p class="teams-callback__text">Your AIDL Admin Center is ready in Google Chat.</p>
+      <button type="button" class="teams-callback__btn" @click="openGoogleChat">Open Google Chat</button>
+      <button type="button" class="teams-callback__link" @click="router.replace('/home')">Continue to AIDL</button>
+    </template>
     <template v-else>
       <div class="teams-callback__spinner" aria-hidden="true"></div>
       <p class="teams-callback__text">{{ statusText }}</p>
@@ -26,18 +32,27 @@ import { useRouter } from 'vue-router'
 import aidlLogo from '../assets/images/aidl-logo-licence.png'
 import { notifyError } from '../lib/notify.js'
 import { consumeTeamsAuthCallback, getCurrentTeamsUser } from '../lib/msTeamsAuth'
+import { googleChatErrorMessage } from '../lib/googleChatAuth'
 import AvatarPickerModal from '../components/AvatarPickerModal.vue'
 import type { AvatarConfig } from '../lib/avatar-parts'
 
 const router = useRouter()
 // Slack sign-in lands here too (backend adds mode=slack); it carries the
 // same token params, minus the Teams-specific ones.
-const isSlack = new URLSearchParams(window.location.search).get('mode') === 'slack'
-const providerName = isSlack ? 'Slack' : 'Microsoft Teams'
+// Google Chat (mode=google_chat) and Google Classroom (mode=google_classroom)
+// land here the same way.
+const mode = new URLSearchParams(window.location.search).get('mode')
+const isSlack = mode === 'slack'
+const isGoogleChat = mode === 'google_chat'
+const providerName = isSlack ? 'Slack' : isGoogleChat ? 'Google Chat'
+  : mode === 'google_classroom' ? 'Google Classroom' : 'Microsoft Teams'
+const failTitle = `${isSlack ? 'Slack' : isGoogleChat ? 'Google Chat'
+  : mode === 'google_classroom' ? 'Google Classroom' : 'Teams'} Sign-In Failed`
 const statusText = ref(`Finishing ${providerName} sign-in…`)
 // Set when the browser blocked the automatic new tab — the page then shows
 // an "Open Slack" button, since a tab opened from a click is never blocked.
 const slackUrl = ref('')
+const googleChatUrl = ref('')
 
 // Returns false when the popup blocker stopped the tab. ('noopener' is not
 // passed to window.open because it makes window.open always return null.)
@@ -54,7 +69,7 @@ function openInNewTab(url: string): boolean {
 // never blocks the new tab.
 const pickAvatar = ref(false)
 let avatarEmail = ''
-let workspace: { kind: 'slack' | 'teams'; url: string } | null = null
+let workspace: { kind: 'slack' | 'teams' | 'gchat'; url: string } | null = null
 
 function hasAvatar(email: string): boolean {
   try {
@@ -80,6 +95,10 @@ function continueToWorkspace() {
       slackUrl.value = workspace.url
       return
     }
+    if (workspace.kind === 'gchat') {
+      googleChatUrl.value = workspace.url
+      return
+    }
   }
   router.replace('/home')
 }
@@ -88,6 +107,14 @@ function openSlack() {
   openInNewTab(slackUrl.value)
   router.replace('/home')
 }
+
+function openGoogleChat() {
+  openInNewTab(googleChatUrl.value)
+  router.replace('/home')
+}
+
+// Google Chat organization login worked but the AIDL space wasn't created.
+const GCHAT_NO_SPACE = 'You are signed in. The AIDL space could not be opened. Try organization sign-in again.'
 
 // Backend's AUTH_SUCCESS_REDIRECT lands here after /api/auth/teams/callback/
 // does the code exchange (see AIDL_MS_TEAMS_API_RESPONSE.docx). This page
@@ -106,8 +133,9 @@ onMounted(async () => {
     console.warn('[TeamsCallback] no result — treating as sign-in failure, redirecting to /')
     statusText.value = `${providerName} sign-in failed.`
     notifyError(
-      params.get('error_description') || (oauthError ? `Error: ${oauthError}` : 'No tokens were returned by the sign-in redirect.'),
-      `${isSlack ? 'Slack' : 'Teams'} Sign-In Failed`
+      isGoogleChat ? googleChatErrorMessage(oauthError, params.get('error_description'))
+        : params.get('error_description') || (oauthError ? `Error: ${oauthError}` : 'No tokens were returned by the sign-in redirect.'),
+      failTitle
     )
     window.history.replaceState({}, document.title, window.location.pathname)
     router.replace('/')
@@ -135,7 +163,13 @@ onMounted(async () => {
   // Slack organization login: open Slack on the #aidl channel with the
   // Admin cards (guide 7.1). landed_on=chat means the channel couldn't be
   // created, so the workspace opens instead.
+  // Google Chat organization login: open the AIDL space (google_chat_url can be
+  // '' — then stay in AIDL and say why). Individuals never open Google Chat.
+  if (isGoogleChat && result.openGoogleChat && result.landedOn !== 'space') {
+    notifyError(GCHAT_NO_SPACE, 'Google Chat')
+  }
   const target = result.openSlack && result.slackUrl ? { kind: 'slack' as const, url: result.slackUrl }
+    : isGoogleChat && result.openGoogleChat && result.googleChatUrl ? { kind: 'gchat' as const, url: result.googleChatUrl }
     : result.openTeams && result.teamsUrl ? { kind: 'teams' as const, url: result.teamsUrl } : null
   if (target && result.email && !hasAvatar(result.email)) {
     if (target.kind === 'slack' && result.landedOn !== 'channel') {
@@ -154,6 +188,11 @@ onMounted(async () => {
     }
     if (!openInNewTab(result.slackUrl)) {
       slackUrl.value = result.slackUrl
+      return
+    }
+  } else if (target?.kind === 'gchat') {
+    if (!openInNewTab(target.url)) {
+      googleChatUrl.value = target.url
       return
     }
   } else if (result.openTeams && result.teamsUrl) {
