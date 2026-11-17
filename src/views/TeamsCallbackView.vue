@@ -19,6 +19,12 @@
       <button type="button" class="teams-callback__btn" @click="openGoogleChat">Open Google Chat</button>
       <button type="button" class="teams-callback__link" @click="router.replace('/home')">Continue to AIDL</button>
     </template>
+    <template v-else-if="adminCenterUrl">
+      <h1 class="teams-callback__title">You're signed in with Google Classroom</h1>
+      <p class="teams-callback__text">Your AIDL Admin Center is ready: choose classes, approve cards and start the programme.</p>
+      <button type="button" class="teams-callback__btn" @click="openAdminCenter">Open Admin Center</button>
+      <button type="button" class="teams-callback__link" @click="router.replace('/home')">Continue to AIDL</button>
+    </template>
     <template v-else>
       <div class="teams-callback__spinner" aria-hidden="true"></div>
       <p class="teams-callback__text">{{ statusText }}</p>
@@ -33,6 +39,7 @@ import aidlLogo from '../assets/images/aidl-logo-licence.png'
 import { notifyError } from '../lib/notify.js'
 import { consumeTeamsAuthCallback, getCurrentTeamsUser } from '../lib/msTeamsAuth'
 import { googleChatErrorMessage } from '../lib/googleChatAuth'
+import { isAdminCenterUrl } from '../lib/googleClassroomAuth'
 import AvatarPickerModal from '../components/AvatarPickerModal.vue'
 import type { AvatarConfig } from '../lib/avatar-parts'
 
@@ -53,6 +60,7 @@ const statusText = ref(`Finishing ${providerName} sign-in…`)
 // an "Open Slack" button, since a tab opened from a click is never blocked.
 const slackUrl = ref('')
 const googleChatUrl = ref('')
+const adminCenterUrl = ref('')
 
 // Returns false when the popup blocker stopped the tab. ('noopener' is not
 // passed to window.open because it makes window.open always return null.)
@@ -69,7 +77,7 @@ function openInNewTab(url: string): boolean {
 // never blocks the new tab.
 const pickAvatar = ref(false)
 let avatarEmail = ''
-let workspace: { kind: 'slack' | 'teams' | 'gchat'; url: string } | null = null
+let workspace: { kind: 'slack' | 'teams' | 'gchat' | 'gclassroom'; url: string } | null = null
 
 function hasAvatar(email: string): boolean {
   try {
@@ -99,6 +107,10 @@ function continueToWorkspace() {
       googleChatUrl.value = workspace.url
       return
     }
+    if (workspace.kind === 'gclassroom') {
+      adminCenterUrl.value = workspace.url
+      return
+    }
   }
   router.replace('/home')
 }
@@ -110,6 +122,11 @@ function openSlack() {
 
 function openGoogleChat() {
   openInNewTab(googleChatUrl.value)
+  router.replace('/home')
+}
+
+function openAdminCenter() {
+  openInNewTab(adminCenterUrl.value)
   router.replace('/home')
 }
 
@@ -170,6 +187,9 @@ onMounted(async () => {
   }
   const target = result.openSlack && result.slackUrl ? { kind: 'slack' as const, url: result.slackUrl }
     : isGoogleChat && result.openGoogleChat && result.googleChatUrl ? { kind: 'gchat' as const, url: result.googleChatUrl }
+    // Google Classroom admin: open the Admin Center (the backend already signed them in to it).
+    : mode === 'google_classroom' && result.openAdminCenter && isAdminCenterUrl(result.adminCenterUrl)
+      ? { kind: 'gclassroom' as const, url: result.adminCenterUrl }
     : result.openTeams && result.teamsUrl ? { kind: 'teams' as const, url: result.teamsUrl } : null
   if (target && result.email && !hasAvatar(result.email)) {
     if (target.kind === 'slack' && result.landedOn !== 'channel') {
@@ -193,6 +213,11 @@ onMounted(async () => {
   } else if (target?.kind === 'gchat') {
     if (!openInNewTab(target.url)) {
       googleChatUrl.value = target.url
+      return
+    }
+  } else if (target?.kind === 'gclassroom') {
+    if (!openInNewTab(target.url)) {
+      adminCenterUrl.value = target.url
       return
     }
   } else if (result.openTeams && result.teamsUrl) {
