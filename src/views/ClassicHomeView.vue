@@ -43,6 +43,21 @@
                   </svg>
                   TEAMS
                 </div>
+                <div class="choice choice-auth" @click="signInWithGoogleChat()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 3h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" fill="#00AC47" />
+                    <rect x="7" y="8" width="10" height="2" rx="1" fill="#fff" />
+                    <rect x="7" y="12" width="6" height="2" rx="1" fill="#fff" />
+                  </svg>
+                  GOOGLE CHAT
+                </div>
+                <div class="choice choice-auth" @click="signInWithMoodle()">
+                  <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                    <rect width="24" height="24" rx="4" fill="#F98012" />
+                    <text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#fff">m</text>
+                  </svg>
+                  MOODLE
+                </div>
               </div>
             </template>
             <template v-else>
@@ -135,6 +150,21 @@
                       <text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#fff">T</text>
                     </svg>
                     TEAMS
+                  </div>
+                  <div class="choice choice-auth" @click="signInWithGoogleChat()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M4 3h16a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H9l-5 4v-4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z" fill="#00AC47" />
+                      <rect x="7" y="8" width="10" height="2" rx="1" fill="#fff" />
+                      <rect x="7" y="12" width="6" height="2" rx="1" fill="#fff" />
+                    </svg>
+                    GOOGLE CHAT
+                  </div>
+                  <div class="choice choice-auth" @click="signInWithMoodle()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                      <rect width="24" height="24" rx="4" fill="#F98012" />
+                      <text x="12" y="17" text-anchor="middle" font-family="Arial, sans-serif" font-weight="bold" font-size="14" fill="#fff">m</text>
+                    </svg>
+                    MOODLE
                   </div>
                 </div>
               </div>
@@ -852,6 +882,8 @@ import { notifyError, notifyLoading, notifyClose } from '../lib/notify.js'
 import { downloadLicenseCertificate } from '../lib/downloadLicense.js'
 import { startTeamsLogin, consumeTeamsAuthCallback } from '../lib/msTeamsAuth'
 import { startSlackLogin } from '../lib/slackAuth'
+import { startGoogleChatLogin } from '../lib/googleChatAuth'
+import { startMoodleLogin } from '../lib/moodleAuth'
 import {
   signup, signin, verifySignup, verifySignin, resendCode, getCaptcha, isOtpChallenge,
   ApiError, type ApiUser, type OtpChallenge,
@@ -1478,6 +1510,36 @@ async function signInWithTeams() {
     notifyError(
       e instanceof Error ? e.message : 'Could not start Microsoft Teams sign-in.',
       'Teams Sign-In Failed'
+    )
+  }
+}
+
+// GOOGLE CHAT button (sign-in dropdown and the org enroll form) — see
+// lib/googleChatAuth.ts for the backend endpoint it expects.
+async function signInWithGoogleChat() {
+  notifyLoading('Opening Google Chat…', 'One moment')
+  try {
+    await startGoogleChatLogin('organization')
+  } catch (e) {
+    notifyClose()
+    notifyError(
+      e instanceof Error ? e.message : 'Could not start Google Chat sign-in.',
+      'Google Chat Sign-In Failed'
+    )
+  }
+}
+
+// MOODLE button (sign-in dropdown and the org enroll form) — see
+// lib/moodleAuth.ts for the backend endpoint it expects.
+async function signInWithMoodle() {
+  notifyLoading('Opening Moodle…', 'One moment')
+  try {
+    await startMoodleLogin('organization')
+  } catch (e) {
+    notifyClose()
+    notifyError(
+      e instanceof Error ? e.message : 'Could not start Moodle sign-in.',
+      'Moodle Sign-In Failed'
     )
   }
 }
