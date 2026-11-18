@@ -4,7 +4,7 @@
       <img :src="aidlLogo" alt="AIDL" class="pl-logo" />
       <div>
         <h1>Upgrade your AIDL plan</h1>
-        <p v-if="data">{{ data.organization }} · current plan: <b>{{ currentLabel }}</b> · {{ data.usage.used }} of {{ data.usage.limit }} users</p>
+        <p v-if="data">{{ data.organization }} · current plan: <b>{{ currentLabel }}</b> · {{ data.usage.used }} of {{ data.usage.limit }} users<template v-if="trialLine"> · {{ trialLine }}</template></p>
       </div>
     </header>
 
@@ -197,6 +197,14 @@ const previewTotal = ref(0)
 const hours = Array.from({ length: 15 }, (_, i) => i + 6)
 
 const currentLabel = computed(() => data.value?.plans.find((p) => p.current)?.label || '')
+// The Trial is 7 days from the day the programme starts; upgrading extends everyone's licences.
+const trialLine = computed(() => {
+  const t = data.value?.usage.trial
+  if (!t) return ''
+  if (!t.started) return `${t.days}-day Trial, starts when you start the programme`
+  if (t.expired) return 'Trial ended: upgrade to continue'
+  return `${t.days_left} day${t.days_left === 1 ? '' : 's'} left of your Trial`
+})
 const targetPlan = computed(() => data.value?.plans.find((p) => p.key === target.value) || null)
 const returned = ref<'success' | 'cancelled' | ''>('')
 const needsTopics = computed(() => !!targetPlan.value?.picks_topics && !topics.value.length)

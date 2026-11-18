@@ -22,7 +22,6 @@ export interface SignupPayload {
   country: string
   state: string
   city: string
-  license_class: string
   organization_name: string
 }
 
@@ -36,7 +35,6 @@ export interface ApiUser {
   role: string
   organization_id: string
   organization_name: string
-  license_class: string
   [key: string]: unknown
 }
 

@@ -12,7 +12,7 @@
   </RouterLink></div>
 
   <div class="tier-toggle" id="tierToggle">
-    <button data-tier="learner">LEARNER<small>CLASS L</small></button>
+    <button data-tier="learner">LICENCE<small>ENTRY</small></button>
     <button data-tier="operator">OPERATOR<small>CLASS O</small></button>
     <button data-tier="specialist">SPECIALIST<small>CLASS S</small></button>
   </div>

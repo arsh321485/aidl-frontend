@@ -29,7 +29,15 @@ export interface Topic {
 export interface PlansData {
   organization: string
   current: PlanInfo['key']
-  usage: { used: number; limit: number; label: string; cards: number; cadence: string }
+  usage: {
+    used: number
+    limit: number
+    label: string
+    cards: number
+    cadence: string
+    // Trial only: the 7-day clock (null on a paid plan).
+    trial?: { days: number; started: boolean; days_left: number; expired: boolean; ends_at: string } | null
+  }
   plans: PlanInfo[]
   categories: Topic[]
   topics: Record<string, string[]>

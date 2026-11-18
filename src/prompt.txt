@@ -15,7 +15,7 @@ Country/state/city < 2 chars
 Org tab, name empty
 { "organization_name": ["Organization name is required for organization signup."] }
 Invalid license
-{ "license_class": ["Invalid license class. Use class_l (Class L · Learner's Permit)."] }
+{ "license_class": ["Invalid license class. Use class_l (AI Driving Licence's Permit)."] }
 Missing required
 { "first_name": ["This field is required."], ... }
 Other field rules (same as pehle)

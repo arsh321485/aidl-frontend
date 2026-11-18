@@ -1,7 +1,7 @@
 /* ============================================================
    AIDL · DRIVER PORTAL (Seniors)
    Content + rendering for three licence categories:
-     - learner    : Learner's Permit  (Class L · general public)
+     - learner    : AI Driving Licence  (general public)
      - operator   : Operator's Licence (Class O · workplace)
      - specialist : Specialist Endorsement (Class S · AI champion)
    Mirrors the junior portal's tier architecture.
@@ -12,14 +12,14 @@ const PORTALS = {
   /* ---------------------------------------------------------- LEARNER */
   learner: {
     key: 'learner',
-    label: "Learner's Permit",
-    cls: 'CLASS L · LEARNER',
+    label: "AI Driving Licence",
+    cls: 'AI DRIVING LICENCE',
     audience: 'General public · everyday AI use',
     name: 'Jordan Ellis',
     initials: 'JE',
-    role: 'ADULT LEARNER · CONSUMER',
+    role: 'ADULT · CONSUMER',
     dob: '07/18/1990',
-    licId: 'AIDL-L-0455-2210',
+    licId: 'AIDL-0455-2210',
     issued: '02/14/2026',
     expires: '02/14/2027',
     renewal: '7 mo left',
@@ -30,7 +30,7 @@ const PORTALS = {
     dash: {
       eyebrow: '▼ MILE 34 · PERMIT ACTIVE',
       hello: 'WELCOME ABOARD,<br/>JORDAN.',
-      intro: 'You\'re 40% through your Learner\'s Permit. Next stop: <b>M-1-03 — The PREP Prompting Framework</b>. No experience needed — take it at your own pace.',
+      intro: 'You\'re 40% through your AI Driving Licence. Next stop: <b>M-1-03 — The PREP Prompting Framework</b>. No experience needed — take it at your own pace.',
       issued: 'ISSUED 02/14/2026',
       stamps: ['Meet AI ✓', 'PREP · in progress', 'Safe Use · next', 'Glossary · started', 'Renewal · 7 mo'],
       stats: [
@@ -44,7 +44,7 @@ const PORTALS = {
         { d: '22', m: 'MAY', t: 'Safe-Use Checklist', s: 'What never to paste into AI', cta: 'Open', view: 'aup' },
         { d: '06', m: 'JUN', t: 'Try the Traffic Light', s: 'Practise the 3-second check', cta: 'Start', view: 'traffic' },
       ],
-      routeTitle: 'YOUR ROUTE · AI LEARNER\'S PERMIT',
+      routeTitle: 'YOUR ROUTE · AI DRIVING LICENCE',
       routeSub: 'Seven short modules, one goal: confident, safe everyday AI use.',
       route: [
         { n: 1, lbl: 'Meet AI', s: 'done' },
@@ -68,7 +68,7 @@ const PORTALS = {
     highway: {
       intro: 'The everyday rules for using AI safely and confidently. Learn them, follow them, drive happy.',
       sections: [{
-        title: 'Section A · Learner Rules',
+        title: 'Section A · Everyday Rules',
         sub: 'The essentials for anyone using AI in daily life.',
         signs: [
           { shape: 'octagon', glyph: 'STOP', what: 'STOP', name: 'Keep Private Things Private', action: 'Never paste <strong>passwords, ID numbers, bank details, or your home address</strong> into a consumer AI tool. Once it\'s in, you\'ve lost control of it.' },
@@ -105,7 +105,7 @@ const PORTALS = {
       title: 'SAFE-USE PROMISES.',
       intro: 'Six simple promises for using AI safely as a learner. Tap each to acknowledge, then sign at the bottom.',
       sideTitle: 'MY PROMISES',
-      sideNote: 'Acknowledge all 6 and sign to complete your Learner\'s Permit safe-use module.',
+      sideNote: 'Acknowledge all 6 and sign to complete your AI Driving Licence safe-use module.',
       badge: 'FOUNDATIONS',
       sign: 'I have read and agree to follow these AI safe-use promises.',
       rules: [
@@ -135,8 +135,8 @@ const PORTALS = {
     },
 
     qref: {
-      title: 'LEARNER · QUICK CARD',
-      meta: 'CLASS L · LEARNER',
+      title: 'QUICK CARD',
+      meta: 'AI DRIVING LICENCE',
       boxes: [
         { c: 'green', h: '● TRAFFIC LIGHT', type: 'ul', items: ['<b>Green</b> · public → go', '<b>Amber</b> · a bit personal → remove/placeholder', '<b>Red</b> · private → STOP'] },
         { c: 'yellow', h: '● PREP FRAMEWORK', type: 'ul', items: ['<b>Persona</b> · who the AI should be', '<b>Requirement</b> · what you want', '<b>Expectation</b> · format & length', '<b>Parameters</b> · what to leave out'] },
@@ -145,7 +145,7 @@ const PORTALS = {
         { c: 'dark', h: '● IS IT TRUE?', type: 'ol', items: ['Can I check it in a real source?', 'Do the numbers add up?', 'Does it actually make sense?'] },
         { c: 'amber', h: '● WHEN TO PAUSE', type: 'ul', items: ['You\'re about to share personal data', 'The facts really matter', 'You\'re unsure it\'s safe', 'The answer feels too confident'] },
       ],
-      foot: 'AI Learner\'s Permit · Drive safe, ask well, check everything.',
+      foot: 'AI Driving Licence · Drive safe, ask well, check everything.',
     },
   },
 

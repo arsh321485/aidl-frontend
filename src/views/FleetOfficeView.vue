@@ -92,7 +92,7 @@
           <div class="card">
             <div class="card-head"><h3>Recent Depot Activity</h3><span class="tag">LAST 48H</span></div>
             <div class="log">
-              <div class="log-item"><div class="log-dot">🔑</div><div><b>Dispatch key OPS-ONBOARD used 4 times</b><small>4 new drivers enrolled to Class L &middot; Learner</small></div><div class="when">2h ago</div></div>
+              <div class="log-item"><div class="log-dot">🔑</div><div><b>Dispatch key OPS-ONBOARD used 4 times</b><small>4 new drivers enrolled</small></div><div class="when">2h ago</div></div>
               <div class="log-item"><div class="log-dot">📄</div><div><b>AUP v3.1 published</b><small>Acknowledgement required before Module 04</small></div><div class="when">Yesterday</div></div>
               <div class="log-item"><div class="log-dot">✅</div><div><b>Claude Enterprise moved to Approved</b><small>Data class: Internal + Confidential</small></div><div class="when">Yesterday</div></div>
               <div class="log-item"><div class="log-dot">⛔</div><div><b>Public LLM chat marked Prohibited</b><small>Free-tier consumer tools blocked for all classes</small></div><div class="when">2d ago</div></div>
@@ -126,37 +126,6 @@
               <div class="field full">
                 <label>Key Name <span>*</span></label>
                 <input type="text" v-model="kName" />
-              </div>
-              <div class="field full">
-                <label>Assign Class On Sign-Up</label>
-                <div class="choice-group">
-                  <div class="choice active">CLASS L<small>LEARNER</small></div>
-                </div>
-                <p class="hint" style="margin-top:8px">Only Class L (Learner) is live right now — Operator and Specialist tracks aren't open yet.</p>
-              </div>
-              <div class="field">
-                <label>Seats On This Key</label>
-                <input type="number" v-model.number="kSeats" min="1" max="18" />
-              </div>
-              <div class="field">
-                <label>Expires After</label>
-                <select v-model="kExp">
-                  <option value="7">7 days</option>
-                  <option value="14">14 days</option>
-                  <option value="30">30 days</option>
-                  <option value="90">90 days</option>
-                </select>
-              </div>
-              <div class="field full">
-                <label>Restrict To Email Domain</label>
-                <input type="text" v-model="kDomain" placeholder="leave blank to allow any address" />
-              </div>
-              <div class="field full">
-                <label>Note To Drivers <span>OPTIONAL</span></label>
-                <textarea v-model="kNote" rows="2"></textarea>
-              </div>
-              <div class="field full">
-                <div class="switch-row"><div class="switch" :class="{ on: swAup }" @click="swAup = !swAup"><i></i></div><div class="sw-text"><b>Require AUP acknowledgement</b><small>Driver signs Acceptable Use v3.1 before their first lesson unlocks.</small></div></div>
               </div>
               <div class="field full">
                 <div class="switch-row"><div class="switch" :class="{ on: swApps }" @click="swApps = !swApps"><i></i></div><div class="sw-text"><b>Attach approved app registry</b><small>Drivers see only your approved AI + IT tools inside lessons and the Highway Code.</small></div></div>
@@ -327,7 +296,7 @@
               <div class="field full"><label>Send To Group</label>
                 <select v-model="destGroup">
                   <option value="All drivers (32)">All drivers (32)</option>
-                  <option value="Class L · Learner (9)">Class L · Learner (9)</option>
+                  <option value="AI Driving Licence (9)">AI Driving Licence (9)</option>
                   <option value="Key: OPS-ONBOARD (11)">Key: OPS-ONBOARD (11)</option>
                   <option value="AUP unsigned (6)">AUP unsigned (6)</option>
                 </select>
@@ -391,7 +360,7 @@
                   </div>
                   <div class="field"><label>Applies To</label>
                     <select v-model="dripWho">
-                      <option>Every new licence</option><option>Class L only</option><option>Specific dispatch key</option>
+                      <option>Every new licence</option><option>Specific dispatch key</option>
                     </select>
                   </div>
                 </div>
@@ -676,8 +645,8 @@ import aidlLogo from '../assets/images/aidl-logo-licence.png'
 /*
  * Fleet Office — Org Admin dashboard.
  * Converted from the standalone "Fleet Office" HTML mockup.
- * Only Class L (Learner) is live for now — every place the original mockup
- * offered a choice between Class L / O / S has been narrowed to L only,
+ * Only AI Driving Licence is live for now — every place the original mockup
+ * offered a choice between licence classes has been narrowed to the one live licence,
  * and demo rows tagged Class O or Class S were dropped or relabelled.
  */
 
@@ -746,7 +715,7 @@ const seatUsed = ref(32)
 const seatTotal = ref(50)
 const seatPct = computed(() => Math.round((seatUsed.value / seatTotal.value) * 100))
 
-/* ===== dispatch keys (Class L only) ===== */
+/* ===== dispatch keys ===== */
 const keys = reactive<DispatchKey[]>([
   { name: 'Ops Onboarding (rolling)', code: 'OPS-ONBOARD', cls: 'L', used: 11, seats: 20, exp: '30 Sep 2026', status: 'active' },
   { name: 'Contractor Trial', code: 'CTR-TRIAL', cls: 'L', used: 2, seats: 5, exp: '01 Jul 2026', status: 'revoked' },
@@ -784,7 +753,7 @@ function genKey() {
   toast('KEY GENERATED')
 }
 
-/* ===== drivers (Class L only) ===== */
+/* ===== drivers ===== */
 const drivers = reactive<Driver[]>([
   { name: 'Elise Tran', email: 'e.tran@northwind.com', cls: 'L', progress: '3 / 12 modules', aupSigned: true, joinedVia: 'OPS-ONBOARD', status: 'ON ROAD', statusPill: 'green' },
   { name: 'Tom Fairweather', email: 't.fairweather@northwind.com', cls: 'L', progress: '0 / 12 modules', aupSigned: false, joinedVia: 'OPS-ONBOARD', status: 'NOT STARTED', statusPill: 'grey' },
@@ -898,7 +867,7 @@ const dripWho = ref('Every new licence')
 const scheds = reactive<SchedEntry[]>([
   { cards: 'Traffic Light Check', group: 'All drivers (32)', dest: 'slack:#ai-training', cad: 'Weekly · Mon 09:00', next: 'Mon 10 Aug, 09:00', on: true },
   { cards: 'Acceptable Use v3.1', group: 'AUP unsigned (6)', dest: 'slack:DM', cad: 'Fortnightly · Thu 08:30', next: 'Thu 13 Aug, 08:30', on: true },
-  { cards: 'Mistake Museum', group: 'Class L · Learner (9)', dest: 'slack:#engineering', cad: 'Monthly · 1st 10:00', next: 'Tue 01 Sep, 10:00', on: false },
+  { cards: 'Mistake Museum', group: 'AI Driving Licence (9)', dest: 'slack:#engineering', cad: 'Monthly · 1st 10:00', next: 'Tue 01 Sep, 10:00', on: false },
 ])
 const runningSchedCount = computed(() => scheds.filter((s) => s.on).length)
 
@@ -1040,11 +1009,11 @@ function killAllOtherSessions() {
 /* ===== SETTINGS: seats & user access ===== */
 interface SettingsUser { name: string; email: string; role: string; license: string; lastSeen: string; on: boolean }
 const settingsUsers = reactive<SettingsUser[]>([
-  { name: 'Jamie Okafor', email: 'j.okafor@northwind.co', role: 'Dispatcher', license: 'CLASS L · ACTIVE', lastSeen: '2h ago', on: true },
-  { name: 'Alex Morgan', email: 'a.morgan@northwind.co', role: 'Ops Analyst', license: 'CLASS L · IN PROGRESS', lastSeen: 'Yesterday', on: true },
-  { name: 'Priya Reddy', email: 'p.reddy@northwind.co', role: 'Compliance', license: 'CLASS L · ACTIVE', lastSeen: '4h ago', on: true },
+  { name: 'Jamie Okafor', email: 'j.okafor@northwind.co', role: 'Dispatcher', license: 'ACTIVE', lastSeen: '2h ago', on: true },
+  { name: 'Alex Morgan', email: 'a.morgan@northwind.co', role: 'Ops Analyst', license: 'IN PROGRESS', lastSeen: 'Yesterday', on: true },
+  { name: 'Priya Reddy', email: 'p.reddy@northwind.co', role: 'Compliance', license: 'ACTIVE', lastSeen: '4h ago', on: true },
   { name: 'Sam Chen', email: 's.chen@northwind.co', role: 'Warehouse Lead', license: 'NOT STARTED', lastSeen: '12 days ago', on: true },
-  { name: 'Dana Wu', email: 'd.wu@northwind.co', role: 'Contractor', license: 'CLASS L · ACTIVE', lastSeen: '31 days ago', on: true },
+  { name: 'Dana Wu', email: 'd.wu@northwind.co', role: 'Contractor', license: 'ACTIVE', lastSeen: '31 days ago', on: true },
 ])
 const disabledSeatCount = computed(() => settingsUsers.filter((u) => !u.on).length)
 const activeAssignedSeats = computed(() => seatUsed.value - disabledSeatCount.value)

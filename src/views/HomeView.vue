@@ -80,7 +80,7 @@
 <div class="lp-sides">
 <div class="lp-side lp-k"><span class="lp-tag">ADMIN · THE INSTRUCTOR</span><h3>Set the rules, then watch the road.</h3><p>Click <span class="lp-v-s">“Add to Slack”</span><span class="lp-v-t">“Add to Teams”</span><span class="lp-v-g">“Add to Google Chat”</span> and AIDL creates its own <span class="lp-v-s">#aidl channel</span><span class="lp-v-t">AIDL team and channel</span><span class="lp-v-g">AIDL space</span>, makes you Master admin and posts your Admin Center. Six steps unlock one after another.</p>
 <ol><li>Create and approve your AI policy</li><li>Add co-admins with only the rights they need</li><li>Add your team, up to your seats</li><li>Approve the cards before anything is sent</li><li>Start — everyone gets their Welcome</li><li>Track licences and card reads</li></ol></div>
-<div class="lp-side"><span class="lp-tag">EMPLOYEE · THE DRIVER</span><h3>Ten minutes to road-ready.</h3><p>A private Welcome message walks each person through three cards. Finish them, save an avatar, and the licence arrives — valid for one year.</p>
+<div class="lp-side"><span class="lp-tag">EMPLOYEE · THE DRIVER</span><h3>Ten minutes to road-ready.</h3><p>A private Welcome message walks each person through three cards. Finish them, save an avatar, and the licence arrives — valid for as long as your plan runs: the 7-day Trial, or a year on a paid plan.</p>
 <ol><li>Open the Welcome card</li><li>Agree to the 14 policy points</li><li>Learn the Traffic Light rule</li><li>Learn the 5-rule Highway Code</li><li>Create an avatar</li><li>Download or share the licence</li></ol></div>
 </div>
 </div>
@@ -233,7 +233,7 @@
 <div class="lp-wrap">
 <span class="lp-eb">▼ SAMPLE LICENCE</span>
 <h2 class="lp-h2">One licence, your colours</h2>
-<p class="lp-lede">Every person who finishes the onboarding cards gets an AI Driving Licence with their name, your organization and a unique licence number, valid for one year.</p>
+<p class="lp-lede">Every person who finishes the onboarding cards gets an AI Driving Licence with their name, your organization and a unique licence number, valid for as long as your plan runs (the 7-day Trial, or a year on a paid plan).</p>
 <div class="lp-vf-grid">
 <div v-for="(c, i) in licenceSamples" :key="i" class="lp-vf-card" v-html="c"></div>
 </div>
@@ -311,10 +311,10 @@ const owen = PRESETS.find(p => p.name === 'Owen')!
 const owenAvatar = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(
   `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220">${buildAvatarLayers(owen).map(svgNode).join('')}</svg>`)
 const licenceSamples = [
-  { bg: '#16233a', ink: '#e8eef7', accent: '#ffcc00', numColor: '#ffcc00', number: 'AIDL-L-4417-0932', avatar: owenAvatar },
-  { bg: ['#f7f6f2', '#d9d7cd', '#f2f0e9'], ink: '#14140f', accent: '#e23a2e', numColor: '#c62f24', number: 'AIDL-L-5120-1187', avatar: licenceAvatar },
-  { bg: ['#ff9d00', '#e23a2e', '#7a1f2b'], ink: '#fff4dd', accent: '#ff9d00', numColor: '#fff4dd', number: 'AIDL-L-6083-2245', avatar: licenceAvatar2 },
-  { bg: '#12613c', ink: '#f2f7f2', accent: '#f5ecd2', numColor: '#f5ecd2', number: 'AIDL-L-7391-3306', avatar: licenceAvatar3 },
+  { bg: '#16233a', ink: '#e8eef7', accent: '#ffcc00', numColor: '#ffcc00', number: 'AIDL-4417-0932', avatar: owenAvatar },
+  { bg: ['#f7f6f2', '#d9d7cd', '#f2f0e9'], ink: '#14140f', accent: '#e23a2e', numColor: '#c62f24', number: 'AIDL-5120-1187', avatar: licenceAvatar },
+  { bg: ['#ff9d00', '#e23a2e', '#7a1f2b'], ink: '#fff4dd', accent: '#ff9d00', numColor: '#fff4dd', number: 'AIDL-6083-2245', avatar: licenceAvatar2 },
+  { bg: '#12613c', ink: '#f2f7f2', accent: '#f5ecd2', numColor: '#f5ecd2', number: 'AIDL-7391-3306', avatar: licenceAvatar3 },
 ].map(t => licenceSvg({ name: 'Your Name', org: 'YOUR ORG NAME', issued: '22/10/2026', expires: '22/10/2027', logo: aidlLogo, ...t }))
 
 // Phone / tablet menu — the inline nav links are hidden below 1240px.
@@ -365,7 +365,9 @@ const plan = ref<PlanKey>('basic')
 const pickedTopics = ref<string[]>(['Data Protection & Confidentiality', 'Output Verification & Model Limits', 'AI-Enabled Security Threats'])
 const cardsShown = ref(6)
 const planInfo = computed(() => PLANS.find(p => p.key === plan.value)!)
-const STARTER_TOPICS = [...new Set(STARTER_CARDS.map(c => c.topic))]
+// Trial: a card with each licence, then two a week for its 7 days: the first 3 starter cards.
+const TRIAL_CARDS = STARTER_CARDS.slice(0, 3)
+const STARTER_TOPICS = [...new Set(TRIAL_CARDS.map(c => c.topic))]
 
 interface ShownCard { no: string; title: string; type: string; topic: string }
 
@@ -376,9 +378,9 @@ function topicOn(topic: string) {
   return pickedTopics.value.includes(topic)
 }
 
-// Trial shows its 12 cards; otherwise titles are taken in turn from each topic.
+// Trial shows its 3 cards; otherwise titles are taken in turn from each topic.
 const previewCards = computed<ShownCard[]>(() => {
-  if (plan.value === 'trial') return STARTER_CARDS
+  if (plan.value === 'trial') return TRIAL_CARDS
   const topics = CARD_TOPICS.filter(t => topicOn(t.title))
   const out: ShownCard[] = []
   const most = Math.max(0, ...topics.map(t => t.cards.length))
@@ -393,12 +395,12 @@ const previewCards = computed<ShownCard[]>(() => {
 const visibleCards = computed(() => previewCards.value.slice(0, cardsShown.value))
 
 const topicNote = computed(() => {
-  if (plan.value === 'trial') return `Trial sends the 12-card starter set · ${STARTER_TOPICS.length} topics`
+  if (plan.value === 'trial') return `Trial sends 3 starter cards in its 7 days · ${STARTER_TOPICS.length} topics`
   if (plan.value === 'enterprise') return `All ${CARD_TOPICS.length} topics included`
   return `${pickedTopics.value.length} of ${CARD_TOPICS.length} topics picked`
 })
 const planLine = computed(() => {
-  if (plan.value === 'trial') return 'The 12-card starter set, one card a month. Pick your own topics on Basic.'
+  if (plan.value === 'trial') return 'The first 3 starter cards, two a week while your 7-day Trial lasts. Pick your own topics on Basic.'
   if (plan.value === 'enterprise') return `The starter set plus cards from all ${CARD_TOPICS.length} topics, on the days and time you choose.`
   return 'The starter set plus cards from the topics you pick, every Monday and Thursday.'
 })
@@ -500,12 +502,12 @@ const USER: Step[] = [
  m:'<div class="lp-card"><p class="lp-ct">Card 1 of 3 &middot; AI policy</p><p class="lp-cs">Point 6 of 14 &middot; Only use approved apps</p><div class="lp-bar2"><i style="width:43%"></i></div><div class="lp-btns" style="margin-top:10px">'+B('I agree to point 6',1)+'</div></div><div class="lp-card"><p class="lp-ct"><span class="lp-ok">&#10003;</span> I agreed to all 14 points</p><p class="lp-cs" style="margin:0">Card turns green &middot; AGREED</p></div>'},
 {t:'Traffic Light',s:'Card 2 of 3',h:'What&rsquo;s safe to share with AI',w:'Three colours, one decision before every prompt.',
  m:'<div class="lp-card"><p class="lp-ct">Card 2 of 3 &middot; Traffic Light</p><div class="lp-tl" style="margin:8px 0 12px"><div class="lp-g"><b>Green</b>Safe to share</div><div class="lp-a"><b>Amber</b>Be careful</div><div class="lp-r"><b>Red</b>Never share with AI</div></div><div class="lp-btns">'+B('Got it. Next: The Highway Code &rarr;',1)+'</div></div>'},
-{t:'Highway Code',s:'Card 3 of 3 &middot; 5 rules',h:'The five learner rules',w:'The rules every new driver follows when using AI at work.',
- m:'<div class="lp-card"><p class="lp-ct">Card 3 of 3 &middot; Highway Code</p><p class="lp-cs">5 learner rules for using AI</p><div class="lp-bar2"><i style="width:100%"></i></div><div class="lp-btns" style="margin-top:10px">'+B('Got it. Get my licence',1)+'</div></div><div class="lp-card"><p class="lp-ct">Your next card is on its way</p><p class="lp-cs" style="margin:0">Shown if the admin hasn&rsquo;t approved the next card yet &mdash; it arrives by itself.</p></div>'},
+{t:'Highway Code',s:'Card 3 of 3 &middot; 5 rules',h:'The five everyday rules',w:'The rules every new driver follows when using AI at work.',
+ m:'<div class="lp-card"><p class="lp-ct">Card 3 of 3 &middot; Highway Code</p><p class="lp-cs">5 everyday rules for using AI</p><div class="lp-bar2"><i style="width:100%"></i></div><div class="lp-btns" style="margin-top:10px">'+B('Got it. Get my licence',1)+'</div></div><div class="lp-card"><p class="lp-ct">Your next card is on its way</p><p class="lp-cs" style="margin:0">Shown if the admin hasn&rsquo;t approved the next card yet &mdash; it arrives by itself.</p></div>'},
 {t:'Avatar',s:'One quick step',h:'Create your avatar',w:'It goes on your licence. Make it from the Welcome message or after the cards &mdash; your licence arrives as soon as it&rsquo;s saved.',
  m:'<div class="lp-card" style="display:flex;gap:14px;align-items:center"><img class="lp-lic-av" style="flex:none" src="'+licenceAvatar+'" alt="" /><div><p class="lp-ct">Create my avatar</p><p class="lp-cs">Shown on your licence</p><div class="lp-btns">'+B('Create my avatar',1)+'</div></div></div><div class="lp-card"><p class="lp-ct">Almost there</p><p class="lp-cs" style="margin:0">No free seat? The licence is issued as soon as one opens.</p></div>'},
-{t:'Licence',s:'Valid for 1 year',h:'&ldquo;You&rsquo;re road-ready!&rdquo;',w:'Name, avatar, licence number, company and logo &mdash; ready to download or post. The same message says when your next card arrives.',
- m:'<div class="lp-card"><p class="lp-ct">&#127881; You&rsquo;re road-ready, Your Name!</p><p class="lp-cs">All three cards done and the policy agreed &middot; <b style="color:#1a7f37">ISSUED</b> &middot; valid till <b>22 October 2027</b></p><div class="lp-lic-img">'+licenceSvg({name:'Your Name',org:'YOUR ORG NAME',number:'AIDL-L-4417-0932',issued:'22/10/2026',expires:'22/10/2027',logo:aidlLogo,avatar:licenceAvatar})+'</div><div class="lp-row" style="margin-top:10px">&#9989; Northwind AUP agreed &middot; &#9989; Traffic Light Check &middot; &#9989; The Highway Code</div><p class="lp-cs" style="margin:6px 0 0">&#128467;&#65039; Your next card arrives <b>Tuesday, 27 October</b>.</p><div class="lp-btns" style="margin-top:12px">'+B('Download licence',1)+B('Share')+B('Share on LinkedIn')+B('☰ Menu')+'</div></div>'}
+{t:'Licence',s:'Valid for your plan: 7 days on Trial, 1 year paid',h:'&ldquo;You&rsquo;re road-ready!&rdquo;',w:'Name, avatar, licence number, company and logo &mdash; ready to download or post. The same message says when your next card arrives.',
+ m:'<div class="lp-card"><p class="lp-ct">&#127881; You&rsquo;re road-ready, Your Name!</p><p class="lp-cs">All three cards done and the policy agreed &middot; <b style="color:#1a7f37">ISSUED</b> &middot; valid till <b>22 October 2027</b></p><div class="lp-lic-img">'+licenceSvg({name:'Your Name',org:'YOUR ORG NAME',number:'AIDL-4417-0932',issued:'22/10/2026',expires:'22/10/2027',logo:aidlLogo,avatar:licenceAvatar})+'</div><div class="lp-row" style="margin-top:10px">&#9989; Northwind AUP agreed &middot; &#9989; Traffic Light Check &middot; &#9989; The Highway Code</div><p class="lp-cs" style="margin:6px 0 0">&#128467;&#65039; Your next card arrives <b>Tuesday, 27 October</b>.</p><div class="lp-btns" style="margin-top:12px">'+B('Download licence',1)+B('Share')+B('Share on LinkedIn')+B('☰ Menu')+'</div></div>'}
 ];
 
 const adminStep = ref(0)

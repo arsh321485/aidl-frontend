@@ -22,7 +22,7 @@ const SPIRAL = [
 ];
 
 const LADDER = [
-  { name: "Learner's Permit", who: 'Junior Cadet · all', color: 'var(--cream)', unlocks: 'Unplugged activities; teacher-driven demos on a projector.', gate: 'Class safety pledge signed with your guardian.' },
+  { name: "AI Driving Licence", who: 'Junior Cadet · all', color: 'var(--cream)', unlocks: 'Unplugged activities; teacher-driven demos on a projector.', gate: 'Class safety pledge signed with your guardian.' },
   { name: 'Green Licence', who: 'Junior Cadet · age 10+', color: 'var(--signal-green)', unlocks: 'Supervised, whole-class use of child-safe sandboxes — block coding and image classifiers on teacher accounts.', gate: 'Pass the "Machine or Human?" and "Private vs. Public info" checks.' },
   { name: 'Yellow Licence', who: 'Road Crew · entry', color: 'var(--sign-yellow)', unlocks: 'Small-group use of ML tools and school-managed, filtered generative AI with logged sessions.', gate: 'Data-privacy quiz; explain hallucination with a local example.' },
   { name: 'Blue Licence', who: 'Road Crew · age 14+', color: 'var(--sky)', unlocks: 'Individual project use of approved AI tools (per local law and platform age terms), with citation and disclosure norms.', gate: 'Bias-audit exercise; academic-integrity charter; guardian consent.' },
@@ -109,7 +109,7 @@ const TIERS = {
     code: {
       title: 'THE CADET CODE.',
       intro: 'Five golden rules, repeated ritually. Tap each one to promise it, then sign with your grown-up. You\'ll recite these at graduation!',
-      sideTitle: 'MY PROMISES', sideNote: 'Promise all 5 and sign with your grown-up. This is your Learner\'s Permit pledge — and your graduation speech.',
+      sideTitle: 'MY PROMISES', sideNote: 'Promise all 5 and sign with your grown-up. This is your AI Driving Licence pledge — and your graduation speech.',
       sign: 'I promise to follow the Cadet Code.',
       rules: [
         { b: 'AI is a tool, not a friend', p: 'It doesn\'t have feelings, even when it sounds like it does. It\'s a machine that finds patterns — it doesn\'t think, feel, or know you.' },
@@ -179,7 +179,7 @@ const TIERS = {
         { c: 'green', h: '● TRAFFIC LIGHTS', type: 'ul', items: ['<b>Green</b> · safe & fun → go ahead', '<b>Amber</b> · personal → ask a grown-up', '<b>Red</b> · private → STOP, never share'] },
         { c: 'yellow', h: '● THE CADET CODE', type: 'ol', items: ['AI is a tool, not a friend', 'Keep secrets secret', 'Stop & tell a trusted adult', 'Machines make mistakes — check', 'Be kind — never trick, tease, or copy'] },
         { c: 'red', h: '● NEVER SHARE', type: 'ul', items: ['Full name + address', 'Phone number or passwords', 'Photos of you or family', 'Your school', 'Your secrets'] },
-        { c: '', h: '● MY LICENCE', type: 'ul', items: ['<b>Learner\'s Permit</b> · unplugged games ✓', '<b>Green Licence</b> · class sandboxes, age 10+', 'AI demos: teacher\'s screen only', 'No accounts in my name, ever'] },
+        { c: '', h: '● MY LICENCE', type: 'ul', items: ['<b>AI Driving Licence</b> · unplugged games ✓', '<b>Green Licence</b> · class sandboxes, age 10+', 'AI demos: teacher\'s screen only', 'No accounts in my name, ever'] },
         { c: 'dark', h: '● IS IT REAL?', type: 'ol', items: ['Does a grown-up agree?', 'Can I find it in a book?', 'Would an elder say it\'s true?'] },
         { c: 'amber', h: '● STOP & TELL IF…', type: 'ul', items: ['Something feels scary or weird', 'A machine asks about YOU', 'Someone is being mean', 'You\'re just not sure'] },
       ],
@@ -263,7 +263,7 @@ const TIERS = {
     code: {
       title: 'THE CREW CODE.',
       intro: 'Six commitments, taught, debated, and personally signed. This is what makes you an apprentice practitioner — not a passenger.',
-      sideTitle: 'MY COMMITMENTS', sideNote: 'Acknowledge all 6 and sign. The Crew Code is a condition of every licence above Learner\'s Permit — and it\'s revocable.',
+      sideTitle: 'MY COMMITMENTS', sideNote: 'Acknowledge all 6 and sign. The Crew Code is a condition of every licence above AI Driving Licence — and it\'s revocable.',
       sign: 'I have debated, understood, and signed the Crew Code.',
       rules: [
         { b: 'Disclose', p: 'I say when and how I used AI, always.' },

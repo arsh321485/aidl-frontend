@@ -6,14 +6,14 @@
 <div>
 <span class="pr-eb">▼ PRICING</span>
 <h1>PICK YOUR<span>ROUTE</span></h1>
-<p class="pr-lede">Every team starts on Trial with the three onboarding cards and a licence for everyone. Move to Basic or Enterprise when you want more cards each week, more admins and more control.</p>
+<p class="pr-lede">Every team starts with a free 7-day Trial: the three onboarding cards, a licence for everyone and two awareness cards a week. Move to Basic or Enterprise to keep it going for a year, with more cards each week, more admins and more control.</p>
 </div>
 <div class="pr-route" aria-label="How plans work">
 <b>How it works</b>
 <ol>
 <li><span>Add AIDL to <span class="lp-v-s">Slack</span><span class="lp-v-t">Teams</span>. You start on Trial.</span></li>
-<li>Your team agrees to the policy and earns their licence.</li>
-<li>Upgrade from your Admin Center any time.</li>
+<li>Your team agrees to the policy and earns their licence, all within the 7 days.</li>
+<li>Upgrade from your Admin Center any time: licences are extended and nobody has to start again.</li>
 </ol>
 </div>
 </div>
@@ -44,7 +44,7 @@
 </div>
 </article>
 </div>
-<p class="pr-seats"><b>How seats work:</b> every learner in the AIDL channel uses a seat. Admins never do. Someone who earned a licence keeps their seat for the year, even if they leave the channel.</p>
+<p class="pr-seats"><b>How seats work:</b> every user in the AIDL channel uses a seat. Admins never do. Someone who earned a licence keeps their seat for as long as the licence runs, even if they leave the channel.</p>
 </div>
 </section>
 
@@ -52,7 +52,7 @@
 <div class="lp-wrap">
 <span class="pr-eb">▼ ON EVERY PLAN</span>
 <h2 class="pr-h2">Road-ready from day one.</h2>
-<p class="pr-lede" style="color:#e9e0c4">These come with Trial and stay on every plan. Your team finishes them in about ten minutes.</p>
+<p class="pr-lede" style="color:#e9e0c4">These come with every plan, including the 7-day Trial. Your team finishes them in about ten minutes.</p>
 <div class="pr-every">
 <div v-for="t in every" :key="t.title" class="pr-tile"><span class="pr-ic">{{ t.icon }}</span><span class="pr-m">{{ t.label }}</span><h3>{{ t.title }}</h3><p>{{ t.text }}</p></div>
 </div>
@@ -90,7 +90,7 @@
 <section id="start" class="pr-cta">
 <div class="lp-wrap">
 <h2 class="pr-h2">Start on Trial today.</h2>
-<p class="pr-lede">Add AIDL, approve your policy and the three starter cards, and press Start. Upgrade whenever you're ready.</p>
+<p class="pr-lede">Add AIDL, approve your policy and the three starter cards, and press Start. Your 7 days begin then. Upgrade whenever you're ready.</p>
 <div class="pr-hcta">
 <a class="lp-btn" href="#" @click.prevent="addTo('slack')">Add to Slack <span class="lp-arr">→</span></a>
 <a class="lp-btn" href="#" @click.prevent="addTo('teams')">Add to Teams <span class="lp-arr">→</span></a>
@@ -116,15 +116,16 @@ import { notifyError, notifyLoading, notifyClose } from '../lib/notify.js'
 const plans = [
   {
     key: 'trial', name: 'Trial', sign: 'round', signText: 'START', flag: '',
-    tag: 'Try AIDL with a small group and get everyone licensed.',
-    price: 'Free', per: '', note: 'NO CARD NEEDED',
-    dash: [['1', 'Admin'], ['1', 'Card a month'], ['5', 'Users'], ['12', 'Default cards']],
+    tag: 'Run the whole AIDL programme with a small group and see it work.',
+    price: 'Free', per: '7 days', note: 'NO CARD NEEDED',
+    dash: [['7', 'Days'], ['1', 'Admin'], ['2', 'Cards a week'], ['5', 'Users']],
     cta: 'Start free', inc: 'INCLUDED', base: [] as string[],
     feats: [
       '3 onboarding cards: 📄 AI Acceptable Use Policy, 🚦 Traffic Light Check, 📖 The Highway Code',
       'AI policy built from 14 short policy cards, agreed point by point',
-      'AI Driving Licence for each person, valid for 1 year',
-      'Default package: 12 awareness cards, 1 a month',
+      'AI Driving Licence for each person, valid for the 7 days of the Trial',
+      'Awareness cards: 2 a week (Mon, Thu, 10:00) while the Trial lasts, 3 cards in all',
+      'Upgrade any time: everyone keeps their seat and their licence is extended',
       'Admin Center in one channel message',
       'Request an app for everyone',
     ],
@@ -132,11 +133,12 @@ const plans = [
   {
     key: 'basic', name: 'Basic', sign: 'diamond', signText: '2×<br>WEEK', flag: 'FOR GROWING TEAMS',
     tag: 'Keep the learning going all year, on the topics you choose.',
-    price: '$2', per: 'USD / user / month', note: 'BILLED PER LEARNER SEAT · ADMINS ARE FREE',
+    price: '$2', per: 'USD / user / month', note: 'BILLED PER USER SEAT · ADMINS ARE FREE',
     dash: [['Any', 'Admins'], ['2', 'Cards a week'], ['Any', 'Number of users'], ['104', 'Cards a year']],
     cta: 'Get Basic', inc: 'EVERYTHING IN TRIAL, PLUS',
     base: ['Onboarding cards, AI policy and licences'],
     feats: [
+      'AI Driving Licences valid for a year',
       '2 awareness cards a week (Mon, Thu, 10:00)',
       '104 cards over the year',
       'Pick the card topics that matter to your team',
@@ -148,11 +150,12 @@ const plans = [
   {
     key: 'ent', name: 'Enterprise', sign: 'oct', signText: '4×<br>WEEK', flag: '',
     tag: 'The full library on your schedule, run by as many admins as you need.',
-    price: '$8', per: 'USD / user / month', note: 'BILLED PER LEARNER SEAT · ADMINS ARE FREE',
+    price: '$8', per: 'USD / user / month', note: 'BILLED PER USER SEAT · ADMINS ARE FREE',
     dash: [['Any', 'Admins'], ['4', 'Cards a week'], ['Any', 'Number of users'], ['208', 'Cards a year']],
     cta: 'Get Enterprise', inc: 'EVERYTHING IN TRIAL + BASIC, PLUS',
     base: ['Onboarding cards, AI policy and licences', 'Topic picks, a year of cards, any number of admins and your own uploaded AI policy'],
     feats: [
+      'AI Driving Licences valid for a year',
       '4 awareness cards a week',
       'Choose the days and the time they arrive',
       '208 cards over the year, from all 15 topics',
@@ -164,7 +167,7 @@ const every = [
   { icon: '📄', label: 'ONBOARDING CARD 1', title: 'AI Acceptable Use Policy', text: 'Your policy, agreed point by point. Every agreement is time-stamped.' },
   { icon: '🚦', label: 'ONBOARDING CARD 2', title: 'Traffic Light Check', text: "Green, amber or red: what's safe to paste into AI, decided in a second." },
   { icon: '📖', label: 'ONBOARDING CARD 3', title: 'The Highway Code', text: 'Five everyday rules for using AI at work.' },
-  { icon: '🎫', label: 'THEN', title: 'AI Driving Licence', text: 'Issued the moment the cards are done. Valid for one year, ready to download or share.' },
+  { icon: '🎫', label: 'THEN', title: 'AI Driving Licence', text: 'Issued the moment the cards are done. Valid for as long as your plan runs (7 days on Trial, a year on Basic and Enterprise), ready to download or share.' },
 ]
 
 // Cells: '✓' / '—' are styled; 'text|small note' adds a second line.
@@ -179,11 +182,12 @@ const compare = [
     ['Upload your own AI policy (AUP)', '—', '✓', '✓'],
     ['🚦 Traffic Light Check', '✓', '✓', '✓'],
     ['📖 The Highway Code', '✓', '✓', '✓'],
-    ['AI Driving Licence (1 year)', '✓', '✓', '✓'],
+    ['AI Driving Licence', '✓', '✓', '✓'],
+    ['Licence valid for', '7 days|The length of the Trial', '1 year|From issue and each upgrade', '1 year|From issue and each upgrade'],
   ] },
   { group: 'AWARENESS CARDS', rows: [
-    ['How often', '1 a month', '2 a week|Mon, Thu · 10:00', '4 a week|Your days and time'],
-    ['Cards included', '12|Default package', '104|A year', '208|A year'],
+    ['How often', '2 a week|Mon, Thu · 10:00', '2 a week|Mon, Thu · 10:00', '4 a week|Your days and time'],
+    ['Cards included', '3|During the 7 days', '104|A year', '208|A year'],
     ['Topics', 'Default package', 'The topics you pick', 'All 15 topics'],
     ['Request an app', '✓', '✓', '✓'],
   ] },
@@ -196,7 +200,7 @@ const compare = [
 ]
 
 const faqs = [
-  { q: 'Who counts as a user?', a: "Every learner in the AIDL channel uses a seat. Admins never do, so they're always free." },
+  { q: 'Who counts as a user?', a: "Every user in the AIDL channel uses a seat. Admins never do, so they're always free." },
   { q: 'What happens when the plan is full?', a: 'Anyone added to the channel after that is taken out again, and both they and the Master admin are told why. Buy more seats or upgrade to make room.' },
   { q: 'Does a licence keep its seat?', a: 'Yes. Someone who earned a licence keeps holding their seat, even after they leave the channel. Removing someone who never earned one frees their seat.' },
   { q: 'How do I upgrade?', a: 'From your Admin Center: press Upgrade plan, pick Basic or Enterprise and the number of users. Your cards switch over automatically.' },

@@ -22,7 +22,8 @@ export type VerifyResult =
   | { kind: 'not-found'; number: string }
   | { kind: 'unavailable'; number: string }
 
-export const LICENCE_NUMBER = /^AIDL-L-\d{4}-\d{4}$/
+// New numbers are AIDL-1234-5678; licences issued before that carry an extra "L-" (AIDL-L-1234-5678).
+export const LICENCE_NUMBER = /^AIDL-(?:L-)?\d{4}-\d{4}$/
 
 export async function verifyLicence(number: string): Promise<VerifyResult> {
   try {

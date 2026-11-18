@@ -3,7 +3,7 @@
 // Extends window.AIDL_LESSONS (defined in lessons.js) so that
 // every level (L / C / A) has a multi-lesson curriculum the
 // Lesson Player can page between via the lesson picker.
-//   L · Learner's Permit  → full set M-1-01…M-1-07 (see lessons-complete.js)
+//   L · AI Driving Licence  → full set M-1-01…M-1-07 (see lessons-complete.js)
 //   C · Operator's Licence → M-2-02 · M-2-04 · M-2-07
 //   A · Specialist Endorse → M-3-01 · M-3-03 · M-3-06
 // ============================================================
@@ -17,10 +17,10 @@
     id: 'M-1-01', level: 'L', next: 'M-1-02',
     title: 'M-1-01 · Meet Your AI Co-Pilot',
     titleTop: 'M-1-01 · MEET YOUR AI CO-PILOT',
-    sub: 'LEVEL 1 · LEARNER\'S PERMIT · MODULE 1 OF 7 · 40 MIN · PASS MARK 70%',
+    sub: 'LEVEL 1 · AI DRIVING LICENCE · MODULE 1 OF 7 · 40 MIN · PASS MARK 70%',
     duration: 40 * 60,
     instructor: 'DRIVER ED',
-    instructorRole: 'INSTRUCTOR · CLASS L · FUNDAMENTALS',
+    instructorRole: 'INSTRUCTOR · FUNDAMENTALS',
     passMark: 70,
     competencies: ['AI-CF-L-01'], los: ['LO-1-01-A', 'LO-1-01-B'],
     segments: [
@@ -65,7 +65,7 @@
           heading: 'Three habits from day one', sub: 'the basics that keep you safe',
           paragraphs: [
             'You don\'t need to memorise a rulebook yet. Just build three habits: <strong>keep private things private</strong>, <strong>check anything important</strong>, and <strong>stay in charge of the final decision</strong>.',
-            'Everything else in your Learner\'s Permit builds on these three.',
+            'Everything else in your AI Driving Licence builds on these three.',
           ],
           examples: { title: 'The three habits', items: [
             { kind: 'good', text: 'Never paste passwords, ID numbers, or a full home address' },
@@ -82,7 +82,7 @@
       { t: 520, kind: 'msg', text: 'The prompt is your steering wheel. Better prompt in, better answer out.' },
       { t: 1100, kind: 'warn', text: 'Checkpoint coming — think about WHY AI gets facts wrong.' },
       { t: 1500, kind: 'msg', text: 'Three habits: keep private things private, check what matters, stay the decision-maker.' },
-      { t: 2060, kind: 'msg', text: 'Nicely done. Your Learner\'s Permit is officially started. Next stop: the PREP framework.' },
+      { t: 2060, kind: 'msg', text: 'Nicely done. Your AI Driving Licence is officially started. Next stop: the PREP framework.' },
     ],
   };
 
@@ -93,10 +93,10 @@
     id: 'M-1-07', level: 'L', next: null,
     title: 'M-1-07 · Personal Data & Safe Use',
     titleTop: 'M-1-07 · PERSONAL DATA & SAFE USE',
-    sub: 'LEVEL 1 · LEARNER\'S PERMIT · MODULE 7 OF 7 · 45 MIN · PASS MARK 70%',
+    sub: 'LEVEL 1 · AI DRIVING LICENCE · MODULE 7 OF 7 · 45 MIN · PASS MARK 70%',
     duration: 45 * 60,
     instructor: 'DRIVER ED',
-    instructorRole: 'INSTRUCTOR · CLASS L · FUNDAMENTALS',
+    instructorRole: 'INSTRUCTOR · FUNDAMENTALS',
     passMark: 70,
     competencies: ['AI-CF-L-07'], los: ['LO-1-07-A', 'LO-1-07-B'],
     segments: [
@@ -105,7 +105,7 @@
           heading: 'The never-paste list', sub: 'personal data belongs to you',
           paragraphs: [
             'Some information should <strong>never</strong> go into a consumer AI tool. Once it\'s pasted, you\'ve lost control of where it goes.',
-            'This is the single most important safety skill on your Learner\'s Permit.',
+            'This is the single most important safety skill on your AI Driving Licence.',
           ],
           examples: { title: 'Never paste these', items: [
             { kind: 'bad', text: 'Full name + home address together' },
@@ -149,7 +149,7 @@
       { t: 480, kind: 'note', text: 'The placeholder trick lets you get help on real situations safely. Swap in [Name], [Amount], [Address].' },
       { t: 980, kind: 'warn', text: 'Checkpoint — decide what\'s actually safe to paste.' },
       { t: 1360, kind: 'msg', text: 'Now build a safe prompt with placeholders. I\'ll check your Parameters line.' },
-      { t: 2000, kind: 'msg', text: 'That\'s the last module in your Learner\'s Permit — licence earned. Well driven!' },
+      { t: 2000, kind: 'msg', text: 'That\'s the last module in your AI Driving Licence — licence earned. Well driven!' },
     ],
   };
 

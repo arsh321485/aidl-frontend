@@ -7,7 +7,7 @@ window.AIDL_LESSONS = {};
 window.AIDL_LEVELS = {
   L: {
     code: 'L',
-    name: "Learner's Permit",
+    name: "AI Driving Licence",
     audience: 'General Public · Consumer',
     accent: 'sky',            // light blue accent
     accentColor: '#6fb3e0',
@@ -39,7 +39,7 @@ window.AIDL_LEVELS = {
 
 // ============================================================
 // LEVEL 1 (L) — M-1-03 · The PREP Prompting Framework
-// Learner's Permit. Friendly tone. 70% threshold.
+// AI Driving Licence. Friendly tone. 70% threshold.
 // ============================================================
 window.AIDL_LESSONS['M-1-03'] = {
   id: 'M-1-03',
@@ -47,10 +47,10 @@ window.AIDL_LESSONS['M-1-03'] = {
   next: 'M-1-04',
   title: 'M-1-03 · The PREP Prompting Framework',
   titleTop: 'M-1-03 · THE PREP PROMPTING FRAMEWORK',
-  sub: 'LEVEL 1 · LEARNER\'S PERMIT · MODULE 3 OF 7 · 50 MIN · PASS MARK 70%',
+  sub: 'LEVEL 1 · AI DRIVING LICENCE · MODULE 3 OF 7 · 50 MIN · PASS MARK 70%',
   duration: 50 * 60, // 3000s
   instructor: 'DRIVER ED',
-  instructorRole: 'INSTRUCTOR · CLASS L · FUNDAMENTALS',
+  instructorRole: 'INSTRUCTOR · FUNDAMENTALS',
   passMark: 70,
   competencies: ['AI-CF-L-03'],
   los: ['LO-1-03-A', 'LO-1-03-B', 'LO-1-03-C'],
@@ -182,7 +182,7 @@ window.AIDL_LESSONS['M-1-03'] = {
         sub: 'step 4 of 4 · what NOT to do',
         paragraphs: [
           'The last part: <strong>what NOT to include</strong>. This is where you protect yourself. Even on a consumer tool, you should always tell the AI what to leave out.',
-          'For a Learner\'s Permit, a good Parameters line might be: "Don\'t include my full name or address. Don\'t invent any facts — if you don\'t know, just say so."',
+          'For a AI Driving Licence, a good Parameters line might be: "Don\'t include my full name or address. Don\'t invent any facts — if you don\'t know, just say so."',
         ],
         examples: {
           title: 'Useful Parameters for daily use',
