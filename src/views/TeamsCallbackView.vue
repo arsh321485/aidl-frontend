@@ -96,8 +96,18 @@ function onAvatarPicked(avatar: AvatarConfig) {
   continueToWorkspace()
 }
 
+// Google Classroom admin: go straight on in this tab (a new tab can be popup-blocked,
+// which showed an extra "You're signed in" screen). The AIDL sign-in is already saved.
+function goToGoogleClassroom(url: string) {
+  window.location.assign(url)
+}
+
 function continueToWorkspace() {
   pickAvatar.value = false
+  if (workspace?.kind === 'gclassroom') {
+    goToGoogleClassroom(workspace.url)
+    return
+  }
   if (workspace && !openInNewTab(workspace.url)) {
     if (workspace.kind === 'slack') {
       slackUrl.value = workspace.url
@@ -105,10 +115,6 @@ function continueToWorkspace() {
     }
     if (workspace.kind === 'gchat') {
       googleChatUrl.value = workspace.url
-      return
-    }
-    if (workspace.kind === 'gclassroom') {
-      adminCenterUrl.value = workspace.url
       return
     }
   }
@@ -216,10 +222,8 @@ onMounted(async () => {
       return
     }
   } else if (target?.kind === 'gclassroom') {
-    if (!openInNewTab(target.url)) {
-      adminCenterUrl.value = target.url
-      return
-    }
+    goToGoogleClassroom(target.url)
+    return
   } else if (result.openTeams && result.teamsUrl) {
     console.log('[TeamsCallback] opening Teams directly, landedOn =', result.landedOn)
     window.open(result.teamsUrl, '_blank', 'noopener,noreferrer')
