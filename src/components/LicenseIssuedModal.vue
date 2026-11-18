@@ -5,7 +5,7 @@
         <span class="ok">✓</span>
         <div>
           <h3>Your license has been issued.</h3>
-          <p>{{ licenseId }} · {{ classShort }} · {{ classFull }}</p>
+          <p>{{ [licenseId, classShort, classFull].filter(Boolean).join(' · ') }}</p>
         </div>
         <button type="button" class="iss-close" @click="$emit('close')" aria-label="Close">✕</button>
       </div>
@@ -20,7 +20,7 @@
             <span class="wmark"><img :src="aidlLogo" alt="AIDL" class="wmark-img" /></span>
             <div>
               <h4>Welcome, {{ firstName }}</h4>
-              <p>{{ classShort }} · {{ classFull }} · {{ licenseId }} — your license is ready below.</p>
+              <p>{{ [classShort, classFull, licenseId].filter(Boolean).join(' · ') }} — your license is ready below.</p>
             </div>
           </div>
 
@@ -144,7 +144,7 @@ onMounted(() => {
 })
 onUnmounted(() => document.removeEventListener('keydown', onKeydown))
 
-const caption = ref(`I just got licensed to drive AI. ${props.classFull} — license ${props.licenseId}, verifiable on the AIDL public registry. #AIDrivingLicense #AIDL`)
+const caption = ref(`I just got licensed to drive AI.${props.classFull ? ' ' + props.classFull + ' —' : ''} License ${props.licenseId}, verifiable on the AIDL public registry. #AIDrivingLicense #AIDL`)
 
 const API_BASE = (import.meta.env.VITE_API_BASE || 'http://localhost:8000').replace(/\/$/, '')
 

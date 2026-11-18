@@ -71,7 +71,7 @@
 <ul>
 <li><strong>While AIDL is installed:</strong> workspace and member data is kept for as long as the workspace uses AIDL, so the Admin Center, licences and compliance records keep working.</li>
 <li><strong>When someone leaves #aidl:</strong> their licence is paused and cards stop. Their agreement and learning history is kept so the organization keeps its compliance record, until the workspace's data is deleted or the person asks us to delete it.</li>
-<li><strong>Licences</strong> are valid for one year from issue and are renewed as people keep up with their cards.</li>
+<li><strong>Licences</strong> are valid for as long as the organization's plan entitles them to: until the end of the 7-day Trial, or one year on a paid plan. They are extended when the plan is upgraded.</li>
 <li><strong>Sign-in codes and sign-in state</strong> are short-lived and expire shortly after they are issued.</li>
 <li><strong>Server logs</strong> are kept by our hosting provider for a limited period and used only to run and fix the service.</li>
 <li><strong>Billing records</strong> are kept only as long as tax and accounting law requires.</li>

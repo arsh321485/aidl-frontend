@@ -23,7 +23,7 @@
 <li>AIDL helps your organization write its AI policy, get every employee to agree to it and issue each one an AI Driving Licence, inside Slack or Microsoft Teams.</li>
 <li>Your organization owns its policy, its data and the decisions its admins make. We run the service and keep it secure.</li>
 <li>AIDL is a training and record-keeping tool. It is <strong>not legal advice</strong>, and an AIDL licence is not a government or professional certification.</li>
-<li>Paid plans are billed per learner through Stripe; admins are free. You can cancel or remove AIDL at any time.</li>
+<li>Paid plans are billed per user through Stripe; admins are free. You can cancel or remove AIDL at any time.</li>
 </ul>
 </section>
 
@@ -35,7 +35,7 @@
 
 <section id="service">
 <h2 class="sp-h2">2. The service</h2>
-<p>AIDL lets admins build an AI acceptable-use policy one card at a time (or upload an existing policy), choose which AI and IT apps people may use, approve learning cards and invite their team. Users receive the policy, the Highway Code and the Traffic Light Check as private messages, agree to them and receive an AI Driving Licence valid for one year, followed by awareness cards on the plan's schedule. Admins can see progress and export coverage records.</p>
+<p>AIDL lets admins build an AI acceptable-use policy one card at a time (or upload an existing policy), choose which AI and IT apps people may use, approve learning cards and invite their team. Users receive the policy, the Highway Code and the Traffic Light Check as private messages, agree to them and receive an AI Driving Licence valid for as long as the organization's plan runs (the 7-day Trial, or one year on a paid plan), followed by awareness cards on the plan's schedule. Admins can see progress and export coverage records.</p>
 <p>We may improve, change or retire features over time. If we remove something that is central to a paid plan, we will tell your admins in advance.</p>
 </section>
 
@@ -80,8 +80,8 @@
 <section id="billing">
 <h2 class="sp-h2">7. Plans, billing and cancellation</h2>
 <ul>
-<li><strong>Trial:</strong> free, with the limits shown on the <RouterLink to="/pricing">Pricing</RouterLink> page (1 admin, up to 5 users, 12 cards).</li>
-<li><strong>Paid plans</strong> (Basic and Enterprise) are charged per learner per month at the prices on the Pricing page. Admins are free. A licensed person keeps their seat for the licence year.</li>
+<li><strong>Trial:</strong> free for 7 days from the day the programme starts, with the limits shown on the <RouterLink to="/pricing">Pricing</RouterLink> page (1 admin, up to 5 users, 2 awareness cards a week). When the Trial ends, awareness cards stop and no new licences are issued until the workspace moves to a paid plan; upgrading extends everyone's licences and keeps their seats.</li>
+<li><strong>Paid plans</strong> (Basic and Enterprise) are charged per user per month at the prices on the Pricing page. Admins are free. A licensed person keeps their seat for as long as their licence runs.</li>
 <li><strong>Payments</strong> are handled by Stripe. Plans renew automatically until cancelled. Prices exclude taxes, which are added where required.</li>
 <li><strong>Changes:</strong> upgrades take effect straight away. If we change prices, we will tell your admins at least 30 days before the change applies to you.</li>
 <li><strong>Cancellation:</strong> you can cancel at any time; the plan stays active until the end of the period already paid. Fees already paid are not refunded unless the law requires it or we say otherwise in writing.</li>
@@ -92,7 +92,7 @@
 
 <section id="licences">
 <h2 class="sp-h2">8. AIDL licences</h2>
-<p>An AIDL licence records that a person agreed to their organization's AI policy and completed AIDL's onboarding on the dates shown. It is valid for one year from issue and can be checked by its licence number. It is not a government, academic or professional qualification, and it does not on its own prove that an organization complies with any law.</p>
+<p>An AIDL licence records that a person agreed to their organization's AI policy and completed AIDL's onboarding on the dates shown. It is valid for the period shown on it (until the end of the Trial, or one year on a paid plan, extended when the plan is upgraded) and can be checked by its licence number. It is not a government, academic or professional qualification, and it does not on its own prove that an organization complies with any law.</p>
 <p>A licence stops verifying if the person's data is deleted, or if the Customer's data is deleted.</p>
 </section>
 

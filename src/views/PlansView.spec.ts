@@ -30,14 +30,15 @@ import PlansView from './PlansView.vue'
 import { BillingError } from '../lib/billingApi'
 
 const plan = (key: string, label: string, current = false, available = true) => ({
-  key, label, price: 'Price on request', cards: 12, cadence: '1 card a month', users: 5, picks_topics: false,
+  key, label, price: 'Price on request', cards: 3, cadence: '2 cards a week (Mon, Thu)', users: 5, picks_topics: false,
   all_topics: key === 'enterprise', custom_schedule: key === 'enterprise', current, available,
 })
 
 function plansData(extra: Record<string, unknown> = {}, current = 'trial') {
   return {
     organization: 'Secureitlab', current,
-    usage: { used: 1, limit: 5, label: 'Trial', cards: 12, cadence: '1 card a month' },
+    usage: { used: 1, limit: 5, label: 'Trial', cards: 3, cadence: '2 cards a week (Mon, Thu)',
+      trial: { days: 7, started: true, days_left: 5, expired: false, ends_at: '2026-11-25T10:00:00Z' } },
     plans: [plan('trial', 'Trial', current === 'trial'), plan('basic', 'Basic'), plan('enterprise', 'Enterprise', current === 'enterprise')],
     categories: [], topics: {}, schedule: { days: [0, 1, 3, 4], hour: 10 }, pending: null, test_mode: false, provider: '',
     payment_ready: {}, sales_email: '', preview_cards: 12, weekdays: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],

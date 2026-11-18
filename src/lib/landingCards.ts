@@ -13,12 +13,12 @@ export interface PlanInfo { key: PlanKey; label: string; cards: number; cadence:
 export const LIBRARY_SIZE = 655
 
 export const PLANS: PlanInfo[] = [
-  { key: 'trial', label: 'Trial', cards: 12, cadence: '1 card a month', topics: 'Starter set' },
+  { key: 'trial', label: 'Trial', cards: 3, cadence: '2 cards a week', topics: 'Starter set' },
   { key: 'basic', label: 'Basic', cards: 104, cadence: '2 cards a week', topics: 'You pick the topics' },
   { key: 'enterprise', label: 'Enterprise', cards: 208, cadence: '4 cards a week', topics: 'All 15 topics' },
 ]
 
-// The Default package: the 12 cards every plan starts with (all of Trial).
+// The Default package: the 12 cards every plan starts with (Trial sends the first 3 of them in its 7 days).
 export const STARTER_CARDS: StarterCard[] = [
   {
     "no": "006",

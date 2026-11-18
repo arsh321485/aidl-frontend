@@ -305,7 +305,7 @@
     const next = LESSON.segments[Math.min(LESSON.segments.length - 1, seg.idx)];
     if (next.idx === seg.idx) {
       const msg = {
-        L: LESSON.id + " complete. Learner's Permit progress saved.",
+        L: LESSON.id + " complete. AI Driving Licence progress saved.",
         C: LESSON.id + " complete. Operator's Licence progress saved to the compliance ledger.",
         A: LESSON.id + " complete. Work saved to your Licence Portfolio for capstone re-use.",
       }[LESSON.level] || 'Lesson complete.';

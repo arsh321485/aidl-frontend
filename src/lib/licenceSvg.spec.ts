@@ -1,12 +1,12 @@
 import { describe, expect, it } from 'vitest'
 import { licenceSvg, LICENCE_HEIGHT, LICENCE_WIDTH } from './licenceSvg'
 
-const base = { name: 'Your Name', org: 'Your Org', number: 'AIDL-L-4417-0932', issued: '22/10/2026', expires: '22/10/2027' }
+const base = { name: 'Your Name', org: 'Your Org', number: 'AIDL-4417-0932', issued: '22/10/2026', expires: '22/10/2027' }
 
 describe('licenceSvg', () => {
   it('shows the holder, licence number and dates, and no status', () => {
     const svg = licenceSvg(base)
-    for (const text of ['YOUR NAME', 'ISSUED FOR YOUR ORG', 'AIDL-L-4417-0932', '22/10/2026', '22/10/2027']) {
+    for (const text of ['YOUR NAME', 'ISSUED FOR YOUR ORG', 'AIDL-4417-0932', '22/10/2026', '22/10/2027']) {
       expect(svg).toContain(text)
     }
     expect(svg).not.toMatch(/STATUS|ACTIVE/)

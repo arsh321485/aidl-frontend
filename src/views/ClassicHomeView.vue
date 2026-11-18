@@ -339,7 +339,7 @@
       <div class="split-content">
         <span class="split-eyebrow">▸ FOR ADULTS &amp; TEAMS</span>
         <h2 class="split-title">DRIVE&nbsp;AI.</h2>
-        <p class="split-sub">Three license classes — Learner, Operator (coming soon), Specialist (coming soon). Get behind the wheel, log your hours, and earn a credential employers can verify.</p>
+        <p class="split-sub">Get behind the wheel, log your hours, and earn a credential employers can verify.</p>
         <button type="button" class="btn btn-yellow split-select-btn" @click="choose('adult')">Select Adult / Team →</button>
       </div>
     </div>
@@ -503,13 +503,13 @@
           <span class="section-eyebrow">▼ ADULT LICENSE</span>
           <h2 class="section-title">YOUR LICENSE<br/>TO DRIVE AI.</h2>
         </div>
-        <p class="section-sub">Just like a real DMV — one written standard, one road test, one credential employers can verify. Start with your learner's permit.</p>
+        <p class="section-sub">Just like a real DMV — one written standard, one road test, one credential employers can verify. Start with your AI Driving Licence.</p>
       </div>
 
       <div class="training-grid" style="grid-template-columns:minmax(0,520px);justify-content:center">
         <div class="tr-card">
           <div class="tr-head">
-            <span class="tr-level">CLASS L · ENTRY</span>
+            <span class="tr-level">ENTRY</span>
             <span class="tr-stamp">14-DAY START</span>
           </div>
           <div class="tr-icon">
@@ -521,7 +521,7 @@
               <circle cx="40" cy="50" r="6" fill="#14140f"></circle>
             </svg>
           </div>
-          <h3 class="tr-name">LEARNER'S<br/>PERMIT</h3>
+          <h3 class="tr-name">AI DRIVING<br/>LICENCE</h3>
           <p class="tr-desc">For the new driver. Learn how AI models actually work, write your first useful prompts, and pass the written exam.</p>
           <div class="tr-meta">
             <div><b>4 WK</b>duration</div>
@@ -583,7 +583,7 @@
       <div class="top">
         <div>
           <span class="section-eyebrow">▼ JUNIOR LICENSES</span>
-          <h2 class="section-title">LEARNER PERMITS<br/>FOR AGES 8–16.</h2>
+          <h2 class="section-title">AI DRIVING LICENCES<br/>FOR AGES 8–16.</h2>
         </div>
         <p class="section-sub">Same driving school, two safe age-tuned tracks for younger drivers. Supervised agents, a parent dashboard, and a real, verifiable AIDL Junior license at the finish.</p>
       </div>
@@ -680,7 +680,7 @@
       <div class="lic-grid">
         <div class="lic-card">
           <div class="lic-top">
-            <span><b>LEARNER'S PERMIT</b> · CLASS L</span>
+            <span><b>AI DRIVING LICENCE</b></span>
             <span>ISSUED 03/14/2026</span>
           </div>
           <div class="lic-main">
@@ -690,20 +690,20 @@
               DOB 04/12/1994<br/>
               EXPIRES 03/14/2027<br/>
               HOURS LOGGED · 14 / 20
-              <div class="lic-num">AIDL-L-0042-9381</div>
+              <div class="lic-num">AIDL-0042-9381</div>
             </div>
           </div>
           <div class="lic-stamps">
             <span class="lic-stamp">Fundamentals ✓</span>
             <span class="lic-stamp">Written Exam ✓</span>
             <span class="lic-stamp">Safe-Use ✓</span>
-            <button type="button" class="lic-stamp lic-dl-btn" @click="downloadDemoLicense({ holder: 'Alex Morgan', licenseId: 'AIDL-L-0042-9381', classLabel: 'CLASS L · LEARNER', issued: '03/14/2026', expires: '03/14/2027', dob: '04/12/1994', hoursLabel: '14 / 20 hrs' })">⬇ Download</button>
+            <button type="button" class="lic-stamp lic-dl-btn" @click="downloadDemoLicense({ holder: 'Alex Morgan', licenseId: 'AIDL-0042-9381', classLabel: 'AI DRIVING LICENCE', issued: '03/14/2026', expires: '03/14/2027', dob: '04/12/1994', hoursLabel: '14 / 20 hrs' })">⬇ Download</button>
           </div>
         </div>
 
         <div class="lic-card">
           <div class="lic-top">
-            <span><b>LEARNER'S PERMIT</b> · CLASS L</span>
+            <span><b>AI DRIVING LICENCE</b></span>
             <span>ISSUED 04/29/2026</span>
           </div>
           <div class="lic-main">
@@ -713,20 +713,20 @@
               DOB 08/02/1991<br/>
               EXPIRES 04/29/2027<br/>
               HOURS LOGGED · 11 / 20
-              <div class="lic-num">AIDL-L-1182-4421</div>
+              <div class="lic-num">AIDL-1182-4421</div>
             </div>
           </div>
           <div class="lic-stamps">
             <span class="lic-stamp">Fundamentals ✓</span>
             <span class="lic-stamp">Written Exam ✓</span>
             <span class="lic-stamp">Safe-Use ✓</span>
-            <button type="button" class="lic-stamp lic-dl-btn" @click="downloadDemoLicense({ holder: 'Jamie Okafor', licenseId: 'AIDL-L-1182-4421', classLabel: 'CLASS L · LEARNER', issued: '04/29/2026', expires: '04/29/2027', dob: '08/02/1991', hoursLabel: '11 / 20 hrs' })">⬇ Download</button>
+            <button type="button" class="lic-stamp lic-dl-btn" @click="downloadDemoLicense({ holder: 'Jamie Okafor', licenseId: 'AIDL-1182-4421', classLabel: 'AI DRIVING LICENCE', issued: '04/29/2026', expires: '04/29/2027', dob: '08/02/1991', hoursLabel: '11 / 20 hrs' })">⬇ Download</button>
           </div>
         </div>
 
         <div class="lic-card">
           <div class="lic-top">
-            <span><b>LEARNER'S PERMIT</b> · CLASS L</span>
+            <span><b>AI DRIVING LICENCE</b></span>
             <span>ISSUED 05/04/2026</span>
           </div>
           <div class="lic-main">
@@ -736,14 +736,14 @@
               DOB 11/19/1988<br/>
               EXPIRES 05/04/2027<br/>
               HOURS LOGGED · 17 / 20
-              <div class="lic-num">AIDL-L-HC-2204</div>
+              <div class="lic-num">AIDL-HC-2204</div>
             </div>
           </div>
           <div class="lic-stamps">
             <span class="lic-stamp">Fundamentals ✓</span>
             <span class="lic-stamp">Written Exam ✓</span>
             <span class="lic-stamp">Safe-Use ✓</span>
-            <button type="button" class="lic-stamp lic-dl-btn" @click="downloadDemoLicense({ holder: 'Priya Reddy', licenseId: 'AIDL-L-HC-2204', classLabel: 'CLASS L · LEARNER', issued: '05/04/2026', expires: '05/04/2027', dob: '11/19/1988', hoursLabel: '17 / 20 hrs' })">⬇ Download</button>
+            <button type="button" class="lic-stamp lic-dl-btn" @click="downloadDemoLicense({ holder: 'Priya Reddy', licenseId: 'AIDL-HC-2204', classLabel: 'AI DRIVING LICENCE', issued: '05/04/2026', expires: '05/04/2027', dob: '11/19/1988', hoursLabel: '17 / 20 hrs' })">⬇ Download</button>
           </div>
         </div>
 
@@ -807,12 +807,12 @@
     <div class="jobs-page-content">
       <header class="jh">
         <div class="wrap">
-          <span class="tag mono">ADULT LEARNERS · 18+ · REMOTE &amp; PROJECT WORK</span>
+          <span class="tag mono">ADULTS · 18+ · REMOTE &amp; PROJECT WORK</span>
           <h1>Get a license to drive — and a <em>job</em> in the AI era.</h1>
           <p>Whether you're entering the AI economy, getting better at the job you already have, or training your people to work with AI — it starts with a license. These are the seven job families our adult licensees get hired into. No coding background required for most of them.</p>
           <div class="jh-meta">
             <span class="chip">7 JOB FAMILIES</span>
-            <span class="chip">CLASS L HOLDERS PRIORITISED · O/S COMING SOON</span>
+            <span class="chip">LICENCE HOLDERS PRIORITISED</span>
             <span class="chip">PAID PER TASK OR HOURLY</span>
           </div>
         </div>
@@ -862,7 +862,7 @@
         <div>
           <h5>PROGRAMS</h5>
           <ul>
-            <li><a href="#">Class L · Adults</a></li>
+            <li><a href="#">Adults</a></li>
             <li><a href="#">Junior Cadet · 8–12</a></li>
             <li><a href="#">Road Crew · 12–16</a></li>
             <li><a href="#">Practice Yard</a></li>
@@ -888,7 +888,7 @@
         </div>
       </div>
       <div class="foot-bot">
-        <div>© 2026 AIDL · ISSUED UNDER PUBLIC REGISTRY · CLASS L + J/T</div>
+        <div>© 2026 AIDL · ISSUED UNDER PUBLIC REGISTRY</div>
         <div>BUILT FOR ADULTS &amp; YOUNG LEARNERS · v2.6</div>
       </div>
     </div>
@@ -1072,7 +1072,7 @@ async function loadCaptcha() {
 
 // The emailed 6-digit code, after Register (AI-C-004) and Sign In (AI-C-008).
 const otpChallenge = ref<OtpChallenge | null>(null)
-// The account created by Register (holds the Learner licence the server issued).
+// The account created by Register (holds the AI Driving Licence the server issued).
 const signupUser = ref<ApiUser | null>(null)
 const otpPurpose = ref<'signup' | 'signin'>('signup')
 const otpError = ref('')
@@ -1420,24 +1420,24 @@ const SENIOR_CLASSES: ClassCode[] = ['L', 'O', 'S']
 const JUNIOR_CLASSES: ClassCode[] = ['J', 'T']
 
 const CLASS_LABELS: Record<ClassCode, string> = {
-  L: 'CLASS L · LEARNER',
+  L: 'AI DRIVING LICENCE',
   O: 'CLASS O · OPERATOR',
   S: 'CLASS S · SPECIALIST',
   J: 'JUNIOR CADET · CLASS J',
   T: 'ROAD CREW · CLASS T'
 }
 
-const CLASS_SHORT: Record<ClassCode, string> = { L: 'CLASS L', O: 'CLASS O', S: 'CLASS S', J: 'CLASS J', T: 'CLASS T' }
-const CLASS_FULL: Record<ClassCode, string> = { L: 'LEARNER', O: 'OPERATOR', S: 'SPECIALIST', J: 'JUNIOR CADET', T: 'ROAD CREW' }
+const CLASS_SHORT: Record<ClassCode, string> = { L: 'AI DRIVING LICENCE', O: 'CLASS O', S: 'CLASS S', J: 'CLASS J', T: 'CLASS T' }
+const CLASS_FULL: Record<ClassCode, string> = { L: '', O: 'OPERATOR', S: 'SPECIALIST', J: 'JUNIOR CADET', T: 'ROAD CREW' }
 
 const REGISTRY: Record<string, RegistryEntry> = {
-  'AIDL-L-1182-4421': { holder: 'Jamie Okafor', cls: 'CLASS L · LEARNER',     classCode: 'L', iss: '04/29/2026', exp: '04/29/2027', hrs: '11 hrs · in progress', end: '—', email: 'jamie@company.com', password: 'demo1234', enrollAs: 'individual' },
-  'AIDL-L-0042-9381': { holder: 'Alex Morgan',  cls: 'CLASS L · LEARNER',     classCode: 'L', iss: '03/14/2026', exp: '03/14/2027', hrs: '14 hrs · in progress',    end: '—', email: 'alex@company.com', password: 'demo1234', enrollAs: 'individual' },
-  'AIDL-L-HC-2204':   { holder: 'Priya Reddy',  cls: 'CLASS L · LEARNER',     classCode: 'L', iss: '05/04/2026', exp: '05/04/2027', hrs: '17 hrs · in progress', end: '—', email: 'priya@company.com', password: 'demo1234', enrollAs: 'individual' },
+  'AIDL-1182-4421': { holder: 'Jamie Okafor', cls: 'AI DRIVING LICENCE',     classCode: 'L', iss: '04/29/2026', exp: '04/29/2027', hrs: '11 hrs · in progress', end: '—', email: 'jamie@company.com', password: 'demo1234', enrollAs: 'individual' },
+  'AIDL-0042-9381': { holder: 'Alex Morgan',  cls: 'AI DRIVING LICENCE',     classCode: 'L', iss: '03/14/2026', exp: '03/14/2027', hrs: '14 hrs · in progress',    end: '—', email: 'alex@company.com', password: 'demo1234', enrollAs: 'individual' },
+  'AIDL-HC-2204':   { holder: 'Priya Reddy',  cls: 'AI DRIVING LICENCE',     classCode: 'L', iss: '05/04/2026', exp: '05/04/2027', hrs: '17 hrs · in progress', end: '—', email: 'priya@company.com', password: 'demo1234', enrollAs: 'individual' },
   'AIDL-X-SAFE-0918': { holder: 'Sam Chen',     cls: 'SAFETY ENDORSEMENT',    classCode: null, iss: '04/01/2026', exp: '04/01/2027', hrs: '32 red-team hrs',               end: '—' },
   'AIDL-J-3301-7742': { holder: 'Riya Sharma',  cls: 'JUNIOR CADET · CLASS J', classCode: 'J', iss: '02/10/2026', exp: '02/10/2027', hrs: '9 hrs · in progress',  end: '—' },
   'AIDL-T-5560-2213': { holder: 'Kabir Anand',  cls: 'ROAD CREW · CLASS T',    classCode: 'T', iss: '01/22/2026', exp: '01/22/2027', hrs: '22 hrs · sim solo ✓',  end: '+ Safety' },
-  'AIDL-L-ORG-3390':  { holder: 'Acme Corp',    cls: 'CLASS L · LEARNER',     classCode: 'L', iss: '02/02/2026', exp: '02/02/2027', hrs: '6 hrs · in progress', end: '—', email: 'admin@acme.com', password: 'demo1234', enrollAs: 'organization', orgName: 'Acme Corp' }
+  'AIDL-ORG-3390':  { holder: 'Acme Corp',    cls: 'AI DRIVING LICENCE',     classCode: 'L', iss: '02/02/2026', exp: '02/02/2027', hrs: '6 hrs · in progress', end: '—', email: 'admin@acme.com', password: 'demo1234', enrollAs: 'organization', orgName: 'Acme Corp' }
 }
 
 function loadDynamicRegistry(): Record<string, RegistryEntry> {
@@ -1588,7 +1588,6 @@ async function handleSubmit() {
       country: form.country,
       state: form.state,
       city: form.city,
-      license_class: 'class_l',
       organization_name: form.enrollAs === 'organization' ? form.orgName.trim() : '',
     })
   } catch (e) {
@@ -1598,7 +1597,7 @@ async function handleSubmit() {
         if (messages.length) fieldErrors[key] = messages.join('\n')
       }
       // Errors for fields without an input of their own (enroll_as,
-      // license_class, non_field_errors, ...) go in the general slot.
+      // non_field_errors, ...) go in the general slot.
       const shown = ['first_name', 'last_name', 'email', 'password', 'confirm_password', 'country', 'state', 'city']
       const other = Object.entries(e.fieldErrors).find(([key]) => !shown.includes(key))
       if (other) formError.value = other[1][0] || ''
@@ -1676,7 +1675,7 @@ function onAvatarConfirmed(avatar: AvatarConfig) {
   saveAvatarForEmail(form.email, avatar)
 
   const cls = activeClass.value
-  // Individuals get their Learner licence from the server at sign-up (1 year).
+  // Individuals get their AI Driving Licence from the server at sign-up (a year; no plan involved).
   const server = cls === 'L' && signupUser.value?.licence_number ? signupUser.value : null
   const licenseId = server ? String(server.licence_number) : generateLicenseId(cls)
   const holder = `${form.firstName} ${form.lastName}`.trim() || 'AIDL Member'
@@ -1816,7 +1815,7 @@ function submitSignIn(track: 'senior' | 'junior') {
   }
   const entry = lookupLicense(id)
   if (!entry || !entry.classCode) {
-    signInError.value = 'No permit found with that ID.'
+    signInError.value = 'No licence found with that ID.'
     return
   }
   if (!JUNIOR_CLASSES.includes(entry.classCode)) {
@@ -1828,14 +1827,14 @@ function submitSignIn(track: 'senior' | 'junior') {
   router.push('/junior-portal')
 }
 
-const licInput = ref('AIDL-L-1182-4421')
+const licInput = ref('AIDL-1182-4421')
 
 const verifyResult = reactive({
   status: 'VERIFIED · ACTIVE',
   statusColor: '#2ec866',
   time: 'Checked just now · Registry block #4,221,098',
   holder: 'Jamie Okafor',
-  cls: 'CLASS L · LEARNER',
+  cls: 'AI DRIVING LICENCE',
   issued: '04/29/2026',
   expires: '04/29/2027',
   hours: '11 hrs · in progress',
