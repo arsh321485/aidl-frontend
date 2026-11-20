@@ -3,12 +3,13 @@
 <nav class="lp-nav" ref="navEl">
 <div class="lp-wrap lp-nav-in">
 <a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a>
-<div class="lp-nl"><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id">{{ l.label }}</a><RouterLink to="/pricing">Pricing</RouterLink></div>
-<div class="lp-ncta"><PlatformPicker v-model="target" add-href="#start" @add="addTo" /></div>
+<div class="lp-nl"><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id">{{ l.label }}</a><button v-for="s in sectorLinks" :key="s.id" type="button" class="lp-sch" :class="{ 'lp-active': activeSection === s.id }" @click="goSection(s.id)">{{ s.label }}</button><RouterLink to="/pricing">Pricing</RouterLink></div>
+<!-- Schools / Hospitals scroll to their sections below (#schools, #hospitals); no page route for now. -->
+<div class="lp-ncta"><SignUpMenu align="right" @pick="signUp" /></div>
 <button type="button" class="lp-burger" :class="{ 'lp-open': menuOpen }" :aria-expanded="menuOpen" aria-controls="lp-mnav" aria-label="Menu" @click="menuOpen = !menuOpen"><i></i><i></i><i></i></button>
 </div>
 <div v-show="menuOpen" id="lp-mnav" class="lp-mnav">
-<div class="lp-wrap"><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id; menuOpen = false">{{ l.label }}</a><RouterLink to="/pricing" @click="menuOpen = false">Pricing</RouterLink></div>
+<div class="lp-wrap"><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id; menuOpen = false">{{ l.label }}</a><button v-for="s in sectorLinks" :key="s.id" type="button" class="lp-sch" :class="{ 'lp-active': activeSection === s.id }" @click="goSection(s.id)">{{ s.label }}</button><RouterLink to="/pricing" @click="menuOpen = false">Pricing</RouterLink></div>
 </div>
 </nav>
 
@@ -85,6 +86,57 @@
 </div>
 </div>
 </section>
+
+<section class="lp-band" id="schools" style="background:var(--cream-2)">
+<div class="lp-wrap">
+<span class="lp-eb">▼ AIDL FOR SCHOOLS</span>
+<h2 class="lp-h2">Now in the classroom, too.</h2>
+<p class="lp-lede">The same policy → agreement → licence loop, rebuilt for schools: a licence for every teacher, age-banded rules for every student from Grade 6 to Grade 12, and child-privacy protections switched on by default.</p>
+<div class="lp-schg">
+<div class="lp-schc lp-k">
+<span class="lp-tag">FOR TEACHERS &amp; STAFF</span>
+<h3>The Educator Licence.</h3>
+<p>Staff agree to your School AI Policy, learn what pupil data never goes into AI, and are licensed for the school year in about ten minutes.</p>
+<ul><li>14-card School AI Policy template</li><li>Traffic Light Check and the Educator’s Highway Code</li><li>52 learning cards, one a week</li></ul>
+<button type="button" class="lp-go">For teachers &amp; staff →</button>
+</div>
+<div class="lp-schc">
+<span class="lp-tag">FOR STUDENTS · GRADES 6–12</span>
+<h3>From Learner’s Permit to licensed driver.</h3>
+<p>Two grade bands. Grades 6–8 earn a Learner’s Permit; Grades 9–12 earn the full Student AI Driving Licence.</p>
+<ul><li>Learner’s Permit → Student AI Driving Licence</li><li>Runs in Google Classroom, Teams or your LMS</li><li>First name and school only; no public sharing</li></ul>
+<button type="button" class="lp-go">For students →</button>
+</div>
+</div>
+<div class="lp-schb"><div><b>Priced per school, per year</b><span>Free for up to 25 staff · one annual fee for the whole school · invoice and purchase order billing</span></div><button type="button" class="lp-btn lp-y">Explore AIDL for Schools →</button></div>
+</div>
+</section>
+
+<section class="lp-band" id="hospitals">
+<div class="lp-wrap">
+<span class="lp-eb">▼ AIDL FOR HOSPITALS</span>
+<h2 class="lp-h2">Now on the ward, too.</h2>
+<p class="lp-lede">Clinicians already use AI for notes, letters and summaries. AIDL gives every member of hospital staff one AI policy, one rule for patient data and a dated licence that proves they learned it — inside Teams, Slack or your learning system.</p>
+<div class="lp-schg">
+<div class="lp-schc lp-k">
+<span class="lp-tag">FOR CLINICAL STAFF</span>
+<h3>The Clinical Licence.</h3>
+<p>Doctors, nurses, pharmacists and allied health staff agree to your Hospital AI Policy and learn what patient information can go where, in about ten minutes between patients.</p>
+<ul><li>14-card Hospital AI Policy template</li><li>Clinical Traffic Light and the Clinician’s Highway Code</li><li>Weekly cards on scribes, checking output and telling patients</li></ul>
+<button type="button" class="lp-go">For clinical staff →</button>
+</div>
+<div class="lp-schc">
+<span class="lp-tag">FOR NON-CLINICAL STAFF</span>
+<h3>The Hospital Staff Licence.</h3>
+<p>Patient access, finance, HR, operations, IT and leaders learn the same policy with examples from their own jobs.</p>
+<ul><li>Four role tracks with their own examples</li><li>How to spot AI-made scams aimed at hospitals</li><li>App requests decided by your privacy officer</li></ul>
+<button type="button" class="lp-go">For non-clinical staff →</button>
+</div>
+</div>
+<div class="lp-schb"><div><b>AIDL never needs a patient record</b><span>It records agreements, cards read and quiz results only · start free with one ward · invoice and purchase order billing for health systems</span></div><button type="button" class="lp-btn lp-y">Explore AIDL for Hospitals →</button></div>
+</div>
+</section>
+
 
 <section class="lp-band lp-dark" id="admins">
 <div class="lp-wrap">
@@ -207,12 +259,12 @@
 <div class="lp-wrap">
 <span class="lp-eb">▼ WHERE IT RUNS</span>
 <h2 class="lp-h2">Wherever your team already talks.</h2>
-<div class="lp-plat">
-<div class="lp-pl"><span class="lp-s lp-live">LIVE</span><h3>Slack</h3><p>Block Kit messages in a dedicated #aidl channel and private DMs from the AIDL app. Admin Center pinned and updated in place.</p><div class="lp-hcta" style="margin:18px 0 0"><a class="lp-btn lp-y" href="#start" @click.prevent="addTo('slack')">Add to Slack →</a></div></div>
-<div class="lp-pl"><span class="lp-s lp-live">LIVE</span><h3>Microsoft Teams</h3><p>The same admin and employee flow as Adaptive Cards in an AIDL team channel and bot chats. Follows light, dark and high-contrast themes; signs in with Microsoft Entra.</p><div class="lp-hcta" style="margin:18px 0 0"><a class="lp-btn lp-y" href="#start" @click.prevent="addTo('teams')">Add to Teams →</a></div></div>
-<div class="lp-pl"><span class="lp-s lp-soon">COMING SOON</span><h3>Google Chat</h3><p>The same admin and employee flow as interactive cards in an AIDL space and direct messages from the AIDL app. Signs in with Google Workspace.</p><div class="lp-hcta" style="margin:18px 0 0"><a class="lp-btn lp-y" href="#start" @click.prevent="addTo('gchat')">Add to Google Chat →</a></div></div>
-<div class="lp-pl"><span class="lp-s lp-soon">COMING SOON</span><h3>Moodle</h3><p>AIDL as an activity inside your Moodle course. Learners sign in from Moodle, work through the policy and lessons, and earn their licence without a separate login.</p><div class="lp-hcta" style="margin:18px 0 0"><a class="lp-btn lp-y" href="#start" @click.prevent="addTo('moodle')">Add to Moodle →</a></div></div>
+<div class="lp-plat lp-three">
+<div class="lp-pl"><span class="lp-s lp-live">LIVE</span><h3>Slack</h3><p>Block Kit messages in a dedicated #aidl channel and private DMs from the AIDL app. Admin Center pinned and updated in place.</p></div>
+<div class="lp-pl"><span class="lp-s lp-live">LIVE</span><h3>Microsoft Teams</h3><p>The same admin and employee flow as Adaptive Cards in an AIDL team channel and bot chats. Follows light, dark and high-contrast themes; signs in with Microsoft Entra.</p></div>
+<div class="lp-pl"><span class="lp-s lp-live">LIVE</span><h3>Google &amp; your LMS</h3><p>Google Workspace sign-in, plus course packages for Moodle, Canvas, Schoology, Brightspace, Blackboard and any SCORM 1.2 learning system.</p></div>
 </div>
+<div class="lp-plat-cta"><SignUpMenu @pick="signUp" /><RouterLink class="lp-btn lp-ghost" to="/pricing">See plans</RouterLink></div>
 </div>
 </section>
 
@@ -256,7 +308,7 @@
 <script setup lang="ts">
 import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
 import { RouterLink } from 'vue-router'
-import PlatformPicker from '../components/PlatformPicker.vue'
+import SignUpMenu from '../components/SignUpMenu.vue'
 import {
   addToPlatform, isChatPlatform, loadSavedPlatform, savePlatform,
   type ChatPlatformId, type PlatformId,
@@ -335,9 +387,13 @@ function updateActiveSection() {
   // A section counts as open once its top passes just under the sticky nav.
   const line = 120
   let current = ''
-  for (const l of navLinks) {
-    const el = document.getElementById(l.id)
-    if (el && el.getBoundingClientRect().top <= line) current = l.id
+  let best = -Infinity
+  for (const l of [...navLinks, ...sectorLinks]) { // Schools / Hospitals sit between "How it works" and "For admins"
+    const top = document.getElementById(l.id)?.getBoundingClientRect().top
+    if (top !== undefined && top <= line && top > best) {
+      best = top
+      current = l.id
+    }
   }
   // Past the last tracked section (platforms / CTA) — nothing is highlighted.
   const last = document.getElementById(navLinks[navLinks.length - 1]!.id)
@@ -454,6 +510,23 @@ function addTo(p: PlatformId) {
   return addToPlatform(p)
 }
 
+// "Sign up ▾" in the navbar: remember the platform (the page previews it), then sign up there.
+function signUp(p: PlatformId) {
+  target.value = p
+  return addTo(p)
+}
+
+// Schools / Hospitals in the navbar: scroll to their section on this page (no route yet).
+const sectorLinks = [
+  { id: 'schools', label: 'Schools' },
+  { id: 'hospitals', label: 'Hospitals' },
+]
+function goSection(id: string) {
+  activeSection.value = id
+  menuOpen.value = false
+  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
 const heroSteps = [
   { title: 'AI policy', note: 'Approved · v1', state: 'done' },
   { title: 'Add admins', note: '2 admins', state: 'done' },
@@ -568,6 +641,14 @@ const userCur = computed(() => USER[userStep.value]!)
 @media(min-width:1241px){.lp-mnav{display:none!important}}
 @media(max-width:1240px){.lp-nl{display:none}.lp-burger{display:flex}}
 @media(min-width:1241px) and (max-width:1400px){.lp-nav-in{gap:22px}.lp-nl{gap:18px}.lp-nl a{font-size:14px}}
+/* Schools / Hospitals landing pages: two small buttons in the bar, inside the menu on smaller screens */
+.lp-seg{display:flex;gap:8px;flex:none}
+.lp-seg-btn{display:inline-flex;align-items:center;padding:7px 12px;background:var(--cream);color:var(--ink);border:2px solid var(--ink);box-shadow:2px 2px 0 var(--ink);font-family:"Bungee",sans-serif;font-size:11px;letter-spacing:.02em;text-decoration:none;cursor:pointer;justify-content:center;white-space:nowrap;transition:transform .12s,box-shadow .12s}
+.lp-seg-btn:hover{transform:translate(-1px,-1px);box-shadow:3px 3px 0 var(--ink);background:var(--yellow);color:var(--ink)}
+.lp-mseg{display:flex;gap:10px;padding:14px 0 4px}
+.lp-mnav .lp-mseg .lp-seg-btn{flex:1;text-align:center;padding:12px;font-size:14px;border-bottom:2px solid var(--ink)}
+@media(min-width:1241px) and (max-width:1400px){.lp-seg{gap:6px}.lp-seg-btn{padding:6px 9px;font-size:10px}}
+@media(max-width:1240px){.lp-seg{display:none}}
 /* HERO / WINDSHIELD */
 .lp-hero{position:relative;height:880px;overflow:hidden;background:linear-gradient(180deg,#98c8eb 0%,#c8e0f0 45%,#e9d398 60%,#c98c4a 75%,#4a3a25 100%);border-bottom:6px solid var(--ink)}
 .lp-sun{position:absolute;left:50%;top:38%;transform:translate(-50%,-50%);width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,#ffdd55 0%,#ff9d00 60%,transparent 70%);filter:blur(2px)}
@@ -1115,4 +1196,40 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-rs-1{left:1.5%}
 .lp-rs-2{right:1.5%}
 }
+
+/* Schools / Hospitals: navbar links with a NEW tag, and their sections (design: aidl-signup.html) */
+.lp-nl .lp-sch,.lp-mnav .lp-sch{display:inline-flex;align-items:center;gap:6px;background:none;border:0;padding:0;color:inherit;cursor:pointer;font:600 15px "Space Grotesk",system-ui,sans-serif;white-space:nowrap}
+.lp-nl .lp-sch:hover{color:var(--red)}
+.lp-nl .lp-sch.lp-active{color:var(--red);text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:6px}
+.lp-sch i{font-style:normal;font:700 10px "JetBrains Mono",monospace;letter-spacing:.1em;background:var(--red);color:var(--cream);padding:2px 5px;border:2px solid var(--ink)}
+.lp-mnav .lp-sch{display:flex;width:100%;padding:14px 0;font-family:"Bungee",sans-serif;font-size:17px;border-bottom:2px dashed var(--line);text-align:left}
+.lp-mnav .lp-sch.lp-active{color:var(--red)}
+.lp-schg{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:52px}
+.lp-schc{display:flex;flex-direction:column;border:3px solid var(--ink);background:var(--cream);box-shadow:8px 8px 0 var(--ink);padding:30px;color:var(--ink);transition:transform .12s,box-shadow .12s}
+.lp-schc:hover{transform:translate(-2px,-2px);box-shadow:10px 10px 0 var(--ink)}
+.lp-schc.lp-k{background:var(--asphalt);color:var(--cream);box-shadow:8px 8px 0 var(--yellow)}
+.lp-schc.lp-k:hover{box-shadow:10px 10px 0 var(--yellow)}
+.lp-schc .lp-tag{font:500 11px "JetBrains Mono",monospace;letter-spacing:.14em;color:var(--muted)}
+.lp-schc.lp-k .lp-tag{color:var(--yellow)}
+.lp-schc h3{font:400 30px/1.03 "Bungee",sans-serif;margin:8px 0 12px}
+.lp-schc p{margin:0 0 16px;font-size:16px;line-height:1.55}
+.lp-schc ul{margin:0 0 22px;padding:0;list-style:none;display:grid;gap:7px;font-size:15px}
+.lp-schc li::before{content:"\203A  ";font-family:"Bungee",sans-serif;color:var(--red)}
+.lp-schc.lp-k li::before{color:var(--yellow)}
+.lp-schc .lp-go{margin-top:auto;align-self:flex-start;background:none;border:0;padding:0;cursor:pointer;color:inherit;font:400 15px "Bungee",sans-serif;text-align:left}
+.lp-schc .lp-go:hover{color:var(--red)}
+.lp-schc.lp-k .lp-go{color:var(--yellow)}
+.lp-schc .lp-go:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+.lp-schb{margin-top:26px;display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between;background:var(--ink);color:var(--cream);padding:22px 26px}
+.lp-schb b{display:block;color:var(--yellow);font:400 16px "Bungee",sans-serif;margin-bottom:6px}
+.lp-schb span{font-size:15px;line-height:1.5}
+.lp-schb>div{flex:1 1 380px}
+@media(max-width:1000px){.lp-schg{grid-template-columns:1fr}}
+@media(max-width:640px){.lp-schc{padding:22px}.lp-schc h3{font-size:24px}.lp-schb{padding:18px}.lp-schb>div{flex-basis:100%}.lp-schb .lp-btn{width:100%;justify-content:center}}
+
+/* "Where it runs" (design: aidl-signup.html): three platform cards, then Sign up ▾ + See plans */
+.lp-plat.lp-three{grid-template-columns:repeat(3,1fr)}
+.lp-plat-cta{margin-top:30px;display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+@media(max-width:1000px){.lp-plat.lp-three{grid-template-columns:1fr}}
+@media(max-width:640px){.lp-plat-cta>*{flex:1 1 100%}.lp-plat-cta .lp-btn{justify-content:center}.lp-plat-cta .su{display:block}.lp-plat-cta .su-btn{width:100%;justify-content:center}}
 </style>

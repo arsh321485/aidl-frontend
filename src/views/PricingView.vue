@@ -6,19 +6,59 @@
 <div>
 <span class="pr-eb">▼ PRICING</span>
 <h1>PICK YOUR<span>ROUTE</span></h1>
-<p class="pr-lede">Every team starts with a free 7-day Trial: the three onboarding cards, a licence for everyone and two awareness cards a week. Move to Basic or Enterprise to keep it going for a year, with more cards each week, more admins and more control.</p>
+<p v-if="!sec" class="pr-lede">Every team starts with a free 7-day Trial: the three onboarding cards, a licence for everyone and two awareness cards a week. Move to Basic or Enterprise to keep it going for a year, with more cards each week, more admins and more control.</p>
+<p v-else class="pr-lede">{{ sec.lede }}</p>
+<div class="pr-sector" aria-label="Pricing for">
+<span>PRICING FOR</span>
+<button v-for="s in SECTORS" :key="s.key" type="button" :aria-pressed="sector === s.key ? 'true' : 'false'" @click="setSector(s.key)">{{ s.label }}</button>
+</div>
 </div>
 <div class="pr-route" aria-label="How plans work">
 <b>How it works</b>
-<ol>
+<ol v-if="!sec">
 <li><span>Add AIDL to <span class="lp-v-s">Slack</span><span class="lp-v-t">Teams</span>. You start on Trial.</span></li>
 <li>Your team agrees to the policy and earns their licence, all within the 7 days.</li>
 <li>Upgrade from your Admin Center any time: licences are extended and nobody has to start again.</li>
 </ol>
+<ol v-else><li v-for="s in sec.steps" :key="s">{{ s }}</li></ol>
 </div>
 </div>
 </header>
 
+<template v-if="sec">
+<section id="plans" class="pr-band">
+<div class="lp-wrap">
+<span class="pr-eb">▼ {{ sec.eyebrow }}</span>
+<h2 class="pr-h2">{{ sec.title }}</h2>
+<p class="pr-lede">{{ sec.intro }}</p>
+<div class="pr-plans pr-plans4">
+<article v-for="p in sec.plans" :key="p.name" class="pr-plan" :class="{ 'pr-basic': p.flag }">
+<span v-if="p.flag" class="pr-flag">{{ p.flag }}</span>
+<div class="pr-plan-hd"><div><span class="pr-m">{{ p.label }}</span><h3 class="pr-plan-name">{{ p.name }}</h3></div></div>
+<div class="pr-price"><span v-if="p.from">from</span><b>{{ p.price }}</b></div>
+<div class="pr-price-note">{{ p.per }}</div>
+<RouterLink class="lp-btn" :class="{ 'lp-y': p.flag }" :to="sec.page + '#pilot'">{{ p.cta }} <span class="lp-arr">→</span></RouterLink>
+<div class="pr-feats"><ul><li v-for="f in p.feats" :key="f">{{ f }}</li></ul></div>
+</article>
+</div>
+<div class="pr-billing"><div><b>{{ sec.billingTitle }}</b><span>{{ sec.billing }}</span></div><RouterLink class="lp-btn lp-y" :to="sec.page + '#pilot'">Request a quote <span class="lp-arr">→</span></RouterLink></div>
+<p v-if="sec.note" class="pr-note">{{ sec.note }}</p>
+</div>
+</section>
+
+<section id="start" class="pr-cta">
+<div class="lp-wrap">
+<h2 class="pr-h2">{{ sec.ctaTitle }}</h2>
+<p class="pr-lede">{{ sec.ctaText }}</p>
+<div class="pr-hcta">
+<RouterLink class="lp-btn" :to="sec.page + '#pilot'">Apply for a pilot <span class="lp-arr">→</span></RouterLink>
+<RouterLink class="lp-btn lp-ghost" :to="sec.page">{{ sec.pageLabel }}</RouterLink>
+</div>
+</div>
+</section>
+</template>
+
+<template v-else>
 <section id="plans" class="pr-band">
 <div class="lp-wrap">
 <span class="pr-eb">▼ THE PLANS</span>
@@ -98,13 +138,14 @@
 </div>
 </div>
 </section>
+</template>
 </div>
 </SitePageShell>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-import { RouterLink } from 'vue-router'
+import { computed, ref } from 'vue'
+import { RouterLink, useRoute, useRouter } from 'vue-router'
 import SitePageShell from '../components/SitePageShell.vue'
 import { startSlackLogin } from '../lib/slackAuth'
 import { startTeamsLogin } from '../lib/msTeamsAuth'
@@ -207,6 +248,80 @@ const faqs = [
   { q: 'What happens to the onboarding cards when I upgrade?', a: 'Nothing changes. The AI policy, Traffic Light Check and Highway Code stay, licences stay valid, and the new weekly cards start on top.' },
   { q: 'Does it work in Slack and Teams?', a: 'Yes, every plan works in both. The same admin and employee flow runs as Slack messages or Teams cards.' },
 ]
+
+// Schools / Hospitals pricing (?for=schools|hospitals) — the same plans as the
+// pricing sections on /schools and /hospitals. Companies is the page above.
+type Sector = 'companies' | 'schools' | 'hospitals'
+const SECTORS: { key: Sector; label: string }[] = [
+  { key: 'companies', label: 'Companies' },
+  { key: 'schools', label: 'Schools' },
+  { key: 'hospitals', label: 'Hospitals' },
+]
+const SECTOR_PRICING = {
+  schools: {
+    page: '/schools', pageLabel: 'See AIDL for Schools',
+    lede: 'Priced per school, per year, with no per-seat monthly bills. Start free with your staff, then license the whole school, students included, for one annual fee.',
+    steps: [
+      'Apply for a free one-term pilot, or start free with up to 25 staff.',
+      'Staff earn the Educator Licence; students follow when the school is ready.',
+      'License the whole school for one annual fee, billed the way schools buy.',
+    ],
+    eyebrow: 'PRICING FOR SCHOOLS', title: 'Priced per school, per year.',
+    intro: 'No per-seat monthly bills. Start free with your staff, then license the whole school for one annual fee.',
+    plans: [
+      { label: 'STAFF FREE', name: 'Free', from: false, price: '$0', per: 'UP TO 25 STAFF', cta: 'Start free', flag: '',
+        feats: ['Educator onboarding and licence', 'School AI Policy template', '12 learning cards a year'] },
+      { label: 'SCHOOL', name: 'School', from: true, price: '$1,500', per: 'PER SCHOOL / YEAR · BY ENROLMENT', cta: 'Book a pilot', flag: 'MOST SCHOOLS',
+        feats: ['All staff and all students', 'Both student bands, Grades 6–12', 'Full teacher and student card sets', 'Completion dashboard and coverage export'] },
+      { label: 'DISTRICT · GROUP', name: 'District', from: false, price: '$1–$3', per: 'PER STUDENT / YEAR', cta: 'Talk to us', flag: '',
+        feats: ['Many schools, one central admin', 'Single sign-on and roster sync', 'Data residency options', 'Volume tiers'] },
+      { label: 'MINISTRY · NATIONAL', name: 'National', from: false, price: 'Custom', per: 'NEGOTIATED CONTRACT', cta: 'Talk to us', flag: '',
+        feats: ['Country-wide licence', 'Localisation and local hosting', 'Training of trainers', 'Curriculum mapping'] },
+    ],
+    billingTitle: 'Buying the way schools buy',
+    billing: 'Annual billing in local currency · invoice, purchase order or bank transfer · VAT/GST invoices · tender pack with security and accessibility answers · equity programme for low-income public schools',
+    note: 'INDICATIVE PILOT PRICING. FINAL PRICES ARE SET WITH EACH SCHOOL OR GROUP.',
+    ctaTitle: 'Put your school on the road this term.',
+    ctaText: 'Join a small group of pilot schools for one term, free of charge: the full staff lane, the student lane when you’re ready, and hands-on setup help.',
+  },
+  hospitals: {
+    page: '/hospitals', pageLabel: 'See AIDL for Hospitals',
+    lede: 'Start with one ward. Try AIDL with a single department for free, then license the whole hospital per user. Admins are always free.',
+    steps: [
+      'Run a free pilot with one ward or department.',
+      'Clinical and non-clinical staff are licensed within four weeks.',
+      'License the whole hospital per user, or every site on one contract.',
+    ],
+    eyebrow: 'PRICING FOR HOSPITALS', title: 'Start with one ward.',
+    intro: 'Try it with a single department for free, then license the whole hospital. Admins are always free.',
+    plans: [
+      { label: 'TRIAL', name: 'Free', from: false, price: '$0', per: 'UP TO 5 USERS · 1 ADMIN', cta: 'Start free', flag: '',
+        feats: ['Hospital AI Policy template', 'Onboarding and licence', '12 learning cards a year'] },
+      { label: 'BASIC', name: 'Basic', from: false, price: '$2', per: 'PER USER / MONTH', cta: 'Choose Basic', flag: '',
+        feats: ['Everything in Trial', 'Clinical and non-clinical lanes', '104 learning cards a year'] },
+      { label: 'ENTERPRISE', name: 'Enterprise', from: false, price: '$8', per: 'PER USER / MONTH', cta: 'Book a pilot', flag: 'MOST HOSPITALS',
+        feats: ['Everything in Basic', '208 learning cards a year'] },
+      { label: 'HEALTH SYSTEM', name: 'System', from: false, price: 'Custom', per: 'MANY HOSPITALS, ONE CONTRACT', cta: 'Talk to us', flag: '',
+        feats: ['Central admin across sites', 'Annual invoicing and purchase orders', 'Procurement and security pack', 'Volume pricing'] },
+    ],
+    billingTitle: 'Buying the way hospitals buy',
+    billing: 'Annual billing by invoice or purchase order · local currency · security questionnaire and data processing agreement ready for procurement · seats follow channel membership, so leavers stop counting automatically',
+    note: '',
+    ctaTitle: 'Put one department on the road first.',
+    ctaText: 'Run AIDL with one ward or department for a month. We help you fill in the Hospital AI Policy, launch to every shift, and report results to your AI governance group.',
+  },
+}
+
+const route = useRoute()
+const router = useRouter()
+const sector = computed<Sector>(() => {
+  const f = route.query.for
+  return f === 'schools' || f === 'hospitals' ? f : 'companies'
+})
+const sec = computed(() => (sector.value === 'companies' ? null : SECTOR_PRICING[sector.value]))
+function setSector(s: Sector) {
+  router.replace({ query: s === 'companies' ? {} : { for: s } })
+}
 
 // Questions: only one open at a time.
 const openFaq = ref(-1)
@@ -340,6 +455,29 @@ table.pr-cmp{width:100%;border-collapse:collapse;min-width:720px;font-size:15px}
 .pr-cta .pr-h2{font-size:clamp(38px,5.4vw,72px)}
 .pr-cta .pr-lede{margin:0 auto 30px}
 .pr-hcta{display:flex;gap:14px;flex-wrap:wrap;justify-content:center}
+
+/* SECTOR SWITCH + SCHOOLS / HOSPITALS PLANS */
+.pr-sector{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:28px}
+.pr-sector>span{font-family:"JetBrains Mono",monospace;font-size:11px;font-weight:700;letter-spacing:.14em;margin-right:4px}
+.pr-sector button{font-family:"Bungee",sans-serif;font-size:14px;padding:10px 16px;border:3px solid var(--ink);background:var(--cream);color:var(--ink);box-shadow:3px 3px 0 var(--ink);cursor:pointer;transition:transform .12s,box-shadow .12s}
+.pr-sector button:hover{transform:translate(-2px,-2px);box-shadow:5px 5px 0 var(--ink)}
+.pr-sector button[aria-pressed="true"]{background:var(--ink);color:var(--yellow);box-shadow:3px 3px 0 var(--red)}
+.pr-sector button:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+.pr-plans.pr-plans4{grid-template-columns:repeat(4,minmax(0,1fr));gap:22px}
+.pr-plans4 .pr-plan-hd{padding:22px 22px 18px}
+.pr-plans4 .pr-price,.pr-plans4 .pr-feats{padding-left:22px;padding-right:22px}
+.pr-plans4 .pr-price-note{padding:0 22px}
+.pr-plans4 .pr-price b{font-size:36px}
+.pr-plans4 .pr-plan .lp-btn{margin:20px 22px 0}
+.pr-plans4 .pr-feats ul{border-top:0;padding-top:0}
+.pr-plan .pr-m{color:var(--muted)}
+.pr-billing{margin-top:30px;display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between;background:var(--ink);color:var(--cream);padding:22px 26px}
+.pr-billing b{display:block;color:var(--yellow);font-family:"Bungee",sans-serif;font-weight:400;font-size:16px;margin-bottom:6px}
+.pr-billing>div{flex:1 1 420px;font-size:15px;line-height:1.5}
+.pr-note{margin:18px 0 0;font-family:"JetBrains Mono",monospace;font-size:12px;letter-spacing:.06em;color:var(--muted)}
+@media(max-width:1240px){.pr-plans.pr-plans4{grid-template-columns:repeat(2,minmax(0,1fr));max-width:none}}
+@media(max-width:700px){.pr-plans.pr-plans4{grid-template-columns:minmax(0,1fr);max-width:520px}}
+@media(max-width:640px){.pr-sector button{flex:1 1 0;padding:10px 8px;font-size:12px;text-align:center}.pr-sector>span{width:100%}.pr-billing{padding:18px}.pr-billing>div{flex-basis:100%}.pr-billing .lp-btn{width:100%;justify-content:center}}
 
 @media(max-width:1100px){.pr-plans{grid-template-columns:minmax(0,1fr);max-width:620px;margin-left:auto;margin-right:auto}.pr-every{grid-template-columns:repeat(2,minmax(0,1fr))}.pr-hero-in{grid-template-columns:1fr}}
 @media(max-width:640px){

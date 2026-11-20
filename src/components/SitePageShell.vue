@@ -5,12 +5,13 @@
 <nav ref="navEl" class="lp-nav">
 <div class="lp-wrap lp-nav-in">
 <RouterLink class="lp-brand" to="/home"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></RouterLink>
-<div class="lp-nl"><RouterLink v-for="l in NAV_LINKS" :key="l.id" :to="{ path: '/home', hash: '#' + l.id }">{{ l.label }}</RouterLink><RouterLink to="/pricing" exact-active-class="sp-on">Pricing</RouterLink></div>
-<div class="lp-ncta"><PlatformPicker v-model="target" @add="addToPlatform" /></div>
+<div class="lp-nl"><RouterLink v-for="l in NAV_LINKS" :key="l.id" :to="{ path: '/home', hash: '#' + l.id }">{{ l.label }}</RouterLink><RouterLink v-for="s in SECTORS" :key="s.id" class="lp-sch" :to="{ path: '/home', hash: '#' + s.id }">{{ s.label }}</RouterLink><RouterLink to="/pricing" exact-active-class="sp-on">Pricing</RouterLink></div>
+<!-- Schools / Hospitals open their sections on the home page (/home#schools, #hospitals); no page of their own for now. -->
+<div class="lp-ncta"><SignUpMenu align="right" @pick="signUp" /></div>
 <button type="button" class="lp-burger" :class="{ 'lp-open': menuOpen }" :aria-expanded="menuOpen" aria-controls="sp-mnav" aria-label="Menu" @click="menuOpen = !menuOpen"><i></i><i></i><i></i></button>
 </div>
 <div v-show="menuOpen" id="sp-mnav" class="lp-mnav">
-<div class="lp-wrap"><RouterLink v-for="l in NAV_LINKS" :key="l.id" :to="{ path: '/home', hash: '#' + l.id }" @click="menuOpen = false">{{ l.label }}</RouterLink><RouterLink to="/pricing" @click="menuOpen = false">Pricing</RouterLink></div>
+<div class="lp-wrap"><RouterLink v-for="l in NAV_LINKS" :key="l.id" :to="{ path: '/home', hash: '#' + l.id }" @click="menuOpen = false">{{ l.label }}</RouterLink><RouterLink v-for="s in SECTORS" :key="s.id" :to="{ path: '/home', hash: '#' + s.id }" @click="menuOpen = false">{{ s.label }}</RouterLink><RouterLink to="/pricing" @click="menuOpen = false">Pricing</RouterLink></div>
 </div>
 </nav>
 
@@ -34,7 +35,7 @@ import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import aidlLogo from '../assets/images/aidl-logo-licence.png'
 import { NAV_LINKS, SOCIAL_LINKS } from '../lib/landingNav'
-import PlatformPicker from './PlatformPicker.vue'
+import SignUpMenu from './SignUpMenu.vue'
 import {
   addToPlatform, isChatPlatform, loadSavedPlatform, savePlatform,
   type ChatPlatformId, type PlatformId,
@@ -57,6 +58,18 @@ watch(target, (id) => {
   platform.value = id
   try { localStorage.setItem(PLATFORM_KEY, id) } catch (e) {}
 })
+
+// "Sign up ▾": remember the platform (shared with the landing page), then sign up there.
+function signUp(id: PlatformId) {
+  target.value = id
+  return addToPlatform(id)
+}
+
+// Schools / Hospitals: their sections on the home page.
+const SECTORS = [
+  { id: 'schools', label: 'Schools' },
+  { id: 'hospitals', label: 'Hospitals' },
+]
 
 // Phone / tablet menu — the inline nav links are hidden below 1240px.
 const menuOpen = ref(false)

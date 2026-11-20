@@ -19,6 +19,8 @@ const PrivacyView = () => import('../views/PrivacyView.vue')
 const TermsView = () => import('../views/TermsView.vue')
 const AiRequirementsView = () => import('../views/AiRequirementsView.vue')
 const SupportView = () => import('../views/SupportView.vue')
+const SchoolsView = () => import('../views/SchoolsView.vue')
+const HospitalsView = () => import('../views/HospitalsView.vue')
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -28,7 +30,7 @@ const router = createRouter({
   scrollBehavior(to, _from, savedPosition) {
     if (savedPosition) return savedPosition
     if (to.hash) return { el: to.hash, top: 80 }
-    if (to.name === 'privacy' || to.name === 'terms' || to.name === 'support' || to.name === 'pricing' || to.name === 'ai-requirements') return { top: 0 }
+    if (to.name === 'privacy' || to.name === 'terms' || to.name === 'support' || to.name === 'pricing' || to.name === 'ai-requirements' || to.name === 'schools' || to.name === 'hospitals') return { top: 0 }
     return false
   },
   routes: [
@@ -172,6 +174,19 @@ const router = createRouter({
       path: '/ai-requirements',
       name: 'ai-requirements',
       component: AiRequirementsView,
+      meta: { public: true },
+    },
+    {
+      // AIDL for Schools / Hospitals landing pages — the two buttons in the /home navbar.
+      path: '/schools',
+      name: 'schools',
+      component: SchoolsView,
+      meta: { public: true },
+    },
+    {
+      path: '/hospitals',
+      name: 'hospitals',
+      component: HospitalsView,
       meta: { public: true },
     },
     {
