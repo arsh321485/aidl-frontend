@@ -1,41 +1,18 @@
 <template>
-<!-- Same nav and footer as the landing page (HomeView): it reuses HomeView's
-     global lp- styles, so the markup here must stay in step with HomeView. -->
+<!-- Same nav (SiteNav) and footer (SiteFooter) as the landing pages. -->
 <div class="lp-root sp-root" :class="{ 'lp-pf-teams': platform === 'teams', 'lp-pf-gchat': platform === 'gchat' }">
-<nav ref="navEl" class="lp-nav">
-<div class="lp-wrap lp-nav-in">
-<RouterLink class="lp-brand" to="/home"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></RouterLink>
-<div class="lp-nl"><RouterLink v-for="l in NAV_LINKS" :key="l.id" :to="{ path: '/home', hash: '#' + l.id }">{{ l.label }}</RouterLink><RouterLink v-for="s in SECTORS" :key="s.id" class="lp-sch" :to="{ path: '/home', hash: '#' + s.id }">{{ s.label }}</RouterLink><RouterLink to="/pricing" exact-active-class="sp-on">Pricing</RouterLink></div>
-<!-- Schools / Hospitals open their sections on the home page (/home#schools, #hospitals); no page of their own for now. -->
-<div class="lp-ncta"><SignUpMenu align="right" @pick="signUp" /></div>
-<button type="button" class="lp-burger" :class="{ 'lp-open': menuOpen }" :aria-expanded="menuOpen" aria-controls="sp-mnav" aria-label="Menu" @click="menuOpen = !menuOpen"><i></i><i></i><i></i></button>
-</div>
-<div v-show="menuOpen" id="sp-mnav" class="lp-mnav">
-<div class="lp-wrap"><RouterLink v-for="l in NAV_LINKS" :key="l.id" :to="{ path: '/home', hash: '#' + l.id }" @click="menuOpen = false">{{ l.label }}</RouterLink><RouterLink v-for="s in SECTORS" :key="s.id" :to="{ path: '/home', hash: '#' + s.id }" @click="menuOpen = false">{{ s.label }}</RouterLink><RouterLink to="/pricing" @click="menuOpen = false">Pricing</RouterLink></div>
-</div>
-</nav>
+<SiteNav audience="companies" :on-signup="signUp" />
 
 <slot />
 
-<footer class="lp-foot">
-<div class="lp-wrap">
-<div class="lp-foot-in">
-<div class="lp-foot-about"><RouterLink class="lp-brand" to="/home"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></RouterLink><p class="lp-foot-tag">AI onboarding cards for Slack and Microsoft Teams, and a licence for everyone who finishes them.</p><div class="lp-soc"><a v-for="s in SOCIAL_LINKS" :key="s.id" :href="s.url" target="_blank" rel="noopener noreferrer" :aria-label="'AIDL on ' + s.label" :title="s.label"><svg viewBox="0 0 24 24" aria-hidden="true" v-html="s.icon"></svg></a></div></div>
-<nav class="lp-foot-col" aria-label="Product"><h3>Product</h3><RouterLink v-for="l in NAV_LINKS" :key="l.id" :to="{ path: '/home', hash: '#' + l.id }">{{ l.label }}</RouterLink></nav>
-<nav class="lp-foot-col" aria-label="Company"><h3>Company</h3><RouterLink to="/pricing" exact-active-class="sp-on">Pricing</RouterLink><RouterLink :to="{ path: '/home', hash: '#waitlist' }">Join the waitlist</RouterLink><RouterLink :to="{ path: '/home', hash: '#licences' }">Sample licences</RouterLink><RouterLink to="/privacy" exact-active-class="sp-on">Privacy</RouterLink><RouterLink to="/terms" exact-active-class="sp-on">Terms</RouterLink><RouterLink to="/support" exact-active-class="sp-on">Support</RouterLink></nav>
-</div>
-<div class="lp-foot-bot"><span class="lp-copy">© 2026 AI Driving Licence</span><span>Built for Slack &amp; Microsoft Teams</span></div>
-</div>
-</footer>
+<SiteFooter audience="companies" />
 </div>
 </template>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
-import { RouterLink } from 'vue-router'
-import aidlLogo from '../assets/images/aidl-logo-licence.png'
-import { NAV_LINKS, SOCIAL_LINKS } from '../lib/landingNav'
-import SignUpMenu from './SignUpMenu.vue'
+import { ref, watch } from 'vue'
+import SiteNav from './SiteNav.vue'
+import SiteFooter from './SiteFooter.vue'
 import {
   addToPlatform, isChatPlatform, loadSavedPlatform, savePlatform,
   type ChatPlatformId, type PlatformId,
@@ -64,37 +41,6 @@ function signUp(id: PlatformId) {
   target.value = id
   return addToPlatform(id)
 }
-
-// Schools / Hospitals: their sections on the home page.
-const SECTORS = [
-  { id: 'schools', label: 'Schools' },
-  { id: 'hospitals', label: 'Hospitals' },
-]
-
-// Phone / tablet menu — the inline nav links are hidden below 1240px.
-const menuOpen = ref(false)
-const navEl = ref<HTMLElement | null>(null)
-
-function onDocClick(e: MouseEvent) {
-  if (menuOpen.value && navEl.value && !navEl.value.contains(e.target as Node)) menuOpen.value = false
-}
-function onKeydown(e: KeyboardEvent) {
-  if (e.key === 'Escape') menuOpen.value = false
-}
-function onResize() {
-  if (window.innerWidth > 1240) menuOpen.value = false
-}
-
-onMounted(() => {
-  window.addEventListener('resize', onResize)
-  document.addEventListener('click', onDocClick)
-  document.addEventListener('keydown', onKeydown)
-})
-onBeforeUnmount(() => {
-  window.removeEventListener('resize', onResize)
-  document.removeEventListener('click', onDocClick)
-  document.removeEventListener('keydown', onKeydown)
-})
 </script>
 
 <style>
@@ -107,10 +53,6 @@ onBeforeUnmount(() => {
 .sp-hero *,.sp-main *{box-sizing:border-box}
 .sp-root main a{color:var(--ink);text-decoration-thickness:2px;text-underline-offset:3px}
 .sp-root main a:hover{color:var(--red)}
-/* Current page in the footer: the yellow of the footer link hover. */
-.lp-foot a.sp-on{color:var(--yellow)}
-/* Current page in the nav (Pricing): same look as the active section on /home. */
-.lp-nl a.sp-on{color:var(--red);text-decoration:underline;text-decoration-thickness:3px;text-underline-offset:6px}
 .sp-wrap{max-width:1120px;margin:0 auto;padding:0 28px;width:100%}
 .sp-hero{background:var(--yellow);border-bottom:4px solid var(--ink);padding:60px 0 48px}
 .sp-eb{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;background:var(--ink);color:var(--yellow);padding:5px 12px}

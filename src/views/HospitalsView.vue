@@ -1,20 +1,6 @@
 <template>
 <div class="ln ln-hosp" @click="onAnchorClick">
-<nav class="ln-nav">
-<div class="ln-wrap ln-nav-in">
-<RouterLink class="ln-brand" to="/home"><img class="ln-logo" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span><small>HOSPITALS</small></RouterLink>
-<div class="ln-nl"><a href="#clinical">Clinical staff</a><a href="#nonclinical">Non-clinical staff</a><a href="#privacy">Patient data</a><a href="#pricing">Pricing</a><RouterLink to="/home">For companies</RouterLink></div>
-<div class="ln-ncta"><a class="ln-btn ln-ghost" href="#pricing">See plans</a><a class="ln-btn ln-y" href="#pilot">Book a pilot →</a></div>
-</div>
-</nav>
-<div class="ln-sub">
-<div class="ln-wrap ln-sub-in" role="navigation" aria-label="Hospitals sections">
-<span>▼ AIDL FOR HOSPITALS</span>
-<a class="ln-lane" href="#clinical">Clinical staff</a>
-<a class="ln-lane" href="#nonclinical">Non-clinical staff</a>
-<a href="#why">Why now</a><a href="#guidance">Guidance map</a><a href="#platforms">Where it runs</a><a href="#privacy">Patient data</a><a href="#pricing">Pricing</a><a href="#pilot">Pilot</a>
-</div>
-</div>
+<SiteNav audience="hospitals" />
 
 <section class="ln-hero">
 <div class="ln-sun" aria-hidden="true"></div><div class="ln-cloud ln-c1" aria-hidden="true"></div><div class="ln-cloud ln-c2" aria-hidden="true"></div>
@@ -279,9 +265,7 @@
 </div>
 </section>
 
-<footer class="ln-foot">
-<div class="ln-wrap ln-foot-in"><RouterLink class="ln-brand" to="/home"><img class="ln-logo" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></RouterLink><a href="#clinical">Clinical staff</a><a href="#nonclinical">Non-clinical staff</a><a href="#privacy">Patient data</a><RouterLink to="/schools">Schools</RouterLink><RouterLink to="/home">For companies</RouterLink><span style="margin-left:auto">© 2026 AI Driving License</span></div>
-</footer>
+<SiteFooter audience="hospitals" />
 </div>
 </template>
 
@@ -290,7 +274,8 @@
 // Built from AIDL-new-content; styles live in assets/landing.css (all ln- prefixed).
 import { computed } from 'vue'
 import '../assets/landing.css'
-import aidlLogo from '../assets/images/aidl-logo-licence.png'
+import SiteNav from '../components/SiteNav.vue'
+import SiteFooter from '../components/SiteFooter.vue'
 import { useLandingPage, useTabs, usePilotForm } from '../lib/landingPage'
 
 const { onAnchorClick } = useLandingPage('AIDL for Hospitals — AI Driving License for clinical and non-clinical staff')

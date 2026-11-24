@@ -1,17 +1,6 @@
 <template>
 <div class="lp-root" :class="{ 'lp-pf-teams': platform === 'teams', 'lp-pf-gchat': platform === 'gchat' }">
-<nav class="lp-nav" ref="navEl">
-<div class="lp-wrap lp-nav-in">
-<a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a>
-<div class="lp-nl"><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id">{{ l.label }}</a><button v-for="s in sectorLinks" :key="s.id" type="button" class="lp-sch" :class="{ 'lp-active': activeSection === s.id }" @click="goSection(s.id)">{{ s.label }}</button><RouterLink to="/pricing">Pricing</RouterLink></div>
-<!-- Schools / Hospitals scroll to their sections below (#schools, #hospitals); no page route for now. -->
-<div class="lp-ncta"><SignUpMenu align="right" @pick="signUp" /></div>
-<button type="button" class="lp-burger" :class="{ 'lp-open': menuOpen }" :aria-expanded="menuOpen" aria-controls="lp-mnav" aria-label="Menu" @click="menuOpen = !menuOpen"><i></i><i></i><i></i></button>
-</div>
-<div v-show="menuOpen" id="lp-mnav" class="lp-mnav">
-<div class="lp-wrap"><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id; menuOpen = false">{{ l.label }}</a><button v-for="s in sectorLinks" :key="s.id" type="button" class="lp-sch" :class="{ 'lp-active': activeSection === s.id }" @click="goSection(s.id)">{{ s.label }}</button><RouterLink to="/pricing" @click="menuOpen = false">Pricing</RouterLink></div>
-</div>
-</nav>
+<SiteNav audience="companies" :on-signup="signUp" />
 
 <section class="lp-hero">
 <div class="lp-sun"></div><div class="lp-cloud lp-c1"></div><div class="lp-cloud lp-c2"></div><div class="lp-cloud lp-c3"></div>
@@ -108,7 +97,7 @@
 <button type="button" class="lp-go">For students →</button>
 </div>
 </div>
-<div class="lp-schb"><div><b>Priced per school, per year</b><span>Free for up to 25 staff · one annual fee for the whole school · invoice and purchase order billing</span></div><button type="button" class="lp-btn lp-y">Explore AIDL for Schools →</button></div>
+<div class="lp-schb"><div><b>Priced per school, per year</b><span>Free for up to 25 staff · one annual fee for the whole school · invoice and purchase order billing</span></div><RouterLink class="lp-btn lp-y" to="/schools">Explore AIDL for Schools →</RouterLink></div>
 </div>
 </section>
 
@@ -133,7 +122,7 @@
 <button type="button" class="lp-go">For non-clinical staff →</button>
 </div>
 </div>
-<div class="lp-schb"><div><b>AIDL never needs a patient record</b><span>It records agreements, cards read and quiz results only · start free with one ward · invoice and purchase order billing for health systems</span></div><button type="button" class="lp-btn lp-y">Explore AIDL for Hospitals →</button></div>
+<div class="lp-schb"><div><b>AIDL never needs a patient record</b><span>It records agreements, cards read and quiz results only · start free with one ward · invoice and purchase order billing for health systems</span></div><RouterLink class="lp-btn lp-y" to="/hospitals">Explore AIDL for Hospitals →</RouterLink></div>
 </div>
 </section>
 
@@ -292,23 +281,16 @@
 </div>
 </section>
 
-<footer class="lp-foot">
-<div class="lp-wrap">
-<div class="lp-foot-in">
-<div class="lp-foot-about"><a class="lp-brand" href="#"><img class="lp-bm" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></a><p class="lp-foot-tag">AI onboarding cards for Slack and Microsoft Teams, and a licence for everyone who finishes them.</p><div class="lp-soc"><a v-for="s in socialLinks" :key="s.id" :href="s.url" target="_blank" rel="noopener noreferrer" :aria-label="'AIDL on ' + s.label" :title="s.label"><svg viewBox="0 0 24 24" aria-hidden="true" v-html="s.icon"></svg></a></div></div>
-<nav class="lp-foot-col" aria-label="Product"><h3>Product</h3><a v-for="l in navLinks" :key="l.id" :href="'#' + l.id" :class="{ 'lp-active': activeSection === l.id }" @click="activeSection = l.id">{{ l.label }}</a></nav>
-<nav class="lp-foot-col" aria-label="Company"><h3>Company</h3><RouterLink to="/pricing">Pricing</RouterLink><a href="#waitlist">Join the waitlist</a><a href="#licences">Sample licences</a><RouterLink to="/privacy">Privacy</RouterLink><RouterLink to="/terms">Terms</RouterLink><RouterLink to="/support">Support</RouterLink></nav>
-</div>
-<div class="lp-foot-bot"><span class="lp-copy">© 2026 AI Driving Licence</span><span>Built for Slack &amp; Microsoft Teams</span></div>
-</div>
-</footer>
+<SiteFooter audience="companies" />
 </div>
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch, onMounted, onBeforeUnmount } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import SignUpMenu from '../components/SignUpMenu.vue'
+import SiteNav from '../components/SiteNav.vue'
+import SiteFooter from '../components/SiteFooter.vue'
 import {
   addToPlatform, isChatPlatform, loadSavedPlatform, savePlatform,
   type ChatPlatformId, type PlatformId,
@@ -321,15 +303,8 @@ import { PRESETS, buildAvatarLayers, type ShapeNode } from '../lib/avatar-parts'
 import { licenceSvg } from '../lib/licenceSvg'
 import { CARD_TOPICS, LIBRARY_SIZE, PLANS, STARTER_CARDS, type PlanKey } from '../lib/landingCards'
 import { joinWaitlist } from '../lib/waitlistApi'
-import { NAV_LINKS, SOCIAL_LINKS } from '../lib/landingNav'
 
 type Platform = ChatPlatformId
-
-// Nav / footer section links. The one for the section in view (or the last
-// one clicked) is highlighted red.
-const navLinks = NAV_LINKS
-const socialLinks = SOCIAL_LINKS
-const activeSection = ref('')
 
 // "Not a company? Join the waitlist" box (bottom CTA) — individuals only;
 // the old individual pages stay on /classic but aren't linked from here.
@@ -368,52 +343,6 @@ const licenceSamples = [
   { bg: ['#ff9d00', '#e23a2e', '#7a1f2b'], ink: '#fff4dd', accent: '#ff9d00', numColor: '#fff4dd', number: 'AIDL-6083-2245', avatar: licenceAvatar2 },
   { bg: '#12613c', ink: '#f2f7f2', accent: '#f5ecd2', numColor: '#f5ecd2', number: 'AIDL-7391-3306', avatar: licenceAvatar3 },
 ].map(t => licenceSvg({ name: 'Your Name', org: 'YOUR ORG NAME', issued: '22/10/2026', expires: '22/10/2027', logo: aidlLogo, ...t }))
-
-// Phone / tablet menu — the inline nav links are hidden below 1240px.
-const menuOpen = ref(false)
-const navEl = ref<HTMLElement | null>(null)
-
-function onDocClick(e: MouseEvent) {
-  if (menuOpen.value && navEl.value && !navEl.value.contains(e.target as Node)) menuOpen.value = false
-}
-function onKeydown(e: KeyboardEvent) {
-  if (e.key === 'Escape') menuOpen.value = false
-}
-function onResize() {
-  if (window.innerWidth > 1240) menuOpen.value = false
-}
-
-function updateActiveSection() {
-  // A section counts as open once its top passes just under the sticky nav.
-  const line = 120
-  let current = ''
-  let best = -Infinity
-  for (const l of [...navLinks, ...sectorLinks]) { // Schools / Hospitals sit between "How it works" and "For admins"
-    const top = document.getElementById(l.id)?.getBoundingClientRect().top
-    if (top !== undefined && top <= line && top > best) {
-      best = top
-      current = l.id
-    }
-  }
-  // Past the last tracked section (platforms / CTA) — nothing is highlighted.
-  const last = document.getElementById(navLinks[navLinks.length - 1]!.id)
-  if (last && last.getBoundingClientRect().bottom <= line) current = ''
-  activeSection.value = current
-}
-
-onMounted(() => {
-  window.addEventListener('scroll', updateActiveSection, { passive: true })
-  window.addEventListener('resize', onResize)
-  document.addEventListener('click', onDocClick)
-  document.addEventListener('keydown', onKeydown)
-  updateActiveSection()
-})
-onBeforeUnmount(() => {
-  window.removeEventListener('scroll', updateActiveSection)
-  window.removeEventListener('resize', onResize)
-  document.removeEventListener('click', onDocClick)
-  document.removeEventListener('keydown', onKeydown)
-})
 
 // "See the cards" — a plan switch (Trial / Basic / Enterprise), the 15 real
 // topics and blurred previews of real card titles, like /plans in the product.
@@ -514,17 +443,6 @@ function addTo(p: PlatformId) {
 function signUp(p: PlatformId) {
   target.value = p
   return addTo(p)
-}
-
-// Schools / Hospitals in the navbar: scroll to their section on this page (no route yet).
-const sectorLinks = [
-  { id: 'schools', label: 'Schools' },
-  { id: 'hospitals', label: 'Hospitals' },
-]
-function goSection(id: string) {
-  activeSection.value = id
-  menuOpen.value = false
-  document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 }
 
 const heroSteps = [

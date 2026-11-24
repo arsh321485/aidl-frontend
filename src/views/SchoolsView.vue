@@ -1,20 +1,6 @@
 <template>
 <div class="ln ln-school" @click="onAnchorClick">
-<nav class="ln-nav">
-<div class="ln-wrap ln-nav-in">
-<RouterLink class="ln-brand" to="/home"><img class="ln-logo" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span><small>SCHOOLS</small></RouterLink>
-<div class="ln-nl"><a href="#teachers">Teachers &amp; staff</a><a href="#students">Students</a><a href="#privacy">Child privacy</a><a href="#pricing">Pricing</a><RouterLink to="/home">For companies</RouterLink></div>
-<div class="ln-ncta"><a class="ln-btn ln-ghost" href="#pricing">See plans</a><a class="ln-btn ln-y" href="#pilot">Book a pilot →</a></div>
-</div>
-</nav>
-<div class="ln-sub">
-<div class="ln-wrap ln-sub-in" role="navigation" aria-label="Schools sections">
-<span>▼ AIDL FOR SCHOOLS</span>
-<a class="ln-lane" href="#teachers">Teachers &amp; staff</a>
-<a class="ln-lane" href="#students">Students G6–12</a>
-<a href="#why">Why now</a><a href="#platforms">Where it runs</a><a href="#privacy">Child privacy</a><a href="#pricing">Pricing</a><a href="#pilot">Pilot</a>
-</div>
-</div>
+<SiteNav audience="schools" />
 
 <section class="ln-hero">
 <div class="ln-sun" aria-hidden="true"></div><div class="ln-cloud ln-c1" aria-hidden="true"></div><div class="ln-cloud ln-c2" aria-hidden="true"></div>
@@ -270,9 +256,7 @@
 </div>
 </section>
 
-<footer class="ln-foot">
-<div class="ln-wrap ln-foot-in"><RouterLink class="ln-brand" to="/home"><img class="ln-logo" :src="aidlLogo" alt="AIDL logo" /><span>AIDL</span></RouterLink><a href="#teachers">Teachers &amp; staff</a><a href="#students">Students</a><a href="#privacy">Child privacy</a><RouterLink to="/home">For companies</RouterLink><RouterLink to="/pricing">Business pricing</RouterLink><span style="margin-left:auto">© 2026 AI Driving License</span></div>
-</footer>
+<SiteFooter audience="schools" />
 </div>
 </template>
 
@@ -281,7 +265,8 @@
 // Built from AIDL-new-content; styles live in assets/landing.css (all ln- prefixed).
 import { computed } from 'vue'
 import '../assets/landing.css'
-import aidlLogo from '../assets/images/aidl-logo-licence.png'
+import SiteNav from '../components/SiteNav.vue'
+import SiteFooter from '../components/SiteFooter.vue'
 import { useLandingPage, useTabs, usePilotForm } from '../lib/landingPage'
 
 const { onAnchorClick } = useLandingPage('AIDL for Schools — AI Driving License for teachers and students')

@@ -29,7 +29,8 @@ const router = createRouter({
   // the old behaviour (no scrolling).
   scrollBehavior(to, _from, savedPosition) {
     if (savedPosition) return savedPosition
-    if (to.hash) return { el: to.hash, top: 80 }
+    // Land just below the sticky SiteNav (its height changes with screen width).
+    if (to.hash) return { el: to.hash, top: (document.querySelector<HTMLElement>('.sn-top')?.offsetHeight ?? 80) + 6 }
     if (to.name === 'privacy' || to.name === 'terms' || to.name === 'support' || to.name === 'pricing' || to.name === 'ai-requirements' || to.name === 'schools' || to.name === 'hospitals') return { top: 0 }
     return false
   },
