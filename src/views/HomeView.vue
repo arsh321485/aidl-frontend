@@ -12,9 +12,9 @@
 <div class="lp-road-sign lp-rs-3"><div class="lp-plate lp-white">AGREE<br>LEARN<br>LICENCE</div><div class="lp-post"></div></div>
 <div class="lp-road-sign lp-rs-4"><div class="lp-plate lp-red">10 MIN<br>AHEAD</div><div class="lp-post"></div></div>
 <div class="lp-hero-headline">
-<div class="lp-hero-eyebrow"><span class="lp-blink"></span><span class="lp-v-s">NOW LIVE IN SLACK</span><span class="lp-v-t">NOW LIVE IN MICROSOFT TEAMS</span><span class="lp-v-g">COMING SOON TO GOOGLE CHAT</span></div>
+<div class="lp-hero-eyebrow"><span class="lp-blink"></span><span class="lp-v-s">NOW LIVE IN SLACK</span><span class="lp-v-t">NOW LIVE IN MICROSOFT TEAMS</span><span class="lp-v-g">COMING SOON TO GOOGLE WORKSPACE</span></div>
 <h1 class="lp-hero-title">LICENCE TO<span class="lp-l2">DRIVE&nbsp;AI</span></h1>
-<p class="lp-hero-sub">Write your AI policy, get every employee to agree to it point by point, and issue each one a verifiable AI Driving Licence — about ten minutes per person, without leaving <span class="lp-v-s">Slack</span><span class="lp-v-t">Teams</span><span class="lp-v-g">Google Chat</span>.</p>
+<p class="lp-hero-sub">Write your AI policy, get every employee to agree to it point by point, and issue each one a verifiable AI Driving Licence — about ten minutes per person, without leaving <span class="lp-v-s">Slack</span><span class="lp-v-t">Teams</span><span class="lp-v-g">Google Workspace</span>.</p>
 </div>
 <div class="lp-dashboard"><div class="lp-dash-bg"></div>
 <div class="lp-dash-inner">
@@ -68,64 +68,13 @@
 <h2 class="lp-h2">One channel. Two seats in the car.</h2>
 <p class="lp-lede">Admins steer from a single Admin Center message that keeps updating instead of flooding the channel. Employees get everything privately, one card at a time.</p>
 <div class="lp-sides">
-<div class="lp-side lp-k"><span class="lp-tag">ADMIN · THE INSTRUCTOR</span><h3>Set the rules, then watch the road.</h3><p>Click <span class="lp-v-s">“Add to Slack”</span><span class="lp-v-t">“Add to Teams”</span><span class="lp-v-g">“Add to Google Chat”</span> and AIDL creates its own <span class="lp-v-s">#aidl channel</span><span class="lp-v-t">AIDL team and channel</span><span class="lp-v-g">AIDL space</span>, makes you Master admin and posts your Admin Center. Six steps unlock one after another.</p>
+<div class="lp-side lp-k"><span class="lp-tag">ADMIN · THE INSTRUCTOR</span><h3>Set the rules, then watch the road.</h3><p>Click <span class="lp-v-s">“Add to Slack”</span><span class="lp-v-t">“Add to Teams”</span><span class="lp-v-g">“Add to Google Workspace”</span> and AIDL creates its own <span class="lp-v-s">#aidl channel</span><span class="lp-v-t">AIDL team and channel</span><span class="lp-v-g">AIDL space</span>, makes you Master admin and posts your Admin Center. Six steps unlock one after another.</p>
 <ol><li>Create and approve your AI policy</li><li>Add co-admins with only the rights they need</li><li>Add your team, up to your seats</li><li>Approve the cards before anything is sent</li><li>Start — everyone gets their Welcome</li><li>Track licences and card reads</li></ol></div>
 <div class="lp-side"><span class="lp-tag">EMPLOYEE · THE DRIVER</span><h3>Ten minutes to road-ready.</h3><p>A private Welcome message walks each person through three cards. Finish them, save an avatar, and the licence arrives — valid for as long as your plan runs: the 7-day Trial, or a year on a paid plan.</p>
 <ol><li>Open the Welcome card</li><li>Agree to the 14 policy points</li><li>Learn the Traffic Light rule</li><li>Learn the 5-rule Highway Code</li><li>Create an avatar</li><li>Download or share the licence</li></ol></div>
 </div>
 </div>
 </section>
-
-<section class="lp-band" id="schools" style="background:var(--cream-2)">
-<div class="lp-wrap">
-<span class="lp-eb">▼ AIDL FOR SCHOOLS</span>
-<h2 class="lp-h2">Now in the classroom, too.</h2>
-<p class="lp-lede">The same policy → agreement → licence loop, rebuilt for schools: a licence for every teacher, age-banded rules for every student from Grade 6 to Grade 12, and child-privacy protections switched on by default.</p>
-<div class="lp-schg">
-<div class="lp-schc lp-k">
-<span class="lp-tag">FOR TEACHERS &amp; STAFF</span>
-<h3>The Educator Licence.</h3>
-<p>Staff agree to your School AI Policy, learn what pupil data never goes into AI, and are licensed for the school year in about ten minutes.</p>
-<ul><li>14-card School AI Policy template</li><li>Traffic Light Check and the Educator’s Highway Code</li><li>52 learning cards, one a week</li></ul>
-<button type="button" class="lp-go">For teachers &amp; staff →</button>
-</div>
-<div class="lp-schc">
-<span class="lp-tag">FOR STUDENTS · GRADES 6–12</span>
-<h3>From Learner’s Permit to licensed driver.</h3>
-<p>Two grade bands. Grades 6–8 earn a Learner’s Permit; Grades 9–12 earn the full Student AI Driving Licence.</p>
-<ul><li>Learner’s Permit → Student AI Driving Licence</li><li>Runs in Google Classroom, Teams or your LMS</li><li>First name and school only; no public sharing</li></ul>
-<button type="button" class="lp-go">For students →</button>
-</div>
-</div>
-<div class="lp-schb"><div><b>Priced per school, per year</b><span>Free for up to 25 staff · one annual fee for the whole school · invoice and purchase order billing</span></div><RouterLink class="lp-btn lp-y" to="/schools">Explore AIDL for Schools →</RouterLink></div>
-</div>
-</section>
-
-<section class="lp-band" id="hospitals">
-<div class="lp-wrap">
-<span class="lp-eb">▼ AIDL FOR HOSPITALS</span>
-<h2 class="lp-h2">Now on the ward, too.</h2>
-<p class="lp-lede">Clinicians already use AI for notes, letters and summaries. AIDL gives every member of hospital staff one AI policy, one rule for patient data and a dated licence that proves they learned it — inside Teams, Slack or your learning system.</p>
-<div class="lp-schg">
-<div class="lp-schc lp-k">
-<span class="lp-tag">FOR CLINICAL STAFF</span>
-<h3>The Clinical Licence.</h3>
-<p>Doctors, nurses, pharmacists and allied health staff agree to your Hospital AI Policy and learn what patient information can go where, in about ten minutes between patients.</p>
-<ul><li>14-card Hospital AI Policy template</li><li>Clinical Traffic Light and the Clinician’s Highway Code</li><li>Weekly cards on scribes, checking output and telling patients</li></ul>
-<button type="button" class="lp-go">For clinical staff →</button>
-</div>
-<div class="lp-schc">
-<span class="lp-tag">FOR NON-CLINICAL STAFF</span>
-<h3>The Hospital Staff Licence.</h3>
-<p>Patient access, finance, HR, operations, IT and leaders learn the same policy with examples from their own jobs.</p>
-<ul><li>Four role tracks with their own examples</li><li>How to spot AI-made scams aimed at hospitals</li><li>App requests decided by your privacy officer</li></ul>
-<button type="button" class="lp-go">For non-clinical staff →</button>
-</div>
-</div>
-<div class="lp-schb"><div><b>AIDL never needs a patient record</b><span>It records agreements, cards read and quiz results only · start free with one ward · invoice and purchase order billing for health systems</span></div><RouterLink class="lp-btn lp-y" to="/hospitals">Explore AIDL for Hospitals →</RouterLink></div>
-</div>
-</section>
-
 
 <section class="lp-band lp-dark" id="admins">
 <div class="lp-wrap">
@@ -201,7 +150,7 @@
 <div v-if="cardsShown < previewCards.length" class="lp-cg-more"><button type="button" class="lp-btn lp-ghost" @click="cardsShown += 6">Show more titles ({{ previewCards.length - cardsShown }} more) ↓</button></div>
 </template>
 <div class="lp-ap"><div class="lp-ap-b" aria-hidden="true"><span>✅ Approve</span><span>⏭ Skip</span><span>🔄 Swap</span></div><p><b>Nothing is sent until you approve.</b> Preview every card first, then approve it, skip it or swap it for another.</p></div>
-<div class="lp-xc-cta"><div><b>{{ planInfo.label }} · {{ planInfo.cards }} cards · {{ planInfo.cadence }}</b><span>{{ planLine }}</span></div><div class="lp-hcta"><a class="lp-btn lp-y" href="#start" @click.prevent="addTo(platform)"><span class="lp-v-s">Add to Slack →</span><span class="lp-v-t">Add to Teams →</span><span class="lp-v-g">Add to Google Chat →</span></a><RouterLink class="lp-btn" to="/pricing">See plans</RouterLink></div></div>
+<div class="lp-xc-cta"><div><b>{{ planInfo.label }} · {{ planInfo.cards }} cards · {{ planInfo.cadence }}</b><span>{{ planLine }}</span></div><div class="lp-hcta"><a class="lp-btn lp-y" href="#start" @click.prevent="addTo(platform)"><span class="lp-v-s">Add to Slack →</span><span class="lp-v-t">Add to Teams →</span><span class="lp-v-g">Google Workspace · coming soon</span></a><a class="lp-btn" href="#pricing">See plans</a></div></div>
 </div>
 </section>
 
@@ -251,17 +200,63 @@
 <div class="lp-plat lp-three">
 <div class="lp-pl"><span class="lp-s lp-live">LIVE</span><h3>Slack</h3><p>Block Kit messages in a dedicated #aidl channel and private DMs from the AIDL app. Admin Center pinned and updated in place.</p></div>
 <div class="lp-pl"><span class="lp-s lp-live">LIVE</span><h3>Microsoft Teams</h3><p>The same admin and employee flow as Adaptive Cards in an AIDL team channel and bot chats. Follows light, dark and high-contrast themes; signs in with Microsoft Entra.</p></div>
-<div class="lp-pl"><span class="lp-s lp-live">LIVE</span><h3>Google &amp; your LMS</h3><p>Google Workspace sign-in, plus course packages for Moodle, Canvas, Schoology, Brightspace, Blackboard and any SCORM 1.2 learning system.</p></div>
+<div class="lp-pl"><span class="lp-s lp-soon">COMING SOON</span><h3>Google Workspace</h3><p>The same admin and employee flow for teams that work in Google Workspace, with sign-in through their Google account.</p></div>
 </div>
-<div class="lp-plat-cta"><SignUpMenu @pick="signUp" /><RouterLink class="lp-btn lp-ghost" to="/pricing">See plans</RouterLink></div>
+<div class="lp-plat-cta"><SignUpMenu @pick="signUp" /><a class="lp-btn lp-ghost" href="#pricing">See plans</a></div>
+</div>
+</section>
+
+<!-- Companies pricing (design: AIDL-new-content/"aidl – AI Driving License v5 (Companies & Hospitals).html", #pricing) -->
+<section class="lp-band" id="pricing">
+<div class="lp-wrap">
+<span class="lp-eb">▼ PRICING FOR COMPANIES</span>
+<h2 class="lp-h2">Simple per-user pricing.</h2>
+<p class="lp-lede">Try AIDL with your team for free, then choose Basic or Advanced for everyone. Admins are always free.</p>
+<div class="lp-ppx">
+<div class="lp-ppc"><span class="lp-pptag">TRIAL</span><h3>Trial</h3><div class="lp-ppamt">Free</div><span class="lp-ppper">TRY BEFORE YOU BUY</span><ul><li>Up to 5 users and 1 admin</li><li>Company AI Policy template</li><li>Onboarding and licence</li><li>12 learning cards</li></ul><a class="lp-btn lp-ghost" href="#start">Start a trial</a></div>
+<div class="lp-ppc"><span class="lp-pptag">BASIC</span><h3>Basic</h3><div class="lp-ppamt">$2</div><span class="lp-ppper">PER USER / MONTH</span><ul><li>Everything in Trial, for every employee</li><li>Point-by-point policy agreement and licence for each user</li><li>Runs in Slack or Microsoft Teams (Google Workspace coming soon)</li><li>104 learning cards a year</li><li>Completion dashboard</li></ul><a class="lp-btn lp-ghost" href="#start">Choose Basic</a></div>
+<div class="lp-ppc lp-hl"><span class="lp-pptag">MOST POPULAR</span><h3>Advanced</h3><div class="lp-ppamt">$5</div><span class="lp-ppper">PER USER / MONTH</span><ul><li>Everything in Basic</li><li>208 learning cards a year</li><li>Oversight dashboards and audit-ready compliance export</li><li>Single sign-on and directory sync</li><li>Custom policy rules by team or role</li><li>Priority support</li></ul><a class="lp-btn" href="#start">Choose Advanced →</a></div>
+</div>
+<div class="lp-ppbill"><div><b>Buying the way companies buy</b><span>Billed monthly per active user · invoice or card · local currency · security questionnaire and data processing agreement ready for procurement · seats follow channel membership, so leavers stop counting automatically</span></div><a class="lp-btn lp-y" href="#policy">Need a policy first? →</a></div>
+<p class="lp-ppnote">PRICES IN US DOLLARS, BEFORE LOCAL TAXES.</p>
+</div>
+</section>
+
+<!-- "AI policy, built for you" (design: AIDL-new-content/"aidl – AI Driving License v5 (Companies & Hospitals).html", #policy) -->
+<section class="lp-pol" id="policy">
+<div class="lp-wrap lp-pol-in">
+<div>
+<span class="lp-eb">▼ AI POLICY, BUILT FOR YOU</span>
+<h2>Don’t have a policy? We build it for you.</h2>
+<p class="lp-pol-lede">No AI policy yet? Our team writes one for your company: which AI tools are allowed, what data never goes in, and who approves new tools. Then AIDL turns it into point-by-point agreements and a licence for every employee.</p>
+<ol>
+<li><div><b>Tell us about you</b><span>A short questionnaire or a 30-minute call about how your employees use AI today.</span></div></li>
+<li><div><b>We draft your policy</b><span>Tailored to your industry, the laws where you operate and the AI tools your teams already use.</span></div></li>
+<li><div><b>You review and sign off</b><span>Your leaders comment and we revise until it’s approved.</span></div></li>
+<li><div><b>It goes live in AIDL</b><span>Every person agrees to it point by point and earns a verifiable licence.</span></div></li>
+</ol>
+</div>
+<form class="lp-polf" novalidate @submit.prevent="submitPolicy">
+<h3>Build my AI policy</h3>
+<div class="lp-pf2"><label for="lp-pol-name">YOUR NAME</label><input id="lp-pol-name" v-model.trim="pol.name" type="text" autocomplete="name" required :disabled="polLocked" /></div>
+<div class="lp-pf2"><label for="lp-pol-email">WORK EMAIL</label><input id="lp-pol-email" v-model.trim="pol.email" type="email" autocomplete="email" required :disabled="polLocked" /></div>
+<div class="lp-pf2"><label for="lp-pol-role">YOUR ROLE</label><select id="lp-pol-role" v-model="pol.role" :disabled="polLocked"><option v-for="r in POL_ROLES" :key="r">{{ r }}</option></select></div>
+<div class="lp-pf2"><label for="lp-pol-org">COMPANY</label><input id="lp-pol-org" v-model.trim="pol.company" type="text" autocomplete="organization" required :disabled="polLocked" /></div>
+<div class="lp-pf2"><label for="lp-pol-country">COUNTRY</label><input id="lp-pol-country" v-model.trim="pol.country" type="text" autocomplete="country-name" :disabled="polLocked" /></div>
+<div class="lp-pf2"><label for="lp-pol-size">EMPLOYEES</label><select id="lp-pol-size" v-model="pol.employees" :disabled="polLocked"><option v-for="n in POL_SIZES" :key="n">{{ n }}</option></select></div>
+<fieldset class="lp-full"><legend>WHAT DO YOU NEED?</legend><div class="lp-ck"><label v-for="n in POL_NEEDS" :key="n"><input v-model="pol.needs" type="checkbox" :value="n" :disabled="polLocked" /> {{ n }}</label></div></fieldset>
+<button class="lp-btn" type="submit" :disabled="polLocked">{{ polState === 'sending' ? 'Sending…' : 'Build my policy →' }}</button>
+<div v-if="polState === 'done'" class="lp-polok" role="status">Thanks — we’ve got your request. We’ll be in touch within two working days to start your policy.</div>
+<div v-else-if="polState === 'error'" class="lp-polerr" role="alert">{{ polMsg }}</div>
+</form>
 </div>
 </section>
 
 <section class="lp-cta" id="start">
 <div class="lp-wrap">
 <h2 class="lp-h2">Your team, road-ready this week.</h2>
-<p class="lp-lede">Add AIDL to Slack, Teams, Google Chat or Moodle, approve your policy and three starter cards, and press Start.</p>
-<div class="lp-hcta"><a class="lp-btn" href="#start" @click.prevent="addTo('slack')">Add to Slack →</a><a class="lp-btn" href="#start" @click.prevent="addTo('teams')">Add to Teams →</a><a class="lp-btn" href="#start" @click.prevent="addTo('gchat')">Add to Google Chat →</a><a class="lp-btn" href="#start" @click.prevent="addTo('moodle')">Add to Moodle →</a><RouterLink class="lp-btn lp-ghost" to="/pricing">See plans</RouterLink></div>
+<p class="lp-lede">Slack or Microsoft Teams: approve your policy and three starter cards, and press Start. Google Workspace is coming soon.</p>
+<div class="lp-hcta"><a class="lp-btn" href="#start" @click.prevent="addTo('slack')">Slack →</a><a class="lp-btn" href="#start" @click.prevent="addTo('teams')">Teams →</a><a class="lp-btn" href="#start" @click.prevent="addTo('gchat')">Google Workspace · coming soon</a><a class="lp-btn lp-ghost" href="#pricing">See plans</a></div>
 <form id="waitlist" class="lp-wl" novalidate @submit.prevent="submitWaitlist">
 <label for="lp-wl-email">Not a company? Join the waitlist</label>
 <div class="lp-wl-row"><input id="lp-wl-email" v-model.trim="wlEmail" type="email" placeholder="you@example.com" autocomplete="email" :disabled="wlState === 'sending' || wlState === 'done'" /><button type="submit" class="lp-btn" :disabled="wlState === 'sending' || wlState === 'done'">{{ wlState === 'sending' ? 'Joining…' : wlState === 'done' ? 'Joined ✓' : 'Join' }}</button></div>
@@ -286,7 +281,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, watch } from 'vue'
+import { ref, computed, reactive, watch } from 'vue'
 import { RouterLink } from 'vue-router'
 import SignUpMenu from '../components/SignUpMenu.vue'
 import SiteNav from '../components/SiteNav.vue'
@@ -303,8 +298,39 @@ import { PRESETS, buildAvatarLayers, type ShapeNode } from '../lib/avatar-parts'
 import { licenceSvg } from '../lib/licenceSvg'
 import { CARD_TOPICS, LIBRARY_SIZE, PLANS, STARTER_CARDS, type PlanKey } from '../lib/landingCards'
 import { joinWaitlist } from '../lib/waitlistApi'
+import { sendPolicyRequest } from '../lib/policyRequestApi'
 
 type Platform = ChatPlatformId
+
+// "AI policy, built for you" — the "Build my AI policy" form (#policy).
+const POL_ROLES = ['CEO / founder', 'CIO / CTO', 'CISO / IT security', 'Legal / compliance', 'HR / people', 'Operations', 'Other']
+const POL_SIZES = ['Under 50', '50–249', '250–999', '1,000–4,999', '5,000+']
+const POL_NEEDS = ['A new AI policy', 'A review of our current policy', 'AIDL licences for our employees']
+const pol = reactive({ name: '', email: '', role: POL_ROLES[0]!, company: '', country: '', employees: POL_SIZES[0]!, needs: [POL_NEEDS[0]!] })
+const polState = ref<'idle' | 'sending' | 'done' | 'error'>('idle')
+const polMsg = ref('')
+const polLocked = computed(() => polState.value === 'sending' || polState.value === 'done')
+
+async function submitPolicy() {
+  if (!pol.name || !pol.company) {
+    polState.value = 'error'
+    polMsg.value = 'Please fill in your name and company.'
+    return
+  }
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(pol.email)) {
+    polState.value = 'error'
+    polMsg.value = 'Please enter a valid work email.'
+    return
+  }
+  polState.value = 'sending'
+  try {
+    await sendPolicyRequest({ ...pol, needs: [...pol.needs] })
+    polState.value = 'done'
+  } catch (e) {
+    polState.value = 'error'
+    polMsg.value = e instanceof Error ? e.message : 'Could not send your request. Please try again later.'
+  }
+}
 
 // "Not a company? Join the waitlist" box (bottom CTA) — individuals only;
 // the old individual pages stay on /classic but aren't linked from here.
@@ -413,7 +439,7 @@ function clearTopics() {
 // Navbar platform picker. `target` is any platform (what "Add" signs in to);
 // `platform` is the chat app whose look the page previews (.lp-pf-* classes
 // and the .lp-v-s / .lp-v-t / .lp-v-g text spans). Picking a learning
-// platform (Moodle, …) keeps the last chat preview.
+// platform keeps the last chat preview.
 const PLATFORM_KEY = 'aidl-v2-pf'
 const platform = ref<Platform>('slack')
 try {
@@ -806,6 +832,52 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-outs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:6px}
 .lp-outs div{border:2px solid var(--cream);padding:8px;font-size:12.5px;line-height:1.35;color:#efe7cc}
 .lp-outs b{display:block;font-family:"Bungee",sans-serif;font-weight:400;font-size:12px;color:var(--yellow);margin-bottom:3px}
+/* Companies pricing section (#pricing) */
+.lp-ppx{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;margin-top:44px;align-items:stretch}
+.lp-ppc{display:flex;flex-direction:column;border:3px solid var(--ink);background:var(--cream);padding:26px;box-shadow:6px 6px 0 var(--ink)}
+.lp-ppc.lp-hl{background:var(--yellow);transform:translate(-3px,-3px);box-shadow:9px 9px 0 var(--ink)}
+.lp-ppc .lp-pptag{font:500 11px "JetBrains Mono",monospace;letter-spacing:.14em;color:var(--muted)}
+.lp-ppc.lp-hl .lp-pptag,.lp-ppc.lp-hl .lp-ppper{color:var(--ink)}
+.lp-ppc h3{font:400 24px "Bungee",sans-serif;margin:8px 0 4px}
+.lp-ppc .lp-ppamt{font:400 46px/1 "Bungee",sans-serif;margin:10px 0 6px}
+.lp-ppc .lp-ppper{font:500 11px "JetBrains Mono",monospace;letter-spacing:.1em;color:var(--muted)}
+.lp-ppc ul{margin:18px 0 22px;padding:0;list-style:none;display:grid;gap:8px;font-size:15px;line-height:1.45}
+.lp-ppc li::before{content:"\203A  ";font-family:"Bungee",sans-serif;color:var(--red)}
+.lp-ppc .lp-btn{margin-top:auto;justify-content:center}
+.lp-ppbill{margin-top:28px;display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between;background:var(--ink);color:var(--cream);padding:22px 26px}
+.lp-ppbill b{display:block;color:var(--yellow);font:400 16px "Bungee",sans-serif;margin-bottom:6px}
+.lp-ppbill span{font-size:15px;line-height:1.5}
+.lp-ppnote{margin-top:16px;font:500 12px "JetBrains Mono",monospace;letter-spacing:.06em;color:var(--muted)}
+@media(max-width:1000px){.lp-ppx{grid-template-columns:1fr}.lp-ppc.lp-hl{transform:none}}
+@media(max-width:640px){.lp-ppc{padding:22px}.lp-ppbill{padding:18px}}
+/* "AI policy, built for you" (#policy) */
+.lp-pol{background:var(--cream-2);border-top:4px solid var(--ink);border-bottom:4px solid var(--ink);padding:96px 0}
+.lp-pol-in{display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:start}
+.lp-pol h2{font:400 clamp(32px,4.2vw,54px)/1 "Bungee",sans-serif;margin:0 0 16px;text-wrap:balance}
+.lp-pol .lp-pol-lede{font-size:18px;line-height:1.55;max-width:56ch;margin:0 0 22px}
+.lp-pol ol{list-style:none;padding:0;margin:0;display:grid;gap:12px;counter-reset:lp-ps}
+.lp-pol ol li{display:grid;grid-template-columns:44px 1fr;gap:14px;align-items:start;border:3px solid var(--ink);background:var(--cream);padding:12px 14px;box-shadow:4px 4px 0 var(--ink)}
+.lp-pol ol li::before{counter-increment:lp-ps;content:counter(lp-ps);width:40px;height:40px;display:grid;place-items:center;background:var(--yellow);border:3px solid var(--ink);font:400 18px "Bungee",sans-serif}
+.lp-pol ol b{display:block;font-size:16px}
+.lp-pol ol span{font-size:14.5px;line-height:1.45}
+.lp-polf{border:3px solid var(--ink);background:var(--cream);padding:26px;box-shadow:10px 10px 0 var(--ink);display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.lp-polf h3{grid-column:1/-1;margin:0;font:400 20px "Bungee",sans-serif}
+.lp-polf .lp-pf2{display:flex;flex-direction:column;gap:5px}
+.lp-polf .lp-full{grid-column:1/-1}
+.lp-polf label,.lp-polf legend{font:500 11px "JetBrains Mono",monospace;letter-spacing:.1em}
+.lp-polf input[type=text],.lp-polf input[type=email],.lp-polf select{font:500 15px "Space Grotesk",sans-serif;padding:11px 12px;border:2px solid var(--ink);background:#fff;width:100%;box-sizing:border-box;color:var(--ink)}
+.lp-polf fieldset{border:0;padding:0;margin:0}
+.lp-polf .lp-ck{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:6px}
+.lp-polf .lp-ck label{font:500 14px "Space Grotesk",sans-serif;letter-spacing:0;display:flex;gap:8px;align-items:center}
+.lp-polf .lp-ck input{width:18px;height:18px;accent-color:#14140f}
+.lp-polf button{justify-self:start;font-family:"Bungee",sans-serif}
+.lp-polf button:disabled{opacity:.6;cursor:default;transform:none;box-shadow:none}
+.lp-polf input:focus,.lp-polf select:focus{outline:3px solid var(--red);outline-offset:2px}
+.lp-polok,.lp-polerr{grid-column:1/-1;border:3px solid var(--ink);padding:12px 14px;font-weight:600}
+.lp-polok{background:var(--green)}
+.lp-polerr{background:#ffd9d4}
+@media(max-width:1000px){.lp-pol-in{grid-template-columns:1fr}}
+@media(max-width:640px){.lp-pol{padding:72px 0}.lp-polf{grid-template-columns:1fr}}
 /* PLATFORMS + CTA */
 .lp-plat{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:48px}
 .lp-pl{border:3px solid var(--ink);padding:28px;background:var(--cream-2);box-shadow:7px 7px 0 var(--ink)}
@@ -1122,28 +1194,6 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-sch i{font-style:normal;font:700 10px "JetBrains Mono",monospace;letter-spacing:.1em;background:var(--red);color:var(--cream);padding:2px 5px;border:2px solid var(--ink)}
 .lp-mnav .lp-sch{display:flex;width:100%;padding:14px 0;font-family:"Bungee",sans-serif;font-size:17px;border-bottom:2px dashed var(--line);text-align:left}
 .lp-mnav .lp-sch.lp-active{color:var(--red)}
-.lp-schg{display:grid;grid-template-columns:1fr 1fr;gap:28px;margin-top:52px}
-.lp-schc{display:flex;flex-direction:column;border:3px solid var(--ink);background:var(--cream);box-shadow:8px 8px 0 var(--ink);padding:30px;color:var(--ink);transition:transform .12s,box-shadow .12s}
-.lp-schc:hover{transform:translate(-2px,-2px);box-shadow:10px 10px 0 var(--ink)}
-.lp-schc.lp-k{background:var(--asphalt);color:var(--cream);box-shadow:8px 8px 0 var(--yellow)}
-.lp-schc.lp-k:hover{box-shadow:10px 10px 0 var(--yellow)}
-.lp-schc .lp-tag{font:500 11px "JetBrains Mono",monospace;letter-spacing:.14em;color:var(--muted)}
-.lp-schc.lp-k .lp-tag{color:var(--yellow)}
-.lp-schc h3{font:400 30px/1.03 "Bungee",sans-serif;margin:8px 0 12px}
-.lp-schc p{margin:0 0 16px;font-size:16px;line-height:1.55}
-.lp-schc ul{margin:0 0 22px;padding:0;list-style:none;display:grid;gap:7px;font-size:15px}
-.lp-schc li::before{content:"\203A  ";font-family:"Bungee",sans-serif;color:var(--red)}
-.lp-schc.lp-k li::before{color:var(--yellow)}
-.lp-schc .lp-go{margin-top:auto;align-self:flex-start;background:none;border:0;padding:0;cursor:pointer;color:inherit;font:400 15px "Bungee",sans-serif;text-align:left}
-.lp-schc .lp-go:hover{color:var(--red)}
-.lp-schc.lp-k .lp-go{color:var(--yellow)}
-.lp-schc .lp-go:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
-.lp-schb{margin-top:26px;display:flex;flex-wrap:wrap;gap:20px;align-items:center;justify-content:space-between;background:var(--ink);color:var(--cream);padding:22px 26px}
-.lp-schb b{display:block;color:var(--yellow);font:400 16px "Bungee",sans-serif;margin-bottom:6px}
-.lp-schb span{font-size:15px;line-height:1.5}
-.lp-schb>div{flex:1 1 380px}
-@media(max-width:1000px){.lp-schg{grid-template-columns:1fr}}
-@media(max-width:640px){.lp-schc{padding:22px}.lp-schc h3{font-size:24px}.lp-schb{padding:18px}.lp-schb>div{flex-basis:100%}.lp-schb .lp-btn{width:100%;justify-content:center}}
 
 /* "Where it runs" (design: aidl-signup.html): three platform cards, then Sign up ▾ + See plans */
 .lp-plat.lp-three{grid-template-columns:repeat(3,1fr)}

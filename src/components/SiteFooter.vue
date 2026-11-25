@@ -30,7 +30,7 @@
       </ul>
     </nav>
 
-    <div class="sf-cp"><span>© 2026 AI Driving License</span><span>Slack · Microsoft Teams · Google · your LMS</span></div>
+    <div class="sf-cp"><span>© 2026 AI Driving License</span><span>Slack · Microsoft Teams · Google Workspace (coming soon)</span></div>
   </div>
 </footer>
 </template>

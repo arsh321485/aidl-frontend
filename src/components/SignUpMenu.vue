@@ -28,14 +28,14 @@
         </li>
       </ul>
     </template>
-    <div class="su-ft"><span>Not sure which?</span><RouterLink to="/pricing">Compare plans &rarr;</RouterLink></div>
+    <div class="su-ft"><span>Not sure which?</span><RouterLink :to="{ path: '/home', hash: '#pricing' }">Compare plans &rarr;</RouterLink></div>
   </div>
 </div>
 </template>
 
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
-import { PLATFORMS, PLATFORM_GROUPS, type PlatformId } from '../lib/platforms'
+import { PLATFORM_GROUPS, SITE_PLATFORMS, type PlatformId } from '../lib/platforms'
 
 withDefaults(defineProps<{ align?: 'left' | 'right' | 'center'; up?: boolean }>(), { align: 'left', up: false })
 const emit = defineEmits<{ pick: [id: PlatformId] }>()
@@ -44,10 +44,9 @@ const NOTES: Partial<Record<PlatformId, string>> = {
   slack: 'Add AIDL to your workspace',
   teams: 'Add AIDL to your organisation',
   gchat: 'Add AIDL to your Google Workspace',
-  gclassroom: 'Add AIDL to your classes',
 }
 const groups = PLATFORM_GROUPS
-  .map((g) => ({ ...g, items: PLATFORMS.filter((p) => p.group === g.id) }))
+  .map((g) => ({ ...g, items: SITE_PLATFORMS.filter((p) => p.group === g.id) }))
   .filter((g) => g.items.length)
 
 let seq = 0

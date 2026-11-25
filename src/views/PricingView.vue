@@ -254,7 +254,7 @@ const faqs = [
 type Sector = 'companies' | 'schools' | 'hospitals'
 const SECTORS: { key: Sector; label: string }[] = [
   { key: 'companies', label: 'Companies' },
-  { key: 'schools', label: 'Schools' },
+  // Schools hidden for now (sir, 2026-11-25); its prices stay below for later.
   { key: 'hospitals', label: 'Hospitals' },
 ]
 const SECTOR_PRICING = {
@@ -316,7 +316,7 @@ const route = useRoute()
 const router = useRouter()
 const sector = computed<Sector>(() => {
   const f = route.query.for
-  return f === 'schools' || f === 'hospitals' ? f : 'companies'
+  return f === 'hospitals' ? f : 'companies' // ?for=schools → Companies while Schools is hidden
 })
 const sec = computed(() => (sector.value === 'companies' ? null : SECTOR_PRICING[sector.value]))
 function setSector(s: Sector) {

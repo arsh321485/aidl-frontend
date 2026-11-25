@@ -12,7 +12,7 @@
 <div class="ln-hh">
 <div class="ln-heye"><i></i>NOW FOR HOSPITALS · CLINICAL &amp; NON-CLINICAL STAFF</div>
 <h1 class="ln-htitle">HOSPITAL ZONE:<span>DRIVE AI SAFELY</span></h1>
-<p class="ln-hsub">One AI policy for everyone who works in your hospital, one rule for patient data, and a dated licence that proves each person learned it — inside Microsoft Teams, Slack or your learning system.</p>
+<p class="ln-hsub">One AI policy for everyone who works in your hospital, one rule for patient data, and a dated licence that proves each person learned it — inside Microsoft Teams or Slack, with Google Workspace coming soon.</p>
 <div class="ln-hcta"><a class="ln-btn ln-y" href="#clinical">For clinical staff →</a><a class="ln-btn" href="#nonclinical">For non-clinical staff →</a></div>
 </div>
 </section>
@@ -71,7 +71,7 @@
 <div class="ln-wrap">
 <span class="ln-eb">▼ LANE 1 · FOR CLINICAL STAFF</span>
 <h2 class="ln-h2">Ten minutes between patients.</h2>
-<p class="ln-lede">Each clinician gets a private message in Teams or Slack, or opens the course in your learning system, on any shift and any device. Three short cards, a quick check after each, and the licence arrives. Pick a step to see it.</p>
+<p class="ln-lede">Each clinician gets a private message in Teams or Slack, on any shift and any device. Three short cards, a quick check after each, and the licence arrives. Pick a step to see it.</p>
 <div class="ln-stp">
 <div ref="stepList" class="ln-stl" role="tablist" aria-label="Clinical onboarding steps" @keydown="onStepKey">
 <button v-for="(s, i) in steps" :key="s.t" type="button" class="ln-st-b" role="tab" :id="'tt' + i" aria-controls="tPanel" :aria-selected="i === step ? 'true' : 'false'" :tabindex="i === step ? 0 : -1" @click="step = i"><span class="ln-n">{{ i + 1 }}</span><span>{{ s.t }}<small>{{ s.s }}</small></span></button>
@@ -188,7 +188,7 @@
 <div class="ln-plat">
 <div class="ln-pl"><span class="ln-s ln-live">LIVE</span><h3>Microsoft Teams</h3><p>The full Admin Center and staff flow as Adaptive Cards, with Microsoft Entra sign-in. Works on Teams mobile for staff away from a desk.</p><span class="ln-for">ALL STAFF</span></div>
 <div class="ln-pl"><span class="ln-s ln-live">LIVE</span><h3>Slack</h3><p>The same flow in a dedicated AIDL channel and private messages, for hospitals and research teams that use Slack.</p><span class="ln-for">ALL STAFF</span></div>
-<div class="ln-pl"><span class="ln-s ln-live">LIVE</span><h3>Your learning system</h3><p>A SCORM 1.2 course for the learning system you already use for mandatory training. Agreements and checks report to your training records.</p><span class="ln-for">ALL STAFF</span></div>
+<div class="ln-pl"><span class="ln-s ln-soon">COMING SOON</span><h3>Google Workspace</h3><p>The same flow for hospitals that work in Google Workspace, with sign-in through staff Google accounts.</p><span class="ln-for">ALL STAFF</span></div>
 </div>
 </div>
 </section>
