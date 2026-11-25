@@ -80,7 +80,7 @@
 <section id="billing">
 <h2 class="sp-h2">7. Plans, billing and cancellation</h2>
 <ul>
-<li><strong>Trial:</strong> free for 7 days from the day the programme starts, with the limits shown on the <RouterLink to="/pricing">Pricing</RouterLink> page (1 admin, up to 5 users, 2 awareness cards a week). When the Trial ends, awareness cards stop and no new licences are issued until the workspace moves to a paid plan; upgrading extends everyone's licences and keeps their seats.</li>
+<li><strong>Trial:</strong> free for 7 days from the day the programme starts, with the limits shown on the <RouterLink to="/home#pricing">Pricing</RouterLink> section (1 admin, up to 5 users, 2 awareness cards a week). When the Trial ends, awareness cards stop and no new licences are issued until the workspace moves to a paid plan; upgrading extends everyone's licences and keeps their seats.</li>
 <li><strong>Paid plans</strong> (Basic and Enterprise) are charged per user per month at the prices on the Pricing page. Admins are free. A licensed person keeps their seat for as long as their licence runs.</li>
 <li><strong>Payments</strong> are handled by Stripe. Plans renew automatically until cancelled. Prices exclude taxes, which are added where required.</li>
 <li><strong>Changes:</strong> upgrades take effect straight away. If we change prices, we will tell your admins at least 30 days before the change applies to you.</li>

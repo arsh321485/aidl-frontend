@@ -14,7 +14,7 @@ import { startTeamsLogin, type EnrollAs } from './msTeamsAuth'
 import { startGoogleChatLogin } from './googleChatAuth'
 import { startMoodleLogin } from './moodleAuth'
 import { startGoogleClassroomLogin } from './googleClassroomAuth'
-import { notifyError, notifyLoading, notifyClose } from './notify.js'
+import { notifyError, notifyInfo, notifyLoading, notifyClose } from './notify.js'
 
 export type PlatformId = 'slack' | 'teams' | 'gchat' | 'moodle' | 'gclassroom'
 
@@ -61,9 +61,11 @@ export const PLATFORMS: PlatformInfo[] = [
   },
   {
     id: 'gchat',
-    name: 'Google Chat',
-    short: 'Google Chat',
+    // Shown on the website as Google Workspace, coming soon (sir, 2026-11-25).
+    name: 'Google Workspace',
+    short: 'Google Workspace',
     group: 'chat',
+    soon: true,
     color: '#00ac47',
     icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#00AC47" d="M4 2.5h16A2.5 2.5 0 0 1 22.5 5v11a2.5 2.5 0 0 1-2.5 2.5H9.5L4.5 22v-3.5H4A2.5 2.5 0 0 1 1.5 16V5A2.5 2.5 0 0 1 4 2.5z"/><rect x="6.5" y="7.5" width="11" height="2.2" rx="1.1" fill="#fff"/><rect x="6.5" y="11.5" width="7" height="2.2" rx="1.1" fill="#fff"/></svg>',
     start: startGoogleChatLogin,
@@ -89,6 +91,11 @@ export const PLATFORMS: PlatformInfo[] = [
   },
 ]
 
+// What the website offers (Sign up ▾ and the "Add to …" buttons): Slack, Teams
+// and Google Workspace (coming soon). The learning platforms stay registered
+// for their sign-in callbacks but aren't shown for now.
+export const SITE_PLATFORMS: PlatformInfo[] = PLATFORMS.filter((p) => p.group === 'chat')
+
 const BY_ID = new Map(PLATFORMS.map((p) => [p.id, p]))
 
 export function getPlatform(id: PlatformId): PlatformInfo {
@@ -106,7 +113,11 @@ export function isChatPlatform(id: PlatformId): id is ChatPlatformId {
 // "Add to …" — organization sign-in for any platform, with the loading /
 // error popups. The backend redirects back to /auth/callback.
 export async function addToPlatform(id: PlatformId): Promise<void> {
-  const { name, start } = getPlatform(id)
+  const { name, start, soon } = getPlatform(id)
+  if (soon) {
+    notifyInfo(`AIDL for ${name} is coming soon. Slack and Microsoft Teams are live today.`, 'Coming soon')
+    return
+  }
   notifyLoading(`Opening ${name}…`, 'One moment')
   try {
     await start('organization')

@@ -1,6 +1,6 @@
 <template>
 <!-- Site header (design: AIDL-new-content/"aidl – AI Driving License v4 (3-in-1).html").
-     Row 1: brand · Companies / Schools / Hospitals · Pricing, Book a demo, Sign up ▾
+     Row 1: brand · Companies / Hospitals · Pricing, Book a demo, Sign up ▾  (Schools tab hidden for now)
      Row 2: the open audience's sections, in its colour, with the one in view underlined.
      Used by HomeView, SchoolsView, HospitalsView and SitePageShell. -->
 <header ref="headerEl" class="sn-top" :style="{ '--sn-ac': current.color }">
@@ -9,7 +9,7 @@
 
     <nav class="sn-aud" aria-label="Who is AIDL for?">
       <RouterLink
-        v-for="a in AUDIENCES"
+        v-for="a in TABS"
         :key="a.id"
         :to="a.path"
         :aria-current="a.id === audience ? 'page' : undefined"
@@ -55,6 +55,9 @@ const props = withDefaults(defineProps<{
   // Without one the nav starts that platform's sign-up itself.
   onSignup?: (id: PlatformId) => unknown
 }>(), { audience: 'companies' })
+
+// Sir (2026-11-25, design v5 "Companies & Hospitals"): no Schools tab in the navbar for now.
+const TABS = AUDIENCES.filter((a) => a.id !== 'schools')
 
 const route = useRoute()
 const { href, go, onPage } = useSpotLinks()

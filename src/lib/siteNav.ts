@@ -27,15 +27,14 @@ export const AUDIENCES: Audience[] = [
     id: 'companies', label: 'Companies', tag: 'FOR COMPANIES', path: '/home', color: '#ffcc00',
     icon: '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2M3 12h18"/>',
     sections: [
-      ...spots('/home', [['top', 'Overview'], ['how', 'How it works'], ['admins', 'For admins'], ['drivers', 'For your team'], ['cards', 'The cards'], ['control', 'Oversight'], ['compliance', 'Compliance'], ['start', 'Get started']]),
-      { id: 'top', label: 'Pricing', path: '/pricing' },
+      ...spots('/home', [['top', 'Overview'], ['how', 'How it works'], ['admins', 'For admins'], ['drivers', 'For your team'], ['cards', 'The cards'], ['control', 'Oversight'], ['compliance', 'Compliance'], ['pricing', 'Pricing'], ['policy', 'AI policy'], ['start', 'Get started']]),
     ],
     footer: [
       ...spots('/home', [['top', 'Overview'], ['how', 'How it works'], ['admins', 'For admins'], ['drivers', 'For your team'], ['cards', 'The cards'], ['control', 'Oversight'], ['compliance', 'Compliance'], ['licences', 'Sample licences']]),
-      { id: 'top', label: 'Pricing', path: '/pricing' }, // companies pricing
+      { id: 'pricing', label: 'Pricing', path: '/home' }, // the pricing section on the companies page
     ],
-    // Companies pricing is the main /pricing page.
-    pricing: { id: 'top', label: 'Pricing', path: '/pricing' },
+    // Companies pricing is a section of the companies page (design v5), not /pricing.
+    pricing: { id: 'pricing', label: 'Pricing', path: '/home' },
     demo: { id: 'start', label: 'Book a demo', path: '/home' },
   },
   {

@@ -32,7 +32,7 @@
 <section class="ar-cta sp-card">
 <h2 class="sp-h2">Evidence for every employee, already on file</h2>
 <p>Every AIDL licence records the policy version each person agreed to, the date they agreed, the cards they completed and when it renews.</p>
-<RouterLink class="lp-btn lp-y" to="/pricing">See plans <span class="lp-arr">→</span></RouterLink>
+<RouterLink class="lp-btn lp-y" to="/home#pricing">See plans <span class="lp-arr">→</span></RouterLink>
 </section>
 </article>
 </div>
