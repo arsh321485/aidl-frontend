@@ -14,15 +14,16 @@ import { startTeamsLogin, type EnrollAs } from './msTeamsAuth'
 import { startGoogleChatLogin } from './googleChatAuth'
 import { startMoodleLogin } from './moodleAuth'
 import { startGoogleClassroomLogin } from './googleClassroomAuth'
+import { startGoogleWorkspaceLogin } from './googleWorkspaceAuth'
 import { notifyError, notifyLoading, notifyClose } from './notify.js'
 
-export type PlatformId = 'slack' | 'teams' | 'gchat' | 'moodle' | 'gclassroom'
+export type PlatformId = 'slack' | 'teams' | 'gchat' | 'moodle' | 'gclassroom' | 'gworkspace'
 
 // Chat apps have a themed preview on the landing page (.lp-pf-* classes and
 // .lp-v-* text spans); learning platforms don't.
 export type ChatPlatformId = 'slack' | 'teams' | 'gchat'
 
-export type PlatformGroup = 'chat' | 'lms'
+export type PlatformGroup = 'chat' | 'google' | 'lms'
 
 export interface PlatformInfo {
   id: PlatformId
@@ -37,6 +38,7 @@ export interface PlatformInfo {
 
 export const PLATFORM_GROUPS: { id: PlatformGroup; label: string }[] = [
   { id: 'chat', label: 'Chat apps' },
+  { id: 'google', label: 'Google' },
   { id: 'lms', label: 'Learning platforms' },
 ]
 
@@ -86,6 +88,16 @@ export const PLATFORMS: PlatformInfo[] = [
     color: '#1e8e3e',
     icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect width="24" height="24" rx="5" fill="#1E8E3E"/><rect x="4" y="5" width="16" height="12" rx="1.2" fill="none" stroke="#fff" stroke-width="1.6"/><circle cx="12" cy="10" r="1.8" fill="#FBBC04"/><path fill="#FBBC04" d="M8.8 15.2c.4-1.5 1.7-2.4 3.2-2.4s2.8.9 3.2 2.4z"/><rect x="13.5" y="18.4" width="5" height="1.6" rx=".8" fill="#fff"/></svg>',
     start: startGoogleClassroomLogin,
+  },
+  {
+    // Companies on Google Workspace (backend: integrations/google_workspace).
+    id: 'gworkspace',
+    name: 'Google Workspace',
+    short: 'Google Workspace',
+    group: 'google',
+    color: '#4285f4',
+    icon: '<svg viewBox="0 0 24 24" aria-hidden="true"><path fill="#4285F4" d="M21.6 12.2c0-.7-.1-1.4-.2-2H12v3.8h5.4a4.6 4.6 0 0 1-2 3v2.5h3.2c1.9-1.7 3-4.3 3-7.3z"/><path fill="#34A853" d="M12 22c2.7 0 5-.9 6.6-2.4l-3.2-2.5c-.9.6-2 1-3.4 1-2.6 0-4.8-1.8-5.6-4.1H3.1v2.6A10 10 0 0 0 12 22z"/><path fill="#FBBC04" d="M6.4 14c-.2-.6-.3-1.3-.3-2s.1-1.4.3-2V7.4H3.1a10 10 0 0 0 0 9.2z"/><path fill="#EA4335" d="M12 5.9c1.5 0 2.8.5 3.8 1.5l2.9-2.9A10 10 0 0 0 3.1 7.4L6.4 10c.8-2.4 3-4.1 5.6-4.1z"/></svg>',
+    start: startGoogleWorkspaceLogin,
   },
 ]
 
