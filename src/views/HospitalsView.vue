@@ -4,7 +4,8 @@
 
 <section class="ln-hero">
 <div class="ln-sun" aria-hidden="true"></div><div class="ln-cloud ln-c1" aria-hidden="true"></div><div class="ln-cloud ln-c2" aria-hidden="true"></div>
-<div class="ln-road" aria-hidden="true"></div><div class="ln-dash" aria-hidden="true"></div><div class="ln-zebra" aria-hidden="true"></div>
+<div class="ln-road" aria-hidden="true"></div>
+<div class="ln-road-lines" aria-hidden="true"><svg viewBox="0 0 1440 484" preserveAspectRatio="none"><path d="M 720 0 L 720 484"></path><path d="M 720 0 L 200 484" style="animation-duration:1.4s"></path><path d="M 720 0 L 1240 484" style="animation-duration:1.4s"></path></svg></div>
 <div class="ln-rs ln-rs-1" aria-hidden="true"><div class="ln-plate ln-hsign">H</div><div class="ln-post"></div></div>
 <div class="ln-rs ln-rs-2" aria-hidden="true"><div class="ln-plate ln-round">24/7</div><div class="ln-post"></div></div>
 <div class="ln-rs ln-rs-3" aria-hidden="true"><div class="ln-plate ln-white">AGREE<br>LEARN<br>LICENSE</div><div class="ln-post"></div></div>
@@ -13,8 +14,23 @@
 <div class="ln-heye"><i></i>NOW FOR HOSPITALS · CLINICAL &amp; NON-CLINICAL STAFF</div>
 <h1 class="ln-htitle">HOSPITAL ZONE:<span>DRIVE AI SAFELY</span></h1>
 <p class="ln-hsub">One AI policy for everyone who works in your hospital, one rule for patient data, and a dated licence that proves each person learned it — inside Microsoft Teams or Slack, with Google Workspace coming soon.</p>
-<div class="ln-hcta"><a class="ln-btn ln-y" href="#clinical">For clinical staff →</a><a class="ln-btn" href="#nonclinical">For non-clinical staff →</a></div>
 </div>
+<!-- Steering-wheel dashboard, same as the companies home hero, with hospital readouts -->
+<div class="ln-hdash" aria-hidden="true"><div class="ln-hdash-bg"></div>
+<div class="ln-hdash-in">
+<div class="ln-gauges">
+<div class="ln-gauge"><i class="ln-tick" style="transform:rotate(-90deg)"></i><i class="ln-tick" style="transform:rotate(-60deg)"></i><i class="ln-tick" style="transform:rotate(-30deg)"></i><i class="ln-tick" style="transform:rotate(0deg)"></i><i class="ln-tick" style="transform:rotate(30deg)"></i><i class="ln-tick" style="transform:rotate(60deg)"></i><i class="ln-tick" style="transform:rotate(90deg)"></i><i class="ln-needle"></i><i class="ln-center"></i><span class="ln-glabel">AGREED · 212/240</span></div>
+<div class="ln-gauge ln-g2"><i class="ln-tick" style="transform:rotate(-60deg)"></i><i class="ln-tick" style="transform:rotate(-30deg)"></i><i class="ln-tick" style="transform:rotate(0deg)"></i><i class="ln-tick" style="transform:rotate(30deg)"></i><i class="ln-tick" style="transform:rotate(60deg)"></i><i class="ln-needle"></i><i class="ln-center"></i><span class="ln-glabel">LICENSED · 88%</span></div>
+</div>
+<div class="ln-wheel"><div class="ln-wheel-stitch"></div><div class="ln-wheel-hub"><div class="ln-wheel-hub-inner"><img :src="aidlLogo" alt="" /></div></div></div>
+<div class="ln-screen">
+<div class="ln-srow"><span>ADMIN CENTER</span><span>● LIVE</span></div>
+<div class="ln-sbig">WARD 4B · 18/24</div>
+<div class="ln-srow"><span>Clinical lane</span><span>6 to go</span></div>
+<div class="ln-sbar"><i></i></div>
+<div class="ln-srow" style="margin-top:14px"><span>NEXT</span><span>NIGHT SHIFT</span></div>
+</div>
+</div></div>
 </section>
 
 <div class="ln-mq" aria-hidden="true"><div><span>STAFF LICENSED IN 10 MINUTES</span><i>●</i><span>PATIENT DATA STAYS OUT OF UNAPPROVED AI</span><i>●</i><span>FITS AROUND SHIFTS</span><i>●</i><span>A DATED RECORD FOR EVERY CLINICIAN</span><i>●</i><span>AIDL NEVER ASKS FOR PATIENT DATA</span><i>●</i><span>STAFF LICENSED IN 10 MINUTES</span><i>●</i><span>PATIENT DATA STAYS OUT OF UNAPPROVED AI</span><i>●</i><span>FITS AROUND SHIFTS</span><i>●</i><span>A DATED RECORD FOR EVERY CLINICIAN</span><i>●</i><span>AIDL NEVER ASKS FOR PATIENT DATA</span><i>●</i></div></div>
@@ -276,6 +292,7 @@ import { computed } from 'vue'
 import '../assets/landing.css'
 import SiteNav from '../components/SiteNav.vue'
 import SiteFooter from '../components/SiteFooter.vue'
+import aidlLogo from '../assets/images/aidl-logo-licence.png'
 import { useLandingPage, useTabs, usePilotForm } from '../lib/landingPage'
 
 const { onAnchorClick } = useLandingPage('AIDL for Hospitals — AI Driving License for clinical and non-clinical staff')

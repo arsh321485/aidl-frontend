@@ -405,3 +405,95 @@
 .ln .ln-lstats div{padding-right:6px}
 .ln .ln-lstats b{font-size:17px}
 }
+
+/* ---- Hospitals hero: steering-wheel dashboard (same as the companies home hero) ---- */
+.ln.ln-hosp .ln-hero{height:auto;min-height:700px;display:flex;flex-direction:column}
+.ln.ln-hosp .ln-hh{position:relative;top:auto;left:auto;transform:none;margin:64px auto 0}
+.ln.ln-hosp .ln-road{height:55%;clip-path:polygon(38% 0,62% 0,100% 100%,0 100%)}
+/* Three moving lane lines, like the companies home road */
+.ln .ln-road-lines{position:absolute;left:0;right:0;bottom:0;height:55%;pointer-events:none}
+.ln .ln-road-lines svg{width:100%;height:100%;overflow:visible;display:block}
+.ln .ln-road-lines path{stroke:#f6f1de;stroke-width:14;stroke-dasharray:36 44;stroke-linecap:square;fill:none;animation:ln-lanes 1.8s linear infinite}
+@keyframes ln-lanes{from{stroke-dashoffset:0}to{stroke-dashoffset:-80}}
+.ln.ln-hosp .ln-rs-1{bottom:300px}
+.ln.ln-hosp .ln-rs-4{bottom:290px}
+.ln.ln-hosp .ln-rs-2,.ln.ln-hosp .ln-rs-3{bottom:250px}
+.ln .ln-hdash{position:relative;z-index:4;flex:none;height:260px;margin-top:112px}
+.ln .ln-hdash-bg{position:absolute;inset:0;background:linear-gradient(180deg,#2a2820 0%,#14140f 60%,#0a0a07 100%);clip-path:polygon(0 30%,12% 12%,88% 12%,100% 30%,100% 100%,0 100%)}
+.ln .ln-hdash-in{position:absolute;inset:0;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:24px;padding:64px 80px 28px;color:var(--cream)}
+.ln .ln-gauges{display:flex;gap:30px;align-items:center}
+.ln .ln-gauge{flex:none;width:110px;height:110px;border-radius:50%;background:radial-gradient(circle at 50% 50%,#1e1c16,#0a0a07 70%);border:4px solid #3a3528;position:relative;box-shadow:inset 0 0 18px rgba(0,0,0,.7)}
+.ln .ln-gauge .ln-tick{position:absolute;left:50%;top:6px;width:2px;height:8px;background:var(--cream-2);opacity:.6;transform-origin:50% 45px}
+.ln .ln-gauge .ln-needle{position:absolute;left:50%;bottom:50%;width:3px;height:40px;background:var(--red);transform-origin:50% 100%;transform:translateX(-50%) rotate(35deg);border-radius:2px;animation:ln-needle 3.2s ease-in-out infinite alternate}
+.ln .ln-gauge.ln-g2 .ln-needle{background:var(--green);animation-duration:4.4s}
+@keyframes ln-needle{from{transform:translateX(-50%) rotate(-40deg)}to{transform:translateX(-50%) rotate(55deg)}}
+.ln .ln-gauge .ln-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:14px;height:14px;border-radius:50%;background:var(--yellow);border:2px solid var(--ink)}
+.ln .ln-gauge .ln-glabel{position:absolute;left:50%;bottom:-24px;transform:translateX(-50%);font:500 10px "JetBrains Mono",monospace;color:var(--cream-2);white-space:nowrap}
+.ln .ln-wheel{width:320px;height:320px;border-radius:50%;border:22px solid var(--yellow);background:radial-gradient(circle at 50% 50%,transparent 0 70px,var(--ink) 71px 75px,transparent 76px);position:relative;box-shadow:0 -10px 30px rgba(0,0,0,.5),0 0 0 4px var(--ink),inset 0 0 0 4px var(--ink),inset 0 0 22px rgba(0,0,0,.45);margin-top:-120px;animation:ln-steer 6s ease-in-out infinite}
+.ln .ln-wheel-stitch{position:absolute;inset:-12px;border-radius:50%;border:2px dashed rgba(20,20,15,.45);pointer-events:none}
+@keyframes ln-steer{0%,100%{transform:rotate(-6deg)}50%{transform:rotate(6deg)}}
+.ln .ln-wheel::before,.ln .ln-wheel::after{content:"";position:absolute;left:50%;top:50%;background:var(--cream);border:3px solid var(--ink);transform:translate(-50%,-50%);border-radius:8px;box-shadow:0 3px 0 rgba(0,0,0,.35)}
+.ln .ln-wheel::before{width:20px;height:204px}
+.ln .ln-wheel::after{width:204px;height:20px}
+.ln .ln-wheel-hub{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:116px;height:116px;border-radius:50%;background:var(--ink);border:3px solid var(--cream);display:grid;place-items:center;box-shadow:0 0 0 3px var(--ink),0 6px 14px rgba(0,0,0,.5);z-index:2}
+.ln .ln-wheel-hub-inner{width:94px;height:94px;border-radius:50%;background:var(--yellow);border:3px solid var(--ink);display:grid;place-items:center;overflow:hidden}
+.ln .ln-wheel-hub-inner img{width:100%;height:100%;object-fit:contain;display:block;transform:scale(1.12)}
+.ln .ln-screen{background:#0a0a07;border:3px solid #3a3528;border-radius:10px;padding:16px 18px;color:var(--green);font-family:"JetBrains Mono",monospace;width:290px;max-width:100%;margin-left:auto;box-shadow:inset 0 0 20px rgba(0,0,0,.8)}
+.ln .ln-screen .ln-srow{display:flex;justify-content:space-between;gap:10px;font-size:11px;color:var(--cream-2)}
+.ln .ln-screen .ln-srow span:last-child{color:var(--green)}
+.ln .ln-screen .ln-sbig{font-family:"Bungee",sans-serif;color:var(--yellow);font-size:20px;margin:6px 0 8px;white-space:nowrap}
+.ln .ln-screen .ln-sbar{height:8px;background:#2a2820;border-radius:4px;overflow:hidden;margin-top:10px}
+.ln .ln-screen .ln-sbar>i{display:block;height:100%;width:40%;background:var(--green);animation:ln-fill 6s ease-in-out infinite alternate}
+@keyframes ln-fill{to{width:75%}}
+/* Laptops / tablets: smaller wheel, gauges and screen */
+@media(max-width:1140px){.ln .ln-hdash-in{padding:64px 40px 28px}.ln .ln-gauges{zoom:.8;gap:22px}.ln .ln-screen{width:240px}.ln .ln-screen .ln-sbig{font-size:17px}}
+@media(max-width:1000px){.ln.ln-hosp .ln-rs-1,.ln.ln-hosp .ln-rs-4{bottom:170px}.ln .ln-hdash{height:230px;margin-top:80px}.ln .ln-hdash-in{padding:60px 24px 24px;gap:16px}.ln .ln-wheel{zoom:.65;margin-top:-90px}.ln .ln-screen{width:210px;padding:12px 14px}.ln .ln-screen .ln-sbig{font-size:15px}}
+@media(max-width:760px){.ln .ln-gauge.ln-g2{display:none}.ln .ln-gauges{zoom:.72}.ln .ln-screen{width:170px}.ln .ln-screen .ln-srow{font-size:9.5px}.ln .ln-screen .ln-sbig{font-size:13px}}
+/* Phones: same as the companies home mobile hero. Road + wheel, then a gauge card and the
+   Admin Center card stacked. Headline and dashboard flow; the scenery is anchored from the bottom,
+   --ln-scene px above it is the horizon (just under the text box). */
+@media(max-width:640px){
+.ln.ln-hosp .ln-hero{--ln-scene:596px;padding:0;background:linear-gradient(0deg,#2a2218 0,#2a2218 calc(var(--ln-scene) - 270px),#7a5a32 calc(var(--ln-scene) - 190px),#c98c4a calc(var(--ln-scene) - 100px),#e2b26a calc(var(--ln-scene) - 30px),#efe0b0 calc(var(--ln-scene) + 40px),#c8e0f0 calc(var(--ln-scene) + 160px),#98c8eb 100%)}
+.ln.ln-hosp .ln-hh{margin:0 auto;padding:40px 16px 0}
+.ln.ln-hosp .ln-htitle{font-size:clamp(34px,11vw,56px)}
+.ln.ln-hosp .ln-hsub{font-size:15px;padding:9px 14px;margin-top:18px}
+.ln.ln-hosp .ln-cloud.ln-c2{display:none}
+.ln.ln-hosp .ln-cloud.ln-c1{top:10px;left:-40px}
+.ln.ln-hosp .ln-sun{top:auto;bottom:calc(var(--ln-scene) - 60px);transform:translateX(-50%);width:180px;height:180px;opacity:.75}
+.ln.ln-hosp .ln-road{height:var(--ln-scene);clip-path:polygon(48% 0,52% 0,100% 192px,100% 100%,0 100%,0 192px)}
+.ln.ln-hosp .ln-road-lines{height:220px;bottom:calc(var(--ln-scene) - 220px)}
+.ln.ln-hosp .ln-rs-1,.ln.ln-hosp .ln-rs-4{display:flex;zoom:.55;bottom:calc((var(--ln-scene) - 117px) / .55)}
+.ln.ln-hosp .ln-rs-1{left:3%}
+.ln.ln-hosp .ln-rs-4{right:3%}
+.ln .ln-hdash{height:auto;margin-top:36px}
+.ln .ln-hdash-bg{top:72px;clip-path:polygon(0 56px,12% 0,88% 0,100% 56px,100% 100%,0 100%)}
+.ln .ln-hdash-in{position:relative;inset:auto;display:flex;flex-direction:column;align-items:stretch;gap:12px;padding:0 16px 20px}
+.ln .ln-wheel{order:-1;width:250px;height:250px;zoom:.71;align-self:center;margin:0 auto 6px}
+.ln .ln-wheel::before{width:20px;height:175px}
+.ln .ln-wheel::after{width:180px;height:20px}
+.ln .ln-gauges{display:flex;zoom:1;justify-content:center;gap:clamp(28px,12vw,64px);padding:16px 12px 38px;background:#14130e;border:2px solid #3a3528;border-radius:16px}
+.ln .ln-gauge{width:96px;height:96px;border-width:3px}
+.ln .ln-gauge .ln-tick{transform-origin:50% 42px}
+.ln .ln-gauge .ln-needle{height:36px}
+.ln .ln-gauge.ln-g2{display:block}
+.ln .ln-gauge .ln-glabel{bottom:-28px;font-size:12px;letter-spacing:.06em;color:var(--cream)}
+.ln .ln-screen{width:auto;max-width:none;margin:0;padding:16px 18px;border:2px solid #3a3528;border-radius:16px;background:#14130e}
+.ln .ln-screen .ln-srow{font-size:12.5px;letter-spacing:.05em;color:var(--cream)}
+.ln .ln-screen .ln-srow:first-child{padding-bottom:10px;border-bottom:1px solid #4a4434}
+.ln .ln-screen .ln-sbig{font-size:22px;margin:10px 0 4px;white-space:normal}
+.ln .ln-screen .ln-sbar{height:10px;margin-top:12px}
+}
+@media(max-width:360px){
+.ln.ln-hosp .ln-rs-1,.ln.ln-hosp .ln-rs-4{zoom:.46;bottom:calc((var(--ln-scene) - 100px) / .46)}
+.ln.ln-hosp .ln-rs-1{left:1.5%}
+.ln.ln-hosp .ln-rs-4{right:1.5%}
+.ln .ln-gauge .ln-glabel{font-size:10.5px}
+}
+/* Keep the wheel, gauges and screen moving like the companies home hero, even with reduced motion on
+   (the page-wide reduced-motion rule above switches every .ln animation off). */
+@media(prefers-reduced-motion:reduce){.ln .ln-hdash .ln-wheel{animation:ln-steer 6s ease-in-out infinite!important}
+.ln .ln-hdash .ln-gauge .ln-needle{animation:ln-needle 3.2s ease-in-out infinite alternate!important}
+.ln .ln-hdash .ln-gauge.ln-g2 .ln-needle{animation-duration:4.4s!important}
+.ln .ln-hdash .ln-screen .ln-sbar>i{animation:ln-fill 6s ease-in-out infinite alternate!important}
+.ln.ln-hosp .ln-road-lines path{animation:ln-lanes 1.8s linear infinite!important}
+.ln.ln-hosp .ln-road-lines path[style]{animation-duration:1.4s!important}}
