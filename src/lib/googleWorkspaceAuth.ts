@@ -24,7 +24,7 @@ export async function startGoogleWorkspaceLogin(_enrollAs: EnrollAs): Promise<vo
     throw new Error('Could not reach the server. Check your connection and try again.')
   }
   if (res.status === 404) {
-    throw new Error('Google Workspace sign-up is coming soon.')
+    throw new Error('Google Workspace sign-up is unavailable right now. Please try again shortly.')
   }
   const data: { auth_url?: string; message?: string } = await res.json().catch(() => ({}))
   if (!data.auth_url) {

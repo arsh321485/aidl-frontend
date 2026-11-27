@@ -63,7 +63,7 @@ export const PLATFORMS: PlatformInfo[] = [
   },
   {
     id: 'gchat',
-    // Shown on the website as Google Workspace, coming soon (sir, 2026-11-25).
+    // Old placeholder, no longer shown on the website ('gworkspace' is the live one).
     name: 'Google Workspace',
     short: 'Google Workspace',
     group: 'chat',
@@ -104,11 +104,10 @@ export const PLATFORMS: PlatformInfo[] = [
 ]
 
 // What the website offers (Sign up ▾ and the "Add to …" buttons): Slack, Teams
-// and Google Workspace (coming soon). The learning platforms stay registered
-// for their sign-in callbacks but aren't shown for now.
-// On feature/google-workspace the real Google Workspace sign-up ('gworkspace') replaces the
-// "coming soon" placeholder ('gchat') in the menu; the page's other "coming soon" texts still
-// call the placeholder until Google Workspace launches.
+// and Google Workspace. The learning platforms stay registered for their
+// sign-in callbacks but aren't shown for now.
+// The real Google Workspace sign-up ('gworkspace') replaces the old placeholder
+// ('gchat') everywhere on the website.
 export const SITE_PLATFORMS: PlatformInfo[] = PLATFORMS.filter(
   (p) => (p.group === 'chat' && p.id !== 'gchat') || p.id === 'gworkspace')
 
@@ -131,7 +130,7 @@ export function isChatPlatform(id: PlatformId): id is ChatPlatformId {
 export async function addToPlatform(id: PlatformId): Promise<void> {
   const { name, start, soon } = getPlatform(id)
   if (soon) {
-    notifyInfo(`AIDL for ${name} is coming soon. Slack and Microsoft Teams are live today.`, 'Coming soon')
+    notifyInfo(`AIDL for ${name} is coming soon. Slack, Microsoft Teams and Google Workspace are live today.`, 'Coming soon')
     return
   }
   notifyLoading(`Opening ${name}…`, 'One moment')

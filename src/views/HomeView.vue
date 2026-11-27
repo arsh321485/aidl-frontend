@@ -12,9 +12,9 @@
 <div class="lp-road-sign lp-rs-3"><div class="lp-plate lp-white">AGREE<br>LEARN<br>LICENCE</div><div class="lp-post"></div></div>
 <div class="lp-road-sign lp-rs-4"><div class="lp-plate lp-red">10 MIN<br>AHEAD</div><div class="lp-post"></div></div>
 <div class="lp-hero-headline">
-<div class="lp-hero-eyebrow"><span class="lp-blink"></span><span class="lp-v-s">NOW LIVE IN SLACK</span><span class="lp-v-t">NOW LIVE IN MICROSOFT TEAMS</span><span class="lp-v-g">COMING SOON TO GOOGLE WORKSPACE</span></div>
+<div class="lp-hero-eyebrow"><span class="lp-blink"></span>NOW LIVE IN SLACK · MICROSOFT TEAMS · GOOGLE WORKSPACE</div>
 <h1 class="lp-hero-title">LICENCE TO<span class="lp-l2">DRIVE&nbsp;AI</span></h1>
-<p class="lp-hero-sub">Write your AI policy, get every employee to agree to it point by point, and issue each one a verifiable AI Driving Licence — about ten minutes per person, without leaving <span class="lp-v-s">Slack</span><span class="lp-v-t">Teams</span><span class="lp-v-g">Google Workspace</span>.</p>
+<p class="lp-hero-sub">Write your AI policy, get every employee to agree to it, and issue each one a verifiable AI Driving Licence in about ten minutes — inside Slack, Microsoft Teams or Google Workspace.</p>
 </div>
 <div class="lp-dashboard"><div class="lp-dash-bg"></div>
 <div class="lp-dash-inner">
@@ -150,7 +150,7 @@
 <div v-if="cardsShown < previewCards.length" class="lp-cg-more"><button type="button" class="lp-btn lp-ghost" @click="cardsShown += 6">Show more titles ({{ previewCards.length - cardsShown }} more) ↓</button></div>
 </template>
 <div class="lp-ap"><div class="lp-ap-b" aria-hidden="true"><span>✅ Approve</span><span>⏭ Skip</span><span>🔄 Swap</span></div><p><b>Nothing is sent until you approve.</b> Preview every card first, then approve it, skip it or swap it for another.</p></div>
-<div class="lp-xc-cta"><div><b>{{ planInfo.label }} · {{ planInfo.cards }} cards · {{ planInfo.cadence }}</b><span>{{ planLine }}</span></div><div class="lp-hcta"><a class="lp-btn lp-y" href="#start" @click.prevent="addTo(platform)"><span class="lp-v-s">Add to Slack →</span><span class="lp-v-t">Add to Teams →</span><span class="lp-v-g">Google Workspace · coming soon</span></a><a class="lp-btn" href="#pricing">See plans</a></div></div>
+<div class="lp-xc-cta"><div><b>{{ planInfo.label }} · {{ planInfo.cards }} cards · {{ planInfo.cadence }}</b><span>{{ planLine }}</span></div><div class="lp-hcta"><a class="lp-btn lp-y" href="#start" @click.prevent="addTo(platform)"><span class="lp-v-s">Add to Slack →</span><span class="lp-v-t">Add to Teams →</span><span class="lp-v-g">Add to Google Workspace →</span></a><a class="lp-btn" href="#pricing">See plans</a></div></div>
 </div>
 </section>
 
@@ -200,7 +200,7 @@
 <div class="lp-plat lp-three">
 <div class="lp-pl"><span class="lp-s lp-live">LIVE</span><h3>Slack</h3><p>Block Kit messages in a dedicated #aidl channel and private DMs from the AIDL app. Admin Center pinned and updated in place.</p></div>
 <div class="lp-pl"><span class="lp-s lp-live">LIVE</span><h3>Microsoft Teams</h3><p>The same admin and employee flow as Adaptive Cards in an AIDL team channel and bot chats. Follows light, dark and high-contrast themes; signs in with Microsoft Entra.</p></div>
-<div class="lp-pl"><span class="lp-s lp-soon">COMING SOON</span><h3>Google Workspace</h3><p>The same admin and employee flow for teams that work in Google Workspace, with sign-in through their Google account.</p></div>
+<div class="lp-pl"><span class="lp-s lp-soon">NEW</span><h3>Google Workspace</h3><p>The same admin and employee flow for teams that work in Google Workspace: sign in with your work Google account, and every step arrives in Gmail.</p></div>
 </div>
 <div class="lp-plat-cta"><SignUpMenu @pick="signUp" /><a class="lp-btn lp-ghost" href="#pricing">See plans</a></div>
 </div>
@@ -214,7 +214,7 @@
 <p class="lp-lede">Try AIDL with your team for free, then choose Basic or Advanced for everyone. Admins are always free.</p>
 <div class="lp-ppx">
 <div class="lp-ppc"><span class="lp-pptag">TRIAL</span><h3>Trial</h3><div class="lp-ppamt">Free</div><span class="lp-ppper">TRY BEFORE YOU BUY</span><ul><li>Up to 5 users and 1 admin</li><li>Company AI Policy template</li><li>Onboarding and licence</li><li>12 learning cards</li></ul><a class="lp-btn lp-ghost" href="#start">Start a trial</a></div>
-<div class="lp-ppc"><span class="lp-pptag">BASIC</span><h3>Basic</h3><div class="lp-ppamt">$2</div><span class="lp-ppper">PER USER / MONTH</span><ul><li>Everything in Trial, for every employee</li><li>Point-by-point policy agreement and licence for each user</li><li>Runs in Slack or Microsoft Teams (Google Workspace coming soon)</li><li>104 learning cards a year</li><li>Completion dashboard</li></ul><a class="lp-btn lp-ghost" href="#start">Choose Basic</a></div>
+<div class="lp-ppc"><span class="lp-pptag">BASIC</span><h3>Basic</h3><div class="lp-ppamt">$2</div><span class="lp-ppper">PER USER / MONTH</span><ul><li>Everything in Trial, for every employee</li><li>Point-by-point policy agreement and licence for each user</li><li>Runs in Slack, Microsoft Teams or Google Workspace</li><li>104 learning cards a year</li><li>Completion dashboard</li></ul><a class="lp-btn lp-ghost" href="#start">Choose Basic</a></div>
 <div class="lp-ppc lp-hl"><span class="lp-pptag">MOST POPULAR</span><h3>Advanced</h3><div class="lp-ppamt">$5</div><span class="lp-ppper">PER USER / MONTH</span><ul><li>Everything in Basic</li><li>208 learning cards a year</li><li>Oversight dashboards and audit-ready compliance export</li><li>Single sign-on and directory sync</li><li>Custom policy rules by team or role</li><li>Priority support</li></ul><a class="lp-btn" href="#start">Choose Advanced →</a></div>
 </div>
 <div class="lp-ppbill"><div><b>Buying the way companies buy</b><span>Billed monthly per active user · invoice or card · local currency · security questionnaire and data processing agreement ready for procurement · seats follow channel membership, so leavers stop counting automatically</span></div><a class="lp-btn lp-y" href="#policy">Need a policy first? →</a></div>
@@ -255,8 +255,8 @@
 <section class="lp-cta" id="start">
 <div class="lp-wrap">
 <h2 class="lp-h2">Your team, road-ready this week.</h2>
-<p class="lp-lede">Slack or Microsoft Teams: approve your policy and three starter cards, and press Start. Google Workspace is coming soon.</p>
-<div class="lp-hcta"><a class="lp-btn" href="#start" @click.prevent="addTo('slack')">Slack →</a><a class="lp-btn" href="#start" @click.prevent="addTo('teams')">Teams →</a><a class="lp-btn" href="#start" @click.prevent="addTo('gchat')">Google Workspace · coming soon</a><a class="lp-btn lp-ghost" href="#pricing">See plans</a></div>
+<p class="lp-lede">Slack, Microsoft Teams or Google Workspace: approve your policy and starter cards, and press Start.</p>
+<div class="lp-hcta"><a class="lp-btn" href="#start" @click.prevent="addTo('slack')">Slack →</a><a class="lp-btn" href="#start" @click.prevent="addTo('teams')">Teams →</a><a class="lp-btn" href="#start" @click.prevent="addTo('gworkspace')">Google Workspace →</a><a class="lp-btn lp-ghost" href="#pricing">See plans</a></div>
 <form id="waitlist" class="lp-wl" novalidate @submit.prevent="submitWaitlist">
 <label for="lp-wl-email">Not a company? Join the waitlist</label>
 <div class="lp-wl-row"><input id="lp-wl-email" v-model.trim="wlEmail" type="email" placeholder="you@example.com" autocomplete="email" :disabled="wlState === 'sending' || wlState === 'done'" /><button type="submit" class="lp-btn" :disabled="wlState === 'sending' || wlState === 'done'">{{ wlState === 'sending' ? 'Joining…' : wlState === 'done' ? 'Joined ✓' : 'Join' }}</button></div>
@@ -457,12 +457,14 @@ if (isChatPlatform(target.value)) platform.value = target.value
 watch(target, (id) => {
   savePlatform(id)
   if (isChatPlatform(id)) setPlatform(id)
+  else if (id === 'gworkspace') setPlatform('gchat') // preview the page in its Google look
 })
 
 // "Add to …" — the navbar picker, the "Where it runs" cards and the bottom
 // CTA all use the same organization sign-in (lib/platforms.ts).
 function addTo(p: PlatformId) {
-  return addToPlatform(p)
+  // 'gchat' is only the Google look of the page; the sign-up is Google Workspace's.
+  return addToPlatform(p === 'gchat' ? 'gworkspace' : p)
 }
 
 // "Sign up ▾" in the navbar: remember the platform (the page previews it), then sign up there.
@@ -627,8 +629,8 @@ const userCur = computed(() => USER[userStep.value]!)
 .lp-rs-3 .lp-post{height:110px}
 .lp-rs-4{right:18%;bottom:14%}
 .lp-rs-4 .lp-post{height:130px}
-.lp-hero-headline{position:absolute;left:50%;top:96px;transform:translateX(-50%);text-align:center;z-index:9;width:min(1100px,92%)}
-.lp-hero-eyebrow{display:inline-flex;align-items:center;gap:10px;background:var(--ink);color:var(--yellow);padding:8px 18px;font-family:"Bungee",sans-serif;font-size:13px;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--red);margin-bottom:22px}
+.lp-hero-headline{position:absolute;left:50%;top:48px;transform:translateX(-50%);text-align:center;z-index:9;width:min(1100px,92%)}
+.lp-hero-eyebrow{display:inline-flex;flex-wrap:wrap;align-items:center;gap:10px;background:var(--ink);color:var(--yellow);padding:8px 18px;font-family:"Bungee",sans-serif;font-size:13px;border:3px solid var(--ink);box-shadow:4px 4px 0 var(--red);margin-bottom:22px}
 .lp-hero-eyebrow .lp-blink{width:10px;height:10px;border-radius:50%;background:var(--red);animation:lp-blink 1s steps(2) infinite}
 @keyframes lp-blink{50%{opacity:.15}}
 .lp-hero-title{font-family:"Bungee",sans-serif;font-weight:400;font-size:clamp(56px,9vw,132px);line-height:.92;color:var(--ink);text-shadow:6px 6px 0 var(--yellow);margin:0}

@@ -17,7 +17,7 @@
         <div>
           <h2>Your avatar is set</h2>
           <p>You've already changed your avatar once, so it can't be changed again.</p>
-          <a v-if="info.return_url" class="av-btn av-back" :href="info.return_url">Back to AIDL →</a>
+          <a v-if="info.return_url" class="av-btn av-back" :href="info.return_url" @click="goBack">{{ backLabel }}</a>
           <p v-else class="av-hint">You can close this page and go back to Slack.</p>
         </div>
       </section>
@@ -27,7 +27,7 @@
         <div>
           <h2>✅ Avatar saved</h2>
           <p>{{ message }}</p>
-          <a v-if="info.return_url" class="av-btn av-back" :href="info.return_url">Back to AIDL →</a>
+          <a v-if="info.return_url" class="av-btn av-back" :href="info.return_url" @click="goBack">{{ backLabel }}</a>
           <p v-else class="av-hint">You can close this page and go back to Slack.</p>
           <p v-if="!info.locked" class="av-hint">You can change your avatar once.</p>
           <button v-if="!info.locked" type="button" class="av-btn av-ghost" @click="picking = true">Change it</button>
@@ -55,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import aidlLogo from '../assets/images/aidl-logo-licence.png'
 import AvatarBuilder from '../components/AvatarBuilder.vue'
@@ -72,6 +72,19 @@ const picking = ref(false)
 const error = ref('')
 const message = ref('')
 const saved = ref<AvatarConfig | null>(null)
+
+// Google Workspace: this page opened in a new tab from the AIDL panel in Gmail, and Gmail is
+// still open in the tab before it, so "Back" just closes this tab.
+const backToGmail = computed(() => (info.value?.return_url || '').startsWith('https://mail.google.com/'))
+const backLabel = computed(() => (backToGmail.value ? '← Back' : 'Back to AIDL →'))
+
+function goBack(e: MouseEvent) {
+  if (!backToGmail.value) return // Teams: follow the link
+  e.preventDefault()
+  window.close()
+  // A browser only lets a page close a tab that was opened for it; otherwise open Gmail here.
+  setTimeout(() => { if (!window.closed && info.value?.return_url) window.location.href = info.value.return_url }, 300)
+}
 
 async function onPicked(avatar: AvatarConfig & { name?: string }) {
   picking.value = false

@@ -13,7 +13,7 @@
 <div class="ln-hh">
 <div class="ln-heye"><i></i>NOW FOR HOSPITALS · CLINICAL &amp; NON-CLINICAL STAFF</div>
 <h1 class="ln-htitle">HOSPITAL ZONE:<span>DRIVE AI SAFELY</span></h1>
-<p class="ln-hsub">One AI policy for everyone who works in your hospital, one rule for patient data, and a dated licence that proves each person learned it — inside Microsoft Teams or Slack, with Google Workspace coming soon.</p>
+<p class="ln-hsub">One AI policy for everyone who works in your hospital, one rule for patient data, and a dated licence that proves each person learned it — inside Microsoft Teams, Slack or Google Workspace.</p>
 </div>
 <!-- Steering-wheel dashboard, same as the companies home hero, with hospital readouts -->
 <div class="ln-hdash" aria-hidden="true"><div class="ln-hdash-bg"></div>
@@ -204,7 +204,7 @@
 <div class="ln-plat">
 <div class="ln-pl"><span class="ln-s ln-live">LIVE</span><h3>Microsoft Teams</h3><p>The full Admin Center and staff flow as Adaptive Cards, with Microsoft Entra sign-in. Works on Teams mobile for staff away from a desk.</p><span class="ln-for">ALL STAFF</span></div>
 <div class="ln-pl"><span class="ln-s ln-live">LIVE</span><h3>Slack</h3><p>The same flow in a dedicated AIDL channel and private messages, for hospitals and research teams that use Slack.</p><span class="ln-for">ALL STAFF</span></div>
-<div class="ln-pl"><span class="ln-s ln-soon">COMING SOON</span><h3>Google Workspace</h3><p>The same flow for hospitals that work in Google Workspace, with sign-in through staff Google accounts.</p><span class="ln-for">ALL STAFF</span></div>
+<div class="ln-pl"><span class="ln-s ln-soon">NEW</span><h3>Google Workspace</h3><p>The same flow for hospitals that work in Google Workspace: staff sign in with their Google account, and every step arrives in Gmail.</p><span class="ln-for">ALL STAFF</span></div>
 </div>
 </div>
 </section>

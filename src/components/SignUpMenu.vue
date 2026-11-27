@@ -43,7 +43,7 @@ const emit = defineEmits<{ pick: [id: PlatformId] }>()
 const NOTES: Partial<Record<PlatformId, string>> = {
   slack: 'Add AIDL to your workspace',
   teams: 'Add AIDL to your organisation',
-  gchat: 'Add AIDL to your Google Workspace',
+  gworkspace: 'Add AIDL to your Google Workspace',
 }
 const groups = PLATFORM_GROUPS
   .map((g) => ({ ...g, items: SITE_PLATFORMS.filter((p) => p.group === g.id) }))
